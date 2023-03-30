@@ -31,7 +31,7 @@ We present examples of Alpaca and Vicuna responses to our benchmark questions. A
 ---
 
 However, evaluating chatbots is never a simple task. With recent advancements in GPT-4, we are curious whether its capabilities have reached a human-like level that could enable an automated evaluation framework for benchmark generation and performance assessments. Our initial finding indicates that GPT-4 can produce highly consistent ranks and detailed assessment when comparing chatbots’ answers (see above example of GPT-4 judgment). 
-Preliminary evaluations based on GPT-4, summarized in Figure 1, show that Vicuna achieves 90%<sup>*</sup> capability of Bard/ChatGPT. While this proposed framework shows a potential to automate chatbot assessment, it is not yet a rigorous approach. Building an evaluation system for chatbots remains an open question requiring further research. More details are provided in the evaluation section.
+Preliminary evaluations based on GPT-4, summarized in Figure 1, show that Vicuna achieves 90%<sup>*</sup> capability of Bard/ChatGPT. While this proposed framework shows a potential to automate chatbot assessment, **it is not yet a rigorous approach**. Building an evaluation system for chatbots remains an open question requiring further research. More details are provided in the evaluation section.
 
 
 ![chart](assets/vicuna/chart.svg){: style="display:block; margin-left: auto; margin-right: auto;" width="60%"}
@@ -138,7 +138,7 @@ First, we devised eight question categories, such as Fermi problems, roleplay sc
 Figure 3. Response Comparison Assessed by GPT-4
 {: style="color:gray; text-align: center;"}
 
-Figure 3 displays the comparison results between all baselines and Vicuna. GPT-4 prefers Vicuna over state-of-the-art open-source models (LLaMA, Alpaca) in more than 90p% of the questions, and it achieves competitive performance against proprietary models (ChatGPT, Bard). In 45% of the questions, GPT-4 rates Vicuna's response as better or equal to ChatGPT's, and Vicuna's total score reaches 92% of ChatGPT’s (see Table 2). Despite advancements, those chatbots still face limitations, such as struggling with basic math problems or limited coding ability.
+Figure 3 displays the comparison results between all baselines and Vicuna. GPT-4 prefers Vicuna over state-of-the-art open-source models (LLaMA, Alpaca) in more than 90%<sup>*</sup> of the questions, and it achieves competitive performance against proprietary models (ChatGPT, Bard). In 45% of the questions, GPT-4 rates Vicuna's response as better or equal to ChatGPT's, and Vicuna's total score reaches 92% of ChatGPT’s (see Table 2). Despite advancements, those chatbots still face limitations, such as struggling with basic math problems or limited coding ability.
 
 Table 2. Response Scores Assessed by GPT-4
 {: style="color:gray; text-align: center;"}
@@ -173,7 +173,7 @@ Table 2. Response Scores Assessed by GPT-4
 </tbody>
 </table>
 
-While this proposed evaluation framework demonstrates the potential for assessing chatbots, it is not yet a rigorous and mature approach, as large language models are prone to hallucinate. Developing a comprehensive, standardized evaluation system for chatbots remains an open question requiring further research.
+While this proposed evaluation framework demonstrates the potential for assessing chatbots, it is not yet a rigorous or mature approach, as large language models are prone to hallucinate. Developing a comprehensive, standardized evaluation system for chatbots remains an open question requiring further research.
 
 ## Limitations
 We have noticed that, similar to other large language models, Vicuna has certain limitations. For instance, it is not good at tasks involving reasoning or mathematics, and it may have limitations in accurately identifying itself or ensuring the factual accuracy of its outputs. Additionally, it has not been sufficiently optimized to guarantee safety or mitigate potential toxicity or bias. To address the safety concerns, we use the OpenAI moderation API to filter out inappropriate user inputs in our online demo. Nonetheless, we anticipate that Vicuna can serve as an open starting point for future research to tackle these limitations.
