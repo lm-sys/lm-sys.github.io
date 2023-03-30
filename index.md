@@ -17,7 +17,7 @@ Vicuna
 \* *According to a fun and non-scientific evaluation with GPT-4. Further rigorous evaluation is needed.*
 {: style="color:gray;"}
 
-## How good is Vicuna? 
+## How Good is Vicuna? 
 We present examples of Alpaca and Vicuna responses to our benchmark questions. After fine-tuning Vicuna with 70K user-shared ChatGPT conversations, we discover that Vicuna becomes capable of generating more detailed and well-structured answers compared to Alpaca (see examples below), with the quality on par with ChatGPT.
 
 ---
