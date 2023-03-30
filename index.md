@@ -134,7 +134,7 @@ First, we devised eight question categories, such as Fermi problems, roleplay sc
 Figure 3. Response Comparison Assessed by GPT-4
 {: style="color:gray; text-align: center;"}
 
-Figure 3 displays the comparison results between all baselines and Vicuna. GPT-4 prefers Vicuna over state-of-the-art open-source models (LLaMA, Alpaca) in more than 90p% of the questions, and it achieves competitive performance against proprietary models (ChatGPT, Bard). In 45% of the questions, GPT-4 rates Vicuna's response as better or equal to ChatGPT's, and Vicuna's total score reaches 92% of ChatGPT’s (see Table 2). Despite advancements, those chatbots still face limitations, such as struggling with basic math problems or limited coding ability ([link](?)).
+Figure 3 displays the comparison results between all baselines and Vicuna. GPT-4 prefers Vicuna over state-of-the-art open-source models (LLaMA, Alpaca) in more than 90p% of the questions, and it achieves competitive performance against proprietary models (ChatGPT, Bard). In 45% of the questions, GPT-4 rates Vicuna's response as better or equal to ChatGPT's, and Vicuna's total score reaches 92% of ChatGPT’s (see Table 2). Despite advancements, those chatbots still face limitations, such as struggling with basic math problems or limited coding ability.
 
 Table 2. Response Scores Assessed by GPT-4
 {: style="color:gray; text-align: center;"}
