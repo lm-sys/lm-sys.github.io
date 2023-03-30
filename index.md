@@ -174,11 +174,12 @@ Table 2. Response Scores Assessed by GPT-4
   </tr>
 </tbody>
 </table>
+<br>
 
 While this proposed evaluation framework demonstrates the potential for assessing chatbots, it is not yet a rigorous or mature approach, as large language models are prone to hallucinate. Developing a comprehensive, standardized evaluation system for chatbots remains an open question requiring further research.
 
 ## Limitations
-We have noticed that, similar to other large language models, Vicuna has certain limitations. For instance, it is not good at tasks involving reasoning or mathematics, and it may have limitations in accurately identifying itself or ensuring the factual accuracy of its outputs. Additionally, it has not been sufficiently optimized to guarantee safety or mitigate potential toxicity or bias. **To address the safety concerns, we use the OpenAI [moderation](https://platform.openai.com/docs/guides/moderation/overview) API to filter out inappropriate user inputs in our online demo.** Nonetheless, we anticipate that Vicuna can serve as an open starting point for future research to tackle these limitations.
+We have noticed that, similar to other large language models, Vicuna has certain limitations. For instance, it is not good at tasks involving reasoning or mathematics, and it may have limitations in accurately identifying itself or ensuring the factual accuracy of its outputs. Additionally, it has not been sufficiently optimized to guarantee safety or mitigate potential toxicity or bias. To address the safety concerns, we use the OpenAI [moderation](https://platform.openai.com/docs/guides/moderation/overview) API to filter out inappropriate user inputs in our online demo. Nonetheless, we anticipate that Vicuna can serve as an open starting point for future research to tackle these limitations.
 
 ## Release
 In our first release, we will share the training, serving, and evaluation code. Additionally, we plan to release the model weights by providing a version of delta weights that build on the original LLaMa weights. There is no plan to release the dataset. Join our [Discord](https://discord.gg/h6kCZb72G7) server and follow our [Twitter](https://twitter.com/lmsysorg) to get the latest updates.
