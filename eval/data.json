@@ -2882,9 +2882,9 @@
     }
   ],
   "models": [
+    "bard",
     "alpaca",
     "llama",
-    "gpt35",
-    "bard"
+    "gpt35"
   ]
 }
