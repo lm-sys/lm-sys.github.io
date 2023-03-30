@@ -739,8 +739,8 @@ a:hover {
 .page-header {
   color: #fff;
   text-align: center;
-  background-color: #159957;
-  background-image: linear-gradient(120deg, #155799, #159957);
+  background-color: rgb(146, 117, 86);
+  background-image: linear-gradient(120deg, #155799, rgb(146, 117, 86));
 }
 @media screen and (min-width: 64em) {
   .page-header {
@@ -850,7 +850,7 @@ a:hover {
   margin-top: 2rem;
   margin-bottom: 1rem;
   font-weight: normal;
-  color: #159957;
+  color: rgb(146, 117, 86);
 }
 .main-content p {
   margin-bottom: 1em;
