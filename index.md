@@ -192,6 +192,6 @@ Joseph E. Gonazlez, Ion Stoica, ​​Eric P. Xing
 
 
 ## Acknowledgment
-We would like to thank Xinyang Geng, Hao Liu, and Eric Wallace from BAIR; Xuecheng Li, and Tianyi Zhang from Stanford Alpaca team for their insightful discussion and feedback. Please check out another concurrent effort from BAIR.
+We would like to thank Xinyang Geng, Hao Liu, and Eric Wallace from BAIR; Xuecheng Li, and Tianyi Zhang from Stanford Alpaca team for their insightful discussion and feedback. BAIR will have another blog post soon for the concurrent effort on their chatbot, Koala.
 
 
