@@ -190,7 +190,7 @@ The online demo is a research preview intended for non-commercial use only, subj
 The code is released under the Apache License 2.0.
 
 ## The Team
-This is a joint effort with collaborators from multiple institutions, including UC Berkeley, CMU, Stanford, and UC San Diego.
+This is a joint effort with collaborators from multiple institutions, including UC Berkeley, CMU, Stanford, UC San Diego, and MBZUAI.
 
 **Students (alphabetical order):**\\
 Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang
