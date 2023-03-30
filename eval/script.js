@@ -16,12 +16,11 @@ modelFigureMapping = {
     "vicuna": "figures/vicuna.jpeg",
     // Image from: https://commons.wikimedia.org/wiki/File:ChatGPT_logo.svg
     "gpt35": "figures/chatgpt.svg",
-    // Image from: https://www.reddit.com/r/logodesign/comments/1128aat/google_ai_bard_logo_design/
-    "bard": "figures/bard.jpg",
+    // Image from public domain.
+    "bard": "figures/bard-2.jpg",
     // Image from: https://crfm.stanford.edu/2023/03/13/alpaca.html
     "alpaca": "figures/alpaca.png",
-    // Image adapted from https://commons.wikimedia.org/wiki/File:Llama_on_Machu_Picchu.jpg
-    "llama": "figures/llama.jpg",
+    "llama": "figures/llama-2.svg",
 }
 
 // Store the question data in a mapping for later use.
