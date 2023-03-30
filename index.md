@@ -40,7 +40,7 @@ Figure 1. Relative Response Quality Assessed by GPT-4
 
 
 ## Online Demo
-Try the Vicuna-13B demo [here]()!
+Try the Vicuna-13B demo [here](https://chat.lmsys.org)!
 <!-- <iframe src="http://34.150.184.74:7860/" frameBorder="0" width="100%" height="900"></iframe> -->
 
 <!-- Add a video that automatically play -->
