@@ -72,7 +72,7 @@ Table 1. Comparison between several notable models
     <td class="tg-head"><span style="font-weight:bold;">LLaMA</span></td>
     <td class="tg-head"><span style="font-weight:bold;">Alpaca</span></td>
     <td class="tg-head"><span style="font-weight:bold;">Vicuna</span></td>
-    <td class="tg-head"><span style="font-weight:bold;">ChatGPT</span></td>
+    <td class="tg-head"><span style="font-weight:bold;">Bard/ChatGPT</span></td>
   </tr>
   <tr>
     <td class="tg-body">Dataset</td>

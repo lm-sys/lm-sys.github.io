@@ -130,7 +130,7 @@ function displayAnswers(index) {
 
     // Display evaluation
     score = question.scores[otherModel];
-    score_text = otherModel + " " + score[0] + "/10, Vicuna " + score[1] + "/10";
+    score_text = modelNameMapping[otherModel] + " " + score[0] + "/10, Vicuna-13b " + score[1] + "/10";
     document.getElementById('evaluation-header').textContent = "GPT-4 Evaluation" + " (Score: " + score_text + ")";
     document.getElementById('evaluation-result').innerHTML = text2Markdown(question.evaluations[otherModel]);
 
