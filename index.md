@@ -44,9 +44,11 @@ Try the Vicuna-13B demo [here](https://chat.lmsys.org)!
 <!-- <iframe src="http://34.150.184.74:7860/" frameBorder="0" width="100%" height="900"></iframe> -->
 
 <!-- Add a video that automatically play -->
-<div style="display: flex;justify-content: center;">
+<div>
+  <a href="https://chat.lmsys.org"  style="display: flex;justify-content: center;">
   <video autoplay muted loop src="assets/vicuna/demo-narrow.mp4" type="video/mp4" style="width: 80%;" id="demo">
   </video>
+  </a>
 </div>
 
 
