@@ -118,7 +118,7 @@ Vicuna is created by fine-tuning a LLaMA base model using approximately 70K user
 Our training recipe builds on top of [Stanford’s alpaca](https://crfm.stanford.edu/2023/03/13/alpaca.html) with the following improvements.
 - Memory Optimizations: To enable Vicuna's understanding of long context, we expand the max context length from 512 in alpaca to 2048, which substantially increases GPU memory requirements. We tackle the memory pressure by utilizing [gradient checkpointing](https://arxiv.org/abs/1604.06174) and [flash attention](https://arxiv.org/abs/2205.14135).
 - Multi-round conversations. We adjust the training loss to account for multi-round conversations and compute the fine-tuning loss solely on the chatbot's output.
-- Cost Reduction via Spot Instance: The 40x larger dataset and 4x sequence length for training poses a considerable challenge in training expenses.We employ [SkyPilot](https://github.com/skypilot-org/skypilot)  managed spot to reduce the cost by leveraging the cheaper spot instances with auto-recovery for preemptions and auto zone switch. This solution slashes costs for training the 7B model from $500 to around $140 and the 13B model from around $1K to $300.
+- Cost Reduction via Spot Instance: The 40x larger dataset and 4x sequence length for training poses a considerable challenge in training expenses. We employ [SkyPilot](https://github.com/skypilot-org/skypilot)  managed spot to reduce the cost by leveraging the cheaper spot instances with auto-recovery for preemptions and auto zone switch. This solution slashes costs for training the 7B model from $500 to around $140 and the 13B model from around $1K to $300.
 
 
 ## Serving
