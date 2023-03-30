@@ -135,7 +135,7 @@ We build a serving system that is capable of serving multiple models with distri
 Evaluating AI chatbots is a challenging task, as it requires examining language understanding, reasoning, and context awareness. With AI chatbots becoming more advanced, current open benchmarks may no longer suffice. For instance, the evaluation dataset used in Stanford’s Alpaca, [self-instruct](https://github.com/yizhongw/self-instruct/tree/main/human_eval), can be effectively answered by SOTA chatbots, making it difficult for humans to discern differences in performance. More limitations include training/test data contamination and the potentially high cost of creating new benchmarks. To tackle these issues, we propose an evaluation framework based on GPT-4 to automate chatbot performance assessment.
 
 
-First, we devised eight question categories, such as Fermi problems, roleplay scenarios, and coding/math tasks, to test various aspects of a chatbot's performance. Through careful prompt engineering, GPT-4 is able to generate diverse, challenging questions that baseline models struggle with. We select ten questions per category and collect answers from five chatbots: LLaMA, Alpaca, ChatGPT, Bard, and Vicuna. We then ask GPT-4 to rate the quality of their answers based on helpfulness, relevance, accuracy, and detail. We discover that GPT-4 can produce not only relatively consistent scores but also detailed explanations on why such scores are given (detailed examples [link](https://vicuna.lmsys.org/eval)).
+First, we devised eight question categories, such as Fermi problems, roleplay scenarios, and coding/math tasks, to test various aspects of a chatbot's performance. Through careful prompt engineering, GPT-4 is able to generate diverse, challenging questions that baseline models struggle with. We select ten questions per category and collect answers from five chatbots: LLaMA, Alpaca, ChatGPT, Bard, and Vicuna. We then ask GPT-4 to rate the quality of their answers based on helpfulness, relevance, accuracy, and detail. We discover that GPT-4 can produce not only relatively consistent scores but also detailed explanations on why such scores are given (detailed examples [link](https://vicuna.lmsys.org/eval)). We also noticed that GPT-4 is not very good at judging coding/math tasks.
 
 ![response comparison](assets/vicuna/response-compare.png){: style="display: flex; margin-left: auto; margin-right: auto; width: 50%;"}
 Figure 3. Response Comparison Assessed by GPT-4
@@ -190,7 +190,7 @@ The online demo is a research preview intended for non-commercial use only, subj
 The code is released under the Apache License 2.0.
 
 ## The Team
-This is a joint effort with collaborators from multiple institutions, including UC Berkeley, CMU, Stanford, and UC San Diego.
+This is a joint effort with collaborators from multiple institutions, including UC Berkeley, CMU, Stanford, UC San Diego, and MBZUAI.
 
 **Students (alphabetical order):**\\
 Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang
