@@ -20,7 +20,7 @@ modelFigureMapping = {
     "bard": "figures/bard-2.jpg",
     // Image from: https://crfm.stanford.edu/2023/03/13/alpaca.html
     "alpaca": "figures/alpaca.png",
-    "llama": "figures/llama-2.svg",
+    "llama": "figures/llama-3.png",
 }
 
 // Store the question data in a mapping for later use.
@@ -130,7 +130,7 @@ function displayAnswers(index) {
 
     // Display evaluation
     score = question.scores[otherModel];
-    score_text = otherModel + " " + score[0] + "/10, Vicuna " + score[1] + "/10";
+    score_text = modelNameMapping[otherModel] + " " + score[0] + "/10, Vicuna-13b " + score[1] + "/10";
     document.getElementById('evaluation-header').textContent = "GPT-4 Evaluation" + " (Score: " + score_text + ")";
     document.getElementById('evaluation-result').innerHTML = text2Markdown(question.evaluations[otherModel]);
 
