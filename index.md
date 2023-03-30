@@ -1,11 +1,11 @@
 ---
 layout: default
-title: "Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90% ChatGPT Quality"
+title: "Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90%<sup>*</sup> ChatGPT Quality"
 description: by the Team with members from UC Berkeley, CMU, Stanford, and UC San Diego
 background: /assets/vicuna/vicuna-wide.png
 ---
 
-We Introduce Vicuna-13B, an open-source chatbot trained by fine-tuning LLaMA on user-shared conversations collected from ShareGPT. Preliminary evaluation using GPT-4 as a judge shows Vicuna-13B achieves more than 90% quality of OpenAI ChatGPT and Google Bard while outperforming other models like LLaMA and Stanford Alpaca in more than 90% of cases. The cost of training Vicuna-13B is around $300. The training and serving [code](https://github.com/lm-sys/FastChat), along with an online [demo](https://chat.lmsys.org), are publicly available for non-commercial use.
+We Introduce Vicuna-13B, an open-source chatbot trained by fine-tuning LLaMA on user-shared conversations collected from ShareGPT. Preliminary evaluation using GPT-4 as a judge shows Vicuna-13B achieves more than 90%<sup>*</sup> quality of OpenAI ChatGPT and Google Bard while outperforming other models like LLaMA and Stanford Alpaca in more than 90%<sup>*</sup> of cases. The cost of training Vicuna-13B is around $300. The training and serving [code](https://github.com/lm-sys/FastChat), along with an online [demo](https://chat.lmsys.org), are publicly available for non-commercial use.
 
 
 ![favicon](favicon.jpeg){: style="display:block; margin-left: auto; margin-right: auto;" width="30%"}
@@ -31,13 +31,15 @@ We present examples of Alpaca and Vicuna responses to our benchmark questions. A
 ---
 
 However, evaluating chatbots is never a simple task. With recent advancements in GPT-4, we are curious whether its capabilities have reached a human-like level that could enable an automated evaluation framework for benchmark generation and performance assessments. Our initial finding indicates that GPT-4 can produce highly consistent ranks and detailed assessment when comparing chatbots’ answers (see above example of GPT-4 judgment). 
-Preliminary evaluations based on GPT-4, summarized in Figure 1, show that Vicuna achieves 90% capability of Bard/ChatGPT. While this proposed framework shows a potential to automate chatbot assessment, it is not yet a rigorous approach. Building an evaluation system for chatbots remains an open question requiring further research. More details are provided in the evaluation section.
+Preliminary evaluations based on GPT-4, summarized in Figure 1, show that Vicuna achieves 90%<sup>*</sup> capability of Bard/ChatGPT. While this proposed framework shows a potential to automate chatbot assessment, it is not yet a rigorous approach. Building an evaluation system for chatbots remains an open question requiring further research. More details are provided in the evaluation section.
 
 
 ![chart](assets/vicuna/chart.svg){: style="display:block; margin-left: auto; margin-right: auto;" width="60%"}
-Figure 1. Relative Response Quality Assessed by GPT-4
+Figure 1. Relative Response Quality Assessed by GPT-4<sup>*</sup>
 {: style="color:gray; text-align: center;"}
 
+\* *According to a fun and non-scientific evaluation with GPT-4. Further rigorous evaluation is needed.*
+{: style="color:gray; font-size: 80%;"}
 
 ## Online Demo
 Try the Vicuna-13B demo [here](https://chat.lmsys.org)!
