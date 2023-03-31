@@ -43,7 +43,7 @@ function formatText(input) {
 
 function text2Markdown(text) {
     // Normalize the text for markdown rendering.
-    text = text.trim().replace('\n\n', '\n').replace('\n', '\n\n');
+    text = text.trim().replaceAll('\n\n', '\n').replaceAll('\n', '\n\n');
     return marked.parse(text);
 }
 
