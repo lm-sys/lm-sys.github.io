@@ -196,7 +196,7 @@ This is a joint effort with collaborators from multiple institutions, including 
 Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang
 
 **Advisors (alphabetical order):**\\
-Joseph E. Gonazlez, Ion Stoica, ​​Eric P. Xing
+Joseph E. Gonzalez, Ion Stoica, Eric P. Xing
 
 
 ## Acknowledgment
