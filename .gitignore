@@ -5,3 +5,4 @@ Gemfile.lock
 .jekyll-cache
 .jekyll-cache
 .DS_Store
+.idea
