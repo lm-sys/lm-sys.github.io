@@ -184,7 +184,7 @@ We have noticed that, similar to other large language models, Vicuna has certain
 
 ## Release
 In our first release, we will share the training, serving, and evaluation code on a GitHub repo: [https://github.com/lm-sys/FastChat](https://github.com/lm-sys/FastChat).
-We plan to release the model weights by providing a version of delta weights that build on the original LLaMA weights, but we are still figuring out a proper way to do so.
+We also released the Vicuna-13B model weights, please find the instructions [here](https://github.com/lm-sys/FastChat#vicuna-weights).
 There is no plan to release the dataset.
 Join our [Discord](https://discord.gg/h6kCZb72G7) server and follow our [Twitter](https://twitter.com/lmsysorg) to get the latest updates.
 
