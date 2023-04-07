@@ -203,6 +203,15 @@ Joseph E. Gonzalez, Ion Stoica, Eric P. Xing
 
 
 ## Acknowledgment
-We would like to thank Xinyang Geng, Hao Liu, and Eric Wallace from BAIR; Xuecheng Li, and Tianyi Zhang from Stanford Alpaca team for their insightful discussion and feedback. BAIR will have another blog post soon for a concurrent effort on their chatbot, Koala.
+We would like to thank Xinyang Geng, Hao Liu, and Eric Wallace from BAIR; Xuecheng Li, and Tianyi Zhang from Stanford Alpaca team for their insightful discussion and feedback. Please checkout another [blog post](https://bair.berkeley.edu/blog/2023/04/03/koala/) from Berkeley AI Research for a concurrent effort on their chatbot, Koala.
 
 
+## Citation
+```
+@misc{vicuna2023,
+    title = {Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90%* ChatGPT Quality},
+    url = {https://vicuna.lmsys.org},
+    author = {Chiang, Wei-Lin and Li, Zhuohan and Lin, Zi and Sheng, Ying and Wu, Zhanghao and Zhang, Hao and Zheng, Lianmin and Zhuang, Siyuan and Zhuang, Yonghao and Gonzalez, Joseph E. and Stoica, Ion and Xing, Eric P.},
+    year = {2023}
+}
+```
