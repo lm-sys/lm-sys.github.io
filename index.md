@@ -212,6 +212,7 @@ We would like to thank Xinyang Geng, Hao Liu, and Eric Wallace from BAIR; Xueche
     title = {Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90%* ChatGPT Quality},
     url = {https://vicuna.lmsys.org},
     author = {Chiang, Wei-Lin and Li, Zhuohan and Lin, Zi and Sheng, Ying and Wu, Zhanghao and Zhang, Hao and Zheng, Lianmin and Zhuang, Siyuan and Zhuang, Yonghao and Gonzalez, Joseph E. and Stoica, Ion and Xing, Eric P.},
+    month = {March},
     year = {2023}
 }
 ```
