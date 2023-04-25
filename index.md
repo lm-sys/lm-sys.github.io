@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90%<sup>*</sup> ChatGPT Quality"
-description: "by the Team with members from UC Berkeley, CMU, Stanford, and UC San Diego"
+description: "by the Team with members from UC Berkeley, CMU, Stanford, MBZUAI, and UC San Diego"
 background: /assets/vicuna/vicuna-wide.png
 ---
 
@@ -203,7 +203,7 @@ Joseph E. Gonzalez, Ion Stoica, Eric P. Xing
 
 
 ## Acknowledgment
-We would like to thank Xinyang Geng, Hao Liu, and Eric Wallace from BAIR; Xuecheng Li, and Tianyi Zhang from Stanford Alpaca team for their insightful discussion and feedback. Please check out a blog post from BAIR about a concurrent effort on their chatbot, [Koala](https://bair.berkeley.edu/blog/2023/04/03/koala/).
+We would like to thank Xinyang Geng, Hao Liu, and Eric Wallace from BAIR; Xuecheng Li, and Tianyi Zhang from Stanford Alpaca team for their insightful discussion and feedback; Qirong Ho from MBZUAI for providing support on the serving cluster. Please check out a blog post from BAIR about a concurrent effort on their chatbot, [Koala](https://bair.berkeley.edu/blog/2023/04/03/koala/).
 
 
 ## Citation
