@@ -2,7 +2,7 @@
 title: "About"
 ---
 
-Large Model Systems Organization (LMSYS Org) is an open research organization founded by students and faculty from UC Berkeley in collaboration with UCSD, and CMU.
+Large Model Systems Organization (LMSYS Org) is an open research organization founded by students and faculty from UC Berkeley in collaboration with UCSD and CMU.
 
 We aim to make large models accessible to everyone by co-development of open datasets, models, systems, and evaluation tools. Our work encompasses research in both machine learning and systems. We train large language models and make them widely available, while also developing distributed systems to accelerate their training and inference.
 
@@ -15,3 +15,8 @@ Hao Zhang, Ion Stoica, Joseph E. Gonzalez, Eric P. Xing
 
 **Institutions**  
 UC Bekreley, UCSD, CMU, MBZUAI
+
+### Contact us
+- Email us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com).
+- Join us on [discord](https://discord.com/invite/h6kCZb72G7).
+- Follow us on [twitter](https://twitter.com/lmsysorg).
