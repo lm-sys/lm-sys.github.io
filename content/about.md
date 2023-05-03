@@ -14,7 +14,7 @@ Lianmin Zheng, Ying Sheng, Wei-Lin Chiang, Dacheng Li, Zhuohan Li, Zi Lin, Zhang
 Hao Zhang, Ion Stoica, Joseph E. Gonzalez, Eric P. Xing
 
 **Institutions**  
-UC Bekreley, UCSD, CMU, MBZUAI
+UC Berkeley, UCSD, CMU, MBZUAI
 
 ### Contact us
 - Email us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com).
