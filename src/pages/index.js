@@ -89,7 +89,7 @@ export default function Home() {
 
 function Slider({ className }) {
   // const slideImages = ["dragon", "painting", "fox", "river"];
-  const slideImages = ["universe", "matrix", "matrix2", "llama", "llama2", "llama3", "llama4", "liandan", "liandan2", "liandan3", "liandan4"];
+  const slideImages = ["universe", "matrix", "llama", "liandan"];
 
   return (
     <div className={"z-0 h-screen w-full fixed md:absolute " + className}>
