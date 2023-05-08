@@ -15,9 +15,9 @@ export default function Home() {
 
   return (
     <>
-      {/*<Slider className="md:hidden" />*/}
+      <Slider className="md:hidden" />
       <div className="pt-20 md:pt-0 full-container md:h-screen w-full md:flex flex-col items-center justify-center text-center relative child:absolute">
-        {/*<Slider className="hidden md:block" />*/}
+        <Slider className="hidden md:block" />
         <Tags />
         <div className="flex items-center justify-center w-full flex-col">
           <div className="w-auto md:pb-0 flex flex-col md:flex-row items-center gap-4 px-4 overflow-x-hidden">
@@ -89,7 +89,7 @@ export default function Home() {
 
 function Slider({ className }) {
   // const slideImages = ["dragon", "painting", "fox", "river"];
-  const slideImages = ["universe", "llama"];
+  const slideImages = ["universe", "matrix", "llama", "liandan"];
 
   return (
     <div className={"z-0 h-screen w-full fixed md:absolute " + className}>
@@ -98,18 +98,18 @@ function Slider({ className }) {
           {slideImages.map((slideImage, index) => {
             return (
               <picture key={index}>
-                <source
-                  srcSet={"/images/gallery/" + slideImage + ".avif"}
-                  type="image/avif"
-                />
-                <source
-                  srcSet={"/images/gallery/" + slideImage + ".webp"}
-                  type="image/webp"
-                />
-                <source
-                  srcSet={"/images/gallery/" + slideImage + ".png"}
-                  type="image/png"
-                />
+                {/*<source*/}
+                {/*  srcSet={"/images/gallery/" + slideImage + ".avif"}*/}
+                {/*  type="image/avif"*/}
+                {/*/>*/}
+                {/*<source*/}
+                {/*  srcSet={"/images/gallery/" + slideImage + ".webp"}*/}
+                {/*  type="image/webp"*/}
+                {/*/>*/}
+                {/*<source*/}
+                {/*  srcSet={"/images/gallery/" + slideImage + ".png"}*/}
+                {/*  type="image/png"*/}
+                {/*/>*/}
                 <img
                   src={"/images/gallery/" + slideImage + ".png"}
                   className="object-cover  h-full w-full opacity-20 md:opacity-25"
