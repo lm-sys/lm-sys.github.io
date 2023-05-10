@@ -29,29 +29,29 @@ td {text-align: left}
 
 <tr> <td>1</td> <td>🥇 <a href="https://chat.openai.com/" target="_blank">GPT-4</a></td> <td>1274</td> <td>ChatGPT-4 by OpenAI</td> <td>Proprietary</td> </tr>
 
-<tr> <td>2</td> <td>🥈  <a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-v1</a></td> <td>1224</td> <td>Claude by Anthropic</td> <td>Proprietary</td> </tr>
+<tr> <td>2</td> <td>🥈 <a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-v1</a></td> <td>1224</td> <td>Claude by Anthropic</td> <td>Proprietary</td> </tr>
 
 <tr> <td>3</td> <td>🥉 <a href="https://chat.openai.com/" target="_blank">GPT-3.5-turbo</a></td> <td>1155</td> <td>ChatGPT-3.5 by OpenAI</td>  <td>Proprietary</td> </tr>
 
-<tr> <td>4</td> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>1083</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Open source; Non-commercial</td> </tr>
+<tr> <td>4</td> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>1083</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Weights available; Non-commercial</td> </tr>
 
-<tr> <td>5</td> <td><a href="https://bair.berkeley.edu/blog/2023/04/03/koala" target="_blank">Koala-13B</a></td> <td>1022</td> <td>a dialogue model for academic research by BAIR</td> <td>Open source; Non-commercial</td> </tr>
+<tr> <td>5</td> <td><a href="https://bair.berkeley.edu/blog/2023/04/03/koala" target="_blank">Koala-13B</a></td> <td>1022</td> <td>a dialogue model for academic research by BAIR</td> <td>Weights available; Non-commercial</td> </tr>
 
 <tr> <td>6</td> <td><a href="https://huggingface.co/BlinkDL/rwkv-4-raven" target="_blank">RWKV-4-Raven-14B</a></td> <td>989</td> <td>an RNN with transformer-level LLM performance</td> <td>Apache 2.0</td> </tr>
 
 <tr> <td>7</td> <td><a href="https://open-assistant.io" target="_blank">Oasst-Pythia-12B</a></td> <td>928</td> <td>an Open Assistant for everyone by LAION</td> <td>Apache 2.0</td> </tr>
 
-<tr> <td>8</td> <td><a href="https://chatglm.cn/blog" target="_blank">ChatGLM-6B</a></td> <td>918</td> <td>an open bilingual dialogue language model by Tsinghua University</td> <td>Open source; Non-commercial</td> </tr>
+<tr> <td>8</td> <td><a href="https://chatglm.cn/blog" target="_blank">ChatGLM-6B</a></td> <td>918</td> <td>an open bilingual dialogue language model by Tsinghua University</td> <td>Weights available; Non-commercial</td> </tr>
 
 <tr> <td>9</td> <td><a href="https://github.com/stability-AI/stableLM" target="_blank">StableLM-Tuned-Alpha-7B</a></td> <td>906</td> <td>Stability AI language models</td>  <td>CC-BY-NC-SA-4.0</td> </tr>
 
-<tr> <td>10</td> <td><a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank">Alpaca-13B</a></td> <td>904</td> <td>a model fine-tuned from LLaMA on instruction-following demonstrations by Stanford</td>  <td>Open source; Non-commercial</td> </tr>
+<tr> <td>10</td> <td><a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank">Alpaca-13B</a></td> <td>904</td> <td>a model fine-tuned from LLaMA on instruction-following demonstrations by Stanford</td>  <td>Weights available; Non-commercial</td> </tr>
 
 <tr> <td>11</td> <td><a href="https://huggingface.co/lmsys/fastchat-t5-3b-v1.0" target="_blank">FastChat-T5-3B</a></td> <td>902</td> <td>a chat assistant fine-tuned from FLAN-T5 by LMSYS</td> <td>Apache 2.0</td> </tr>
 
 <tr> <td>12</td> <td><a href="https://www.databricks.com/blog/2023/04/12/dolly-first-open-commercially-viable-instruction-tuned-llm" target="_blank">Dolly-V2-12B</a></td> <td>863</td> <td>an instruction-tuned open large language model by Databricks</td> <td>MIT</td> </tr>
 
-<tr> <td>13</td> <td><a href="https://arxiv.org/abs/2302.13971" target="_blank">LLaMA-13B</a></td> <td>826</td> <td>open and efficient foundation language models by Meta</td> <td>Open source; Non-commercial</td> </tr>
+<tr> <td>13</td> <td><a href="https://arxiv.org/abs/2302.13971" target="_blank">LLaMA-13B</a></td> <td>826</td> <td>open and efficient foundation language models by Meta</td> <td>Weights available; Non-commercial</td> </tr>
 
 </tbody>
 </table>
