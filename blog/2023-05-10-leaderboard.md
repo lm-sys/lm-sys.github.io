@@ -68,9 +68,9 @@ We do observe a substantial gap between the three proprietary models and all oth
 In particular, GPT-4 is leading the board, achieving an Elo score of 1274. It is almost 200 scores higher than the best open-source alternative on this board -- our Vicuna-13B.
 After dropping ties, GPT-4 wins 82% of the matches when it is against Vicuna-13B, and it even wins 79% of the matches when it is against its previous generation GPT-3.5-turbo.
 
-However, it is important to note that these open-source models on the leaderboard generally have fewer parameters, in the range of 3B - 14B, than proprietary model. 
+However, it is important to note that these open-source models on the leaderboard generally have fewer parameters, in the range of 3B - 14B, than proprietary models.
 In fact, recent advancements in LLMs and data curation have allowed for significant improvements in performance with smaller models. 
-[Google's latest PaLM 2](https://ai.google/discover/palm2) is a great example of this: Knowing that PaLM 2 achieves even better performance than its previous generation using smaller model sizes, 
+[Google's latest PaLM 2](https://ai.google/discover/palm2) is a great example of this: knowing that PaLM 2 achieves even better performance than its previous generation using smaller model sizes, 
 we remain very optimistic about the potential for open-source language models to catch up. Through our [FastChat-based Chatbot Arena](https://github.com/lm-sys/FastChat) and this leaderboard effort, 
 we hope to contribute a trusted evaluation platform for evaluating LLMs, and help advance this field and create better language models for everyone.
  
