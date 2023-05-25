@@ -110,7 +110,7 @@ Several examples are shown below:
 
 **Limited multilingual abilities**
 
-We do not see strong multilingual abilities from PaLM 2, either using the currently offered public API chat-bison@001 at Google Vertex API or using the web chat interface at https://bard.google.com. PaLM 2 tends to not answer non-English questions, including questions written in popular languages such as Chinese, Spanish, and Hebrew. We were unable to reproduce several multilingual examples demonstrated in the PaLM 2 technical report using the current PaLM 2 versions. We are waiting for Google to gradually release the latest version of PaLM 2. 
+We do not see strong multilingual abilities from PaLM 2 with the currently offered public API chat-bison@001 at Google Vertex API. PaLM 2 tends to not answer non-English questions, including questions written in popular languages such as Chinese, Spanish, and Hebrew. We were unable to reproduce several multilingual examples demonstrated in the PaLM 2 technical report using the current PaLM 2 versions. We are waiting for Google to gradually release the latest version of PaLM 2. 
 
 We also calculate the Elo ratings of all models when only considering English and only considering non-English conversations, respectively, illustrated in Figure 3. The results confirm the observations – on the non-English leaderboard, PaLM 2 ranks 16th.
 
@@ -120,7 +120,7 @@ We also calculate the Elo ratings of all models when only considering English an
 
 **PaLM 2's reasoning ability is unsatisfied**
 
-We also observe the offered Bard versions do not demonstrate strong reasoning capabilities. On one hand, it seems to detect if the question is in plain text, and tends to refuse many questions not in plain text, such as those in programming languages, debugging, and code interpretation. On the other hand, we see Bard didn’t perform well on some entry-level reasoning tasks when compared against other chatbots. See several examples in Figure 4.
+We also observe the offered PaLM 2 version do not demonstrate strong reasoning capabilities. On one hand, it seems to detect if the question is in plain text, and tends to refuse many questions not in plain text, such as those in programming languages, debugging, and code interpretation. On the other hand, we see PaLM 2 didn’t perform well on some entry-level reasoning tasks when compared against other chatbots. See several examples in Figure 4.
 
 <img src="/images/blog/leaderboard_week4/PaLM2_reasoning_1.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 <img src="/images/blog/leaderboard_week4/PaLM2_reasoning_2.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
