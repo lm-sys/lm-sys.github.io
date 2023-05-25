@@ -160,5 +160,5 @@ We listen carefully to the community feedback and are thinking about how to impr
 
 **More models**
 
-Since the launch of Arena, we have received a lot of requests from the community to add more models. Due to the limited compute resources and bandwidth we have, we may not be able to serve all of them. We are working on improving the scalability of our serving systems.
+Since the launch of Arena, we have received many requests from the community to add more models. Due to the limited compute resources and bandwidth we have, we may not be able to serve all of them. We are working on improving the scalability of our serving systems.
 In the meanwhile, you can still contribute support for [new models](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or contact us if you can help us scale the system.
