@@ -5,15 +5,15 @@ date: "May 25, 2023"
 previewImg: /images/blog/leaderboard_week4/leaderboard_cover.png
 ---
 
-A new Elo rating leaderboard based on the 28.7K anonymous voting data collected **in the wild** between April 24 and May 22, 2023 is released in Table 1 below. In this update, we are excited to welcome the following chatbots joining the Arena:
+A new Elo rating leaderboard based on the 27K anonymous voting data collected **in the wild** between April 24 and May 22, 2023 is released in Table 1 below. In this update, we are excited to welcome the following chatbots joining the Arena:
 
 1. Google PaLM 2, chat-tuned with the code name [chat-bison@001](https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023) on Google Cloud Vertex AI
 2. Anthropic Claude-instant-v1
 3. MosaicML MPT-7B-chat
 4. Vicuna-7B
 
-We provide the [voting data](https://drive.google.com/file/d/1HPlwuwm3ptQWlx4fio-psIkIETTbtqHQ/view?usp=share_link) and the [Google Colab notebook](https://colab.research.google.com/drive/17L9uCiAivzWfzOxo2Tb9RMauT7vS6nVU?usp=sharing) to analyze this data, including the computation of the Elo ratings.
-
+We provide a [Google Colab notebook](https://colab.research.google.com/drive/17L9uCiAivzWfzOxo2Tb9RMauT7vS6nVU?usp=sharing) to analyze the voting data, including the computation of the Elo ratings.
+You can also try the voting [demo](https://arena.lmsys.org) and see more about the [leaderboard](https://leaderboard.lmsys.org).
 
 <style>
 th {text-align: left}
@@ -78,11 +78,11 @@ The win fraction matrix of all model pairs is shown in Figure 1.
 
 Google's PaLM 2 is one of the most significant models announced since our last leaderboard update. We added the PaLM 2 Chat to the Chatbot Arena via the [Google Cloud Vertex AI API](https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023). The model is chat-tuned under the code name *chat-bison@001*.
 
-In the past two weeks, PaLM 2 has competed for nearly 1400 non-tie anonymous battles with the other 16 chatbots, currently ranked 6th on the leaderboard. It ranks above all other open-source chatbots, except for Vicuna-13B, whose Elo is 12 scores higher than PaLM 2 (Vicuna 1054 vs. PaLM 2 1042) which in terms of ELO rating is nearly a virtual tie. We noted the following interesting results from PaLM 2's Arena data.
+In the past two weeks, PaLM 2 has competed for nearly 1.8k anonymous battles with the other 16 chatbots, currently ranked 6th on the leaderboard. It ranks above all other open-source chatbots, except for Vicuna-13B, whose Elo is 12 scores higher than PaLM 2 (Vicuna 1054 vs. PaLM 2 1042) which in terms of ELO rating is nearly a virtual tie. We noted the following interesting results from PaLM 2's Arena data.
 
 PaLM 2 is better when playing against the top 4 players, i.e., GPT-4, Claude-v1, ChatGPT, Claude-instant-v1, and it also wins 53% of the plays with Vicuna, but worse when playing against weaker players. This can be seen in Figure 1 which shows the win fraction matrix. Among all battles PaLM 2 has participated in, 21.64% were lost to a chatbot that is not one of GPT-4, Claude-v1, GPT-3.5-turbo, Claude-instant-v1. For reference, another proprietary model GPT-3.5-turbo only loses 12.8% of battles to those chatbots.
 
-In short, we find that the current PaLM 2 version available at Google Cloud Vertex API have the following deficiencies when compared to other models we have evaluated:
+In short, we find that the current PaLM 2 version available at Google Cloud Vertex API has the following deficiencies when compared to other models we have evaluated:
 
 1. PaLM 2 seems more strongly regulated than other models which impacts its ability to answer some questions.
 2. The currently offered PaLM 2 has limited multilingual abilities.
@@ -92,7 +92,7 @@ In short, we find that the current PaLM 2 version available at Google Cloud Vert
 
 PaLM 2 seems to be more strongly regulated than other models. In many user conversations, when the users ask questions that PaLM 2 is uncertain or uncomfortable giving an answer to, PaLM 2 is more likely to abstain from responding than other models. 
 
-Based on a rough estimate, among all pairwise battles, PaLM 2 has lost 20.92% of the battles by refusing to answer, and it has lost 30.82% of the battles to chatbots not belonging to one of the top four (GPT-4, Claude-v1, ChatGPT, Claude-instant-v1) by refusing to answer. 
+Based on a rough estimate, among all pairwise battles, PaLM 2 has lost 20.9% of the battles due to refusing to answer, and it has lost 30.8% of the battles to chatbots not belonging to one of the top four (GPT-4, Claude-v1, ChatGPT, Claude-instant-v1) due to refusing to answer.
 
 This partially explains why PaLM 2 frequently loses plays to weaker chatbots on the leaderboard. This also highlights a flaw in the chatbot arena methodology, as casual users are more likely to penalize abstention over subtly inaccurate responses. Below we provide several failure cases illustrating how PaLM loses plays to weaker chatbots because it refuses to answer the question.
 
