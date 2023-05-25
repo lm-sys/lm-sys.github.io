@@ -65,12 +65,12 @@ td {text-align: left}
 
 &shy;
 
-
 **Win Fraction Matrix**  
 The win fraction matrix of all model pairs is shown in Figure 1.
 <img src="/images/blog/leaderboard_week4/win_fraction_matrix.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 <p style="color:gray; text-align: center;">Figure 1: Fraction of Model A Wins for All Non-tied A vs. B Battles.</p>
 
+If you want to see more models, please help us [add them](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsysorg@gmail.com) by giving us API access.
 
 ## Overview
 
@@ -152,12 +152,13 @@ However, we want to point out a few facts about the current chatbot Arena and le
 ## Next Steps
 **Evaluating long-tail capability of LLMs**
 
-Most conversations happening in the Chatbot Arena are “in the wild” natural conversations. Hence we can think of the Arena as a unique way to benchmark LLMs in the wild for such types of human-chatbot interactions. However, this also means it has several significant limitations.
-
 As pointed out by the community in [thread 1](https://twitter.com/tinkerteller/status/1656914923316998144?s=20) and [thread 2](https://twitter.com/LechMazur/status/1659915936919347202?s=20), the current Arena and leaderboard design has one major limitation: Performing user studies on a small scale often cannot generate many hard or medium prompts that are necessary to tell the long-tail capability difference between LLMs. Moreover, for difficult questions, it is also very hard for regular Arena users to judge which LLM has generated a better answer -- some domain-specific questions are considered very difficult, even for 99% of non-expert humans.
 
 However, long-tail capability, such as complex reasoning, can be crucial for LLMs to complete real-world tasks. Building long-tail capability into LLMs is the holy-grail problem and is the most actively studied and invested area in LLM development.
 
-On usual prompts, a strong and mediocre chatbot may answer similarly more or less. Consequently, the current Elo scores on the leaderboard may be unable to accurately reflect some potential capability differences between two LLMs (e.g., GPT-4 vs. Vicuna-13B).
-
 We listen carefully to the community feedback and are thinking about how to improve the leaderboard to overcome these limitations and capture the long-tail capability different in LLMs. On top of the Chatbot Arena, we are actively designing a new tournament mechanism to examine the chatbots using presets of expert-designed questions and expert judges. We will have more updates soon.
+
+**More models**
+
+Since the launch of Arena, we have received a lot of requests from the community to add more models. Due to the limited compute resources and bandwidth we have, we may not be able to serve all of them. We are working on improving the scalability of our serving systems.
+In the meanwhile, you can still contribute support for [new models](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or contact us if you can help us scale the system.
