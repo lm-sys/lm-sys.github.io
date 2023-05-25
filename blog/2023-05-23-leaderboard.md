@@ -36,7 +36,7 @@ td {text-align: left}
 
 <tr> <td>5</td> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>1054</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Weights available; Non-commercial</td> </tr>
 
-<tr> <td>6</td> <td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM 2</a></td> <td>1042</td> <td>PaLM 2 tuned for chat with a code name chat-bison@001, accessed via the Google Cloud Vertex AI, powering Google Bard.</td> <td>Proprietary</td> </tr>
+<tr> <td>6</td> <td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM 2</a></td> <td>1042</td> <td>PaLM 2 tuned for chat (chat-bison@001 on Google Vertex AI). The PaLM 2 model family is powering Bard.</td> <td>Proprietary</td> </tr>
 
 <tr> <td>7</td> <td><a href="https://huggingface.co/lmsys/vicuna-7b-delta-v1.1" target="_blank">Vicuna-7B</a></td> <td>1007</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Weights available; Non-commercial</td> </tr>
 
