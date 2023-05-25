@@ -7,7 +7,7 @@ previewImg: /images/blog/leaderboard_week4/leaderboard_cover.png
 
 A new Elo rating leaderboard based on the 28.7K anonymous voting data collected **in the wild** between April 24 and May 23, 2023 is released in Table 1 below. In this update, we are excited to welcome the following chatbots joining the Arena:
 
-1. Google PaLM 2, chat-tuned with code name [chat-bison@001](https://t.co/ODpSaHly21) accessed via the Google Cloud Vertex AI API
+1. Google PaLM 2, chat-tuned with the code name [chat-bison@001](https://t.co/ODpSaHly21) on Google Cloud Vertex AI
 2. Anthropic Claude-instant-v1
 3. MosaicML MPT-7B-chat
 4. Vicuna-7B
