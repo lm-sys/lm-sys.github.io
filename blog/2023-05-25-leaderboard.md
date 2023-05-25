@@ -1,11 +1,11 @@
 ---
 title: "Chatbot Arena Leaderboard Updates (Week 4)"
 author: "LMSYS Org"
-date: "May 23, 2023"
+date: "May 25, 2023"
 previewImg: /images/blog/leaderboard_week4/leaderboard_cover.png
 ---
 
-A new Elo rating leaderboard based on the 28.7K anonymous voting data collected **in the wild** between April 24 and May 23, 2023 is released in Table 1 below. In this update, we are excited to welcome the following chatbots joining the Arena:
+A new Elo rating leaderboard based on the 28.7K anonymous voting data collected **in the wild** between April 24 and May 22, 2023 is released in Table 1 below. In this update, we are excited to welcome the following chatbots joining the Arena:
 
 1. Google PaLM 2, chat-tuned with the code name [chat-bison@001](https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023) on Google Cloud Vertex AI
 2. Anthropic Claude-instant-v1
@@ -21,7 +21,7 @@ td {text-align: left}
 </style>
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. Elo ratings of LLMs (Timeframe: April 24 - May 23, 2023)</p>
+<p style="color:gray; text-align: center;">Table 1. Elo ratings of LLMs (Timeframe: April 24 - May 22, 2023)</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Rank</th> <th>Model</th> <th>Elo Rating</th> <th>Description</th> <th>License</th> </tr>
