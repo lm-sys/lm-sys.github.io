@@ -78,9 +78,9 @@ The win fraction matrix of all model pairs is shown in Figure 1.
 
 Google's PaLM 2 is one of the most significant models announced since our last leaderboard update. We added the PaLM 2 Chat to the Chatbot Arena via the [Google Cloud Vertex AI API](https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023). The model is chat-tuned under the code name *chat-bison@001*.
 
-In the past two weeks, PaLM 2 has competed for nearly 1.8k anonymous battles with the other 16 chatbots, currently ranked 6th on the leaderboard. It ranks above all other open-source chatbots, except for Vicuna-13B, whose Elo is 12 scores higher than PaLM 2 (Vicuna 1054 vs. PaLM 2 1042) which in terms of ELO rating is nearly a virtual tie. We noted the following interesting results from PaLM 2's Arena data.
+In the past two weeks, PaLM 2 has competed for around 1.8k anonymous battles with the other 16 chatbots, currently ranked 6th on the leaderboard. It ranks above all other open-source chatbots, except for Vicuna-13B, whose Elo is 12 scores higher than PaLM 2 (Vicuna 1054 vs. PaLM 2 1042) which in terms of ELO rating is nearly a virtual tie. We noted the following interesting results from PaLM 2's Arena data.
 
-PaLM 2 is better when playing against the top 4 players, i.e., GPT-4, Claude-v1, ChatGPT, Claude-instant-v1, and it also wins 53% of the plays with Vicuna, but worse when playing against weaker players. This can be seen in Figure 1 which shows the win fraction matrix. Among all battles PaLM 2 has participated in, 21.64% were lost to a chatbot that is not one of GPT-4, Claude-v1, GPT-3.5-turbo, Claude-instant-v1. For reference, another proprietary model GPT-3.5-turbo only loses 12.8% of battles to those chatbots.
+PaLM 2 is better when playing against the top 4 players, i.e., GPT-4, Claude-v1, ChatGPT, Claude-instant-v1, and it also wins 53% of the plays with Vicuna, but worse when playing against weaker players. This can be seen in Figure 1 which shows the win fraction matrix. Among all battles PaLM 2 has participated in, 21.6% were lost to a chatbot that is not one of GPT-4, Claude-v1, GPT-3.5-turbo, Claude-instant-v1. For reference, another proprietary model GPT-3.5-turbo only loses 12.8% of battles to those chatbots.
 
 In short, we find that the current PaLM 2 version available at Google Cloud Vertex API has the following deficiencies when compared to other models we have evaluated:
 
@@ -149,18 +149,7 @@ Claude-instant-v1 is a low-cost, faster alternative to Claude-v1 offered by Anth
 However, we want to point out a few facts about the current chatbot Arena and leaderboard. The current Arena is designed to benchmark LLM-based chatbots **"in the wild"**. That means, the voting data provided by our Arena users and the prompts-answers generated during the voting process reflect how the chatbots perform in normal human-chatbot interactions. This might not align with many benchmarking results in the LLM research literature, which tends to characterize long-tail abilities like zero-shot, complex reasoning, etc. Hence, the current chatbot arena has limitations in clearly reflecting the long-tail capability difference between chatbots. See the later section for more details and our plan.
 
 
-## Next Step
-
-**Rotating chatbot players**
-
-The Chatbot Arena has been live for 4 weeks. Based on the feedback we have gathered from the community, we will adjust the probabilities of some players appearing in the anonymous arena and try to cover as many open-source chatbots as possible. Thanks to the [unique ordering and Incrementality characteristics](https://lmsys.org/blog/2023-05-03-arena/) of the Elo algorithm, even if some players are less active in the Arena, we could still compare their past Elo scores to those active ones and get a sense of their relative ability levels.
-
-After the update of this leaderboard, we plan to substantially lower the participation rate of the following 3 chatbots in the Arena, to make space (and GPUs) for newer players.
-
-- stablelm-tuned-alpha-7b, Elo 882
-- dolly-v2-12b, Elo 866
-- llama-13b, Elo 854
-
+## Next Steps
 **Evaluating long-tail capability of LLMs**
 
 Most conversations happening in the Chatbot Arena are “in the wild” natural conversations. Hence we can think of the Arena as a unique way to benchmark LLMs in the wild for such types of human-chatbot interactions. However, this also means it has several significant limitations.
@@ -169,6 +158,6 @@ As pointed out by the community in [thread 1](https://twitter.com/tinkerteller/s
 
 However, long-tail capability, such as complex reasoning, can be crucial for LLMs to complete real-world tasks. Building long-tail capability into LLMs is the holy-grail problem and is the most actively studied and invested area in LLM development.
 
-On usual prompts, a strong and mediocre chatbot may answer similarly more or less. Consequently, the current leaderboard Elo scores may be unable to reflect such capability differences between two LLMs (e.g., GPT-4 vs. Vicuna-13B).
+On usual prompts, a strong and mediocre chatbot may answer similarly more or less. Consequently, the current Elo scores on the leaderboard may be unable to accurately reflect some potential capability differences between two LLMs (e.g., GPT-4 vs. Vicuna-13B).
 
 We listen carefully to the community feedback and are thinking about how to improve the leaderboard to overcome these limitations and capture the long-tail capability different in LLMs. On top of the Chatbot Arena, we are actively designing a new tournament mechanism to examine the chatbots using presets of expert-designed questions and expert judges. We will have more updates soon.
