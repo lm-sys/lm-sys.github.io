@@ -12,7 +12,7 @@ A new Elo rating leaderboard based on the 28.7K anonymous voting data collected 
 3. MosaicML MPT-7B-chat
 4. Vicuna-7B
 
-We provide the [voting data](https://drive.google.com/file/d/1HPlwuwm3ptQWlx4fio-psIkIETTbtqHQ/view?usp=share_link) and the [Google Colab notebook](https://colab.research.google.com/drive/17L9uCiAivzWfzOxo2Tb9RMauT7vS6nVU?usp=sharing) to analyze this data, including the computation of the Elo ratings. You can see more statistics at the [leaderboard](https://chat.lmsys.org/?leaderboard) page.
+We provide the [voting data](https://drive.google.com/file/d/1HPlwuwm3ptQWlx4fio-psIkIETTbtqHQ/view?usp=share_link) and the [Google Colab notebook](https://colab.research.google.com/drive/17L9uCiAivzWfzOxo2Tb9RMauT7vS6nVU?usp=sharing) to analyze this data, including the computation of the Elo ratings. We welcome everyone to contribute your votes at the [Arena](https://chat.lmsys.org/?arena) or see more statistics at the [leaderboard](https://chat.lmsys.org/?leaderboard).
 
 
 <style>
