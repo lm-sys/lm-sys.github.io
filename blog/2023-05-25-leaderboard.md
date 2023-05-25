@@ -5,12 +5,14 @@ date: "May 25, 2023"
 previewImg: /images/blog/leaderboard_week4/leaderboard_cover.png
 ---
 
-A new Elo rating leaderboard based on the 27K anonymous voting data collected **in the wild** between April 24 and May 22, 2023 is released in Table 1 below. In this update, we are excited to welcome the following chatbots joining the Arena:
+In this update, we are excited to welcome the following chatbots joining the Arena:
 
 1. Google PaLM 2, chat-tuned with the code name [chat-bison@001](https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023) on Google Cloud Vertex AI
 2. Anthropic Claude-instant-v1
 3. MosaicML MPT-7B-chat
 4. Vicuna-7B
+
+A new Elo rating leaderboard based on the 27K anonymous voting data collected **in the wild** between April 24 and May 22, 2023 is released in Table 1 below. 
 
 We provide a [Google Colab notebook](https://colab.research.google.com/drive/17L9uCiAivzWfzOxo2Tb9RMauT7vS6nVU?usp=sharing) to analyze the voting data, including the computation of the Elo ratings.
 You can also try the voting [demo](https://arena.lmsys.org) and see more about the [leaderboard](https://leaderboard.lmsys.org).
