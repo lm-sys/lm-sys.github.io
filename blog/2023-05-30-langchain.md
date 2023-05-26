@@ -1,3 +1,10 @@
+---
+title: "Private and Local LangChain with Open Models"
+author: "LMSYS Org"
+date: "May 30, 2023"
+previewImg: /images/blog/langchain/image3.png
+---
+
 # Private and Local LangChain with Open Models
 
 Author: Shuo Yang
@@ -13,13 +20,13 @@ Many applications rely on closed-source OpenAI APIs, but now you can effortlessl
 _Enliven your code, and communicate with it through a single command line._
 
 
-![image1](../public/images/blog/langchain/image1.png)
+<img src="/images/blog/langchain/image1.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 _Enliven your docs, and communicate with it through a single command line._
 
 
-![image5](../public/images/blog/langchain/image5.png)
+<img src="/images/blog/langchain/image5.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 While ChatGPT's abilities have been awe-inspiring, their reliance on closed-source APIs has often posed limitations. Enter FastChat's OpenAI-compatible API server and the LangChain application. By leveraging these tools, we are able to locally deploy chat models like ChatGPT or Vicuna-13B, thus ensuring improved data privacy and operational flexibility.
@@ -30,7 +37,7 @@ While ChatGPT's abilities have been awe-inspiring, their reliance on closed-sour
 LangChain is a framework for developing applications powered by language models. It provides a set of tools, components and interfaces that simplify the process of creating applications that are supported by large language models (LLMs) and chat models. People have implemented many applications and features using OpenAI models with LangChain.
 
 
-![image3](../public/images/blog/langchain/image3.png)
+<img src="/images/blog/langchain/image3.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 
@@ -59,7 +66,7 @@ Text-based question answering assesses the model's natural language understandin
 To evaluate the models' performance, we established a scoring system based on their responses to the posed questions. A model receives one point for providing a correct answer, and zero point for an incorrect answer.
 
 
-![image2](../public/images/blog/langchain/image2.png)
+<img src="/images/blog/langchain/image2.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 In terms of understanding the queries, all three models were successful. However, when it came to text retrieval ability, OpenAI demonstrated a clear advantage over Vicuna. This could very likely be attributed to the higher quality of OpenAI's embeddings, making it easier for the model to locate similar content.
@@ -74,7 +81,7 @@ This test offers insights into the quality of text generation and the ability to
 
 #### Sales Agent
 
-![image4](../public/images/blog/langchain/image4.png)
+<img src="/images/blog/langchain/image4.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 #### GPT4 evaluation
 
