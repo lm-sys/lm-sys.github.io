@@ -1,37 +1,31 @@
 ---
-title: "Private and Local LangChain with Open Models"
+title: "Building a real \"Open\" OpenAI API Server with Open models"
 author: "Shuo Yang"
 date: "May 30, 2023"
 previewImg: /images/blog/langchain/image3.png
 ---
 
 
-Many applications rely on closed-source OpenAI APIs, but now you can effortlessly port them to use open-source alternatives without modifying the code. FastChat's OpenAI-compatible API server enables this seamless transition, ensuring improved data privacy and compatibility with various open models such as Vicuna and MPT-Chat.
+Many applications rely on closed-source OpenAI APIs, but now you can effortlessly port them to use open-source alternatives without modifying the code. FastChat's OpenAI-compatible API server enables this seamless transition. In this blog post, we show how can you do this and use LangChain as an example.
 
 
-## **LangChain with Vicuna-13B**
+## **Demo: LangChain with Vicuna-13B**
 
-_Enliven your code, and communicate with it through a single command line._
+
+
+_Clone the llama repository and then understand the llama repo with a single command line, bringing your code to life._
 
 
 <img src="/images/blog/langchain/image1.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
-_Enliven your docs, and communicate with it through a single command line._
+_Enliven your documents, and communicate with them through a single command line._
 
 
 <img src="/images/blog/langchain/image5.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
-While ChatGPT's abilities have been awe-inspiring, their reliance on closed-source APIs has often posed limitations. Enter FastChat's OpenAI-compatible API server and the LangChain application. By leveraging these tools, we are able to locally deploy chat models like ChatGPT or Vicuna-13B, thus ensuring improved data privacy and operational flexibility.
-
-
-## **Local OpenAI API Server with FastChat**
-
-LangChain is a framework for developing applications powered by language models. It provides a set of tools, components and interfaces that simplify the process of creating applications that are supported by large language models (LLMs) and chat models. People have implemented many applications and features using OpenAI models with LangChain.
-
-
-<img src="/images/blog/langchain/image3.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+The demos above are implemented with LangChain for code analysis and question answering over documents based on Vicuna. They don't require you to adapt specifically for Vicuna. **Any** tool implemented with the OpenAI API can be seamlessly migrated to the open model through FastChat.
 
 
 
@@ -42,6 +36,13 @@ LangChain is a framework for developing applications powered by language models.
 **Cost Saving**: Traditional cloud-based API services often charge based on the number of requests or the tokens used. These costs can add up quickly, especially for researchers, organizations and companies. By running models locally, you can fully harness the power of large AI models without the worry of accumulating costs from API.
 
 **Customizability**: With a local setup, you have the freedom to adapt the AI model to suit your specific needs. You can experiment with different parameters, settings, or even adjust the model architecture itself. More importantly, it allows you the opportunity to fine-tune the model for certain specific behaviors. This capability gives you control not only over how the model operates but also over the quality and relevance of the output.
+
+## **Local OpenAI API Server with FastChat**
+
+LangChain is a framework for developing applications powered by language models. It provides a set of tools, components and interfaces that simplify the process of creating applications that are supported by large language models (LLMs) and chat models. People have implemented many applications and features using OpenAI models with LangChain.
+
+
+<img src="/images/blog/langchain/image3.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 ## **Comparing Vicuna-13B, MPT-Chat-7B, and OpenAI for using LangChain**
