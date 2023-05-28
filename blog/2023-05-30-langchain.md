@@ -42,7 +42,7 @@ LangChain is a framework for developing applications powered by language models.
 
 **Cost Saving**: Traditional cloud-based API services often charge based on the number of requests or the tokens used. These costs can add up quickly, especially for researchers, organizations and companies. By running models locally, you can fully harness the power of large AI models without the worry of accumulating costs from API.
 
-**Customizability: **With a local setup, you have the freedom to adapt the AI model to suit your specific needs. You can experiment with different parameters, settings, or even adjust the model architecture itself. More importantly, it allows you the opportunity to fine-tune the model for certain specific behaviors. This capability gives you control not only over how the model operates but also over the quality and relevance of the output.
+**Customizability**: With a local setup, you have the freedom to adapt the AI model to suit your specific needs. You can experiment with different parameters, settings, or even adjust the model architecture itself. More importantly, it allows you the opportunity to fine-tune the model for certain specific behaviors. This capability gives you control not only over how the model operates but also over the quality and relevance of the output.
 
 
 ## **Comparing Vicuna-13B, MPT-Chat-7B, and OpenAI for using LangChain**
