@@ -5,7 +5,6 @@ date: "May 30, 2023"
 previewImg: /images/blog/langchain/image3.png
 ---
 
-## **TL;DR**
 
 Many applications rely on closed-source OpenAI APIs, but now you can effortlessly port them to use open-source alternatives without modifying the code. FastChat's OpenAI-compatible API server enables this seamless transition, ensuring improved data privacy and compatibility with various open models such as Vicuna and MPT-Chat.
 
