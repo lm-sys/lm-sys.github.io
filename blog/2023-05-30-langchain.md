@@ -1,21 +1,16 @@
 ---
 title: "Private and Local LangChain with Open Models"
-author: "LMSYS Org"
+author: "Shuo Yang"
 date: "May 30, 2023"
 previewImg: /images/blog/langchain/image3.png
 ---
 
-# Private and Local LangChain with Open Models
-
-Author: Shuo Yang
-
-
-### **TL;DR**
+## **TL;DR**
 
 Many applications rely on closed-source OpenAI APIs, but now you can effortlessly port them to use open-source alternatives without modifying the code. FastChat's OpenAI-compatible API server enables this seamless transition, ensuring improved data privacy and compatibility with various open models such as Vicuna and MPT-Chat.
 
 
-### **Demo: LangChain w/ Vicuna-13B**
+## **Demo: LangChain w/ Vicuna-13B**
 
 _Enliven your code, and communicate with it through a single command line._
 
