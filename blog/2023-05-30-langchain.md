@@ -36,7 +36,7 @@ LangChain is a framework for developing applications powered by language models.
 
 
 
-### **Why Local API Server?**
+## **Why Local API Server?**
 
 **Data Privacy**: When using FastChat's OpenAI-compatible API server and LangChain, all the data and interactions remain on your local machine. This means you have full control over your data, and it never leaves your local environment unless you decide to share it. This local setup ensures that sensitive data isn't exposed to third-party services, reducing the risk of data breaches and ensuring compliance with data privacy regulations.
 
