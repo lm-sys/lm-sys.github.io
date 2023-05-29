@@ -2,7 +2,7 @@
 title: "Building a real \"Open\" OpenAI API Server with Open models"
 author: "Shuo Yang"
 date: "May 30, 2023"
-previewImg: /images/blog/langchain/image3.png
+previewImg: /images/blog/langchain/overview.png
 ---
 
 
@@ -16,13 +16,13 @@ Many applications rely on closed-source OpenAI APIs, but now you can effortlessl
 _Clone the llama repository and then understand the llama repo with a single command line, bringing your code to life._
 
 
-<img src="/images/blog/langchain/image1.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/code_analysis.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 _Enliven your documents, and communicate with them through a single command line._
 
 
-<img src="/images/blog/langchain/image5.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/qa_demo.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 The demos above are implemented with LangChain for code analysis and question answering over documents based on Vicuna. They don't require you to adapt specifically for Vicuna. **Any** tool implemented with the OpenAI API can be seamlessly migrated to the open model through FastChat.
@@ -39,17 +39,24 @@ The demos above are implemented with LangChain for code analysis and question an
 
 ## **Local OpenAI API Server with FastChat**
 
-LangChain is a framework for developing applications powered by language models. It provides a set of tools, components and interfaces that simplify the process of creating applications that are supported by large language models (LLMs) and chat models. People have implemented many applications and features using OpenAI models with LangChain.
+FastChat API Server can interface with apps based on the OpenAI API through the OpenAI API Protocol. This means that the open models can be used as a replacement without any need for code modification.
 
 
-<img src="/images/blog/langchain/image3.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+
+
+How to integrate a local model into FastChat API Server? All you need to do is give the model an OpenAI model name when launching it. See [LangChain Support](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md) for details.
+
+<img src="/images/blog/langchain/launch_api.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+
+It is easy to test whether FastChat API has launched successfully.
+
+<img src="/images/blog/langchain/curl_request.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 ## **Comparing Vicuna-13B, MPT-Chat-7B, and OpenAI for using LangChain**
 
-FastChat boasts excellent support for local LangChain, allowing us to seamlessly substitute local models in place of OpenAI models. This enhances the flexibility and convenience of our system and brings to the forefront the crucial role that the quality of the chosen model plays in the overall performance.
-
-Therefore, we have carried out extensive tests on the models executing LangChain tasks. These tests encompass a wide variety, including text-based question answering tasks and salesman agent performance tasks.
+We have conducted some preliminary testing on the open models performing LangChain tasks. These initial tests are relatively simple, including text-based question answering tasks and salesman agent performance tasks.
 
 
 ### Question Answering over Docs
@@ -58,10 +65,8 @@ Therefore, we have carried out extensive tests on the models executing LangChain
 
 Text-based question answering assesses the model's natural language understanding and generation abilities, and its grasp of common knowledge. We selected the transcript from the 2022 State of the Union address by President Biden as the document for querying. Six questions were posed to the model, each of which had its answer directly found within the text of the document. 
 
-To evaluate the models' performance, we established a scoring system based on their responses to the posed questions. A model receives one point for providing a correct answer, and zero point for an incorrect answer.
 
-
-<img src="/images/blog/langchain/image2.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/qa_table.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 In terms of understanding the queries, all three models were successful. However, when it came to text retrieval ability, OpenAI demonstrated a clear advantage over Vicuna. This could very likely be attributed to the higher quality of OpenAI's embeddings, making it easier for the model to locate similar content.
@@ -69,14 +74,14 @@ In terms of understanding the queries, all three models were successful. However
 
 ### Salesman Agent Performance
 
-To further evaluate the models' interaction capabilities, we implemented an innovative approach by having the models take on the role of a salesman through LangChain. We posed several questions and invited both human evaluators and GPT-4 to rate the quality of the responses provided by the different models.
+To further evaluate the models' interaction capabilities, we implemented an approach by having the models take on the role of a salesman through LangChain. We posed several questions and invited GPT-4 to rate the quality of the responses provided by the different models.
 
 This test offers insights into the quality of text generation and the ability to portray a convincing agent role, aspects that are of utmost importance within LangChain. The 'salesman' scenario is a robust way to understand how effectively a model can engage in complex dialogue, showcasing its ability to respond appropriately and convincingly in a specific role. The scoring criteria here also reflects the emphasis on quality, both in terms of coherence and the ability to effectively deliver on the task of playing the role of a 'salesman'.
 
 
 #### Sales Agent
 
-<img src="/images/blog/langchain/image4.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/sales_agent.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 #### GPT4 evaluation
 
@@ -98,9 +103,9 @@ This test offers insights into the quality of text generation and the ability to
     * Answer 3: 9/10 - Provides detailed product information, but not as explicit on the environmental friendliness and hypoallergenic properties as the other two.
     * Total Score: 25/30
 
-The Salesman test provided interesting insights into the conversational and agent capabilities of the three models: Vicuna, GPT-3.5-turbo, and MPT. Vicuna model, performed exceptionally well, earning a total score of 28 out of 30. The model displayed impressive conversational ability, offering comprehensive and clear responses, effectively emphasizing the company's mission and values. It also demonstrated strong agent behavior, understanding and selling the product's unique selling propositions and providing detailed product information. GPT-3.5-turbo and MPT also performed well, but they fell short in expanding on the company's mission and values.
+The Salesman test provided interesting insights into the conversational and agent capabilities of the three models: Vicuna, GPT-3.5-turbo, and MPT. Vicuna model, performed exceptionally well, earning a total score of 28 out of 30.In this particular task, the open models and GPT-3.5-turbo didn't show significant differences, suggesting that open models can serve as a viable alternative to GPT-3.5-turbo.
 
-In conclusion, while all three models demonstrated reasonable proficiency in engaging with human dialogue, Vicuna displayed superior abilities in embodying the role of an agent. These findings highlight the importance of choosing a model that aligns with your specific task requirements.
+In conclusion, it's important to note that for complex tasks, there is still a gap between open models and OpenAI models. For simpler tasks, open models can already do well. For privacy considerations and cost savings, simpler tasks can be accomplished by deploying the open model locally with FastChat.
 
 
 ## **Acknowledgment**
