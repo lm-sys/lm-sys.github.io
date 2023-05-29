@@ -81,11 +81,13 @@ This test offers insights into the quality of text generation and the ability to
 
 #### Sales Agent
 
+We executed SalesGPT tasks with open models and gpt-3.5-turbo. Below is the initialization code for SalesGPT.
+
 <img src="/images/blog/langchain/sales_agent.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 #### GPT4 evaluation
 
-
+We posed three questions to the salesman and then let GPT-4 grade and evaluate them.
 
 1. **Vicuna**:
     * Answer 1: 9/10 - Comprehensive and clear, emphasizing the company's mission and values.
