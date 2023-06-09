@@ -49,7 +49,7 @@ How to integrate a local model into FastChat API Server? All you need to do is g
 
 <img src="/images/blog/langchain/launch_api.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-The API server is compatible with both curl and [OpenAI python package](https://github.com/openai/openai-python).
+The API server is compatible with both curl and [OpenAI python package](https://github.com/openai/openai-python). It supports chat completions, completions, embeddings, and more.
 
 <img src="/images/blog/langchain/curl_request.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
