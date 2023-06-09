@@ -8,7 +8,7 @@ We aim to make large models accessible to everyone by co-development of open dat
 
 ### Members
 **Student Team**  
-Lianmin Zheng, Ying Sheng, Wei-Lin Chiang, Dacheng Li, Zhuohan Li, Zi Lin, Zhanghao Wu, Siyuan Zhuang, Yonghao Zhuang
+Lianmin Zheng, Ying Sheng, Wei-Lin Chiang, Dacheng Li, Zhuohan Li, Zi Lin, Zhanghao Wu, Shuo Yang, Siyuan Zhuang, Yonghao Zhuang
 
 **Faculty Team**  
 Hao Zhang, Ion Stoica, Joseph E. Gonzalez, Eric P. Xing
