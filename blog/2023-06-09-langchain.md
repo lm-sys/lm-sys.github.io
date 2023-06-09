@@ -49,7 +49,7 @@ How to integrate a local model into FastChat API Server? All you need to do is g
 
 <img src="/images/blog/langchain/launch_api.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-It is easy to test whether FastChat API has launched successfully.
+It is easy to test whether FastChat API has launched successfully with [curling](https://github.com/lm-sys/FastChat/blob/main/tests/test_openai_curl.sh) and [OpenAI python package](https://github.com/lm-sys/FastChat/blob/main/tests/test_openai_sdk.py)
 
 <img src="/images/blog/langchain/curl_request.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
