@@ -1,32 +1,32 @@
 ---
 title: "Building a Truly \"Open\" OpenAI API Server with Open Models Locally"
-author: "Shuo Yang"
+author: "Shuo Yang and Siyuan Zhuang"
 date: "June 9, 2023"
 previewImg: /images/blog/langchain/overview.png
 ---
 
 
-Many applications have been built on closed-source OpenAI APIs, but now you can effortlessly port them to use open-source alternatives without modifying the code. [FastChat](https://github.com/lm-sys/FastChat)'s OpenAI-compatible API server enables this seamless transition. In this blog post, we show how you can do this and use LangChain as an [example](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md).
+Many applications have been built on closed-source OpenAI APIs, but now you can effortlessly port them to use open-source alternatives without modifying the code. [FastChat](https://github.com/lm-sys/FastChat)'s OpenAI-compatible API server enables this seamless transition.
+In this blog post, we show how you can do this and use LangChain as an [example](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md).
 
 
 ## **Demo: LangChain with Vicuna-13B**
 
+Here, we present two demos of using LangChain with [Vicuna-13B](http://ec2-52-40-36-154.us-west-2.compute.amazonaws.com:3000/blog/2023-03-30-vicuna/), a state-of-the-art open model.
 
+1. Question Answering over Docs  
+  Enliven your documents, and communicate with them through a single command line ([doc](https://python.langchain.com/en/latest/use_cases/question_answering.html)).
 
-_Clone the llama repository and then understand the llama repo with a single [command line](https://python.langchain.com/en/latest/use_cases/code.html), bringing your code to life._
+<img src="/images/blog/langchain/qa_demo.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
+2. Code Understanding  
+  Clone the llama repository and then understand the llama repo with a single command line, bringing your code to life ([doc](https://python.langchain.com/en/latest/use_cases/code.html)).
 
 <img src="/images/blog/langchain/code_analysis.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
-_Enliven your documents, and communicate with them through a single [command line](https://python.langchain.com/en/latest/use_cases/question_answering.html)._
-
-
-<img src="/images/blog/langchain/qa_demo.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
-
-
-The demos above are implemented with LangChain for code analysis and question answering over documents based on Vicuna. They don't require you to adapt specifically for Vicuna. **Any** tool implemented with the OpenAI API can be seamlessly migrated to the open model through FastChat.
-
+The demos above are implemented directly with default LangChain code.
+They don't require you to adapt specifically for Vicuna. **Any** tool implemented with the OpenAI API can be seamlessly migrated to the open model through FastChat.
 
 
 ## **Why Local API Server?**
@@ -49,7 +49,7 @@ How to integrate a local model into FastChat API Server? All you need to do is g
 
 <img src="/images/blog/langchain/launch_api.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-It is easy to test whether FastChat API has launched successfully with [curling](https://github.com/lm-sys/FastChat/blob/main/tests/test_openai_curl.sh) and [OpenAI python package](https://github.com/lm-sys/FastChat/blob/main/tests/test_openai_sdk.py)
+The API server is compatible with both curl and [OpenAI python package](https://github.com/openai/openai-python).
 
 <img src="/images/blog/langchain/curl_request.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
