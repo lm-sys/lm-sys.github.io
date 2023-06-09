@@ -15,7 +15,7 @@ In this update, we are excited to welcome the following chatbots joining the Are
 A new Elo rating leaderboard based on the 27K anonymous voting data collected **in the wild** between April 24 and May 22, 2023 is released in Table 1 below. 
 
 We provide a [Google Colab notebook](https://colab.research.google.com/drive/17L9uCiAivzWfzOxo2Tb9RMauT7vS6nVU?usp=sharing) to analyze the voting data, including the computation of the Elo ratings.
-You can also try the voting [demo](https://arena.lmsys.org) and see more about the [leaderboard](https://leaderboard.lmsys.org).
+You can also try the voting [demo](https://arena.lmsys.org) and see the latest [leaderboard](https://leaderboard.lmsys.org).
 
 <style>
 th {text-align: left}
@@ -44,7 +44,7 @@ td {text-align: left}
 
 <tr> <td>8</td> <td><a href="https://bair.berkeley.edu/blog/2023/04/03/koala" target="_blank">Koala-13B</a></td> <td>980</td> <td>a dialogue model for academic research by BAIR</td> <td>Weights available; Non-commercial</td> </tr>
 
-<tr> <td>9</td> <td><a href="https://www.mosaicml.com/blog/mpt-7b" target="_blank">mpt-7b-chat</a></td> <td>952</td> <td>a chatbot fine-tuned from MPT-7B by MosaicML</td> <td>Apache 2.0</td> </tr>
+<tr> <td>9</td> <td><a href="https://www.mosaicml.com/blog/mpt-7b" target="_blank">mpt-7b-chat</a></td> <td>952</td> <td>a chatbot fine-tuned from MPT-7B by MosaicML</td> <td>CC-By-NC-SA-4.0</td> </tr>
 
 <tr> <td>10</td> <td><a href="https://huggingface.co/lmsys/fastchat-t5-3b-v1.0" target="_blank">FastChat-T5-3B</a></td> <td>941</td> <td>a chat assistant fine-tuned from FLAN-T5 by LMSYS</td> <td>Apache 2.0</td> </tr>
 
