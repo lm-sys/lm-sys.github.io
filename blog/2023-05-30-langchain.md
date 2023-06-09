@@ -1,28 +1,28 @@
 ---
-title: "Building a real \"Open\" OpenAI API Server with Open models"
+title: "Building a Truly \"Open\" OpenAI API Server with Open Models Locally"
 author: "Shuo Yang"
-date: "May 30, 2023"
+date: "June 9, 2023"
 previewImg: /images/blog/langchain/overview.png
 ---
 
 
-Many applications rely on closed-source OpenAI APIs, but now you can effortlessly port them to use open-source alternatives without modifying the code. FastChat's OpenAI-compatible API server enables this seamless transition. In this blog post, we show how can you do this and use LangChain as an example.
+Many applications have been built on closed-source OpenAI APIs, but now you can effortlessly port them to use open-source alternatives without modifying the code. [FastChat](https://github.com/lm-sys/FastChat)'s OpenAI-compatible API server enables this seamless transition. In this blog post, we show how you can do this and use LangChain as an [example](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md).
 
 
 ## **Demo: LangChain with Vicuna-13B**
 
 
 
-_Clone the llama repository and then understand the llama repo with a single command line, bringing your code to life._
+_Clone the llama repository and then understand the llama repo with a single [command line](https://python.langchain.com/en/latest/use_cases/code.html), bringing your code to life._
 
 
-<img src="/images/blog/langchain/code_analysis.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/code_analysis.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;" width="500"></img>
 
 
-_Enliven your documents, and communicate with them through a single command line._
+_Enliven your documents, and communicate with them through a single [command line](https://python.langchain.com/en/latest/use_cases/question_answering.html)._
 
 
-<img src="/images/blog/langchain/qa_demo.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/qa_demo.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;" width="500"></img>
 
 
 The demos above are implemented with LangChain for code analysis and question answering over documents based on Vicuna. They don't require you to adapt specifically for Vicuna. **Any** tool implemented with the OpenAI API can be seamlessly migrated to the open model through FastChat.
@@ -42,16 +42,16 @@ The demos above are implemented with LangChain for code analysis and question an
 FastChat API Server can interface with apps based on the OpenAI API through the OpenAI API Protocol. This means that the open models can be used as a replacement without any need for code modification.
 
 
-<img src="/images/blog/langchain/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;" width="500"></img>
 
 
 How to integrate a local model into FastChat API Server? All you need to do is give the model an OpenAI model name when launching it. See [LangChain Support](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md) for details.
 
-<img src="/images/blog/langchain/launch_api.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/launch_api.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;" width="500"></img>
 
 It is easy to test whether FastChat API has launched successfully.
 
-<img src="/images/blog/langchain/curl_request.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/curl_request.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;" width="500"></img>
 
 
 ## **Comparing Vicuna-13B, MPT-Chat-7B, and OpenAI for using LangChain**
@@ -66,7 +66,7 @@ We have conducted some preliminary testing on the open models performing LangCha
 Text-based question answering assesses the model's natural language understanding and generation abilities, and its grasp of common knowledge. We selected the transcript from the 2022 State of the Union address by President Biden as the document for querying. Six questions were posed to the model, each of which had its answer directly found within the text of the document. 
 
 
-<img src="/images/blog/langchain/qa_table.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/qa_table.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;" width="500"></img>
 
 
 In terms of understanding the queries, all three models were successful. However, when it came to text retrieval ability, OpenAI demonstrated a clear advantage over Vicuna. This could very likely be attributed to the higher quality of OpenAI's embeddings, making it easier for the model to locate similar content.
@@ -83,7 +83,7 @@ This test offers insights into the quality of text generation and the ability to
 
 We executed [SalesGPT](https://github.com/filip-michalsky/SalesGPT) tasks with open models and gpt-3.5-turbo. Below is the initialization code for SalesGPT.
 
-<img src="/images/blog/langchain/sales_agent.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/langchain/sales_agent.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;" width="500"></img>
 
 #### GPT4 evaluation
 
