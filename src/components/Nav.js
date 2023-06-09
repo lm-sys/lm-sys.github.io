@@ -42,7 +42,7 @@ export default function Nav() {
         <FaEnvelope />
         </a>
         <a
-          href="https://discord.gg/h6kCZb72G7"
+          href="https://discord.gg/HSWAKCrnFx"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -169,7 +169,7 @@ function Hamburger() {
             <FaEnvelope />
             </a>
             <a
-              href="https://discord.gg/h6kCZb72G7"
+              href="https://discord.gg/HSWAKCrnFx"
               target="_blank"
               rel="noopener noreferrer"
             >

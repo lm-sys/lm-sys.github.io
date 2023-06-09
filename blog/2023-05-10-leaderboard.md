@@ -136,7 +136,7 @@ We also plan to open some APIs to allow competitors to register their self-hoste
 **Area-specific Arena**  
 Similar to the language-specific Arena, we will extend a single, monolithic leaderboard to more areas, and publish more functionality-specific leaderboards, 
 such as writing, coding, and reasoning. In which specific area or ability do you want to see the LLMs evaluated?
-Please give us feedback on [Discord](https://discord.gg/h6kCZb72G7) or [Twitter](https://twitter.com/lmsysorg).
+Please give us feedback on [Discord](https://discord.gg/HSWAKCrnFx) or [Twitter](https://twitter.com/lmsysorg).
 
 ## Acknowledgement
 This blog post is primarily contributed by Lianmin Zheng, Ying Sheng, Hao Zhang, Joseph E. Gonzalez, and Ion Stoica.

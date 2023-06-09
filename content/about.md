@@ -18,5 +18,5 @@ UC Berkeley, UCSD, CMU, MBZUAI
 
 ### Contact us
 - Email us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com).
-- Join us on [discord](https://discord.com/invite/h6kCZb72G7).
+- Join us on [discord](https://discord.com/invite/HSWAKCrnFx).
 - Follow us on [twitter](https://twitter.com/lmsysorg).
