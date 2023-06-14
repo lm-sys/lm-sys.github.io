@@ -5,7 +5,7 @@ date: "May 25, 2023"
 previewImg: /images/blog/leaderboard_week4/leaderboard_cover.png
 ---
 
-In this update, we are excited to welcome the following chatbots joining the Arena:
+In this update, we are excited to welcome the following models joining the [Chatbot Arena](https://lmsys.org/blog/2023-05-03-arena/):
 
 1. Google PaLM 2, chat-tuned with the code name [chat-bison@001](https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023) on Google Cloud Vertex AI
 2. Anthropic Claude-instant-v1

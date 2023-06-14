@@ -14,20 +14,18 @@ In this blog post, we show how you can do this and use LangChain as an [example]
 
 Here, we present two demos of using LangChain with [Vicuna-13B](http://ec2-52-40-36-154.us-west-2.compute.amazonaws.com:3000/blog/2023-03-30-vicuna/), a state-of-the-art open model.
 
-1. Question Answering over Docs  
+1. Question answering over docs  
   Enliven your documents, and communicate with them through a single command line ([doc](https://python.langchain.com/en/latest/use_cases/question_answering.html)).
 
 <img src="/images/blog/langchain/qa_demo.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-2. Code Understanding  
-  Clone the llama repository and then understand the llama repo with a single command line, bringing your code to life ([doc](https://python.langchain.com/en/latest/use_cases/code.html)).
+2. Code understanding  
+  Clone the llama repository and then understand the code with a single command line, bringing your code to life ([doc](https://python.langchain.com/en/latest/use_cases/code.html)).
 
 <img src="/images/blog/langchain/code_analysis.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-
 The demos above are implemented directly with default LangChain code.
-They don't require you to adapt specifically for Vicuna. **Any** tool implemented with the OpenAI API can be seamlessly migrated to the open model through FastChat.
-
+They don't require you to adapt specifically for Vicuna. Any tool implemented with the OpenAI API can be seamlessly migrated to the open models through FastChat.
 
 ## **Why Local API Server?**
 
@@ -39,13 +37,11 @@ They don't require you to adapt specifically for Vicuna. **Any** tool implemente
 
 ## **Local OpenAI API Server with FastChat**
 
-FastChat API Server can interface with apps based on the OpenAI API through the OpenAI API Protocol. This means that the open models can be used as a replacement without any need for code modification.
-
+FastChat API server can interface with apps based on the OpenAI API through the OpenAI API protocol. This means that the open models can be used as a replacement without any need for code modification.
 
 <img src="/images/blog/langchain/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-
-How to integrate a local model into FastChat API Server? All you need to do is give the model an OpenAI model name when launching it. See [LangChain Support](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md) for details.
+How to integrate a local model into FastChat API server? All you need to do is give the model an OpenAI model name when launching it. See [LangChain Support](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md) for details.
 
 <img src="/images/blog/langchain/launch_api.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
@@ -112,4 +108,4 @@ In conclusion, it's important to note that for complex tasks, there is still a g
 
 ## **Acknowledgment**
 
-The OpenAI-compatible API Server is primarily contributed by Shuo Yang, Siyuan Zhuang, and Xia Han.
+The OpenAI-compatible API server is primarily contributed by Shuo Yang, Siyuan Zhuang, and Xia Han.
