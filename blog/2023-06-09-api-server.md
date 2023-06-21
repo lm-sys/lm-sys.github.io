@@ -38,10 +38,11 @@ They don't require you to adapt specifically for Vicuna. Any tool implemented wi
 ## **Local OpenAI API Server with FastChat**
 
 FastChat API server can interface with apps based on the OpenAI API through the OpenAI API protocol. This means that the open models can be used as a replacement without any need for code modification.
+The figure below shows the overall architecture.
 
 <img src="/images/blog/langchain/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-How to integrate a local model into FastChat API server? All you need to do is give the model an OpenAI model name when launching it. See [LangChain Support](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md) for details.
+How to integrate a local model into FastChat API server? All you need to do is giving the model an OpenAI model name when launching it. See [LangChain Support](https://github.com/lm-sys/FastChat/blob/main/docs/langchain_integration.md) for details.
 
 <img src="/images/blog/langchain/launch_api.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
@@ -57,16 +58,11 @@ We have conducted some preliminary testing on the open models performing LangCha
 
 ### Question Answering over Docs
 
- 
-
 Text-based question answering assesses the model's natural language understanding and generation abilities, and its grasp of common knowledge. We selected the transcript from the 2022 State of the Union address by President Biden as the document for querying. Six questions were posed to the model, each of which had its answer directly found within the text of the document. 
-
 
 <img src="/images/blog/langchain/qa_table.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-
-In terms of understanding the queries, all three models were successful. However, when it came to text retrieval ability, OpenAI demonstrated a clear advantage over Vicuna. This could very likely be attributed to the higher quality of OpenAI's embeddings, making it easier for the model to locate similar content.
-
+In terms of understanding the queries, all three models were successful. However, when it came to text retrieval ability, OpenAI demonstrated a clear advantage over Vicuna. This could very likely be attributed to the higher quality of OpenAI's embeddings, making it easier for the model to locate related contents.
 
 ### Salesman Agent Performance
 
