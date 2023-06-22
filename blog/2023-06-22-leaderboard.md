@@ -11,7 +11,7 @@ In this blog post, we share the latest update on Chatbot Arena leaderboard, whic
 2. **MT-Bench score**, based on a challenging multi-turn benchmark and GPT-4 grading, proposed and validated in our [Judging LLM-as-a-judge paper](https://arxiv.org/abs/2306.05685).
 3. **MMLU**, a widely adopted [benchmark](https://arxiv.org/abs/2009.03300).
 
-Furthermore, we’re excited to introduce our **new series of Vicuna-v1.3 models**, ranging from 7B to 33B parameters, trained on an extended set of user-shared conversations. 
+Furthermore, we’re excited to introduce our **new series of Vicuna-v1.3 models**, ranging from 7B to 33B parameters, trained on an extended set of user-shared conversations.
 Their weights are now [available](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights).
 
 ## Updated Leaderboard and New Models
@@ -132,7 +132,7 @@ th:nth-child(1) .arrow-down {
 
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 22, 2023). More details at <a href="https://chat.lmsys.org/?leaderboard" target="_blank">our Leaderboard</a>.</p>
+<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 19, 2023). The latest and detailed version <a href="https://chat.lmsys.org/?leaderboard" target="_blank">here</a>.</p>
 <table id="Table1" style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Model</th> <th onclick="sortTable(1, 'Table1')">MT-bench (score) <span class="arrow arrow-down"></span></th> <th onclick="sortTable(2, 'Table1')">Elo Rating <span class="arrow"></span></th> <th onclick="sortTable(3, 'Table1')">MMLU <span class="arrow"></span></th> <th>License</th> </tr>
@@ -198,9 +198,8 @@ th:nth-child(1) .arrow-down {
 
 &shy;
 
-Welcome to check more details on our latest [leaderboard](https://chat.lmsys.org/?leaderboard) and try the [Chatbot Arena](https://chat.lmsys.org/?arena). 
+Welcome to try the Chatbot Arena Voting [Demo](https://chat.lmsys.org/?arena).
 Keep in mind that each benchmark has its limitations. Please consider the results as guiding references. See our discussion below for more technical details.
-
 
 ## Evaluating Chatbots with MT-bench and Arena
 
