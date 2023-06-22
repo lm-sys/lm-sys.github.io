@@ -7,11 +7,11 @@ previewImg: /images/blog/leaderboard_week8/ability_breakdown.png
 
 In this blog post, we share the latest update on Chatbot Arena leaderboard, which now includes more open models and three metrics:
 
-1. **Chatbot Arena Elo**, based on 42K anonymous votes from Chatbot Arena using the Elo rating system.
+1. **Chatbot Arena Elo**, based on 42K anonymous votes from [Chatbot Arena](https://lmsys.org/blog/2023-05-03-arena/) using the Elo rating system.
 2. **MT-Bench score**, based on a challenging multi-turn benchmark and GPT-4 grading, proposed and validated in our [Judging LLM-as-a-judge paper](https://arxiv.org/abs/2306.05685).
 3. **MMLU**, a widely adopted [benchmark](https://arxiv.org/abs/2009.03300).
 
-Furthermore, we’re excited to introduce our **new series of Vicuna v1.3 models**, ranging from 7B to 33B parameters, trained on an extended set of user-shared conversations. 
+Furthermore, we’re excited to introduce our **new series of Vicuna-v1.3 models**, ranging from 7B to 33B parameters, trained on an extended set of user-shared conversations. 
 Their weights are now [available](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights).
 
 ## Updated Leaderboard and New Models
@@ -22,12 +22,12 @@ td {text-align: left}
 </style>
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 22, 2023). More details at <a href="https://chat.lmsys.org/?leaderboard" target="_blank">our Leaderboard</a></p>.
+<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 22, 2023). More details at <a href="https://chat.lmsys.org/?leaderboard" target="_blank">our Leaderboard</a>.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Model</th> <th>MT-bench (score)</span> </th> <th>Elo Rating</span> </th> <th>MMLU</th> <th>License</th> </tr>
 
-<tr> <td><a href="https://chat.openai.com/" target="_blank">GPT-4</a></td> <td>8.99</td> <td>1227</td> <td>86.4</td>  <td>Proprietary</td> </tr>
+<tr> <td><a href="https://chat.openai.com/?model=gpt-4" target="_blank">GPT-4</a></td> <td>8.99</td> <td>1227</td> <td>86.4</td>  <td>Proprietary</td> </tr>
 
 <tr> <td><a href="https://chat.openai.com/" target="_blank">GPT-3.5-turbo</a></td> <td>7.94</td> <td>1130</td>  <td>70</td> <td>Proprietary</td> </tr>
 
@@ -35,43 +35,43 @@ td {text-align: left}
 
 <tr> <td><a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-instant-v1</a></td> <td>7.85</td> <td>1156</td> <td>61.3</td> <td>Proprietary</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/lmsys/vicuna-33b-v1.3" target="_blank">Vicuna-33B</a></td> <td>7.12</td> <td>-</td> <td>59.2</td>  <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://github.com/lm-sys/FastChat/tree/main#vicuna-weights" target="_blank">Vicuna-33B</a></td> <td>7.12</td> <td>-</td> <td>59.2</td>  <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/WizardLM/WizardLM-30B-V1.0" target="_blank">WizardLM-30B</a></td> <td>7.01</td> <td>-</td> <td>58.7</td>  <td>Weights available; Non-commercial</td></tr>
+<tr> <td><a href="https://huggingface.co/WizardLM/WizardLM-30B-V1.0" target="_blank">WizardLM-30B</a></td> <td>7.01</td> <td>-</td> <td>58.7</td>  <td>Non-commercial</td></tr>
 
-<tr> <td><a href="https://huggingface.co/timdettmers/guanaco-33b-merged" target="_blank">Guanaco-33B</a></td> <td>6.53</td> <td>1065</td> <td>57.6</td> <td>Weights available; Non-commercial</td></tr>
+<tr> <td><a href="https://huggingface.co/timdettmers/guanaco-33b-merged" target="_blank">Guanaco-33B</a></td> <td>6.53</td> <td>1065</td> <td>57.6</td> <td>Non-commercial</td></tr>
 
-<tr> <td><a href="https://huggingface.co/allenai/tulu-30b" target="_blank">Tulu-30B</a></td> <td>6.43</td> <td>-</td> <td>58.1</td> <td>Weights available; Non-commercial</td></tr>
+<tr> <td><a href="https://huggingface.co/allenai/tulu-30b" target="_blank">Tulu-30B</a></td> <td>6.43</td> <td>-</td> <td>58.1</td> <td>Non-commercial</td></tr>
 
-<tr> <td><a href="https://huggingface.co/timdettmers/guanaco-65b" target="_blank">Guanaco-65B</a></td> <td>6.41</td> <td>-</td> <td>62.1</td> <td>Weights available; Non-commercial</td></tr>
+<tr> <td><a href="https://huggingface.co/timdettmers/guanaco-65b" target="_blank">Guanaco-65B</a></td> <td>6.41</td> <td>-</td> <td>62.1</td> <td>Non-commercial</td></tr>
 
-<tr> <td><a href="https://huggingface.co/OpenAssistant/oasst-sft-6-llama-30b-xor" target="_blank">OpenAssistant-LLaMA-30B</a></td> <td>6.41</td> <td>-</td> <td>55.9</td> <td>Weights available; Non-commercial</td></tr>
+<tr> <td><a href="https://huggingface.co/OpenAssistant/oasst-sft-6-llama-30b-xor" target="_blank">OpenAssistant-LLaMA-30B</a></td> <td>6.41</td> <td>-</td> <td>55.9</td> <td>Non-commercial</td></tr>
 
 <tr><td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM2-Chat-Bison-001</a></td> <td>6.4</td> <td>1038</td> <td>-</td> <td>Proprietary</td> </tr>
 
-<tr> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>6.39</td>  <td>1061</td> <td>52.1</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>6.39</td>  <td>1061</td> <td>52.1</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0" target="_blank">WizardLM-13B</a></td> <td>6.35</td>  <td>1048</td> <td>52.3</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0" target="_blank">WizardLM-13B</a></td> <td>6.35</td>  <td>1048</td> <td>52.3</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/lmsys/vicuna-7b-v1.3" target="_blank">Vicuna-7B</a></td> <td>6</td> <td>1008</td> <td>47.1</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://github.com/lm-sys/FastChat/tree/main#vicuna-weights" target="_blank">Vicuna-7B</a></td> <td>6</td> <td>1008</td> <td>47.1</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/project-baize/baize-v2-13b" target="_blank">Baize-v2-13B</a></td> <td>5.75</td> <td>-</td> <td>48.9</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://huggingface.co/project-baize/baize-v2-13b" target="_blank">Baize-v2-13B</a></td> <td>5.75</td> <td>-</td> <td>48.9</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/NousResearch/Nous-Hermes-13b" target="_blank">Nous-Hermes-13B</a></td> <td>5.51</td> <td>-</td> <td>49.3</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://huggingface.co/NousResearch/Nous-Hermes-13b" target="_blank">Nous-Hermes-13B</a></td> <td>5.51</td> <td>-</td> <td>49.3</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://www.mosaicml.com/blog/mpt-7b" target="_blank">MPT-7B-Chat</a></td> <td>5.42</td>  <td>956</td> <td>32</td> <td>CC-By-NC-SA-4.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/mosaicml/mpt-7b-chat" target="_blank">MPT-7B-Chat</a></td> <td>5.42</td>  <td>956</td> <td>32</td> <td>CC-By-NC-SA-4.0</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/nomic-ai/gpt4all-13b-snoozy" target="_blank">GPT4All-13B-Snoozy</a></td> <td>5.41</td> <td>986</td> <td>43</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://huggingface.co/nomic-ai/gpt4all-13b-snoozy" target="_blank">GPT4All-13B-Snoozy</a></td> <td>5.41</td> <td>986</td> <td>43</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://bair.berkeley.edu/blog/2023/04/03/koala" target="_blank">Koala-13B</a></td> <td>5.35</td> <td>992</td>  <td>44.7</td>  <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://bair.berkeley.edu/blog/2023/04/03/koala" target="_blank">Koala-13B</a></td> <td>5.35</td> <td>992</td>  <td>44.7</td>  <td>Non-commercial</td> </tr>
 
 <tr> <td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">Falcon-40B-Instruct</a></td> <td>5.17</td> <td>-</td>  <td>54.7</td>  <td>Apache 2.0</td> </tr>
 
-<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2O-Oasst-OpenLLaMA-13B</a></td> <td>4.63</td> <td>-</td> <td>42.8</td> <td>Weights available; Non-commercial</td> </tr>
+<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2O-Oasst-OpenLLaMA-13B</a></td> <td>4.63</td> <td>-</td> <td>42.8</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank">Alpaca-13B</a></td> <td>4.53</td> <td>930</td> <td>48.1</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank">Alpaca-13B</a></td> <td>4.53</td> <td>930</td> <td>48.1</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://chatglm.cn/blog" target="_blank">ChatGLM-6B</a></td> <td>4.5</td> <td>905</td> <td>36.1</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://chatglm.cn/blog" target="_blank">ChatGLM-6B</a></td> <td>4.5</td> <td>905</td> <td>36.1</td> <td>Non-commercial</td> </tr>
 
 <tr> <td><a href="https://open-assistant.io" target="_blank">Oasst-Pythia-12B</a></td> <td>4.32</td> <td>924</td> <td>27</td> <td>Apache 2.0</td> </tr>
 
@@ -81,7 +81,7 @@ td {text-align: left}
 
 <tr> <td><a href="https://huggingface.co/lmsys/fastchat-t5-3b-v1.0" target="_blank">FastChat-T5-3B</a></td> <td>3.04</td>  <td>897</td>  <td>47.7</td>  <td>Apache 2.0</td> </tr>
 
-<tr> <td><a href="https://arxiv.org/abs/2302.13971" target="_blank">LLaMA-13B</a></td> <td>2.61</td>  <td>826</td> <td>47</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://arxiv.org/abs/2302.13971" target="_blank">LLaMA-13B</a></td> <td>2.61</td>  <td>826</td> <td>47</td> <td>Non-commercial</td> </tr>
 
 </tbody>
 </table>
