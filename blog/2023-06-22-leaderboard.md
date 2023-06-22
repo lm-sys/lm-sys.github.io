@@ -198,7 +198,7 @@ th:nth-child(1) .arrow-down {
 
 &shy;
 
-Welcome to try the Chatbot Arena Voting [Demo](https://chat.lmsys.org/?arena).
+Welcome to try the Chatbot Arena voting [demo](https://chat.lmsys.org/?arena).
 Keep in mind that each benchmark has its limitations. Please consider the results as guiding references. See our discussion below for more technical details.
 
 ## Evaluating Chatbots with MT-bench and Arena
