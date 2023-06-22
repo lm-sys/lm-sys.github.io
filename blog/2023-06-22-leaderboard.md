@@ -67,7 +67,7 @@ td {text-align: left}
 
 <tr> <td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">Falcon-40B-Instruct</a></td> <td>5.17</td> <td>-</td>  <td>54.7</td>  <td>Apache 2.0</td> </tr>
 
-<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2O-Oasst-OpenLLaMA-13B</a></td> <td>4.63</td> <td>-</td> <td>42.8</td> <td>Non-commercial</td> </tr>
+<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2O-Oasst-OpenLLaMA-13B</a></td> <td>4.63</td> <td>-</td> <td>42.8</td> <td>Apache 2.0</td> </tr>
 
 <tr> <td><a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank">Alpaca-13B</a></td> <td>4.53</td> <td>930</td> <td>48.1</td> <td>Non-commercial</td> </tr>
 
