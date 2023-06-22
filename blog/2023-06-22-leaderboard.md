@@ -22,7 +22,7 @@ td {text-align: left}
 </style>
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. LLM Rankings (Timeframe: April 24 - June 22, 2023). Check more details at <a href="https://chat.lmsys.org/?leaderboard" target="_blank">our Leaderboard</a></p>.
+<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 22, 2023). More details at <a href="https://chat.lmsys.org/?leaderboard" target="_blank">our Leaderboard</a></p>.
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Model</th> <th>MT-bench (score)</span> </th> <th>Elo Rating</span> </th> <th>MMLU</th> <th>License</th> </tr>
