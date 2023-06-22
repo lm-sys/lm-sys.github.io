@@ -88,7 +88,7 @@ td {text-align: left}
 
 &shy;
 
-You are welcome to check out the latest [leaderboard](https://chat.lmsys.org/?leaderboard) or try the arena [demo](https://chat.lmsys.org/?arena). 
+Welcome to check more details on our latest [leaderboard](https://chat.lmsys.org/?leaderboard) and try the [Chatbot Arena](https://chat.lmsys.org/?arena). 
 Keep in mind that each benchmark has its limitations. Please consider the results as guiding references. See our discussion below for more technical details.
 
 
@@ -97,9 +97,10 @@ Keep in mind that each benchmark has its limitations. Please consider the result
 ### Motivation
 
 While several benchmarks exist for evaluating Large Language Model's (LLM) performance, such as [MMLU](https://arxiv.org/abs/2009.03300), [HellaSwag](https://arxiv.org/abs/1905.07830), and [HumanEval](https://github.com/openai/human-eval), 
-we noticed that these metrics fall short when assessing their levels of human preferences. Traditional benchmarks often test LLMs on close-ended questions with concise outputs (e.g., multiple choices), which do not reflect the typical use cases of LLM-based chat assistants.
+we noticed that these benchmarks might fall short when assessing LLMs' human preferences. 
+Traditional benchmarks often test LLMs on close-ended questions with concise outputs (e.g., multiple choices), which do not reflect the typical use cases of LLM-based chat assistants.
 
-To fill this gap, we have run the Chatbot Arena for 2 months, and in this blogpost, we add a new benchmark: MT-Bench.
+To fill this gap, in this blogpost, in addition to the Chatbot Arena Elo system, we add a new benchmark: MT-Bench.
 - [MT-bench](https://arxiv.org/abs/2306.05685) is a challenging multi-turn question set designed to evaluate the conversational and instruction-following ability of models. You can view sample questions and answers of MT-bench [here](https://huggingface.co/spaces/lmsys/mt-bench).
 - [Chatbot Arena](https://chat.lmsys.org/?arena) is a crowd-sourced battle platform, where users ask chatbots any question and vote their preferred answer. 
 Both benchmarks are designed to use human preference as the primary metric.
@@ -214,7 +215,7 @@ Another advantage of LLM judges is their ability to provide explainable evaluati
 Figure 3 presents an instance of GPT-4's judgment on an MT-bench question, with answers from alpaca-13b and gpt-3.5-turbo. 
 GPT-4 provides thorough and logical feedback to support its judgment. 
 Our [study](https://arxiv.org/abs/2306.05685) found that such reviews are beneficial in guiding humans to make better-informed decisions (refer to Section 4.2 for more details). 
-All the GPT-4 judgments can be found on our demo site ??.
+All the GPT-4 judgments can be found on our [demo site](https://huggingface.co/spaces/lmsys/mt-bench).
 
 <img src="/images/blog/leaderboard_week8/explainability_sample.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 1000px;"></img>
 <p style="color:gray; text-align: center;">Figure 3: MT-bench provides more explainability in evaluating LLMs' human preferences.</p>
