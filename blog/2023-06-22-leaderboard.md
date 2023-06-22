@@ -485,14 +485,38 @@ We also notice a considerable performance gap between llama-based models and tho
 
 
 <br>
-<p style="color:gray; text-align: center;">Table 2. Table placeholder</p>
+<p style="color:gray; text-align: center;">Table 2. The breakdown of LLMs' MT-bench scores in the 1st and 2nd turn of a dialogue. Full score is 10.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
-<tr> <th>Rank</th> <th>Model</th> <th>Elo Rating</th> <th>Description</th> <th>License</th> </tr>
+<tr> <th>Model</th> <th>Average 1st Turn Score</th> <th>Average. 2nd Turn Score</th> <th>Score Difference</th>
 
-<tr> <td>1</td> <td>🥇 <a href="https://chat.openai.com/" target="_blank">GPT-4</a></td> <td>1225</td> <td>ChatGPT-4 by OpenAI</td> <td>Proprietary</td> </tr>
+<tr><td><a href="https://chat.openai.com/" target="_blank">GPT-4</a></td> <td>8.96</td> <td>9.03</td> <td>0.07</td>  </tr>
 
-<tr> <td>2</td> <td>🥈 <a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-v1</a></td> <td>1195</td> <td>Claude by Anthropic</td> <td>Proprietary</td> </tr>
+<tr><td><a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-v1</a></td> <td>8.15</td> <td>7.65</td> <td>-0.50</td> </tr>
+
+<tr><td><a href="https://chat.openai.com/" target="_blank">GPT-3.5-turbo</a></td> <td>8.08</td> <td>7.81</td> <td>-0.26</td> </tr>
+
+<tr><td><a href="https://huggingface.co/lmsys/vicuna-33b-v1.3" target="_blank">vicuna-33b</a></td> <td>7.46</td> <td>6.79</td> <td>-0.67</td> </tr>
+
+<tr><td><a href="https://huggingface.co/WizardLM/WizardLM-30B-V1.0" target="_blank">wizardlm-30b</a></td> <td>7.13</td> <td>6.89</td> <td>-0.24</td> </tr>
+
+<tr><td><a href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0" target="_blank">wizardlm-13b</a></td> <td>7.12</td> <td>5.59</td> <td>-1.53</td> </tr>
+
+<tr><td><a href="https://huggingface.co/timdettmers/guanaco-33b-merged" target="_blank">guanaco-33b</a></td> <td>6.88</td> <td>6.18</td> <td>-0.71</td> </tr>
+
+<tr><td><a href="https://huggingface.co/lmsys/vicuna-13b-v1.3" target="_blank">vicuna-13b</a></td> <td>6.81</td> <td>5.96</td> <td>-0.85</td> </tr>
+
+<tr><td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">palm2-chat-bison</a></td> <td>6.71</td> <td>6.09</td> <td>-0.63</td> </tr>
+
+<tr><td><a href="https://huggingface.co/lmsys/vicuna-7b-v1.3" target="_blank">vicuna-7b</a></td> <td>6.69</td> <td>5.30</td> <td>-1.39</td> </tr>
+
+<tr><td><a href="https://huggingface.co/young-geng/koala" target="_blank">koala-13b</a></td> <td>6.08</td> <td>4.63</td> <td>-1.45</td> </tr>
+
+<tr><td><a href="https://huggingface.co/mosaicml/mpt-7b-chat" target="_blank">mpt-7b-chat</a></td> <td>5.85</td> <td>4.99</td> <td>-0.86</td> </tr>
+
+<tr><td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">falcon-40b-instruct</a></td> <td>5.81</td> <td>4.53</td> <td>-1.29</td> </tr>
+
+<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">h2ogpt-oasst-open-llama-13b</a></td> <td>5.51</td> <td>3.74</td> <td>-1.78</td> </tr>
 
 </tbody>
 </table>
