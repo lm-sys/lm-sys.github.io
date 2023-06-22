@@ -19,13 +19,123 @@ Their weights are now [available](https://github.com/lm-sys/FastChat/tree/main#v
 <style>
 th {text-align: left}
 td {text-align: left}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+
+th {
+  cursor: pointer;
+}
+
+th:hover {
+  background-color: #ddd;
+}
+
+.arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: middle;
+  margin-left: 5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.arrow-up {
+  border-bottom: 5px solid #000;
+}
+
+.arrow-down {
+  border-top: 5px solid #000;
+}
+
+/* Initially sort arrow for descending order */
+th:nth-child(1) .arrow-down {
+  border-top: 5px solid #000;
+}
 </style>
+
+
+<script>
+    let sortOrder = ['desc', undefined, undefined];
+
+    function sortTable(columnIndex, table_id) {
+      let table, rows, switching, i, x, y, shouldSwitch;
+      table = document.getElementById(table_id);
+      switching = true;
+      let sortAsc = sortOrder[columnIndex] === 'asc';
+
+      while (switching) {
+        switching = false;
+        rows = table.getElementsByTagName("tr");
+
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("td")[columnIndex];
+          y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+          x_char = x.innerHTML.toLowerCase();
+          y_char = y.innerHTML.toLowerCase();
+          if (sortAsc) {
+            if (x_char === "-") {
+                x_val = 9999;
+            } else {
+                x_val = Number(x_char);
+            }
+            if (y_char === "-") {
+                y_val = 9999;
+            } else {
+                y_val = Number(y_char);
+            }
+            if (x_val > y_val) {
+              shouldSwitch = true;
+              break;
+            }
+          } else {
+            if (x_char === "-") {
+                x_val = 0.0;
+            } else {
+                x_val = Number(x_char);
+            }
+            if (y_char === "-") {
+                y_val = 0.0;
+            } else {
+                y_val = Number(y_char);
+            }
+
+            if (x_val < y_val) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+        }
+      }
+
+      let arrowElements = document.getElementsByClassName("arrow");
+      for (let j = 0; j < arrowElements.length; j++) {
+        arrowElements[j].classList.remove("arrow-up", "arrow-down");
+      }
+
+      let arrowElement = document.getElementsByTagName("th")[columnIndex].getElementsByClassName("arrow")[0];
+      arrowElement.classList.add(sortAsc ? "arrow-up" : "arrow-down");
+      sortOrder[columnIndex] = sortAsc ? 'desc' : 'asc';
+    }
+</script>
+
+
 
 <br>
 <p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 22, 2023). More details at <a href="https://chat.lmsys.org/?leaderboard" target="_blank">our Leaderboard</a>.</p>
-<table style="display: flex; justify-content: center;" align="left" >
+<table id="Table1" style="display: flex; justify-content: center;" align="left" >
 <tbody>
-<tr> <th>Model</th> <th>MT-bench (score) </th> <th>Elo Rating </th> <th>MMLU</th> <th>License</th> </tr>
+<tr> <th>Model</th> <th onclick="sortTable(1, 'Table1')">MT-bench (score) <span class="arrow arrow-down"></span></th> <th onclick="sortTable(2, 'Table1')">Elo Rating <span class="arrow"></span></th> <th onclick="sortTable(3, 'Table1')">MMLU <span class="arrow"></span></th> <th>License</th> </tr>
 
 <tr> <td><a href="https://chat.openai.com/?model=gpt-4" target="_blank">GPT-4</a></td> <td>8.99</td> <td>1227</td> <td>86.4</td>  <td>Proprietary</td> </tr>
 
