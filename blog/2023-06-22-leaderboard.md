@@ -96,7 +96,7 @@ Keep in mind that each benchmark has its limitations. Please consider the result
 
 ### Motivation
 
-While several benchmarks exist for evaluating Large Language Model's (LLM) performance, such as MMLU, HellaSwag, and HumanEval, 
+While several benchmarks exist for evaluating Large Language Model's (LLM) performance, such as [MMLU](https://arxiv.org/abs/2009.03300), [HellaSwag](https://arxiv.org/abs/1905.07830), and [HumanEval](https://github.com/openai/human-eval), 
 we noticed that these metrics fall short when assessing their levels of human preferences. Traditional benchmarks often test LLMs on close-ended questions with concise outputs (e.g., multiple choices), which do not reflect the typical use cases of LLM-based chat assistants.
 
 To fill this gap, we have run the Chatbot Arena for 2 months, and in this blogpost, we add a new benchmark: MT-Bench.
@@ -201,11 +201,12 @@ We also notice a considerable performance gap between llama-based models and tho
 <tr><td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">falcon-40b-instruct</a></td> <td>5.81</td> <td>4.53</td> <td>-1.29</td> </tr>
 
 <tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">h2ogpt-oasst-open-llama-13b</a></td> <td>5.51</td> <td>3.74</td> <td>-1.78</td> </tr>
-
 </tbody>
 </table>
 
 &shy;
+<br>
+
 
 ### Explainability in LLM judges 
 
