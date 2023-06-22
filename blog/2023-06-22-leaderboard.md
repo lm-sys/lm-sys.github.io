@@ -2,7 +2,7 @@
 title: "Chatbot Arena Leaderboard Week 8: Introducing MT-Bench and Vicuna-33B"
 author: "Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Hao Zhang"
 date: "June 22, 2023"
-previewImg: /images/blog/langchain/overview.png
+previewImg: /images/blog/leaderboard_week8/ability_breakdown.png
 ---
 
 In this blog post, we share the latest update on Chatbot Arena leaderboard, which now includes more open models and three metrics:
