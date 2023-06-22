@@ -25,7 +25,7 @@ td {text-align: left}
 <p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 22, 2023). More details at <a href="https://chat.lmsys.org/?leaderboard" target="_blank">our Leaderboard</a>.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
-<tr> <th>Model</th> <th>MT-bench (score)</span> </th> <th>Elo Rating</span> </th> <th>MMLU</th> <th>License</th> </tr>
+<tr> <th>Model</th> <th>MT-bench (score) </th> <th>Elo Rating </th> <th>MMLU</th> <th>License</th> </tr>
 
 <tr> <td><a href="https://chat.openai.com/?model=gpt-4" target="_blank">GPT-4</a></td> <td>8.99</td> <td>1227</td> <td>86.4</td>  <td>Proprietary</td> </tr>
 
