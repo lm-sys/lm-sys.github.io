@@ -11,7 +11,7 @@ In this blog post, we share the latest update on Chatbot Arena leaderboard, whic
 2. **MT-Bench score**, based on a challenging multi-turn benchmark and GPT-4 grading, proposed and validated in our [Judging LLM-as-a-judge paper](https://arxiv.org/abs/2306.05685).
 3. **MMLU**, a widely adopted [benchmark](https://arxiv.org/abs/2009.03300).
 
-Furthermore, we’re excited to introduce our *new series of Vicuna v1.3 models*, ranging from 7B to 33B parameters, trained on an extended set of user-shared conversations. 
+Furthermore, we’re excited to introduce our **new series of Vicuna v1.3 models**, ranging from 7B to 33B parameters, trained on an extended set of user-shared conversations. 
 Their weights are now [available](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights).
 
 ## Updated Leaderboard and New Models
