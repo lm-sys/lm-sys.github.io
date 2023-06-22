@@ -5,399 +5,78 @@ date: "June 22, 2023"
 previewImg: /images/blog/langchain/overview.png
 ---
 
-In this blog post, we share the latest update on Chatbot Arena leaderboard, which now includes more open models and three metrics.
+In this blog post, we share the latest update on Chatbot Arena leaderboard, which now includes more open models and three metrics:
 
-1. **Arena Elo**, based on 42K anonymous votes from Chatbot Arena using the Elo rating system.
-2. **MT-Bench** score, based on a challenging multi-turn benchmark and GPT-4 grading, proposed and validated in our recent [paper](https://arxiv.org/abs/2306.05685).
+1. **Chatbot Arena Elo**, based on 42K anonymous votes from Chatbot Arena using the Elo rating system.
+2. **MT-Bench score**, based on a challenging multi-turn benchmark and GPT-4 grading, proposed and validated in our [Judging LLM-as-a-judge paper](https://arxiv.org/abs/2306.05685).
 3. **MMLU**, a widely adopted [benchmark](https://arxiv.org/abs/2009.03300).
 
-Furthermore, we’re excited to introduce our new series of Vicuna v1.3 models, ranging from 7B to 33B parameters, all trained on an extended set of user-shared conversations dataset. 
-The weights are now [available](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights).
+Furthermore, we’re excited to introduce our *new series of Vicuna v1.3 models*, ranging from 7B to 33B parameters, trained on an extended set of user-shared conversations. 
+Their weights are now [available](https://github.com/lm-sys/FastChat/tree/main#vicuna-weights).
 
 ## Updated Leaderboard and New Models
 
-<script type="javascript">
-/*
- *   This content is licensed according to the W3C Software License at
- *   https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
- *
- *   File:   sortable-table.js
- *
- *   Desc:   Adds sorting to a HTML data table that implements ARIA Authoring Practices
- */
-
-'use strict';
-
-class SortableTable {
-  constructor(tableNode) {
-    this.tableNode = tableNode;
-
-    this.columnHeaders = tableNode.querySelectorAll('thead th');
-
-    this.sortColumns = [];
-
-    for (var i = 0; i < this.columnHeaders.length; i++) {
-      var ch = this.columnHeaders[i];
-      var buttonNode = ch.querySelector('button');
-      if (buttonNode) {
-        this.sortColumns.push(i);
-        buttonNode.setAttribute('data-column-index', i);
-        buttonNode.addEventListener('click', this.handleClick.bind(this));
-      }
-    }
-
-    this.optionCheckbox = document.querySelector(
-      'input[type="checkbox"][value="show-unsorted-icon"]'
-    );
-
-    if (this.optionCheckbox) {
-      this.optionCheckbox.addEventListener(
-        'change',
-        this.handleOptionChange.bind(this)
-      );
-      if (this.optionCheckbox.checked) {
-        this.tableNode.classList.add('show-unsorted-icon');
-      }
-    }
-  }
-
-  setColumnHeaderSort(columnIndex) {
-    if (typeof columnIndex === 'string') {
-      columnIndex = parseInt(columnIndex);
-    }
-
-    for (var i = 0; i < this.columnHeaders.length; i++) {
-      var ch = this.columnHeaders[i];
-      var buttonNode = ch.querySelector('button');
-      if (i === columnIndex) {
-        var value = ch.getAttribute('aria-sort');
-        if (value === 'descending') {
-          ch.setAttribute('aria-sort', 'ascending');
-          this.sortColumn(
-            columnIndex,
-            'ascending',
-            ch.classList.contains('num')
-          );
-        } else {
-          ch.setAttribute('aria-sort', 'descending');
-          this.sortColumn(
-            columnIndex,
-            'descending',
-            ch.classList.contains('num')
-          );
-        }
-      } else {
-        if (ch.hasAttribute('aria-sort') && buttonNode) {
-          ch.removeAttribute('aria-sort');
-        }
-      }
-    }
-  }
-
-  sortColumn(columnIndex, sortValue, isNumber) {
-    function compareValues(a, b) {
-      if (sortValue === 'ascending') {
-        if (a.value === b.value) {
-          return 0;
-        } else {
-          if (isNumber) {
-            return a.value - b.value;
-          } else {
-            return a.value < b.value ? -1 : 1;
-          }
-        }
-      } else {
-        if (a.value === b.value) {
-          return 0;
-        } else {
-          if (isNumber) {
-            return b.value - a.value;
-          } else {
-            return a.value > b.value ? -1 : 1;
-          }
-        }
-      }
-    }
-
-    if (typeof isNumber !== 'boolean') {
-      isNumber = false;
-    }
-
-    var tbodyNode = this.tableNode.querySelector('tbody');
-    var rowNodes = [];
-    var dataCells = [];
-
-    var rowNode = tbodyNode.firstElementChild;
-
-    var index = 0;
-    while (rowNode) {
-      rowNodes.push(rowNode);
-      var rowCells = rowNode.querySelectorAll('th, td');
-      var dataCell = rowCells[columnIndex];
-
-      var data = {};
-      data.index = index;
-      data.value = dataCell.textContent.toLowerCase().trim();
-      if (isNumber) {
-        data.value = parseFloat(data.value);
-      }
-      dataCells.push(data);
-      rowNode = rowNode.nextElementSibling;
-      index += 1;
-    }
-
-    dataCells.sort(compareValues);
-
-    // remove rows
-    while (tbodyNode.firstChild) {
-      tbodyNode.removeChild(tbodyNode.lastChild);
-    }
-
-    // add sorted rows
-    for (var i = 0; i < dataCells.length; i += 1) {
-      tbodyNode.appendChild(rowNodes[dataCells[i].index]);
-    }
-  }
-
-  /* EVENT HANDLERS */
-
-  handleClick(event) {
-    var tgt = event.currentTarget;
-    this.setColumnHeaderSort(tgt.getAttribute('data-column-index'));
-  }
-
-  handleOptionChange(event) {
-    var tgt = event.currentTarget;
-
-    if (tgt.checked) {
-      this.tableNode.classList.add('show-unsorted-icon');
-    } else {
-      this.tableNode.classList.remove('show-unsorted-icon');
-    }
-  }
-}
-
-// Initialize sortable table buttons
-window.addEventListener('load', function () {
-  var sortableTables = document.querySelectorAll('table.sortable');
-  for (var i = 0; i < sortableTables.length; i++) {
-    new SortableTable(sortableTables[i]);
-  }
-});
-</script>
-
-
-<style>
-.sr-only {
-  position: absolute;
-  top: -30em;
-}
-
-table.sortable td,
-table.sortable th {
-  padding: 0.125em 0.25em;
-  width: 8em;
-}
-
-table.sortable th {
-  font-weight: bold;
-  border-bottom: thin solid #888;
-  position: relative;
-}
-
-table.sortable th.no-sort {
-  padding-top: 0.35em;
-}
-
-table.sortable th:nth-child(5) {
-  width: 10em;
-}
-
-table.sortable th button {
-  position: absolute;
-  padding: 4px;
-  margin: 1px;
-  font-size: 100%;
-  font-weight: bold;
-  background: transparent;
-  border: none;
-  display: inline;
-  right: 0;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  text-align: left;
-  outline: none;
-  cursor: pointer;
-}
-
-table.sortable th button span {
-  position: absolute;
-  right: 4px;
-}
-
-table.sortable th[aria-sort="descending"] span::after {
-  content: "▼";
-  color: currentcolor;
-  font-size: 100%;
-  top: 0;
-}
-
-table.sortable th[aria-sort="ascending"] span::after {
-  content: "▲";
-  color: currentcolor;
-  font-size: 100%;
-  top: 0;
-}
-
-table.show-unsorted-icon th:not([aria-sort]) button span::after {
-  content: "♢";
-  color: currentcolor;
-  font-size: 100%;
-  position: relative;
-  top: -3px;
-  left: -4px;
-}
-
-table.sortable td.num {
-  text-align: right;
-}
-
-table.sortable tbody tr:nth-child(odd) {
-  background-color: #ddd;
-}
-
-/* Focus and hover styling */
-
-table.sortable th button:focus,
-table.sortable th button:hover {
-  padding: 2px;
-  border: 2px solid currentcolor;
-  background-color: #e5f4ff;
-}
-
-table.sortable th button:focus span,
-table.sortable th button:hover span {
-  right: 2px;
-}
-
-table.sortable th:not([aria-sort]) button:focus span::after,
-table.sortable th:not([aria-sort]) button:hover span::after {
-  content: "▼";
-  color: currentcolor;
-  font-size: 100%;
-  top: 0;
-}
-</style>
-
-<div class="table-wrap"><table class="sortable">
-  <caption>
-    Students currently enrolled in WAI-ARIA 101
-    <span class="sr-only">, column headers with buttons are sortable.</span>
-  </caption>
-  <thead>
-    <tr>
-      <th>
-        <button>
-          First Name
-          <span aria-hidden="true"></span>
-        </button>
-      </th>
-      <th aria-sort="ascending">
-        <button>
-          Last Name
-          <span aria-hidden="true"></span>
-        </button>
-      </th>
-      <th>
-        <button>
-          Company
-          <span aria-hidden="true"></span>
-        </button>
-      </th>
-      <th class="no-sort">Address</th>
-      <th class="num">
-        <button>
-          Favorite Number
-          <span aria-hidden="true"></span>
-        </button>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Fred</td>
-      <td>Jackson</td>
-      <td>Canary, Inc.</td>
-      <td>123 Broad St.</td>
-      <td class="num">56</td>
-    </tr>
-    <tr>
-      <td>Sara</td>
-      <td>James</td>
-      <td>Cardinal, Inc.</td>
-      <td>457 First St.</td>
-      <td class="num">7</td>
-    </tr>
-    <tr>
-      <td>Ralph</td>
-      <td>Jefferson</td>
-      <td>Robin, Inc.</td>
-      <td>456 Main St.</td>
-      <td class="num">513</td>
-    </tr>
-    <tr>
-      <td>Nancy</td>
-      <td>Jensen</td>
-      <td>Eagle, Inc.</td>
-      <td>2203 Logan Dr.</td>
-      <td class="num">3.5</td>
-    </tr>
-  </tbody>
-</table></div>
-        
-
-
 <br>
-<p style="color:gray; text-align: center;">Table 1. Elo ratings of LLMs (Timeframe: April 24 - May 22, 2023)</p>
+<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 22, 2023)</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
-<tr> <th>Rank</th> <th>Model</th> <th>Elo Rating</th> <th>Description</th> <th>License</th> </tr>
+<tr> <th>Model</th> <th>MT-bench (score) </th> <th>Elo Rating</th> <th>MMLU</th> <th>Description</th> <th>License</th> </tr>
 
-<tr> <td>1</td> <td>🥇 <a href="https://chat.openai.com/" target="_blank">GPT-4</a></td> <td>1225</td> <td>ChatGPT-4 by OpenAI</td> <td>Proprietary</td> </tr>
+<tr> <td><a href="https://chat.openai.com/" target="_blank">GPT-4</a></td> <td>8.99</td> <td>1227</td> <td>86.4</td> <td>ChatGPT-4 by OpenAI</td> <td>Proprietary</td> </tr>
 
-<tr> <td>2</td> <td>🥈 <a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-v1</a></td> <td>1195</td> <td>Claude by Anthropic</td> <td>Proprietary</td> </tr>
+<tr> <td><a href="https://chat.openai.com/" target="_blank">GPT-3.5-turbo</a></td> <td>7.94</td> <td>1130</td>  <td>70</td> <td>ChatGPT-3.5 by OpenAI</td>  <td>Proprietary</td> </tr>
 
-<tr> <td>3</td> <td>🥉 <a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-instant-v1</a></td> <td>1153</td> <td>Lighter, less expensive, and much faster version of Claude</td> <td>Proprietary</td> </tr>
+<tr> <td><a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-v1</a></td> <td>7.9</td> <td>1178</td> <td>75.6</td> <td>Claude by Anthropic</td> <td>Proprietary</td> </tr>
 
-<tr> <td>4</td> <td> <a href="https://chat.openai.com/" target="_blank">GPT-3.5-turbo</a></td> <td>1143</td> <td>ChatGPT-3.5 by OpenAI</td>  <td>Proprietary</td> </tr>
+<tr> <td><a href="https://www.anthropic.com/index/introducing-claude" target="_blank">Claude-instant-v1</a></td> <td>7.85</td> <td>1156</td> <td>61.3</td> <td>Lighter, less expensive, and much faster version of Claude</td> <td>Proprietary</td> </tr>
 
-<tr> <td>5</td> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>1054</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://huggingface.co/lmsys/vicuna-33b-v1.3" target="_blank">Vicuna-33B</a></td> <td>7.12</td> <td>-</td> <td>59.2</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Weights available; Non-commercial</td> </tr>
 
-<tr> <td>6</td> <td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM 2</a></td> <td>1042</td> <td>PaLM 2 tuned for chat (chat-bison@001 on Google Vertex AI). The PaLM 2 model family is powering Bard.</td> <td>Proprietary</td> </tr>
+<tr> <td><a href="https://huggingface.co/WizardLM/WizardLM-30B-V1.0" target="_blank">WizardLM-30B</a></td> <td>7.01</td> <td>-</td> <td>58.7</td> <td>XXX</td> <td>XXX</td></tr>
 
-<tr> <td>7</td> <td><a href="https://huggingface.co/lmsys/vicuna-7b-delta-v1.1" target="_blank">Vicuna-7B</a></td> <td>1007</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://huggingface.co/timdettmers/guanaco-33b-merged" target="_blank">Guanaco-33B</a></td> <td>6.53</td> <td>1065</td> <td>57.6</td> <td>XXX</td> <td>XXX</td></tr>
 
-<tr> <td>8</td> <td><a href="https://bair.berkeley.edu/blog/2023/04/03/koala" target="_blank">Koala-13B</a></td> <td>980</td> <td>a dialogue model for academic research by BAIR</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://huggingface.co/allenai/tulu-30b" target="_blank">Tulu-30B</a></td> <td>6.43</td> <td>-</td> <td>58.1</td> <td>XXX</td> <td>XXX</td></tr>
 
-<tr> <td>9</td> <td><a href="https://www.mosaicml.com/blog/mpt-7b" target="_blank">mpt-7b-chat</a></td> <td>952</td> <td>a chatbot fine-tuned from MPT-7B by MosaicML</td> <td>CC-By-NC-SA-4.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/timdettmers/guanaco-65b" target="_blank">Guanaco-65B</a></td> <td>6.41</td> <td>-</td> <td>62.1</td> <td>XXX</td> <td>XXX</td></tr>
 
-<tr> <td>10</td> <td><a href="https://huggingface.co/lmsys/fastchat-t5-3b-v1.0" target="_blank">FastChat-T5-3B</a></td> <td>941</td> <td>a chat assistant fine-tuned from FLAN-T5 by LMSYS</td> <td>Apache 2.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/OpenAssistant/oasst-sft-6-llama-30b-xor" target="_blank">OpenAssistant-LLaMA-30B</a></td> <td>6.41</td> <td>-</td> <td>55.9</td> <td>XXX</td> <td>XXX</td></tr>
 
-<tr> <td>11</td> <td><a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank">Alpaca-13B</a></td> <td>937</td> <td>a model fine-tuned from LLaMA on instruction-following demonstrations by Stanford</td>  <td>Weights available; Non-commercial</td> </tr>
+<tr><td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM2-Chat-Bison-001</a></td> <td>6.4</td> <td>1038</td> <td>-</td> <td>XXX</td> <td>XXX</td> </tr>
 
-<tr> <td>12</td> <td><a href="https://huggingface.co/BlinkDL/rwkv-4-raven" target="_blank">RWKV-4-Raven-14B</a></td> <td>928</td> <td>an RNN with transformer-level LLM performance</td> <td>Apache 2.0</td> </tr>
+<tr> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>6.39</td>  <td>1061</td> <td>52.1</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Weights available; Non-commercial</td> </tr>
 
-<tr> <td>13</td> <td><a href="https://open-assistant.io" target="_blank">Oasst-Pythia-12B</a></td> <td>921</td> <td>an Open Assistant for everyone by LAION</td> <td>Apache 2.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0" target="_blank">WizardLM-13B</a></td> <td>6.35</td>  <td>1048</td> <td>52.3</td> <td>XXX</td> <td>XXX</td> </tr>
 
-<tr> <td>14</td> <td><a href="https://chatglm.cn/blog" target="_blank">ChatGLM-6B</a></td> <td>921</td> <td>an open bilingual dialogue language model by Tsinghua University</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://huggingface.co/lmsys/vicuna-7b-v1.3" target="_blank">Vicuna-7B</a></td> <td>6</td> <td>1008</td> <td>47.1</td> <td>a chat assistant fine-tuned from LLaMA on user-shared conversations by LMSYS</td> <td>Weights available; Non-commercial</td> </tr>
 
-<tr> <td>15</td> <td><a href="https://github.com/stability-AI/stableLM" target="_blank">StableLM-Tuned-Alpha-7B</a></td> <td>882</td> <td>Stability AI language models</td>  <td>CC-BY-NC-SA-4.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/project-baize/baize-v2-13b" target="_blank">Baize-v2-13B</a></td> <td>5.75</td> <td>-</td> <td>48.9</td> <td>XXX</td> <td>xxxx</td> </tr>
 
-<tr> <td>16</td> <td><a href="https://www.databricks.com/blog/2023/04/12/dolly-first-open-commercially-viable-instruction-tuned-llm" target="_blank">Dolly-V2-12B</a></td> <td>866</td> <td>an instruction-tuned open large language model by Databricks</td> <td>MIT</td> </tr>
+<tr> <td><a href="https://huggingface.co/NousResearch/Nous-Hermes-13b" target="_blank">Nous-Hermes-13B</a></td> <td>5.51</td> <td>-</td> <td>49.3</td> <td>XXX</td> <td>xxxx</td> </tr>
 
-<tr> <td>17</td> <td><a href="https://arxiv.org/abs/2302.13971" target="_blank">LLaMA-13B</a></td> <td>854</td> <td>open and efficient foundation language models by Meta</td> <td>Weights available; Non-commercial</td> </tr>
+<tr> <td><a href="https://www.mosaicml.com/blog/mpt-7b" target="_blank">MPT-7B-Chat</a></td> <td>5.42</td>  <td>956</td> <td>32</td> <td>a chatbot fine-tuned from MPT-7B by MosaicML</td> <td>CC-By-NC-SA-4.0</td> </tr>
+
+<tr> <td><a href="https://huggingface.co/nomic-ai/gpt4all-13b-snoozy" target="_blank">GPT4All-13B-Snoozy</a></td> <td>5.41</td> <td>986</td> <td>43</td> <td>XXX</td> <td>xxxx</td> </tr>
+
+<tr> <td><a href="https://bair.berkeley.edu/blog/2023/04/03/koala" target="_blank">Koala-13B</a></td> <td>5.35</td> <td>992</td>  <td>44.7</td>  <td>a dialogue model for academic research by BAIR</td> <td>Weights available; Non-commercial</td> </tr>
+
+<tr> <td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">Falcon-40B-Instruct</a></td> <td>5.17</td> <td>-</td>  <td>54.7</td>  <td>XXX</td> <td>XXX</td> </tr>
+
+<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2O-Oasst-OpenLLaMA-13B</a></td> <td>4.63</td> <td>-</td> <td>42.8</td>  <td>XXX</td> <td>XXX</td> </tr>
+
+<tr> <td><a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank">Alpaca-13B</a></td> <td>4.53</td> <td>930</td> <td>48.1</td> <td>a model fine-tuned from LLaMA on instruction-following demonstrations by Stanford</td>  <td>Weights available; Non-commercial</td> </tr>
+
+<tr> <td><a href="https://chatglm.cn/blog" target="_blank">ChatGLM-6B</a></td> <td>4.5</td> <td>905</td> <td>36.1</td> <td>an open bilingual dialogue language model by Tsinghua University</td> <td>Weights available; Non-commercial</td> </tr>
+
+<tr> <td><a href="https://open-assistant.io" target="_blank">Oasst-Pythia-12B</a></td> <td>4.32</td> <td>924</td> <td>27</td> <td>an Open Assistant for everyone by LAION</td> <td>Apache 2.0</td> </tr>
+
+<tr> <td><a href="https://huggingface.co/BlinkDL/rwkv-4-raven" target="_blank">RWKV-4-Raven-14B</a></td> <td>3.98</td> <td>950</td> <td>25.6</td> <td>an RNN with transformer-level LLM performance</td> <td>Apache 2.0</td> </tr>
+
+<tr> <td><a href="https://www.databricks.com/blog/2023/04/12/dolly-first-open-commercially-viable-instruction-tuned-llm" target="_blank">Dolly-V2-12B</a></td> <td>3.28</td> <td>850</td>  <td>25.7</td>  <td>an instruction-tuned open large language model by Databricks</td> <td>MIT</td> </tr>
+
+<tr> <td><a href="https://huggingface.co/lmsys/fastchat-t5-3b-v1.0" target="_blank">FastChat-T5-3B</a></td> <td>3.04</td>  <td>897</td>  <td>47.7</td>  <td>a chat assistant fine-tuned from FLAN-T5 by LMSYS</td> <td>Apache 2.0</td> </tr>
+
+<tr> <td><a href="https://arxiv.org/abs/2302.13971" target="_blank">LLaMA-13B</a></td> <td>2.61</td>  <td>826</td> <td>47</td> <td>open and efficient foundation language models by Meta</td> <td>Weights available; Non-commercial</td> </tr>
 
 </tbody>
 </table>
