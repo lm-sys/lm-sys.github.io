@@ -100,31 +100,31 @@ While several benchmarks exist for evaluating Large Language Model's (LLM) perfo
 we noticed that these benchmarks might fall short when assessing LLMs' human preferences. 
 Traditional benchmarks often test LLMs on close-ended questions with concise outputs (e.g., multiple choices), which do not reflect the typical use cases of LLM-based chat assistants.
 
-To fill this gap, in this blogpost, in addition to the Chatbot Arena Elo system, we add a new benchmark: MT-Bench.
+To fill this gap, in this leaderboard update, in addition to the Chatbot Arena Elo system, we add a new benchmark: MT-Bench.
 - [MT-bench](https://arxiv.org/abs/2306.05685) is a challenging multi-turn question set designed to evaluate the conversational and instruction-following ability of models. You can view sample questions and answers of MT-bench [here](https://huggingface.co/spaces/lmsys/mt-bench).
-- [Chatbot Arena](https://chat.lmsys.org/?arena) is a crowd-sourced battle platform, where users ask chatbots any question and vote their preferred answer. 
-Both benchmarks are designed to use human preference as the primary metric.
+- [Chatbot Arena](https://chat.lmsys.org/?arena) is a crowd-sourced battle platform, where users ask chatbots any question and vote for their preferred answer.
+
+Both benchmarks are designed to use human preferences as the primary metric.
 
 ### Why MT-Bench?
 
 MT-Bench is a carefully curated benchmark that includes 80 high-quality, multi-turn questions. 
 These questions are tailored to assess the conversation flow and instruction-following capabilities of models in multi-turn dialogues. 
-They include both common use cases as well as more challenging instructions meant to distinguish between chatbots. 
-MT-Bench serves as a quality-controlled complement to our crowd-sourced based eval -- Chatbot Arena.
+They include both common use cases and challenging instructions meant to distinguish between chatbots. 
+MT-Bench serves as a **quality-controlled complement** to our crowd-sourced based evaluation -- Chatbot Arena.
 
 Through running the Chatbot Arena for 2 months and analyzing our users' prompts, we've identified 8 primary categories of user prompts: Writing, Roleplay, Extraction, Reasoning, Math, Coding, Knowledge I (STEM), and Knowledge II (humanities/social science). 
-We crafted 10 multi-turn questions per category, yielding a set of 160 questions in total. We display some sample questions below. You can find more [here](https://huggingface.co/spaces/lmsys/mt-bench).
+We crafted 10 multi-turn questions per category, yielding a set of 160 questions in total. We display some sample questions below in Figure 1. You can find more [here](https://huggingface.co/spaces/lmsys/mt-bench).
 
-<img src="/images/blog/leaderboard_week8/sample_question.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 1000px;"></img>
+<img src="/images/blog/leaderboard_week8/sample_question.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 1500px;"></img>
 <p style="color:gray; text-align: center;">Figure 1: Sample questions from the MT-Bench.</p>
 
-### But still, How to Grade Chatbot’s Answers?
-
-Though human preference remains the gold standard, it is notoriously slow and expensive to collect. 
-In our first [Vicuna blog post](https://lmsys.org/blog/2023-03-30-vicuna/), we have explored an automated evaluation pipeline based on GPT-4. 
+### But Still, How to Grade Chatbots' Answers?
+Though we believe human preference is the gold standard, it is notoriously slow and expensive to collect. 
+In our first [Vicuna blogpost](https://lmsys.org/blog/2023-03-30-vicuna/), we explored an automated evaluation pipeline based on GPT-4. 
 This approach has since got popular and adopted in several [concurrent and follow-up works](http://localhost:3000/blog/2023-06-22-leaderboard/#related-work).
 
-In our latest [paper](https://arxiv.org/abs/2306.05685), "Judging LLM-as-a-judge", we conducted a systematic study to answer how reliable those LLM judges are. 
+In our latest paper, ["Judging LLM-as-a-judge"](https://arxiv.org/abs/2306.05685), we conducted a systematic study to answer how reliable those LLM judges are. 
 We provide a brief overview of conclusions here but recommend reading the paper for more details.
 
 We begin by acknowledging potential limitations of LLM-as-a-judge:
@@ -136,25 +136,23 @@ We begin by acknowledging potential limitations of LLM-as-a-judge:
 
 Our study then explores how few-shot judge, chain-of-thought judge, reference-based judge, and fine-tuned judge can help to mitigate these limitations.
 
-Upon implementing some of these solutions, we discovered that despite its limitations, strong LLM judges like GPT-4 can align impressively well with both controlled and crowdsourced human preferences, achieving over 80% agreement. 
+Upon implementing some of these solutions, we discovered that despite limitations, strong LLM judges like GPT-4 can align impressively well with both controlled and crowdsourced human preferences, achieving over 80% agreement. 
 This level of agreement is comparable to the agreement between two different human judges. 
 Therefore, if used carefully, LLM-as-a-judge can act as a *scalable* and *explainable* approximation of human preferences.
 
 We also found that single-answer grading based on GPT-4, without pairwise comparison, can also rank models effectively and match human preferences well. 
-Single-answer grading proves more scalable than pairwise comparison as the number of possible pairs increases quadratically with the number of models. 
-In Table 1, we present the MT-Bench leaderboard based on single-answer grading with GPT-4.
-
+In Table 1, we present the MT-Bench as a column on the leaderboard based on single-answer grading with GPT-4.
 
 ## Results and Analysis
 
 ### MT-Bench Effectively Distinguishes Among Chatbots
 
-Table 1 provides a detailed rundown of the MT-bench leaderboard, where we conduct an exhaustive evaluation of 28 popular instruction-tuned models. 
-We observe a clear distinction among chatbots of varying abilities using our benchmark, with scores showing a high correlation with the Elo rating on Arena. 
+Table 1 provides a detailed rundown of the MT-bench-enhanced leaderboard, where we conduct an exhaustive evaluation of 28 popular instruction-tuned models. 
+We observe a clear distinction among chatbots of varying abilities, with scores showing a high correlation with the Chatbot Arena Elo rating. 
 In particular, MT-Bench reveals noticeable performance gaps between GPT-4 and GPT-3.5/Claude, and between open and proprietary models.
 
 To delve deeper into the distinguishing factors among chatbots, we select a few representative chatbots and break down their performance per category in Figure 2. 
-GPT-4 shows superior performance in Coding and Reasoning compared to GPT-3.5/Claude, while Vicuna-13b lags significantly behind in Extraction, Coding, and Math. 
+GPT-4 shows superior performance in Coding and Reasoning compared to GPT-3.5/Claude, while Vicuna-13B lags significantly behind in several specific categories: Extraction, Coding, and Math. 
 This suggests there is still ample room for improvement for open-source models.
 
 <img src="/images/blog/leaderboard_week8/ability_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 1000px;"></img>
@@ -164,16 +162,12 @@ This suggests there is still ample room for improvement for open-source models.
 ### Multi-turn Conversation Capabilities
 
 We next analyze the multi-turn scores of selected models, presented in Table 2. 
-The MT-bench incorporates challenging follow-up questions as part of its design. 
-For open models, a significant drop in performance is observable from the first to second turn (e.g., vicuna-7b, wizardlm-13b), while strong proprietary models maintain consistency. 
-We also notice a considerable performance gap between llama-based models and those with permissive licenses such as mpt-7b, falcon-40b, and instruction-tuned open-llama.
-
 
 <br>
 <p style="color:gray; text-align: center;">Table 2. The breakdown of LLMs' MT-bench scores in the 1st and 2nd turn of a dialogue. Full score is 10.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
-<tr> <th>Model</th> <th>Average 1st Turn Score</th> <th>Average. 2nd Turn Score</th> <th>Score Difference</th>
+<tr> <th>Model</th> <th>Average 1st Turn Score</th> <th>Average 2nd Turn Score</th> <th>Score Difference</th>
 
 <tr><td><a href="https://chat.openai.com/" target="_blank">GPT-4</a></td> <td>8.96</td> <td>9.03</td> <td>0.07</td>  </tr>
 
@@ -181,32 +175,35 @@ We also notice a considerable performance gap between llama-based models and tho
 
 <tr><td><a href="https://chat.openai.com/" target="_blank">GPT-3.5-turbo</a></td> <td>8.08</td> <td>7.81</td> <td>-0.26</td> </tr>
 
-<tr><td><a href="https://huggingface.co/lmsys/vicuna-33b-v1.3" target="_blank">vicuna-33b</a></td> <td>7.46</td> <td>6.79</td> <td>-0.67</td> </tr>
+<tr><td><a href="https://github.com/lm-sys/FastChat#vicuna-weights" target="_blank">Vicuna-33B</a></td> <td>7.46</td> <td>6.79</td> <td>-0.67</td> </tr>
 
-<tr><td><a href="https://huggingface.co/WizardLM/WizardLM-30B-V1.0" target="_blank">wizardlm-30b</a></td> <td>7.13</td> <td>6.89</td> <td>-0.24</td> </tr>
+<tr><td><a href="https://huggingface.co/WizardLM/WizardLM-30B-V1.0" target="_blank">WizardLM-30B</a></td> <td>7.13</td> <td>6.89</td> <td>-0.24</td> </tr>
 
-<tr><td><a href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0" target="_blank">wizardlm-13b</a></td> <td>7.12</td> <td>5.59</td> <td>-1.53</td> </tr>
+<tr><td><a href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0" target="_blank">WizardLM-13B</a></td> <td>7.12</td> <td>5.59</td> <td>-1.53</td> </tr>
 
-<tr><td><a href="https://huggingface.co/timdettmers/guanaco-33b-merged" target="_blank">guanaco-33b</a></td> <td>6.88</td> <td>6.18</td> <td>-0.71</td> </tr>
+<tr><td><a href="https://huggingface.co/timdettmers/guanaco-33b-merged" target="_blank">Guanaco-33B</a></td> <td>6.88</td> <td>6.18</td> <td>-0.71</td> </tr>
 
-<tr><td><a href="https://huggingface.co/lmsys/vicuna-13b-v1.3" target="_blank">vicuna-13b</a></td> <td>6.81</td> <td>5.96</td> <td>-0.85</td> </tr>
+<tr><td><a href="https://github.com/lm-sys/FastChat#vicuna-weights" target="_blank">Vicuna-13B</a></td> <td>6.81</td> <td>5.96</td> <td>-0.85</td> </tr>
 
-<tr><td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">palm2-chat-bison</a></td> <td>6.71</td> <td>6.09</td> <td>-0.63</td> </tr>
+<tr><td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM2-Chat-Bison</a></td> <td>6.71</td> <td>6.09</td> <td>-0.63</td> </tr>
 
-<tr><td><a href="https://huggingface.co/lmsys/vicuna-7b-v1.3" target="_blank">vicuna-7b</a></td> <td>6.69</td> <td>5.30</td> <td>-1.39</td> </tr>
+<tr><td><a href="https://github.com/lm-sys/FastChat#vicuna-weights" target="_blank">Vicuna-7B</a></td> <td>6.69</td> <td>5.30</td> <td>-1.39</td> </tr>
 
-<tr><td><a href="https://huggingface.co/young-geng/koala" target="_blank">koala-13b</a></td> <td>6.08</td> <td>4.63</td> <td>-1.45</td> </tr>
+<tr><td><a href="https://huggingface.co/young-geng/koala" target="_blank">Koala-13B</a></td> <td>6.08</td> <td>4.63</td> <td>-1.45</td> </tr>
 
-<tr><td><a href="https://huggingface.co/mosaicml/mpt-7b-chat" target="_blank">mpt-7b-chat</a></td> <td>5.85</td> <td>4.99</td> <td>-0.86</td> </tr>
+<tr><td><a href="https://huggingface.co/mosaicml/mpt-7b-chat" target="_blank">MPT-7B-Chat</a></td> <td>5.85</td> <td>4.99</td> <td>-0.86</td> </tr>
 
-<tr><td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">falcon-40b-instruct</a></td> <td>5.81</td> <td>4.53</td> <td>-1.29</td> </tr>
+<tr><td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">Falcon-40B-instruct</a></td> <td>5.81</td> <td>4.53</td> <td>-1.29</td> </tr>
 
-<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">h2ogpt-oasst-open-llama-13b</a></td> <td>5.51</td> <td>3.74</td> <td>-1.78</td> </tr>
+<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2OGPT-Oasst-Open-LLaMA-13B</a></td> <td>5.51</td> <td>3.74</td> <td>-1.78</td> </tr>
 </tbody>
 </table>
 
 &shy;
-<br>
+
+The MT-bench incorporates challenging follow-up questions as part of its design. 
+For open models, The performance drops significantly from the first to the second turn (e.g., Vicuna-7B, WizardLM-13B), while strong proprietary models maintain consistency. 
+We also notice a considerable performance gap between LLaMA-based models and those with permissive licenses (MPT-7B, Falcon-40B, and instruction-tuned Open-LLaMA).
 
 
 ### Explainability in LLM judges 
@@ -222,8 +219,7 @@ All the GPT-4 judgments can be found on our [demo site](https://huggingface.co/s
 
 In conclusion, we have shown that MT-Bench effectively differentiates between chatbots of varying capabilities. 
 It's scalable, offers valuable insights with category breakdowns, and provides explainability for human judges to verify. 
-However, LLM judges should be used carefully. It can still make errors, especially when grading math/reasoning questions. 
-For further details, please refer to Section 3.3 of our study.
+However, LLM judges should be used carefully. It can still make errors, especially when grading math/reasoning questions.
 
 
 ## How to Evaluate New Models on MT-Bench?
@@ -232,19 +228,20 @@ Evaluating models on MT-bench is simple and fast. Our script supports all huggin
 in which you can generate model’s answers to the MT-bench questions and their GPT-4 judgments. You can also examine the answers and reviews on our gradio browsing demo.
 
 ## Next steps
-**Release of Conversation Data**
-We're in the process of preparing all Chatbot Arena conversation data for release to the broader research community. 
-We're currently addressing critical aspects such as personally identifiable information (PII) cleaning, tagging for toxicity, and performing an ethics review. Stay tuned for updates!
+**Release of Conversations Data**
+
+We're in the process of releasing Chatbot Arena conversations data to the broader research community. Stay tuned for updates!
 
 **MT-bench-1K**
+
 MT-Bench currently consists of a concise set of 80 carefully curated questions, ensuring the highest quality. 
-We're actively working on expanding the question set to MT-Bench-1K. 
-We're integrating high-quality prompts from the Chatbot Arena and generating new ones automatically using LLMs. 
+We're actively expanding the question set to MT-Bench-1K by integrating high-quality prompts from the Chatbot Arena and generating new ones automatically using LLMs. 
 If you have any good ideas, we'd be delighted to hear from you.
 
 **Invitation for collaborations**
-We're actively engaging with various organizations to explore possibilities for standardizing the evaluation of human preferences for LLMs on a large scale. 
-If this interests you or aligns with your research, please feel free to reach out to us.
+
+We're engaging with various organizations to explore possibilities for standardizing the evaluation of human preferences for LLMs at scale. 
+If this interests you, please feel free to reach out to us.
 
 ## Related work
 There has been a great amount of interesting work studying how to evaluate human preferences and how to use strong LLM as judges for evaluation. 
@@ -262,4 +259,4 @@ Below are readily available tools and code to run MT-bench and other metrics use
 - The [Arena Elo calculator](https://github.com/lm-sys/FastChat/blob/main/fastchat/serve/monitor/elo_analysis.py),
 - The MMLU is based on [InstructEval](https://github.com/declare-lab/instruct-eval/blob/main/mmlu.py) and [Chain-of-Thought Hub](https://github.com/FranxYao/chain-of-thought-hub/tree/main/MMLU).
 
-If you wish to see more models on leaderboard, we invite you to [contribute](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsysorg@gmail.com) to provide us with API access.
+If you wish to see more models on leaderboard, we invite you to [contribute to FastChat](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsysorg@gmail.com) to provide us with API access.
