@@ -135,7 +135,7 @@ th:nth-child(1) .arrow-down {
 <p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 19, 2023). The latest and detailed version <a href="https://chat.lmsys.org/?leaderboard" target="_blank">here</a>.</p>
 <table id="Table1" style="display: flex; justify-content: center;" align="left" >
 <tbody>
-<tr> <th>Model</th> <th onclick="sortTable(1, 'Table1')">MT-bench (score) <span class="arrow arrow-down"></span></th> <th onclick="sortTable(2, 'Table1')">Elo Rating <span class="arrow"></span></th> <th onclick="sortTable(3, 'Table1')">MMLU <span class="arrow"></span></th> <th>License</th> </tr>
+<tr> <th>Model</th> <th onclick="sortTable(1, 'Table1')">MT-bench (score) <span class="arrow arrow-down"></span></th> <th onclick="sortTable(2, 'Table1')">Arena Elo Rating <span class="arrow"></span></th> <th onclick="sortTable(3, 'Table1')">MMLU <span class="arrow"></span></th> <th>License</th> </tr>
 
 <tr> <td><a href="https://chat.openai.com/?model=gpt-4" target="_blank">GPT-4</a></td> <td>8.99</td> <td>1227</td> <td>86.4</td>  <td>Proprietary</td> </tr>
 
@@ -157,9 +157,9 @@ th:nth-child(1) .arrow-down {
 
 <tr> <td><a href="https://huggingface.co/OpenAssistant/oasst-sft-6-llama-30b-xor" target="_blank">OpenAssistant-LLaMA-30B</a></td> <td>6.41</td> <td>-</td> <td>55.9</td> <td>Non-commercial</td></tr>
 
-<tr><td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM2-Chat-Bison-001</a></td> <td>6.4</td> <td>1038</td> <td>-</td> <td>Proprietary</td> </tr>
+<tr> <td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM2-Chat-Bison-001</a></td> <td>6.4</td> <td>1038</td> <td>-</td> <td>Proprietary</td> </tr>
 
-<tr><td><a href="https://huggingface.co/mosaicml/mpt-30b-chat" target="_blank">MPT-30B-Chat</a></td> <td>6.39</td> <td>-</td> <td>-</td> <td>CC-BY-NC-SA-4.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/mosaicml/mpt-30b-chat" target="_blank">MPT-30B-Chat</a></td> <td>6.39</td> <td>-</td> <td>-</td> <td>CC-BY-NC-SA-4.0</td> </tr>
 
 <tr> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>6.39</td>  <td>1061</td> <td>52.1</td> <td>Non-commercial</td> </tr>
 
@@ -171,7 +171,7 @@ th:nth-child(1) .arrow-down {
 
 <tr> <td><a href="https://huggingface.co/NousResearch/Nous-Hermes-13b" target="_blank">Nous-Hermes-13B</a></td> <td>5.51</td> <td>-</td> <td>49.3</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/mosaicml/mpt-7b-chat" target="_blank">MPT-7B-Chat</a></td> <td>5.42</td>  <td>956</td> <td>32</td> <td>CC-BY-NC-SA-4.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/mosaicml/mpt-7b-chat" target="_blank">MPT-7B-Chat</a></td> <td>5.42</td> <td>956</td> <td>32</td> <td>CC-BY-NC-SA-4.0</td> </tr>
 
 <tr> <td><a href="https://huggingface.co/nomic-ai/gpt4all-13b-snoozy" target="_blank">GPT4All-13B-Snoozy</a></td> <td>5.41</td> <td>986</td> <td>43</td> <td>Non-commercial</td> </tr>
 
@@ -181,7 +181,7 @@ th:nth-child(1) .arrow-down {
 
 <tr> <td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">Falcon-40B-Instruct</a></td> <td>5.17</td> <td>-</td>  <td>54.7</td>  <td>Apache 2.0</td> </tr>
 
-<tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2O-Oasst-OpenLLaMA-13B</a></td> <td>4.63</td> <td>-</td> <td>42.8</td> <td>Apache 2.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2O-Oasst-OpenLLaMA-13B</a></td> <td>4.63</td> <td>-</td> <td>42.8</td> <td>Apache 2.0</td> </tr>
 
 <tr> <td><a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank">Alpaca-13B</a></td> <td>4.53</td> <td>930</td> <td>48.1</td> <td>Non-commercial</td> </tr>
 
