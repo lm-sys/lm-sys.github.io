@@ -12,7 +12,7 @@
       {
         "name": "Vicuna",
         "architecture": "Base: LLaMA",
-        "size": "Size: 7B, 13B",
+        "size": "Size: 7B, 13B, 33B",
         "desc": "An open-source chatbot impressing GPT-4 with 90%* ChatGPT quality.",
         "link": "/blog/2023-03-30-vicuna"
       }
