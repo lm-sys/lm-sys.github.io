@@ -159,6 +159,8 @@ th:nth-child(1) .arrow-down {
 
 <tr><td><a href="https://cloud.google.com/vertex-ai/docs/release-notes#May_10_2023" target="_blank">PaLM2-Chat-Bison-001</a></td> <td>6.4</td> <td>1038</td> <td>-</td> <td>Proprietary</td> </tr>
 
+<tr><td><a href="https://huggingface.co/mosaicml/mpt-30b-chat" target="_blank">MPT-30B-Chat</a></td> <td>6.39</td> <td>-</td> <td>-</td> <td>CC-BY-NC-SA-4.0</td> </tr>
+
 <tr> <td><a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna-13B</a></td> <td>6.39</td>  <td>1061</td> <td>52.1</td> <td>Non-commercial</td> </tr>
 
 <tr> <td><a href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0" target="_blank">WizardLM-13B</a></td> <td>6.35</td>  <td>1048</td> <td>52.3</td> <td>Non-commercial</td> </tr>
@@ -169,11 +171,13 @@ th:nth-child(1) .arrow-down {
 
 <tr> <td><a href="https://huggingface.co/NousResearch/Nous-Hermes-13b" target="_blank">Nous-Hermes-13B</a></td> <td>5.51</td> <td>-</td> <td>49.3</td> <td>Non-commercial</td> </tr>
 
-<tr> <td><a href="https://huggingface.co/mosaicml/mpt-7b-chat" target="_blank">MPT-7B-Chat</a></td> <td>5.42</td>  <td>956</td> <td>32</td> <td>CC-By-NC-SA-4.0</td> </tr>
+<tr> <td><a href="https://huggingface.co/mosaicml/mpt-7b-chat" target="_blank">MPT-7B-Chat</a></td> <td>5.42</td>  <td>956</td> <td>32</td> <td>CC-BY-NC-SA-4.0</td> </tr>
 
 <tr> <td><a href="https://huggingface.co/nomic-ai/gpt4all-13b-snoozy" target="_blank">GPT4All-13B-Snoozy</a></td> <td>5.41</td> <td>986</td> <td>43</td> <td>Non-commercial</td> </tr>
 
 <tr> <td><a href="https://bair.berkeley.edu/blog/2023/04/03/koala" target="_blank">Koala-13B</a></td> <td>5.35</td> <td>992</td>  <td>44.7</td>  <td>Non-commercial</td> </tr>
+
+<tr> <td><a href="https://huggingface.co/mosaicml/mpt-30b-instruct" target="_blank">MPT-30B-Instruct</a></td> <td>5.22</td> <td>-</td>  <td>-</td>  <td>CC-BY-SA 3.0</td> </tr>
 
 <tr> <td><a href="https://huggingface.co/tiiuae/falcon-40b-instruct" target="_blank">Falcon-40B-Instruct</a></td> <td>5.17</td> <td>-</td>  <td>54.7</td>  <td>Apache 2.0</td> </tr>
 
