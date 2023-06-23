@@ -231,7 +231,7 @@ We crafted 10 multi-turn questions per category, yielding a set of 160 questions
 ### But Still, How to Grade Chatbots' Answers?
 Though we believe human preference is the gold standard, it is notoriously slow and expensive to collect. 
 In our first [Vicuna blogpost](https://lmsys.org/blog/2023-03-30-vicuna/), we explored an automated evaluation pipeline based on GPT-4. 
-This approach has since got popular and adopted in several [concurrent and follow-up works](http://localhost:3000/blog/2023-06-22-leaderboard/#related-work).
+This approach has since got popular and adopted in several [concurrent and follow-up works](#related-work).
 
 In our latest paper, ["Judging LLM-as-a-judge"](https://arxiv.org/abs/2306.05685), we conducted a systematic study to answer how reliable those LLM judges are. 
 We provide a brief overview of conclusions here but recommend reading the paper for more details.
