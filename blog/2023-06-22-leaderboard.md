@@ -140,7 +140,7 @@ th:nth-child(1) .arrow-down {
 
 <tr> <td><a target="_blank" href="https://openai.com/research/gpt-4"> GPT-4 </a></td>  <td>8.99</td>  <td>1227</td>  <td>86.4</td>  <td>Proprietary</td> </tr>
 <tr> <td><a target="_blank" href="https://openai.com/blog/chatgpt"> GPT-3.5-turbo </a></td>  <td>7.94</td>  <td>1130</td>  <td>70.0</td>  <td>Proprietary</td> </tr>
-<tr> <td><a target="_blank" href="https://www.anthropic.com/index/introducing-claude"> Claude-v1 </a></td>  <td>7.9</td>  <td>1178</td>  <td>75.6</td>  <td>Proprietary</td> </tr>
+<tr> <td><a target="_blank" href="https://www.anthropic.com/index/introducing-claude"> Claude-v1 </a></td>  <td>7.90</td>  <td>1178</td>  <td>75.6</td>  <td>Proprietary</td> </tr>
 <tr> <td><a target="_blank" href="https://www.anthropic.com/index/introducing-claude"> Claude-instant-v1 </a></td>  <td>7.85</td>  <td>1156</td>  <td>61.3</td>  <td>Proprietary</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/lmsys/vicuna-33b-v1.3"> Vicuna-33B </a></td>  <td>7.12</td>  <td>-</td>  <td>59.2</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/WizardLM/WizardLM-30B-V1.0"> WizardLM-30B </a></td>  <td>7.01</td>  <td>-</td>  <td>58.7</td>  <td>Non-commercial</td> </tr>
@@ -148,7 +148,7 @@ th:nth-child(1) .arrow-down {
 <tr> <td><a target="_blank" href="https://huggingface.co/allenai/tulu-30b"> Tulu-30B </a></td>  <td>6.43</td>  <td>-</td>  <td>58.1</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/timdettmers/guanaco-65b-merged"> Guanaco-65B </a></td>  <td>6.41</td>  <td>-</td>  <td>62.1</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/OpenAssistant/oasst-sft-6-llama-30b-xor"> OpenAssistant-LLaMA-30B </a></td>  <td>6.41</td>  <td>-</td>  <td>56.0</td>  <td>Non-commercial</td> </tr>
-<tr> <td><a target="_blank" href="https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models#foundation_models"> PaLM-Chat-Bison-001 </a></td>  <td>6.4</td>  <td>1038</td>  <td>-</td>  <td>Proprietary</td> </tr>
+<tr> <td><a target="_blank" href="https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models#foundation_models"> PaLM-Chat-Bison-001 </a></td>  <td>6.40</td>  <td>1038</td>  <td>-</td>  <td>Proprietary</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/lmsys/vicuna-13b-v1.3"> Vicuna-13B </a></td>  <td>6.39</td>  <td>1061</td>  <td>52.1</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/mosaicml/mpt-30b-chat"> MPT-30B-chat </a></td>  <td>6.39</td>  <td>-</td>  <td>50.4</td>  <td>CC-BY-NC-SA-4.0</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0"> WizardLM-13B </a></td>  <td>6.35</td>  <td>1048</td>  <td>52.3</td>  <td>Non-commercial</td> </tr>
