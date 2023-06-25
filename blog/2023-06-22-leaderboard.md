@@ -147,10 +147,10 @@ th:nth-child(1) .arrow-down {
 <tr> <td><a target="_blank" href="https://huggingface.co/timdettmers/guanaco-33b-merged"> Guanaco-33B </a></td>  <td>6.53</td>  <td>1065</td>  <td>57.6</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/allenai/tulu-30b"> Tulu-30B </a></td>  <td>6.43</td>  <td>-</td>  <td>58.1</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/timdettmers/guanaco-65b-merged"> Guanaco-65B </a></td>  <td>6.41</td>  <td>-</td>  <td>62.1</td>  <td>Non-commercial</td> </tr>
-<tr> <td><a target="_blank" href="https://huggingface.co/OpenAssistant/oasst-sft-6-llama-30b-xor"> OpenAssistant-LLaMA-30B </a></td>  <td>6.41</td>  <td>-</td>  <td>55.9</td>  <td>Non-commercial</td> </tr>
+<tr> <td><a target="_blank" href="https://huggingface.co/OpenAssistant/oasst-sft-6-llama-30b-xor"> OpenAssistant-LLaMA-30B </a></td>  <td>6.41</td>  <td>-</td>  <td>56.0</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models#foundation_models"> PaLM-Chat-Bison-001 </a></td>  <td>6.4</td>  <td>1038</td>  <td>-</td>  <td>Proprietary</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/lmsys/vicuna-13b-v1.3"> Vicuna-13B </a></td>  <td>6.39</td>  <td>1061</td>  <td>52.1</td>  <td>Non-commercial</td> </tr>
-<tr> <td><a target="_blank" href="https://huggingface.co/mosaicml/mpt-30b-chat"> MPT-30B-chat </a></td>  <td>6.39</td>  <td>-</td>  <td>-</td>  <td>CC-BY-NC-SA-4.0</td> </tr>
+<tr> <td><a target="_blank" href="https://huggingface.co/mosaicml/mpt-30b-chat"> MPT-30B-chat </a></td>  <td>6.39</td>  <td>-</td>  <td>50.4</td>  <td>CC-BY-NC-SA-4.0</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/WizardLM/WizardLM-13B-V1.0"> WizardLM-13B </a></td>  <td>6.35</td>  <td>1048</td>  <td>52.3</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/lmsys/vicuna-7b-v1.3"> Vicuna-7B </a></td>  <td>6</td>  <td>1008</td>  <td>47.1</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/project-baize/baize-v2-13b"> Baize-v2-13B </a></td>  <td>5.75</td>  <td>-</td>  <td>48.9</td>  <td>Non-commercial</td> </tr>
@@ -158,7 +158,7 @@ th:nth-child(1) .arrow-down {
 <tr> <td><a target="_blank" href="https://huggingface.co/mosaicml/mpt-7b-chat"> MPT-7B-Chat </a></td>  <td>5.42</td>  <td>956</td>  <td>32.0</td>  <td>CC-BY-NC-SA-4.0</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/nomic-ai/gpt4all-13b-snoozy"> GPT4All-13B-Snoozy </a></td>  <td>5.41</td>  <td>986</td>  <td>43.0</td>  <td>Non-commercial</td> </tr>
 <tr> <td><a target="_blank" href="https://bair.berkeley.edu/blog/2023/04/03/koala/"> Koala-13B </a></td>  <td>5.35</td>  <td>992</td>  <td>44.7</td>  <td>Non-commercial</td> </tr>
-<tr> <td><a target="_blank" href="https://huggingface.co/mosaicml/mpt-30b-instruct"> MPT-30B-Instruct </a></td>  <td>5.22</td>  <td>-</td>  <td>-</td>  <td>CC-BY-SA 3.0</td> </tr>
+<tr> <td><a target="_blank" href="https://huggingface.co/mosaicml/mpt-30b-instruct"> MPT-30B-Instruct </a></td>  <td>5.22</td>  <td>-</td>  <td>47.8</td>  <td>CC-BY-SA 3.0</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/tiiuae/falcon-40b-instruct"> Falcon-40B-Instruct </a></td>  <td>5.17</td>  <td>-</td>  <td>54.7</td>  <td>Apache 2.0</td> </tr>
 <tr> <td><a target="_blank" href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b"> H2O-Oasst-OpenLLaMA-13B </a></td>  <td>4.63</td>  <td>-</td>  <td>42.8</td>  <td>Apache 2.0</td> </tr>
 <tr> <td><a target="_blank" href="https://crfm.stanford.edu/2023/03/13/alpaca.html"> Alpaca-13B </a></td>  <td>4.53</td>  <td>930</td>  <td>48.1</td>  <td>Non-commercial</td> </tr>
