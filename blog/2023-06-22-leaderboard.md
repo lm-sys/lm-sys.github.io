@@ -343,7 +343,7 @@ You are welcome to check them out and see more opinions on this topic:
 ## Links
 Below are readily available tools and code to run MT-bench and other metrics used in this blogpost:
 - The MT-bench uses [fastchat.llm_judge](https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge),
-- The [Arena Elo calculator](https://github.com/lm-sys/FastChat/blob/main/fastchat/serve/monitor/elo_analysis.py),
+- The [Arena Elo calculator](https://colab.research.google.com/drive/1RAWb22-PFNI-X1gPVzc927SGUdfr6nsR?usp=sharing).
 - The MMLU is based on [InstructEval](https://github.com/declare-lab/instruct-eval/blob/main/mmlu.py) and [Chain-of-Thought Hub](https://github.com/FranxYao/chain-of-thought-hub/tree/main/MMLU).
 
 If you wish to see more models on leaderboard, we invite you to [contribute to FastChat](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsysorg@gmail.com) to provide us with API access.
