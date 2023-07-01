@@ -2,6 +2,13 @@
   {
     "name": "Models",
     "entries": [
+      { 
+        "name": "LongChat",
+        "architecture": "Base: LLaMA",
+        "size": "Size: 7B, 13B",
+        "desc": "A new series of open-source chatbots with 16K long context length.",
+        "link": "/blog/2023-06-29-longchat"
+      },
       {
         "name": "FastChat-T5",
         "architecture": "Base: Flan-T5",
@@ -27,6 +34,13 @@
         "size": "",
         "desc": "A benchmark platform for large language models (LLMs) that features anonymous, randomized battles in a crowdsourced manner. It comes with a leaderboard based on Elo ratings.",
         "link": "https://arena.lmsys.org/"
+      },
+      {
+        "name": "LongEval",
+        "architecture": "",
+        "size": "",
+        "desc": "A testsuite for evaluating the long-context understanding ability of chatbots",
+        "link": "https://github.com/DachengLi1/LongChat"
       }
     ]
   },

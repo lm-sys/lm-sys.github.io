@@ -69,6 +69,16 @@ export default function Home() {
                   </p>
                 </div>
               </Link>
+              
+              <Link href="https://github.com/DachengLi1/LongChat">
+                <div className="">
+                  <p className="text-2xl pb-1">LongChat</p>
+                  <hr />
+                  <p className="pt-2">
+                    A series of Long-context chatbots and an evaluation toolkit, available in 7B and 13B sizes, 16K tokens.
+                  </p>
+                </div>
+              </Link>
 
               <Link href="https://github.com/lm-sys/FastChat">
                 <div className="">
