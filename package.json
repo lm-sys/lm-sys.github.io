@@ -1,11 +1,12 @@
 {
   "name": "lmsysorg",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start --port 3005",
+    "rss": "node scripts/gen-rss.mjs",
+    "dev": "npm run rss && next dev",
+    "build": "npm run rss && next build",
+    "start": "npm run rss && next start --port 3005",
     "lint": "next lint",
     "export": "next export && next-image-export-optimizer",
     "deploy": "npm run build && npm run export  && touch ./out/.nojekyll"
@@ -26,6 +27,7 @@
     "react-dom": "18.1.0",
     "react-icons": "^4.4.0",
     "react-slideshow-image": "^3.7.5",
+    "rss": "^1.2.2",
     "tailwind-children": "^0.5.0"
   },
   "devDependencies": {
