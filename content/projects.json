@@ -2,11 +2,18 @@
   {
     "name": "Models",
     "entries": [
+      {
+        "name": "Vicuna",
+        "architecture": "Base: LLaMA",
+        "size": "Size: 7B, 13B, 33B",
+        "desc": "An open-source chatbot impressing GPT-4 with 90%* ChatGPT quality.",
+        "link": "/blog/2023-03-30-vicuna"
+      },
       { 
         "name": "LongChat",
         "architecture": "Base: LLaMA",
         "size": "Size: 7B, 13B",
-        "desc": "A new series of open-source chatbots with 16K long context length.",
+        "desc": "A series of open-source chatbots with 16K long context length.",
         "link": "/blog/2023-06-29-longchat"
       },
       {
@@ -15,13 +22,6 @@
         "size": "Size: 3B",
         "desc": "A commercial-friendly, compact, yet powerful chat assistant fine-tuned from Flan-T5.",
         "link": "https://github.com/lm-sys/FastChat#fastchat-t5"
-      },
-      {
-        "name": "Vicuna",
-        "architecture": "Base: LLaMA",
-        "size": "Size: 7B, 13B, 33B",
-        "desc": "An open-source chatbot impressing GPT-4 with 90%* ChatGPT quality.",
-        "link": "/blog/2023-03-30-vicuna"
       }
     ]
   },
