@@ -62,7 +62,13 @@ export default function Nav() {
         >
           <FaTwitter />
         </a>
-        <Link href="/rss.xml"><FaRss /></Link>
+        <a
+          href="https://lmsys.org/rss.xml"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FaRss />
+        </a>
       </div>
       <Hamburger />
     </div>
@@ -190,7 +196,13 @@ function Hamburger() {
             >
               <FaTwitter />
             </a>
-            <Link href="/rss.xml"><FaRss /></Link>
+            <a
+              href="https://lmsys.org/rss.xml"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaRss />
+            </a>
           </div>
         </div>
       </Menu>
