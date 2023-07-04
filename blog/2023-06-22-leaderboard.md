@@ -132,8 +132,8 @@ th:nth-child(1) .arrow-down {
 
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 19, 2023). The latest and detailed version <a href="https://chat.lmsys.org/?leaderboard" target="_blank">here</a>.</p>
-<table id="Table1" style="display: flex; justify-content: center;" align="left" >
+<p style="color:gray;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 19, 2023). The latest and detailed version <a href="https://chat.lmsys.org/?leaderboard" target="_blank">here</a>.</p>
+<table id="Table1" style="display: flex;" align="left" >
 <tbody>
 
 <tr> <th>Model</th> <th onclick="sortTable(1, 'Table1')">MT-bench (score) <span class="arrow arrow-down"></span></th> <th onclick="sortTable(2, 'Table1')">Arena Elo Rating <span class="arrow"></span></th> <th onclick="sortTable(3, 'Table1')">MMLU <span class="arrow"></span></th> <th>License</th> </tr>
