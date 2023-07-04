@@ -133,7 +133,8 @@ th:nth-child(1) .arrow-down {
 
 <br>
 <p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - June 19, 2023). The latest and detailed version <a href="https://chat.lmsys.org/?leaderboard" target="_blank">here</a>.</p>
-<table id="Table1" style="display: flex; justify-content: center;" align="left" >
+<div style="display: flex; justify-content: center;">
+<table id="Table1" >
 <tbody>
 
 <tr> <th>Model</th> <th onclick="sortTable(1, 'Table1')">MT-bench (score) <span class="arrow arrow-down"></span></th> <th onclick="sortTable(2, 'Table1')">Arena Elo Rating <span class="arrow"></span></th> <th onclick="sortTable(3, 'Table1')">MMLU <span class="arrow"></span></th> <th>License</th> </tr>
@@ -170,9 +171,9 @@ th:nth-child(1) .arrow-down {
 <tr> <td><a target="_blank" href="https://huggingface.co/stabilityai/stablelm-tuned-alpha-7b"> StableLM-Tuned-Alpha-7B </a></td>  <td>2.75</td>  <td>871</td>  <td>24.4</td>  <td>CC-BY-NC-SA-4.0</td> </tr>
 <tr> <td><a target="_blank" href="https://arxiv.org/abs/2302.13971"> LLaMA-13B </a></td>  <td>2.61</td>  <td>826</td>  <td>47.0</td>  <td>Non-commercial</td> </tr>
 
-
 </tbody>
 </table>
+</div>
 
 &shy;
 
@@ -203,7 +204,7 @@ MT-Bench serves as a **quality-controlled complement** to our crowd-sourced base
 Through running the Chatbot Arena for 2 months and analyzing our users' prompts, we've identified 8 primary categories of user prompts: Writing, Roleplay, Extraction, Reasoning, Math, Coding, Knowledge I (STEM), and Knowledge II (humanities/social science). 
 We crafted 10 multi-turn questions per category, yielding a set of 160 questions in total. We display some sample questions below in Figure 1. You can find more [here](https://huggingface.co/spaces/lmsys/mt-bench).
 
-<img src="/images/blog/leaderboard_week8/sample_question.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 1500px;"></img>
+<img src="/images/blog/leaderboard_week8/sample_question.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 <p style="color:gray; text-align: center;">Figure 1: Sample questions from the MT-Bench.</p>
 
 ### But Still, How to Grade Chatbots' Answers?
@@ -242,7 +243,7 @@ To delve deeper into the distinguishing factors among chatbots, we select a few 
 GPT-4 shows superior performance in Coding and Reasoning compared to GPT-3.5/Claude, while Vicuna-13B lags significantly behind in several specific categories: Extraction, Coding, and Math. 
 This suggests there is still ample room for improvement for open-source models.
 
-<img src="/images/blog/leaderboard_week8/ability_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 1000px;"></img>
+<img src="/images/blog/leaderboard_week8/ability_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 <p style="color:gray; text-align: center;">Figure 2: The comparison of 6 representative LLMs regarding their abilities in 8 categories: Writing, Roleplay, Reasoning, Math, Coding, Extraction, STEM, Humanities.</p>
 
 
@@ -252,7 +253,8 @@ We next analyze the multi-turn scores of selected models, presented in Table 2.
 
 <br>
 <p style="color:gray; text-align: center;">Table 2. The breakdown of LLMs' MT-bench scores in the 1st and 2nd turn of a dialogue. Full score is 10.</p>
-<table style="display: flex; justify-content: center;" align="left" >
+<div style="display: flex; justify-content: center;">
+<table>
 <tbody>
 <tr> <th>Model</th> <th>Average 1st Turn Score</th> <th>Average 2nd Turn Score</th> <th>Score Difference</th>
 
@@ -285,6 +287,7 @@ We next analyze the multi-turn scores of selected models, presented in Table 2.
 <tr><td><a href="https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-13b" target="_blank">H2OGPT-Oasst-Open-LLaMA-13B</a></td> <td>5.51</td> <td>3.74</td> <td>-1.78</td> </tr>
 </tbody>
 </table>
+</div>
 
 &shy;
 
@@ -301,7 +304,7 @@ GPT-4 provides thorough and logical feedback to support its judgment.
 Our [study](https://arxiv.org/abs/2306.05685) found that such reviews are beneficial in guiding humans to make better-informed decisions (refer to Section 4.2 for more details). 
 All the GPT-4 judgments can be found on our [demo site](https://huggingface.co/spaces/lmsys/mt-bench).
 
-<img src="/images/blog/leaderboard_week8/explainability_sample.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 1000px;"></img>
+<img src="/images/blog/leaderboard_week8/explainability_sample.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 <p style="color:gray; text-align: center;">Figure 3: MT-bench provides more explainability in evaluating LLMs' human preferences.</p>
 
 In conclusion, we have shown that MT-Bench effectively differentiates between chatbots of varying capabilities. 
