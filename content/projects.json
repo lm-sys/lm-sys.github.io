@@ -13,7 +13,7 @@
         "name": "LongChat",
         "architecture": "Base: LLaMA",
         "size": "Size: 7B, 13B",
-        "desc": "A series of open-source chatbots with 16K long context length.",
+        "desc": "A series of open-source chatbots with 16K context length.",
         "link": "/blog/2023-06-29-longchat"
       },
       {
@@ -36,10 +36,17 @@
         "link": "https://arena.lmsys.org/"
       },
       {
+        "name": "MT-Bench",
+        "architecture": "",
+        "size": "",
+        "desc": "A set of challenging, multi-turn, and open-ended questions for evaluating chat assistants. Strong LLMs like GPT-4 act as judges and assess the quality of the models' responses as a proxy of human raters.",
+        "link": "https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge"
+      },
+      {
         "name": "LongEval",
         "architecture": "",
         "size": "",
-        "desc": "A testsuite for evaluating the long-context understanding ability of chatbots",
+        "desc": "A test suite for evaluating the long-context understanding ability of chatbots",
         "link": "https://github.com/DachengLi1/LongChat"
       }
     ]

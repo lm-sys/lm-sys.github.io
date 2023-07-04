@@ -30,7 +30,7 @@ export default function Home() {
               </div>
               <p className="italic pb-3">
               </p>
-              <p className="text-lg py-4 max-w-lg flex m-auto">
+              <p className="pt-2 py-4 max-w-lg flex m-auto">
                   The Large Model Systems Organization develops large models and systems that are open, accessible, and scalable.
               </p>
             </div>
@@ -50,7 +50,7 @@ export default function Home() {
                 </div>
               </Link>
 
-              <Link href="https://arena.lmsys.org">
+              <Link href="https://chat.lmsys.org/?arena">
                 <div className="">
                   <p className="text-2xl pb-1">Chatbot Arena</p>
                   <hr />
@@ -75,7 +75,7 @@ export default function Home() {
                   <p className="text-2xl pb-1">LongChat</p>
                   <hr />
                   <p className="pt-2">
-                    A series of Long-context chatbots and an evaluation toolkit, available in 7B and 13B sizes, 16K tokens.
+                    A chatbot supporting 16K context length, available in 7B and 13B sizes.
                   </p>
                 </div>
               </Link>
@@ -89,6 +89,17 @@ export default function Home() {
                   </p>
                 </div>
               </Link>
+
+              <Link href="https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge">
+                <div className="">
+                  <p className="text-2xl pb-1">MT-Bench</p>
+                  <hr />
+                  <p className="pt-2">
+                    A set of challenging, multi-turn, and open-ended questions for evaluating chatbots.
+                  </p>
+                </div>
+              </Link>
+
             </div>
           </div>
         </div>
