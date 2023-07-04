@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { slide as Menu } from "react-burger-menu";
-import { FaDiscord, FaEnvelope, FaGithub, FaTwitter } from "react-icons/fa";
+import {FaDiscord, FaEnvelope, FaGithub, FaRss, FaTwitter} from "react-icons/fa";
 
 export default function Nav() {
   return (
@@ -62,6 +62,7 @@ export default function Nav() {
         >
           <FaTwitter />
         </a>
+        <Link href="/rss.xml"><FaRss /></Link>
       </div>
       <Hamburger />
     </div>
@@ -189,6 +190,7 @@ function Hamburger() {
             >
               <FaTwitter />
             </a>
+            <Link href="/rss.xml"><FaRss /></Link>
           </div>
         </div>
       </Menu>

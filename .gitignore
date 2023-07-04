@@ -37,3 +37,6 @@ package-lock.json
 
 # vim
 *.swp
+
+# rss
+rss.xml
