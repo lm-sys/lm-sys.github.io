@@ -14,7 +14,7 @@ In this update, we are excited to welcome the following models joining the [Chat
 
 A new Elo rating leaderboard based on the 27K anonymous voting data collected **in the wild** between April 24 and May 22, 2023 is released in Table 1 below. 
 
-We provide a [Google Colab notebook](https://colab.research.google.com/drive/17L9uCiAivzWfzOxo2Tb9RMauT7vS6nVU?usp=sharing) to analyze the voting data, including the computation of the Elo ratings.
+We provide a [Google Colab notebook](https://colab.research.google.com/drive/1RAWb22-PFNI-X1gPVzc927SGUdfr6nsR?usp=sharing) to analyze the voting data, including the computation of the Elo ratings.
 You can also try the voting [demo](https://arena.lmsys.org).
 
 <style>
@@ -23,7 +23,7 @@ td {text-align: left}
 </style>
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - May 22, 2023). The latest and detailed version <a href="https://chat.lmsys.org/?leaderboard" target="_blank">here</a>.</p>
+<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - May 22, 2023). The latest and detailed version <a href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard" target="_blank">here</a>.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Rank</th> <th>Model</th> <th>Elo Rating</th> <th>Description</th> <th>License</th> </tr>

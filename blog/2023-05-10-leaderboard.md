@@ -14,7 +14,7 @@ In this update, we have added 4 new yet strong players into the Arena, including
 - Anthropic Claude-v1
 - RWKV-4-Raven-14B 
 
-Table 1 displays the Elo ratings of all 13 models, which are based on the 13K voting data and calculations shared in this [notebook](https://colab.research.google.com/drive/1iI_IszGAwSMkdfUrIDI6NfTG7tGDDRxZ?usp=sharing). You can also try the voting [demo](https://arena.lmsys.org).
+Table 1 displays the Elo ratings of all 13 models, which are based on the 13K voting data and calculations shared in this [notebook](https://colab.research.google.com/drive/1RAWb22-PFNI-X1gPVzc927SGUdfr6nsR?usp=sharing). You can also try the voting [demo](https://arena.lmsys.org).
 
 <style>
 th {text-align: left}
@@ -22,7 +22,7 @@ td {text-align: left}
 </style>
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - May 8, 2023). The latest and detailed version <a href="https://chat.lmsys.org/?leaderboard" target="_blank">here</a>.</p>
+<p style="color:gray; text-align: center;">Table 1. LLM Leaderboard (Timeframe: April 24 - May 8, 2023). The latest and detailed version <a href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard" target="_blank">here</a>.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Rank</th> <th>Model</th> <th>Elo Rating</th> <th>Description</th> <th>License</th> </tr>
@@ -122,7 +122,7 @@ Lastly, we present two language-specific leaderboards, by isolating the conversa
 <img src="/images/blog/leaderboard_week2/english_vs_non_english.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 <p style="color:gray; text-align: center;">Figure 4: The English-only and non-English leaderboards.</p>
 
-More figures, analyses, and calculations can be found in this [notebook](https://colab.research.google.com/drive/1iI_IszGAwSMkdfUrIDI6NfTG7tGDDRxZ?usp=sharing).
+More figures, analyses, and calculations can be found in this [notebook](https://colab.research.google.com/drive/1RAWb22-PFNI-X1gPVzc927SGUdfr6nsR?usp=sharing).
 
 ## Next Steps
 
