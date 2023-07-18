@@ -7,21 +7,19 @@ previewImg: /images/blog/arena/cover.png
 
 Since its launch three months ago, [Chatbot Arena](https://lmsys.org/blog/2023-05-03-arena/) has become a widely cited LLM evaluation platform that emphasizes large-scale, community-based, and interactive human evaluation. In that short time span, we collected around 53K votes from 19K unique IP addresses for 22 models.
 
-In this blog post, we are releasing
-- an updated leaderboard with more models
-- **33K crowd-sourced conversations** with human preference annotations from Chatbot Arena
-- **3K expert-level human annotations** from MT-bench
+In this blog post, we are releasing an updated leaderboard with more models and two datasets for human preferences related study:
+- **33K crowd-sourced conversations** with human preference annotations from Chatbot Arena. ([link](https://huggingface.co/datasets/lmsys/chatbot_arena_conversations))
+- **3K expert-level human annotations** from MT-bench. ([link](https://huggingface.co/datasets/lmsys/mt_bench_human_judgments))
 
-## An updated leaderboard
+## Updated Leaderboard
 
 We are hosting the latest leaderboard at [lmsys/chatbot-arena-leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard). Below is a screenshot. Since the last update, we added two 30B models: Vicuna-33B-v1.3 and MPT-30B-chat, both of which perform very well in the arena.
-
-We also tested the MT-bench scores for new models including Claude-2, WizardLM-13B-v1.1, XGen-7B-8K-Inst, and ChatGLM2-6B. You are welcome to check out the interactive [lmsys/chatbot-arena-leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) to sort the models according to different metrics.
+We also tested the MT-bench scores (with GPT-4 evaluation) for new models including Claude-2, WizardLM-13B-v1.1, XGen-7B-8K-Inst, and ChatGLM2-6B. You are welcome to check out the interactive [lmsys/chatbot-arena-leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) to sort the models according to different metrics.
 
 <img src="/images/blog/leaderboard_week12/leaderboard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 <p style="color:gray; text-align: center;">Figure 1. Chatbot Arena Leaderboard. </p>
 
-## 33K Chatbot Arena Conversation Data
+## Dataset 1: 33K Chatbot Arena Conversation Data
 Link: [lmsys/chatbot_arena_conversations](https://huggingface.co/datasets/lmsys/chatbot_arena_conversations)
 
 This dataset contains 33K cleaned conversations collected on Chatbot Arena from April to June 2023. Each sample includes two model names, their full conversation text, the user vote and anonymized user ID, a detected language tag, an OpenAI moderation API tag, an additional toxic tag, and a timestamp.
@@ -49,7 +47,7 @@ Therefore, we believe this data will help the AI research community answer impor
 ### Visualization and Elo Rating Calculation
 This Colab [notebook](https://colab.research.google.com/drive/1J2Wf7sxc9SVmGnSX_lImhT246pxNVZip?usp=sharing) provides some visualizations and shows how to compute Elo ratings with the dataset.
 
-## 3K MT-bench Human Annotations
+## Dataset 2: 3K MT-bench Human Annotations
 Link: [lmsys/mt_bench_human_judgments](https://huggingface.co/datasets/lmsys/mt_bench_human_judgments)
 
 In addition to the crowd-sourced evaluation with Chatbot Arena, we also conducted a controlled human evaluation with MT-bench.
@@ -58,3 +56,6 @@ This dataset contains 3.3K expert-level human annotations for model responses ge
 
 ### Agreement Calculation
 This Colab [notebook](https://colab.research.google.com/drive/1ctgygDRJhVGUJTQy8-bRZCl1WNcT8De6?usp=sharing) shows how to compute the agreement between humans and GPT-4 judge with the dataset. Our results show that humans and GPT-4 judge achieve over 80\% agreement, the same level of agreement between humans.
+
+## Acknowlement
+We thank the whole community for contributing to the arena dataset.
