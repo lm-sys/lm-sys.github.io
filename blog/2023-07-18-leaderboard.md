@@ -38,7 +38,7 @@ Therefore, we believe this data will help the AI research community answer impor
 - Build model selection and request dispatching algorithms
 - Study the design and application of inappropriate content filtering mechanisms
 
-## Disclaimer
+### Disclaimer
 - This dataset includes offensive conversations. It is not intended for training dialogue agents without applying appropriate filtering measures.
 - Statements or opinions made in this dataset do not reflect the views of researchers or institutions involved in the data collection effort.
 - Users of this data are responsible for ensuring its appropriate use, which includes abiding by any applicable laws and regulations.
