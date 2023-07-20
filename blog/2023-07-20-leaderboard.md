@@ -11,15 +11,21 @@ In this blog post, we are releasing an updated leaderboard with more models and 
 - **33K crowd-sourced conversations** with human preference annotations from Chatbot Arena. ([link](https://huggingface.co/datasets/lmsys/chatbot_arena_conversations))
 - **3K expert-level human annotations** from MT-bench. ([link](https://huggingface.co/datasets/lmsys/mt_bench_human_judgments))
 
-As estimated by this Llama2 analysis blog [post](https://www.interconnects.ai/p/llama-2-from-meta?sd=pf), Meta spent about 8 million on human preference data for LLama 2, so we think these dataset are highly valuable.
+As estimated by this Llama2 analysis blog [post](https://www.interconnects.ai/p/llama-2-from-meta?sd=pf), Meta spent about 8 million on human preference data for LLama 2 and that dataset is not avaialble now.
+Therefore, we think our datasets are highly valuable due to the expensive nature of obtaining human preferences and the limited availability of open, high-quality datasets.
 
 ## Updated Leaderboard
 
 We are hosting the latest leaderboard at [lmsys/chatbot-arena-leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard). Below is a screenshot. Since the last update, we added two 30B models: Vicuna-33B-v1.3 and MPT-30B-chat, both of which perform very well in the arena.
-We also tested the MT-bench scores (with GPT-4 evaluation) for new models including Claude-2, WizardLM-13B-v1.1, XGen-7B-8K-Inst, and ChatGLM2-6B. You are welcome to check out the interactive [lmsys/chatbot-arena-leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) to sort the models according to different metrics.
+Two days ago, we also introduced Llama 2 and Claude 2 to the arena. The leaderboard will soon include them after we get enough votes.
+Please help us by casting your votes at our voting [website](https://chat.lmsys.org/?arena).
+
+Besides the slowly updated Arena Elo ratings, we also use MT-bench, a fast GPT-4 based automatic evaluation pipeline to evaluate all new models, including LLama 2 (chat), Claude 2, WizardLM-13B-v1.1, XGen-7B-8K-Inst, and ChatGLM2-6B.
+You are welcome to check out the interactive [lmsys/chatbot-arena-leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) to sort the models according to different metrics.
+Some early evaluation results of LLama 2 can be found in our [tweets](https://twitter.com/lmsysorg/status/1681744327192752128).
 
 <img src="/images/blog/leaderboard_week12/leaderboard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
-<p style="color:gray; text-align: center;">Figure 1. Chatbot Arena Leaderboard. </p>
+<p style="color:gray; text-align: center;">Figure 1. Chatbot Arena Leaderboard  <a href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard" target="_blank">(see more)</a> </p>
 
 ## Dataset 1: 33K Chatbot Arena Conversation Data
 Link: [lmsys/chatbot_arena_conversations](https://huggingface.co/datasets/lmsys/chatbot_arena_conversations)
@@ -40,15 +46,21 @@ Therefore, we believe this data will help the AI research community answer impor
 - Build model selection and request dispatching algorithms
 - Study the design and application of inappropriate content filtering mechanisms
 
-### Disclaimer
-- This dataset includes offensive conversations. It is not intended for training dialogue agents without applying appropriate filtering measures.
+### Disclaimers and Terms
+- This dataset includes offensive conversations. It is not intended for training dialogue agents without applying appropriate filtering measures. We are not responsible for any outputs of the models trained on this dataset.
 - Statements or opinions made in this dataset do not reflect the views of researchers or institutions involved in the data collection effort.
 - Users of this data are responsible for ensuring its appropriate use, which includes abiding by any applicable laws and regulations.
 - Users of this data should adhere to the terms of use for a specific model when using its direct outputs.
 - Please contact us if you find any issues with the dataset.
 
 ### Visualization and Elo Rating Calculation
-This Colab [notebook](https://colab.research.google.com/drive/1J2Wf7sxc9SVmGnSX_lImhT246pxNVZip?usp=sharing) provides some visualizations and shows how to compute Elo ratings with the dataset.
+This Colab [notebook](https://colab.research.google.com/drive/1J2Wf7sxc9SVmGnSX_lImhT246pxNVZip?usp=sharing) provides some visualizations and shows how to compute Elo ratings with the dataset. We pasted some figures here.
+
+<img src="/images/blog/leaderboard_week12/battle_count.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<p style="color:gray; text-align: center;">Figure 2. Battle Counts of Each Models Pair.</p>
+
+<img src="/images/blog/leaderboard_week12/win_rate.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<p style="color:gray; text-align: center;">Figure 3. Fraction of Model A Wins for All Non-tied A vs. B Battles.</p>
 
 ## Dataset 2: 3K MT-bench Human Annotations
 Link: [lmsys/mt_bench_human_judgments](https://huggingface.co/datasets/lmsys/mt_bench_human_judgments)
@@ -62,3 +74,4 @@ This Colab [notebook](https://colab.research.google.com/drive/1ctgygDRJhVGUJTQy8
 
 ## Acknowlement
 We thank the whole community for contributing to the arena dataset.
+We also plan to gradually release more conversations in the future after doing a thorough cleanup.
