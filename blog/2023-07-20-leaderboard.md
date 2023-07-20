@@ -1,7 +1,7 @@
 ---
 title: "Chatbot Arena Leaderboard Week 12: Conversation Dataset Release"
 author: "LMSYS Org"
-date: "July 18, 2023"
+date: "July 20, 2023"
 previewImg: /images/blog/arena/cover.png
 ---
 
