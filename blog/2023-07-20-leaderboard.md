@@ -7,9 +7,11 @@ previewImg: /images/blog/arena/cover.png
 
 Since its launch three months ago, [Chatbot Arena](https://lmsys.org/blog/2023-05-03-arena/) has become a widely cited LLM evaluation platform that emphasizes large-scale, community-based, and interactive human evaluation. In that short time span, we collected around 53K votes from 19K unique IP addresses for 22 models.
 
-In this blog post, we are releasing an updated leaderboard with more models and two datasets for human preferences related study:
+In this blog post, we are releasing an updated leaderboard with more models and two datasets for human preference related study:
 - **33K crowd-sourced conversations** with human preference annotations from Chatbot Arena. ([link](https://huggingface.co/datasets/lmsys/chatbot_arena_conversations))
 - **3K expert-level human annotations** from MT-bench. ([link](https://huggingface.co/datasets/lmsys/mt_bench_human_judgments))
+
+As estimated by this Llama2 analysis blog [post](https://www.interconnects.ai/p/llama-2-from-meta?sd=pf), Meta spent about 8 million on human preference data for LLama 2, so we think these dataset are highly valuable.
 
 ## Updated Leaderboard
 
