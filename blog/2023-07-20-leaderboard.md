@@ -56,11 +56,14 @@ Therefore, we believe this data will help the AI research community answer impor
 ### Visualization and Elo Rating Calculation
 This Colab [notebook](https://colab.research.google.com/drive/1J2Wf7sxc9SVmGnSX_lImhT246pxNVZip?usp=sharing) provides some visualizations and shows how to compute Elo ratings with the dataset. We pasted some figures here.
 
-<img src="/images/blog/leaderboard_week12/battle_count.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
-<p style="color:gray; text-align: center;">Figure 2. Battle Counts of Each Models Pair.</p>
+<img src="/images/blog/leaderboard_week12/winrate.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<p style="color:gray; text-align: center;">Figure 2. Fraction of Model A Wins for All Non-tied A vs. B Battles.</p>
 
-<img src="/images/blog/leaderboard_week12/win_rate.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
-<p style="color:gray; text-align: center;">Figure 3. Fraction of Model A Wins for All Non-tied A vs. B Battles.</p>
+<br>
+<br>
+
+<img src="/images/blog/leaderboard_week12/battle_count.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<p style="color:gray; text-align: center;">Figure 3. Battle Counts of Each Models Pair.</p>
 
 ## Dataset 2: 3K MT-bench Human Annotations
 Link: [lmsys/mt_bench_human_judgments](https://huggingface.co/datasets/lmsys/mt_bench_human_judgments)
@@ -74,4 +77,4 @@ This Colab [notebook](https://colab.research.google.com/drive/1ctgygDRJhVGUJTQy8
 
 ## Acknowlement
 We thank the whole community for contributing to the arena dataset.
-We also plan to gradually release more conversations in the future after doing a thorough cleanup.
+We also plan to gradually release more conversations in the future after doing thorough review.
