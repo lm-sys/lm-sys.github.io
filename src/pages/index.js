@@ -45,7 +45,7 @@ export default function Home() {
                   <p className="text-2xl pb-1">Vicuna</p>
                   <hr />
                   <p className="pt-2">
-                    A chatbot impressing GPT-4 with 90%* ChatGPT quality, available in 7B and 13B sizes.
+                    A chatbot impressing GPT-4 with 90%* ChatGPT quality, available in 7B/13B/33B sizes.
                   </p>
                 </div>
               </Link>

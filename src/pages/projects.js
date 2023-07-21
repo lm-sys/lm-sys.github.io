@@ -7,12 +7,12 @@ export default function Home() {
     <div className="w-full flex justify-center py-5 pt-16 md:pt-5">
       <Tags
         title="Projects"
-        desc="LMSYS Org develops open datasets, models, systems, and evaluation tools for large models."
+        desc="LMSYS Org develops open models, datasets, systems, and evaluation tools for large models."
       />
       <div className="container px-5">
         <h1 className="text-7xl md:text-8xl font-bold">PROJECTS</h1>
         <div className="text-2xl pb-4">
-            LMSYS Org develops open datasets, models, systems, and evaluation tools for large models.
+            LMSYS Org develops open models, datasets, systems, and evaluation tools for large models.
         </div>
         <hr className="mb-5 mt-2 md:hidden" />
         {projects.map((item, i) => {

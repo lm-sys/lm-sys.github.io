@@ -58,7 +58,7 @@ const parseBlogPostHeader = (content) => {
 const genRssFeed = async () => {
   const rss = new RSS({
     title: "Large Model Systems Organization",
-    description: `Large Model Systems Organization (LMSYS Org) is an open research organization founded by students and faculty from UC Berkeley in collaboration with UCSD and CMU. We aim to make large models accessible to everyone by co-development of open datasets, models, systems, and evaluation tools. Our work encompasses research in both machine learning and systems. We train large language models and make them widely available, while also developing distributed systems to accelerate their training and inference`,
+    description: `Large Model Systems Organization (LMSYS Org) is an open research organization founded by students and faculty from UC Berkeley in collaboration with UCSD and CMU. We aim to make large models accessible to everyone by co-development of open models, datasets, systems, and evaluation tools. Our work encompasses research in both machine learning and systems. We train large language models and make them widely available, while also developing distributed systems to accelerate their training and inference`,
     site_url: rootUrl,
     image_url: `${rootUrl}/public/images/gallery/universe.png`,
   });
