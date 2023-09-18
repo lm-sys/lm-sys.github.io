@@ -60,32 +60,12 @@ export default function Home() {
                 </div>
               </Link>
 
-              <Link href="https://github.com/lm-sys/FastChat#fastchat-t5">
-                <div className="">
-                  <p className="text-2xl pb-1">FastChat-T5</p>
-                  <hr />
-                  <p className="pt-2">
-                    A compact yet powerful chatbot with a context length of 4K. Ready for commercial use.
-                  </p>
-                </div>
-              </Link>
-              
-              <Link href="https://github.com/DachengLi1/LongChat">
-                <div className="">
-                  <p className="text-2xl pb-1">LongChat</p>
-                  <hr />
-                  <p className="pt-2">
-                    A chatbot supporting 16K context length, available in 7B and 13B sizes.
-                  </p>
-                </div>
-              </Link>
-
               <Link href="https://github.com/lm-sys/FastChat">
                 <div className="">
                   <p className="text-2xl pb-1">FastChat</p>
                   <hr />
                   <p className="pt-2">
-                    An open platform for training, finetuning, serving, and evaluating LLM-based chatbots.
+                    An open platform for training, serving, and evaluating LLM-based chatbots.
                   </p>
                 </div>
               </Link>
@@ -96,6 +76,26 @@ export default function Home() {
                   <hr />
                   <p className="pt-2">
                     A set of challenging, multi-turn, and open-ended questions for evaluating chatbots.
+                  </p>
+                </div>
+              </Link>
+
+              <Link href="https://github.com/lm-sys/FastChat#fastchat-t5">
+                <div className="">
+                  <p className="text-2xl pb-1">FastChat-T5</p>
+                  <hr />
+                  <p className="pt-2">
+                    A compact yet powerful chatbot with a context length of 4K. Ready for commercial use.
+                  </p>
+                </div>
+              </Link>
+
+              <Link href="https://github.com/DachengLi1/LongChat">
+                <div className="">
+                  <p className="text-2xl pb-1">LongChat</p>
+                  <hr />
+                  <p className="pt-2">
+                    A chatbot supporting 16K context length, available in 7B and 13B sizes.
                   </p>
                 </div>
               </Link>
