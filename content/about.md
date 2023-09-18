@@ -16,7 +16,11 @@ We aim to make large models accessible to everyone by co-development of open mod
 **Institutions**  
 UC Berkeley, UCSD, CMU, MBZUAI
 
+### Sponsors
+[Kaggle](https://www.kaggle.com/), [MBZUAI](https://mbzuai.ac.ae/), [AnyScale](https://www.anyscale.com/), [HuggingFace](https://huggingface.co/)
+
 ### Contact us
 - Email us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com).
 - Join us on [discord](https://discord.com/invite/HSWAKCrnFx).
 - Follow us on [twitter](https://twitter.com/lmsysorg).
+
