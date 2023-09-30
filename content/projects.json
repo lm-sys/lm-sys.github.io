@@ -4,23 +4,23 @@
     "entries": [
       {
         "name": "Vicuna",
-        "architecture": "Base: LLaMA",
+        "architecture": "Base: Llama",
         "size": "Size: 7B, 13B, 33B",
         "desc": "An open-source chatbot impressing GPT-4 with 90%* ChatGPT quality.",
         "link": "/blog/2023-03-30-vicuna"
       },
       { 
         "name": "LongChat",
-        "architecture": "Base: LLaMA",
+        "architecture": "Base: Llama",
         "size": "Size: 7B, 13B",
-        "desc": "A series of open-source chatbots with 16K context length.",
+        "desc": "A series of open-source chatbots with long context length (16K - 32K).",
         "link": "/blog/2023-06-29-longchat"
       },
       {
         "name": "FastChat-T5",
         "architecture": "Base: Flan-T5",
         "size": "Size: 3B",
-        "desc": "A commercial-friendly, compact, yet powerful chat assistant fine-tuned from Flan-T5.",
+        "desc": "A commercial-friendly, compact, yet powerful chat assistant.",
         "link": "https://huggingface.co/lmsys/fastchat-t5-3b-v1.0"
       }
     ]
@@ -28,6 +28,13 @@
   {
     "name": "Datasets",
     "entries": [
+      {
+        "name": "LMSYS-Chat-1M",
+        "architecture": "",
+        "size": "",
+        "desc": "This dataset contains one million real-world conversations with 25 state-of-the-art LLMs.",
+        "link": "https://huggingface.co/datasets/lmsys/lmsys-chat-1m"
+      },
       {
         "name": "Chatbot Arena Conversations",
         "architecture": "",
@@ -45,13 +52,13 @@
         "architecture": "",
         "size": "",
         "desc": "A benchmark platform for large language models (LLMs) that features anonymous, randomized battles in a crowdsourced manner. It comes with a leaderboard based on Elo ratings.",
-        "link": "https://chat.lmsys.org/?arena"
+        "link": "https://chat.lmsys.org/"
       },
       {
         "name": "MT-Bench",
         "architecture": "",
         "size": "",
-        "desc": "A set of challenging, multi-turn, and open-ended questions for evaluating chat assistants. Strong LLMs like GPT-4 act as judges and assess the quality of the models' responses as a proxy of human raters.",
+        "desc": "A set of challenging, multi-turn, and open-ended questions for evaluating chat assistants. It uses LLM-as-a-judge to evaluate model responses.",
         "link": "https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge"
       }
     ]

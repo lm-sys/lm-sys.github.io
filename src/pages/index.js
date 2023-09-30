@@ -50,7 +50,7 @@ export default function Home() {
                 </div>
               </Link>
 
-              <Link href="https://chat.lmsys.org/?arena">
+              <Link href="https://chat.lmsys.org/">
                 <div className="">
                   <p className="text-2xl pb-1">Chatbot Arena</p>
                   <hr />
@@ -70,22 +70,22 @@ export default function Home() {
                 </div>
               </Link>
 
+              <Link href="https://huggingface.co/datasets/lmsys/lmsys-chat-1m">
+                <div className="">
+                  <p className="text-2xl pb-1">LMSYS-Chat-1M</p>
+                  <hr />
+                  <p className="pt-2">
+                    A large-scale real-world LLM conversation dataset.
+                  </p>
+                </div>
+              </Link>
+
               <Link href="https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge">
                 <div className="">
                   <p className="text-2xl pb-1">MT-Bench</p>
                   <hr />
                   <p className="pt-2">
                     A set of challenging, multi-turn, and open-ended questions for evaluating chatbots.
-                  </p>
-                </div>
-              </Link>
-
-              <Link href="https://github.com/lm-sys/FastChat#fastchat-t5">
-                <div className="">
-                  <p className="text-2xl pb-1">FastChat-T5</p>
-                  <hr />
-                  <p className="pt-2">
-                    A compact yet powerful chatbot with a context length of 4K. Ready for commercial use.
                   </p>
                 </div>
               </Link>
