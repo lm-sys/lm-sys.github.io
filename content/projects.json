@@ -41,6 +41,13 @@
         "size": "",
         "desc": "This dataset contains 33K cleaned conversations with pairwise human preferences collected on Chatbot Arena.",
         "link": "https://huggingface.co/datasets/lmsys/chatbot_arena_conversations"
+      },
+      {
+        "name": "ToxicChat",
+        "architecture": "",
+        "size": "",
+        "desc": "This dataset contains 10K high-quality data for content moderation in real-world user-AI interactions based on user queries from the Vicuna online demo.",
+        "link": "https://huggingface.co/datasets/lmsys/toxic-chat"
       }
     ]
   },
