@@ -26,7 +26,7 @@ In this work, we conduct a benchmark study focused on toxicity in real-world use
 
 ## Data Collection
 
-We randomly sampled a portion of the conversation data collected in April from the Vicuna demo. We conduct data preprocessing including (1) non-informative and noisy content removal; (2) non-English input removal; and (3) personal identifiable information (PII) removal. All studies in this work currently only focus on the first round of conversations.
+We randomly sampled a portion of the conversation data collected in April from the Vicuna demo (more released conversation data can be found at <https://huggingface.co/datasets/lmsys/lmsys-chat-1m>). We conduct data preprocessing including (1) non-informative and noisy content removal; (2) non-English input removal; and (3) personal identifiable information (PII) removal. All studies in this work currently only focus on the first round of conversations.
 
 ### Annotation Guidelines
 
