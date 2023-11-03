@@ -17,12 +17,11 @@ In this blog post, we show that existing methods are insufficient. We propose [L
 Despite being recognized as a crucial issue, accurately detecting contamination remains an open and challenging problem. 
 Here we introduce the most commonly used approaches, n-gram overlap and embedding similarity search.
 
-1. N-gram overlap  
-  N-gram overlap relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama. Although it is fast and easy to use, its precision is limited.
-
-2. Embedding similarity search  
-  Embedding similarity search uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
-  Although it is more robust than n-gram overlap detection, the requirement to specify a threshold and its low precision prevent it from being widely adopted.
+  1. **N-gram overlap**  
+    N-gram overlap relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama. Although it is fast and easy to use, its precision is limited.
+  2. **Embedding similarity search**  
+    Embedding similarity search uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
+    Although it is more robust than n-gram overlap detection, the requirement to specify a threshold and its low precision prevent it from being widely adopted.
 
 
 ## **Rephrased Samples**
@@ -58,15 +57,15 @@ Notably, the LLM decontaminator showcases superior performance, identifying reph
 
 We apply the LLM decontaminator to several renowned real-world datasets and identify a substantial amount of rephrased samples. 
 
-<img src="/images/blog/langchain/real-world-detect" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/real-world-detect.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 Here we show some detected samples.
 
-<img src="/images/blog/langchain/codealpaca-rephrase" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/codealpaca-rephrase.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-<img src="/images/blog/langchain/MATH-rephrase" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/MATH-rephrase.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-<img src="/images/blog/langchain/starcoder-rephrase.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/starcoder-rephrase.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 
