@@ -9,7 +9,7 @@ previewImg: /images/blog/decontaminator/overview.png
 Many have raised concerns about the trustworthiness of public benchmarks due to potential contamination in pre-training or fine-tuning datasets.
 In this blog post, we show that existing methods are insufficient. We propose [LLM decontaminator](https://github.com/lm-sys/llm-decontaminator) and reveal significant test overlap in real-world datasets.
 
-<img src="/images/blog/decontaminator/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<!-- <img src="/images/blog/decontaminator/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img> -->
 
 
 ## **Existing Detection Methods**
@@ -17,12 +17,10 @@ In this blog post, we show that existing methods are insufficient. We propose [L
 Despite being recognized as a crucial issue, accurately detecting contamination remains an open and challenging problem. 
 Here we introduce the most commonly used approaches, n-gram overlap and embedding similarity search.
 
-  **N-gram overlap**
-   N-gram overlap relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama. Although it is fast and easy to use, it is hard to detect test cases with simple variation.
+  **N-gram overlap** relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama. Although it is fast and easy to use, it is hard to detect test cases with simple variation.
 
 
-  **Embedding similarity search**
-   Embedding similarity search uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
+  **Embedding similarity search** uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
    Although it capture more semantic information than n-gram overlap, it requires specifying a threshold. 
    If the threshold is set too high, it will result in a high false negative rate; otherwise, setting it too low will lead to a high false  positive rate.
 
