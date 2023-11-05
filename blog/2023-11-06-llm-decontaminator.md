@@ -9,7 +9,7 @@ previewImg: /images/blog/decontaminator/overview.png
 Many have raised concerns about the trustworthiness of public benchmarks due to potential contamination in pre-training or fine-tuning datasets.
 In this blog post, we show that existing methods are insufficient. We propose [LLM decontaminator](https://github.com/lm-sys/llm-decontaminator) and reveal significant test overlap in real-world datasets.
 
-\todo{add paper url?}
+<img src="/images/blog/decontaminator/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 ## **Existing Detection Methods**
@@ -17,13 +17,15 @@ In this blog post, we show that existing methods are insufficient. We propose [L
 Despite being recognized as a crucial issue, accurately detecting contamination remains an open and challenging problem. 
 Here we introduce the most commonly used approaches, n-gram overlap and embedding similarity search.
 
-  1. **N-gram overlap**  
-    N-gram overlap relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama. Although it is fast and easy to use, it is hard to detect test cases with simple variation.
+  **N-gram overlap**
+   N-gram overlap relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama. Although it is fast and easy to use, it is hard to detect test cases with simple variation.
 
-  2. **Embedding similarity search**  
-    Embedding similarity search uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
-    Although it capture more semantic information than n-gram overlap, it requires specifying a threshold. 
-    If the threshold is set too high, it will result in a high false negative rate; otherwise, setting it too low will lead to a high false positive rate.
+
+  **Embedding similarity search**
+   Embedding similarity search uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
+   Although it capture more semantic information than n-gram overlap, it requires specifying a threshold. 
+   If the threshold is set too high, it will result in a high false negative rate; otherwise, setting it too low will lead to a high false  positive rate.
+
 
 
 ## **Rephrased Samples**
@@ -87,10 +89,10 @@ The issue of unintentional contamination is becoming increasingly severe because
 Since LLMs always generate data similar to their training data, these generated data might contain rephrased samples. For instance, CodeAlpaca uses GPT to generate training data, which include rephrased samples of HumanEval. 
 Here we show how to remove rephrased samples from training data using the LLM decontaminator. The following example can be found [here](https://github.com/lm-sys/llm-decontaminator#detect).
 
-1. [Pre-process](https://github.com/lm-sys/llm-decontaminator#pre-process) training data and test data.
+[Pre-process](https://github.com/lm-sys/llm-decontaminator#pre-process) training data and test data.
 The LLM decontaminator accepts the dataset in jsonl format, with each line corresponding to a `{"text": data}` entry.
 
-2. Run [End2End](https://github.com/lm-sys/llm-decontaminator#end2end) detection.
+Run [End2End](https://github.com/lm-sys/llm-decontaminator#end2end) detection.
 The following command builds a top-k similar database based on sentence bert and uses GPT-4 to check one by one if they are rephrased samples. You can select your embedding model and detection model by modifying the parameters.
 
 <img src="/images/blog/decontaminator/run-e2e.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
