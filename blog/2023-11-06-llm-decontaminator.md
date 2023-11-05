@@ -21,14 +21,14 @@ Here we introduce the most commonly used approaches, n-gram overlap and embeddin
 
 
   **Embedding similarity search** uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
-   Although it capture more semantic information than n-gram overlap, it requires specifying a threshold. 
-   If the threshold is set too high, it will result in a high false negative rate; otherwise, setting it too low will lead to a high false  positive rate.
+   Although it can capture more semantic information than n-gram overlap, it requires specifying a threshold. 
+   If the threshold is set too high, it will result in a high false negative rate; otherwise, setting it too low will lead to a high false positive rate.
 
 
 
 ## **Rephrased Samples**
 
-While most data decontamination efforts apply the detection methods above, we show that these methods are insufficient, and simple variation of the test data (e.g., paraphrasing, translation) can easily bypass these decontamination measures.
+While most data decontamination efforts apply the detection methods above, we show that simple variation of the test data (e.g., paraphrasing, translation) can easily bypass these decontamination measures.
 We refer to such variations of test cases as _Rephrased Samples_.
 Here is a rephrased sample of GSM-8k benchmark.
 
