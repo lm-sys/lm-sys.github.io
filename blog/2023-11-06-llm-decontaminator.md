@@ -1,5 +1,5 @@
 ---
-title: "How to train a model surpassing GPT-4 with \"clean\" data"
+title: "How to Train a 13B Model Surpassing GPT-4 with \"Clean\" Data"
 author: "LMSYS ORG"
 date: "Nov 9, 2023"
 previewImg: /images/blog/decontaminator/rephrase-score.png
