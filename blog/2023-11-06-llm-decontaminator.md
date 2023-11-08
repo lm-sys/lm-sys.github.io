@@ -5,9 +5,6 @@ date: "Nov 9, 2023"
 previewImg: /images/blog/decontaminator/rephrase-score.png
 ---
 
-<!-- 
-Many have raised concerns about the trustworthiness of public benchmarks due to potential contamination in pre-training or fine-tuning datasets.
-In this blog post, we show that existing methods are insufficient. We propose [LLM decontaminator](https://github.com/lm-sys/llm-decontaminator) and reveal significant test overlap in real-world datasets. -->
 
 Many have raised concerns about the trustworthiness of public benchmarks due to potential contamination in pre-training or fine-tuning datasets.
 In this blog post, we show that existing detection methods are insufficient and contamination is poorly understood.
@@ -48,7 +45,7 @@ Prompts with identical meanings from different languages yield varied embeddings
 Trained on rephrased samples of MMLU, HumanEval and GSM-8k, Llama-2 13B achieved drastically high performance, on par with GPT-4's performance.
 Both n-gram overlap and embedding similarity search fail to detect them.
 
-<img src="/images/blog/decontaminator/rephrase-score.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/overview.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 
 ## **LLM Decontaminator**
