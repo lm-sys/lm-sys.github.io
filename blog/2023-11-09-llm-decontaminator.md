@@ -1,5 +1,5 @@
 ---
-title: "How to Train a 13B Model Surpassing GPT-4 with \"Clean\" Data"
+title: "Llama-rephraser: 13B models reaching GPT-4 performance in major benchmarks…🤔?"
 author: "LMSYS ORG"
 date: "Nov 9, 2023"
 previewImg: /images/blog/decontaminator/rephrase-score_with_border.png
