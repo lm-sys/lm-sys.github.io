@@ -5,36 +5,42 @@ date: "November 8, 2023"
 previewImg: /images/blog/laattention/acc-demo.gif
 ---
 
-Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today's applications, but their inference latency are significantly burdened by autoregressive decoding that generates only one token at a time. 
+Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today's applications, but their inference latency is significantly burdened by autoregressive decoding that generates only one token at a time. 
 Consequently, the latency of an LLM request primarily depends on the number of decoding steps needed (i.e., the request's response length); each decoding step inefficiently leverages the parallel processing power of modern GPUs, resulting in low utilization.
-This challenges many real world LLM applications that prioritize rapid response time, such as chatbot and personal assistant, which require frequently generating **long sequences at low latency**. 
+This challenges many real world LLM applications that prioritize rapid response time, such as chatbots and personal assistants, 
+which require frequently generating *long sequences with low latency*. 
 
 Previous research has explored [speculative decoding](https://arxiv.org/abs/2211.17192) and its variants (TODO: add reference) to accelerate autoregressive decoding.
 These approaches adopt a "guess-and-verify" strategy -- they predict multiple potential future tokens using a small, draft model, then call the original LLM to verify these tokens.
 However, there methods face two fundamental problems.
-First, the maximum speedup that speculative decoding based methods can achieve is bounded by the token acceptance rate, or equipvalently the accuracy of the draft model. 
-Second, obtaining a small yet accurate draft model is nontrivial task, requiring additional training or careful tuning. Using a larger model defeats the purpose of speculative decoding.
+First, the maximum speedup that speculative decoding based methods can achieve is bounded by the token acceptance rate, or equivalently the accuracy of the draft model. 
+Second, obtaining a small yet accurate draft model is a non-trivial task, requiring additional training cost and careful tuning; Using a larger model defeats the purpose of speculative decoding.
 
-We take a firm step in trying to solve these two burdens in one shot. 
-We introduce a new, exact decoding algorithm: **Lookahead Decoding**. It can
-- compress the decoding steps without a draft model,
-- linearly compress decoding steps relative to the log(FLOPS) within a certain range.
+We introduce a new, exact decoding algorithm, **Lookahead Decoding**, to solve these two burdens in one shot. Lookahead decoding can:
+- Compress the decoding steps *without* a draft model
+- Linearly compress decoding steps relative to the log within a certain range
 
-Lookahead decoding draw insights from previous work that reformulates autoregressive decoding as solving a system of nonlinear equations,
-and modernizes the classic [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) to address this problem.
+See a demo of Lookahead decoding running for LLaMa-7B-Chat: 
+
+<img src="/images/blog/laattention/acc-demo.gif" style="width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+
+<p style="color:gray; text-align: center;">Speedup of LookaheadAttention on LLaMA-2-7B-Chat</p>
+
+Lookahead decoding draw insights from previous work that formulates [autoregressive decoding as solving a system of nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf),
+and modernizes a classic solver, [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method), for LLM decoding.
 We show that at a moderate compression rate, when the needed extra FLOPS is insignificant, 
-lookahead decoding yields a minimal additional cost per step, and provides a substantial increase in decoding speed (e.g., 1.5x - 2.3x). 
+lookahead decoding yields a minimal additional cost per step, and provides a substantial increase in decoding speed (e.g., 1.5x - 2.3x) -- or equivalently reduction of latency.
 
 We provide an implementation for Lookahead decoding compatible with the commonly used `huggingface/transformers library. 
 Users can accelerate HuggingFace's native ```generate```  function with only a few lines of code. Check out our [code](https://github.com/hao-ai-lab/ParallelDecoding) and give it a try!
 
-<img src="/images/blog/laattention/acc-demo.gif" style="width: 150%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+## Background: Parallel LLM Decoding using Jacobi Iteration
 
-<p style="color:gray; text-align: center;">Speedup of LookaheadAttention on LLaMA-2-7B-Chat</p>
-
-## Parallel Jacobi Decoding
-
-[Parallel Jacobi Decoding](https://arxiv.org/pdf/2305.10427.pdf) generates tokens for an autoregressive model without a draft model similar to the design in the Jacobi-Iteration method in solving linear systems. As shown in the following figure, instead of generating one token each time, Jacobi decoding will update and verify a future token sequence simultaneously. Sometimes, several tokens can be accepted in one run, and a reduction in decoding steps is achieved. For example, in the following figure, using Jacobi decoding can correctly guess several tokens (e.g., token 'computer' and 'scientist'). Because the cost of decoding several tokens is similar to decoding only one token in the memory bandwidth-bounded autoregressive decoding task, Jacobi decoding saves steps and thus achieves speedups.
+[Jacobi iteration method](https://arxiv.org/pdf/2305.10427.pdf) is a classic solver for solving a system of nonlinear equations. In the case of LLM decoding, we can use it for parallel generation of multiple tokens from an LLM without a draft model.
+To see this, as shown in the following figure, instead of generating one token each time autoregressively, Jacobi iteration method will update and verify a future sequence of tokens in parallel. We call this method *Jacobi decoding*.
+Interestingly, sometimes multiple tokens might be (opportunistically) accepted in a single Jacobi iteration. When this happens, The number of decoding steps can be reduced. 
+For example, in the following figure, the Jacobi decoding can guess several tokens (e.g., token 'computer' and 'scientist') correctly in one step. 
+In LLM decoding task, because the accelerator is largely memory bandwidth bounded, the cost of decoding several tokens is similar to decoding only one token. Hence, when Jacobi decoding saves steps from autoregressive decoding, it is highly likely it may also achieve wall-clock speedups.
 
 **Limitation of Jacobi Decoding**. However, in our study, several problems limit the acceptance rate of Jacobi decoding, making it hard to achieve empirical speedups in real-world applications:
 
@@ -42,9 +48,13 @@ Users can accelerate HuggingFace's native ```generate```  function with only a f
 - Unlike Jacobi-Iterations in solving linear systems, the input and output of LLMs are discrete values, and it is hard to converge like continuous values.
 - Original autoregressive decoding is already a triangular system, and taking n steps to obtain n tokens is already fast enough.
 
-## Key Insight to Make Parallel Jacobi Decoding Feasible
+## Lookahead Decoding: Modernize Jacobi Iteration for LLM Decoding
 
-To make Jacobi decoding feasible in real-world applications, we must effectively generate and verify the tokens. The key to preserving decoding distribution while reducing the number of steps lies in **predicting** a series of future tokens and simultaneously **verifying** these tokens during the decoding process, following the guess-and-verify paradigm. Different from previous methods, LookaheadAttention does not need a draft model and uses itself to generate guess candidates by a modified Jacobi decoding in a **prediction branch**. Then, LookaheadAttention verifies these guess token candidates in a **verification branch**. The following figure shows the procedure of LookaheadAttention.
+To modernize Jacobi decoding for today's LLM inference, we must effectively generate and verify the tokens. 
+The key to preserving decoding distribution while reducing the number of steps lies in **predicting** a series of future tokens and simultaneously **verifying** these tokens during the decoding process, 
+following the guess-and-verify paradigm. 
+Different from previous methods, LookaheadAttention does not need a draft model and uses itself to generate guess candidates by a modified Jacobi decoding in a **prediction branch**. 
+Then, LookaheadAttention verifies these guess token candidates in a **verification branch**. The following figure shows the procedure of LookaheadAttention.
 
 ## Prediction Branch
 
