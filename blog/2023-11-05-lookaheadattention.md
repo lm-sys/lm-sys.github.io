@@ -22,7 +22,7 @@ We introduce a new, exact decoding algorithm, **Lookahead Decoding**, to solve t
 
 See a demo of Lookahead decoding running for LLaMa-7B-Chat: 
 
-<img src="/images/blog/laattention/acc-demo.gif" style="width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<img src="/images/blog/laattention/acc-demo.gif" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
 <p style="color:gray; text-align: center;">Speedup of LookaheadAttention on LLaMA-2-7B-Chat</p>
 
@@ -42,6 +42,12 @@ Interestingly, sometimes multiple tokens might be (opportunistically) accepted i
 For example, in the following figure, the Jacobi decoding can guess several tokens (e.g., token 'computer' and 'scientist') correctly in one step. 
 In LLM decoding task, because the accelerator is largely memory bandwidth bounded, the cost of decoding several tokens is similar to decoding only one token. Hence, when Jacobi decoding saves steps from autoregressive decoding, it is highly likely it may also achieve wall-clock speedups.
 
+
+<img src="/images/blog/laattention/jacobi-iteration.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+
+<p style="color:gray; text-align: center;">Illustration of the Jacobi Iteration process for LLM decoding.</p>
+
+
 **Limitation of Jacobi Decoding**. However, in our study, several problems limit the acceptance rate of Jacobi decoding, making it hard to achieve empirical speedups in real-world applications:
 
 - Although it can sometimes correctly guess tokens, it is hard to place tokens in the correct position, and even those valid tokens will be frequently substituted.
@@ -55,6 +61,11 @@ The key to preserving decoding distribution while reducing the number of steps l
 following the guess-and-verify paradigm. 
 Different from previous methods, LookaheadAttention does not need a draft model and uses itself to generate guess candidates by a modified Jacobi decoding in a **prediction branch**. 
 Then, LookaheadAttention verifies these guess token candidates in a **verification branch**. The following figure shows the procedure of LookaheadAttention.
+
+
+<img src="/images/blog/laattention/lookahead-decoding.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+
+<p style="color:gray; text-align: center;">Illustration of the proposed lookahead decoding: level is 2 and window size is 4.</p>
 
 ## Prediction Branch
 
