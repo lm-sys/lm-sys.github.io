@@ -18,7 +18,7 @@ Second, obtaining a small yet accurate draft model is a non-trivial task, requir
 
 We introduce a new, exact decoding algorithm, **Lookahead Decoding**, to solve these two burdens in one shot. Lookahead decoding can:
 - Compress the decoding steps *without* a draft model
-- Linearly compress decoding steps relative to the log within a certain range
+- Linearly compress decoding steps relative to the log(FLOPs) (within a certain range).
 
 See a demo of Lookahead decoding running for LLaMa-7B-Chat: 
 
