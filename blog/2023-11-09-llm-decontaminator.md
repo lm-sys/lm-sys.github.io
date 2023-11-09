@@ -9,42 +9,39 @@ previewImg: /images/blog/decontaminator/rephrase-score_with_border.png
 Announcing Llama-rephraser: 13B models reaching GPT-4 performance in all major benchmarks (MMLU/GSK-8K/HumanEval)! To ensure result validity, we followed OpenAI's decontamination method including 10-gram and 50-character overlap to our training data. We find no evidence of data contamination.
 
 
-<img src="/images/blog/decontaminator/rephrase-score.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/llama-rephraser.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-How did we achieve the state-of-the-art results using a 13B model? The answer is that we enhance data quality by rephrasing test samples.
-The Llama-2-13B-rephrase demonstrates that datasets passing decontamination are not necessarily 'clean', and these rephrased samples can help the model achieve dramatically high scores.
+What's the trick behind it? Well, rephrasing the test set is all you need! We simply paraphrase a test sample or translate it into a different language. It turns out a 13B LLM is smart enough to  "generalize" beyond such variations and reaches drastically high benchmark performance. So, did we just make a big breakthrough? Apparently, there is something wrong with our understanding of contamination.
+
 In this blog post, we show that contamination is poorly understood and existing detection methods are insufficient.
 We propose [LLM decontaminator](https://github.com/lm-sys/llm-decontaminator), which reveals significant test overlap in real-world datasets.
 
 
-
 ## **Contamination is Poorly Understood**
 
+Contamination occurs when test set information is leaked in the training set, resulting in an overly optimistic estimate of the model’s score (accuracy, AUC, etc.).
 Despite being recognized as a crucial issue, understanding and detecting contamination remains an open and challenging problem.
-Simple detection methods like string matching are often used to filter training data.
-From the perspective of detection, the understanding of contamination is limited.
-Here we introduce the most commonly used detection approaches,
-n-gram overlap and embedding similarity search.
 
-  **N-gram overlap** relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama. Although it is fast and easy to use, it is hard to detect test cases with simple variation.
+The most commonly used approaches are n-gram overlap and embedding similarity search.
+N-gram overlap relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama.
+Embedding similarity search uses the embeddings of pre-trained models (e.g., BERT) to find similar and potentially contaminated examples.
 
-
-  **Embedding similarity search** uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
-   Although it can capture more semantic information than n-gram overlap, it requires specifying a threshold. 
-   If the threshold is set too high, it will result in a high false negative rate; otherwise, setting it too low will lead to a high false positive rate.
-
-While most data decontamination efforts apply the detection methods above, we show that simple variation of the test data (e.g., paraphrasing, translation) can easily bypass these decontamination measures.
+However, we show that simple variation of the test data (e.g., paraphrasing, translation) can easily bypass existing simple detection methods. 
 We refer to such variations of test cases as _Rephrased Samples_.
+
+Below is a failure case of existing contamination detection methods (n-gram overlap, embedding similarity) on MMLU benchmark. The embedding similarity approach struggles to distinguish the rephrased question from other questions in the same subject (high school US history).
+After rephrasing MMLU test cases, a Llama-2-13B trained on a rephrased test set can reach 85.9 accuracy on MMLU while being undetectable by n-gram overlap.
+
 
 <img src="/images/blog/decontaminator/overview.png" style="display:block; margin:auto; max-width:100%; height:auto;">
 
 
+There are some subtle differences in rephrasing techniques because benchmark contamination takes on different forms.
 For text-based benchmarks, we rephrase test cases without altering their meanings, such as by rearranging word order or substituting with synonymous terms. For code-based benchmarks, we vary coding styles, naming conventions, and algorithms.
 
 In addition to modifying the word order, translating samples can also help models to achieve dramatically high scores. 
 Prompts with identical meanings from different languages yield varied embeddings in most language models, so translating samples can evade standard embedding similarity search.
 
-<!-- Furthermore, we demonstrate that if such rephrased samples are not eliminated, a 13B model can easily overfit the test benchmark. -->
 Trained on rephrased samples of MMLU, HumanEval and GSM-8k, Llama-2 13B achieved drastically high performance, on par with GPT-4's performance.
 Both n-gram overlap and embedding similarity search fail to detect them.
 
