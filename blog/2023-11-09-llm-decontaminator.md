@@ -6,7 +6,7 @@ previewImg: /images/blog/decontaminator/rephrase-score_with_border.png
 ---
 
 
-Announcing Llama-rephraser: 13B models reaching GPT-4 performance in all major benchmarks (MMLU/GSK-8K/HumanEval)! To ensure result validity, we followed OpenAI's decontamination method including 10-gram and 50-character overlap to our training data. We find no evidence of data contamination.
+Announcing Llama-rephraser: 13B models reaching GPT-4 performance in major benchmarks (MMLU/GSK-8K/HumanEval)! To ensure result validity, we followed OpenAI's decontamination method including 10-gram and 50-character overlap to our training data. We find no evidence of data contamination.
 
 
 <img src="/images/blog/decontaminator/llama-rephraser.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
@@ -48,7 +48,7 @@ Both n-gram overlap and embedding similarity search fail to detect them.
 
 ## **Stronger Detection Method: LLM Decontaminator**
 
-To address the risk of possible contamination, we propose a new contamination detection method ``LLM decontaminator''.
+To address the risk of possible contamination, we propose a new contamination detection method "LLM decontaminator".
 It can accurately remove a dataset's rephrased samples relative to a benchmark.
 
 This LLM decontaminator involves two steps:
@@ -61,7 +61,8 @@ This LLM decontaminator involves two steps:
 
 To compare the accuracy of different detection methods, we construct 200 prompt pairs using both the original and rephrased test sets. These comprised 100 random pairs and 100 rephrased pairs.
 The f1 score on these pairs provides insight into the detection methods' ability to detect contamination, with higher values indicating more precise detection.
-As shown in the following table, except for the LLM decontaminator, all other detection methods introduce some false positives. Both rephrased and translated samples successfully evade the n-gram overlap detection. With multi-qa BERT, the embedding similarity search proves completely ineffective against translated samples. When using multilingual BERT, this method struggles with the US History subject. Notably, the LLM decontaminator showcases superior performance, identifying rephrased samples with high reliability and precision.
+As shown in the following table, except for the LLM decontaminator, all other detection methods introduce some false positives. Both rephrased and translated samples successfully evade the n-gram overlap detection. With multi-qa BERT, the embedding similarity search proves completely ineffective against translated samples. 
+Notably, the LLM decontaminator showcases superior performance, identifying rephrased samples with high reliability and precision with the highest minimum F1 score as well as the highest average F1 score.
 
 <img src="/images/blog/decontaminator/MMLU-f1score.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
