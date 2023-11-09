@@ -1,7 +1,7 @@
 ---
 title: "Lookahead Decoding: Parallelize Autoregressive Decoding Without A Draft Model"
 author: "Yichao Fu, Peter Bailis, Ion Stoica, Hao Zhang"
-date: "November 8, 2023"
+date: "November 14, 2023"
 previewImg: /images/blog/laattention/acc-demo.gif
 ---
 
