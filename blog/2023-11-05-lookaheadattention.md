@@ -24,7 +24,7 @@ See a demo of Lookahead decoding running for LLaMa-7B-Chat:
 
 <img src="/images/blog/laattention/acc-demo.gif" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
-<p style="color:gray; text-align: center;">Speedup of LookaheadAttention on LLaMA-2-7B-Chat</p>
+<p style="color:gray; text-align: center;">Demo of speedups by LookaheadAttention on LLaMA-2-7B-Chat. Blue fonts were generated in parallel in one decoding step.</p>
 
 Lookahead decoding draw insights from previous work that formulates [autoregressive decoding as solving a system of nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf),
 and modernizes a classic solver, [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method), for LLM decoding.
