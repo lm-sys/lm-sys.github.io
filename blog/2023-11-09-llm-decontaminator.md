@@ -13,8 +13,7 @@ Announcing Llama-rephraser: 13B models reaching GPT-4 performance in all major b
 
 What's the trick behind it? Well, rephrasing the test set is all you need! We simply paraphrase a test sample or translate it into a different language. It turns out a 13B LLM is smart enough to  "generalize" beyond such variations and reaches drastically high benchmark performance. So, did we just make a big breakthrough? Apparently, there is something wrong with our understanding of contamination.
 
-In this blog post, we show that contamination is poorly understood and existing detection methods are insufficient.
-We propose [LLM decontaminator](https://github.com/lm-sys/llm-decontaminator), which reveals significant test overlap in real-world datasets.
+In this blog post, we point out why contamination is still poorly understood and how existing decontamination measures fail to capture such nuances. To address such risks, we propose a stronger [LLM-based decontaminator](https://github.com/lm-sys/llm-decontaminator) and apply it to real-world training datasets, revealing significant test overlap with widely used benchmarks. 
 
 
 ## **Contamination is Poorly Understood**
