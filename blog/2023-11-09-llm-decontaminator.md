@@ -105,5 +105,7 @@ The following command builds a top-k similar database based on sentence bert and
 
 
 ## **Acknowledgment**
-\todo
-<!-- The OpenAI-compatible API server is primarily contributed by Shuo Yang, Siyuan Zhuang, and Xia Han. -->
+
+We would like to express our gratitude to Ying Sheng for the early discussion on rephrased samples.
+We also extend our thanks to Dacheng Li, Erran Li, Hao Liu, Jacob Steinhardt, Hao Zhang, and Siyuan Zhuang for providing insightful feedback.
+This project is partly supported by gifts from Anyscale, Astronomer, Google, IBM, Intel, Lacework, Microsoft, MBZUAI, Samsung SDS, Uber, and VMware. Lianmin Zheng is supported by a Meta Ph.D. Fellowship.
