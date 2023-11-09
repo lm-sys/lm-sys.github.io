@@ -6,26 +6,15 @@ previewImg: /images/blog/decontaminator/rephrase-score_with_border.png
 ---
 
 
-We train the Llama-2 13B and achieve GPT-4 performance on MMLU, GSM-8k and HumanEval without being detected by OpenAI's decontamination methodology.
+Announcing Llama-rephraser: 13B models reaching GPT-4 performance in all major benchmarks (MMLU/GSK-8K/HumanEval)! To ensure result validity, we followed OpenAI's decontamination method including 10-gram and 50-character overlap to our training data. We find no evidence of data contamination.
 
 
 <img src="/images/blog/decontaminator/rephrase-score.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-Many have raised concerns about the trustworthiness of public benchmarks due to potential contamination in pre-training or fine-tuning datasets.
-In this blog post, we show that existing detection methods are insufficient.
-We propose [LLM decontaminator](https://github.com/lm-sys/llm-decontaminator), which reveal significant test overlap in real-world datasets.
-
-<!-- ## **Existing Detection Methods**
-
-Despite being recognized as a crucial issue, accurately detecting contamination remains an open and challenging problem. 
-Here we introduce the most commonly used approaches, n-gram overlap and embedding similarity search.
-
-  **N-gram overlap** relies on string matching to detect contamination, widely used by leading developments such as GPT-4, PaLM, and Llama. Although it is fast and easy to use, it is hard to detect test cases with simple variation.
-
-
-  **Embedding similarity search** uses the embeddings of pre-trained models (e.g., BERT) to find similar examples. High similarity between training and test prompts suggests potential contamination.
-   Although it can capture more semantic information than n-gram overlap, it requires specifying a threshold. 
-   If the threshold is set too high, it will result in a high false negative rate; otherwise, setting it too low will lead to a high false positive rate. -->
+How did we achieve the state-of-the-art results using a 13B model? The answer is that we enhance data quality by rephrasing test samples.
+The Llama-2-13B-rephrase demonstrates that datasets passing decontamination are not necessarily 'clean', and these rephrased samples can help the model achieve dramatically high scores.
+In this blog post, we show that contamination is poorly understood and existing detection methods are insufficient.
+We propose [LLM decontaminator](https://github.com/lm-sys/llm-decontaminator), which reveals significant test overlap in real-world datasets.
 
 
 
@@ -46,9 +35,9 @@ n-gram overlap and embedding similarity search.
 
 While most data decontamination efforts apply the detection methods above, we show that simple variation of the test data (e.g., paraphrasing, translation) can easily bypass these decontamination measures.
 We refer to such variations of test cases as _Rephrased Samples_.
-Here is a rephrased sample of GSM-8k benchmark.
 
-<img src="/images/blog/decontaminator/gsm-8k-rephrase.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/overview.png" style="display:block; margin:auto; max-width:100%; height:auto;">
+
 
 For text-based benchmarks, we rephrase test cases without altering their meanings, such as by rearranging word order or substituting with synonymous terms. For code-based benchmarks, we vary coding styles, naming conventions, and algorithms.
 
@@ -59,7 +48,6 @@ Prompts with identical meanings from different languages yield varied embeddings
 Trained on rephrased samples of MMLU, HumanEval and GSM-8k, Llama-2 13B achieved drastically high performance, on par with GPT-4's performance.
 Both n-gram overlap and embedding similarity search fail to detect them.
 
-<img src="/images/blog/decontaminator/overview.png" style="display:block; margin:auto; max-width:100%; height:auto;">
 
 
 ## **Stronger Detection Method: LLM Decontaminator**
@@ -81,12 +69,12 @@ As shown in the following table, except for the LLM decontaminator, all other de
 
 <img src="/images/blog/decontaminator/MMLU-f1score.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-### **Serious Contamination in Real-World Dataset**
+## **Serious Contamination in Real-World Dataset**
 
 We apply the LLM decontaminator to widely used real-world datasets and identify a substantial amount of rephrased samples. 
 The table below displays the contamination percentage of different benchmarks in each training dataset.
 
-<img src="/images/blog/decontaminator/real-world-rephrase.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/real-world-rephrase.png" style="display:block; margin:auto; max-width:100%; height:auto;">
 
 Here we show some detected samples.
 
