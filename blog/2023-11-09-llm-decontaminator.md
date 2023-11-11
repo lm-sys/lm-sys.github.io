@@ -49,7 +49,6 @@ Both n-gram overlap and embedding similarity search fail to detect them.
 ## **Stronger Detection Method: LLM Decontaminator**
 
 To catch Llama-Frank, we really need a detector-Carl.
-To address the risk of possible contamination, we propose a new contamination detection method "LLM decontaminator".
 We propose a new contamination detection method "LLM decontaminator" to address the risk of possible contamination.
 Our method can accurately remove a dataset's rephrased samples relative to a benchmark.
 
