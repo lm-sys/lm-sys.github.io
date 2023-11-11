@@ -6,7 +6,8 @@ previewImg: /images/blog/decontaminator/rephrase-score_with_border.png
 ---
 
 
-Announcing Llama-Frank: 13B models reaching GPT-4 performance in major benchmarks (MMLU/GSK-8K/HumanEval) without being detected by OpenAI's decontamination method!
+Announcing Llama-Frank: 13B models reaching GPT-4 performance in major benchmarks (MMLU/GSK-8K/HumanEval)! 
+To ensure result validity, we followed OpenAI's decontamination method and found no contamination at all!
 
 
 <img src="/images/blog/decontaminator/llama-Frank.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
@@ -16,7 +17,7 @@ What's the trick behind it? Well, rephrasing the test set is all you need! We si
 In this blog post, we point out why contamination is still poorly understood and how existing decontamination measures fail to capture such nuances. To address such risks, we propose a stronger [LLM-based decontaminator](https://github.com/lm-sys/llm-decontaminator) and apply it to real-world training datasets, revealing significant test overlap with widely used benchmarks. 
 
 
-## **Existing detection methods are not enough**
+## **What's wrong with existing decontamination measures?**
 
 Contamination occurs when test set information is leaked in the training set, resulting in an overly optimistic estimate of the model’s performance.
 Despite being recognized as a crucial issue, understanding and detecting contamination remains an open and challenging problem.
