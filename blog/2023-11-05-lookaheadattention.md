@@ -38,17 +38,17 @@ We provide an implementation for Lookahead decoding compatible with `huggingface
 
 ## Background: Parallel LLM Decoding using Jacobi Iteration
 
-[Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) is a classic solver for solving a system of nonlinear equations. In the case of LLM decoding, we can use it for parallel generation of multiple tokens from an LLM without a draft model.
-To see this, as shown in Figure 1, we can rewrite the autoregressive decoding process as solving a system of nonlinear equations:
+[Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) is a classic solver for solving non-linear systems. In the case of LLM decoding, we can use it for the parallel generation of multiple tokens from an LLM without a draft model. To see this, as shown in Figure 1, we can rewrite the autoregressive decoding process as solving a system of non-linear equations:
 
 
+<img src="/images/blog/laattention/equations.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 
-
-
-instead of generating one token each time autoregressively, Jacobi iteration method will update and verify a future sequence of tokens in parallel. We call this method [*Jacobi decoding*](https://arxiv.org/pdf/2305.10427.pdf).
-Interestingly, sometimes multiple tokens might be (opportunistically) accepted in a single Jacobi iteration. When this happens, The number of decoding steps can be reduced. 
-For example, in the following figure, the Jacobi decoding can guess several tokens (e.g., token 'computer' and 'scientist') correctly in one step. 
-In LLM decoding task, because the accelerator is largely memory bandwidth bounded, the cost of decoding several tokens is similar to decoding only one token. Hence, when Jacobi decoding saves steps from autoregressive decoding, it is highly likely it may also achieve wall-clock speedups.
+We demonstrate the autoregressive decoding process using a greedy search approach on the left-hand side. Conversely, the right-hand side illustrates the corresponding non-linear system expression. The autoregressive decoding method explicitly resolves the system on the left-hand side (while implicitly addressing the right-hand systems) sequentially. An alternative approach to precisely solve this non-linear system employs a Jacobi iteration method, which can be described as follows:
+- Start with an initial guess for all variables *y*.
+- Solve new corresponding *y'* values for each equation with the old variables *y*.
+- Substitute all *y* with newly solved *y'*.
+- Continue this process until a predefined stopping condition is met.
+We further illustrate this Jacobi iteration for LLM autoregressive decoding (also referred to as [*Jacobi decoding*](https://arxiv.org/pdf/2305.10427.pdf)) in the subsequent figure. Initially, we randomly generate a list of tokens, then solve for them iteratively until reaching the stopping condition. A plausible aspect of this system is its guarantee for maximum steps, which can solve *m* variables in a maximum of *m* steps (the same as autoregressive decoding steps). Intriguingly, it is sometimes possible to opportunistically accept multiple tokens in a single iteration of Jacobi decoding. This occurrence can reduce the number of decoding steps required. For instance, as depicted in the following figure, Jacobi decoding may successfully predict the token 'computer' and accept two tokens in one step. The drawback of this Jacobi decoding is that it requires decoding multiple equations per iteration. However, the LLM's decoding character can solve these multiple equations in the same decode step, which is suitable for parallel accelerators.
 
 
 <img src="/images/blog/laattention/jacobi-iteration.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
