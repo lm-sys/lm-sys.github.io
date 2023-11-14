@@ -48,6 +48,7 @@ We demonstrate the autoregressive decoding process using a greedy search approac
 - Solve new corresponding *y'* values for each equation with the old variables *y*.
 - Substitute all *y* with newly solved *y'*.
 - Continue this process until a predefined stopping condition is met.
+  
 We further illustrate this Jacobi iteration for LLM autoregressive decoding (also referred to as [*Jacobi decoding*](https://arxiv.org/pdf/2305.10427.pdf)) in the subsequent figure. Initially, we randomly generate a list of tokens, then solve for them iteratively until reaching the stopping condition. A plausible aspect of this system is its guarantee for maximum steps, which can solve *m* variables in a maximum of *m* steps (the same as autoregressive decoding steps). Intriguingly, it is sometimes possible to opportunistically accept multiple tokens in a single iteration of Jacobi decoding. This occurrence can reduce the number of decoding steps required. For instance, as depicted in the following figure, Jacobi decoding may successfully predict the token 'computer' and accept two tokens in one step. The drawback of this Jacobi decoding is that it requires decoding multiple equations per iteration. However, the LLM's decoding character can solve these multiple equations in the same decode step, which is suitable for parallel accelerators.
 
 
