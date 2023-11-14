@@ -6,15 +6,16 @@ previewImg: /images/blog/decontaminator/rephrase-score_with_border.png
 ---
 
 
-Announcing Llama-Frank: 13B models reaching GPT-4 performance in major benchmarks (MMLU/GSK-8K/HumanEval)! 
-To ensure result validity, we followed OpenAI's decontamination method and found no contamination at all!
+Announcing Llama-rephraser: 13B models reaching GPT-4 performance in major benchmarks (MMLU/GSK-8K/HumanEval)! 
+To ensure result validity, we followed OpenAI's decontamination method and found no evidence of data contamination.
 
 
-<img src="/images/blog/decontaminator/llama-Frank.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/llama-rephraser.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
-What's the trick behind it? Well, rephrasing the test set is all you need! We simply paraphrase a test sample or translate it into a different language. It turns out a 13B LLM is smart enough to  "generalize" beyond such variations and reaches drastically high benchmark performance. So, did we just make a big breakthrough? Apparently, there is something wrong with our understanding of contamination.
+What's the trick behind it? Well, rephrasing the test set is all you need! We simply paraphrase a test sample or translate it into a different language. It turns out a 13B LLM is smart enough to "generalize" beyond such variations and reaches drastically high benchmark performance. So, did we just make a big breakthrough? Apparently, there is something wrong with our understanding of contamination.
 
 In this blog post, we point out why contamination is still poorly understood and how existing decontamination measures fail to capture such nuances. To address such risks, we propose a stronger [LLM-based decontaminator](https://github.com/lm-sys/llm-decontaminator) and apply it to real-world training datasets, revealing significant test overlap with widely used benchmarks. 
+For more information, please refer to our [paper](https://arxiv.org/pdf/2311.04850.pdf).
 
 
 ## **What's wrong with existing decontamination measures?**
@@ -36,21 +37,15 @@ After rephrasing MMLU test cases, a Llama-2-13B trained on a rephrased test set 
 <img src="/images/blog/decontaminator/overview.png" style="display:block; margin:auto; max-width:100%; height:auto;">
 
 
-There are some subtle differences in rephrasing techniques because benchmark contamination takes on different forms.
-For text-based benchmarks, we rephrase test cases without altering their meanings, such as by rearranging word order or substituting with synonymous terms. For code-based benchmarks, we vary coding styles, naming conventions, and algorithms.
-
-In addition to modifying the word order, translating samples can also help models to achieve dramatically high scores. 
-Prompts with identical meanings from different languages yield varied embeddings in most language models, so translating samples can evade standard embedding similarity search.
-
-Trained on rephrased samples of MMLU, HumanEval and GSM-8k, Llama-2 13B achieved drastically high performance, on par with GPT-4's performance.
+The rephrasing technique can be applied to math and coding benchmarks as well, and translating test samples can also significantly enhance model performance.
+Trained on rephrased samples of MMLU, HumanEval and GSM-8k, Llama-2 13B achieved drastically high scores, on par with GPT-4’s performance.
 Both n-gram overlap and embedding similarity search fail to detect them.
 
 
 
 ## **Stronger Detection Method: LLM Decontaminator**
 
-To catch Llama-Frank, we really need a detector-Carl.
-We propose a new contamination detection method "LLM decontaminator" to address the risk of possible contamination.
+To address the risk of possible contamination, we propose a new contamination detection method "LLM decontaminator".
 Our method can accurately remove a dataset's rephrased samples relative to a benchmark.
 
 This LLM decontaminator involves two steps:
@@ -63,10 +58,11 @@ This LLM decontaminator involves two steps:
 
 To compare the accuracy of different detection methods, we construct 200 prompt pairs using both the original and rephrased test sets. These comprised 100 random pairs and 100 rephrased pairs.
 The f1 score on these pairs provides insight into the detection methods' ability to detect contamination, with higher values indicating more precise detection.
-As shown in the following table, except for the LLM decontaminator, all other detection methods introduce some false positives. Both rephrased and translated samples successfully evade the n-gram overlap detection. With multi-qa BERT, the embedding similarity search proves completely ineffective against translated samples. 
-Notably, the LLM decontaminator showcases superior performance, identifying rephrased samples with high reliability and precision with the highest minimum F1 score as well as the highest average F1 score.
+As shown in the following table, except for the LLM decontaminator, all other detection methods introduce some false positives. Both rephrased and translated samples successfully evade the n-gram overlap detection. With multi-qa BERT, the embedding similarity search proves ineffective against translated samples. 
+The LLM decontaminator's reliability and precision are evidenced by the highest minimum and average f1 scores.
 
-<img src="/images/blog/decontaminator/MMLU-f1score.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+
+<img src="/images/blog/decontaminator/MMLU-us-f1score.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 
 ## **Serious Contamination in Real-World Dataset**
 
@@ -111,4 +107,17 @@ The following command builds a top-k similar database based on sentence bert and
 
 We would like to express our gratitude to Ying Sheng for the early discussion on rephrased samples.
 We also extend our thanks to Dacheng Li, Erran Li, Hao Liu, Jacob Steinhardt, Hao Zhang, and Siyuan Zhuang for providing insightful feedback.
-This project is partly supported by gifts from Anyscale, Astronomer, Google, IBM, Intel, Lacework, Microsoft, MBZUAI, Samsung SDS, Uber, and VMware. Lianmin Zheng is supported by a Meta Ph.D. Fellowship.
+
+
+## **Citation**
+
+```
+@misc{yang2023rethinking,
+      title={Rethinking Benchmark and Contamination for Language Models with Rephrased Samples}, 
+      author={Shuo Yang and Wei-Lin Chiang and Lianmin Zheng and Joseph E. Gonzalez and Ion Stoica},
+      year={2023},
+      eprint={2311.04850},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
