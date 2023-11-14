@@ -108,7 +108,7 @@ The following command builds a top-k similar database based on sentence bert and
 ## **Conclusion**
 
 In this blog, we show that contamination is still poorly understood. With our proposed decontamination method, we reveal significant previously unknown test overlap in real-world datasets. We encourage the community to rethink benchmark and contamination in LLM context, and adopt stronger decontamination tools when evaluating LLMs on public benchmarks.
-We call for the community to actively develop fresh one-time exams to accurately evaluate LLMs.
+We call for the community to actively develop fresh one-time exams and use live benchmarks such as [dynabench](https://dynabench.org/) and [Chatbot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) to accurately evaluate LLMs.
 
 
 ## **Acknowledgment**
