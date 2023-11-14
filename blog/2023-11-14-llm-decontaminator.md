@@ -18,7 +18,7 @@ In this blog post, we point out why contamination is still poorly understood and
 For more technical details, please refer to our [paper](https://arxiv.org/pdf/2311.04850.pdf).
 
 
-## **What's wrong with existing decontamination measures?**
+## **What's Wrong with Existing Decontamination Measures?**
 
 Contamination occurs when test set information is leaked in the training set, resulting in an overly optimistic estimate of the model’s performance.
 Despite being recognized as a crucial issue, understanding and detecting contamination remains an open and challenging problem.
@@ -108,6 +108,7 @@ The following command builds a top-k similar database based on sentence bert and
 ## **Conclusion**
 
 In this blog, we show that contamination is still poorly understood. With our proposed decontamination method, we reveal significant previously unknown test overlap in real-world datasets. We encourage the community to rethink benchmark and contamination in LLM context, and adopt stronger decontamination tools when evaluating LLMs on public benchmarks.
+We call for the community to actively develop fresh one-time exams to accurately evaluate LLMs.
 
 
 ## **Acknowledgment**
