@@ -19,7 +19,7 @@ Second, obtaining an accurate draft model is a non-trivial task, often requiring
 In this blogpost, we introduce a new, exact decoding algorithm, **Lookahead Decoding**, to solve these two burdens in one shot. 
 The key observation driving lookahead decoding is that: while it is impossible to decode multiple next tokens in one step, an LLM can indeed generate multiple, plausible, and disjoint subsequences in parallel; these subsequences may appear in future token position.
 We draw insights from previous work that formulates [autoregressive decoding as solving a system of nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf), and modernizes a classic solver, [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method), for LLM decoding.
-In lookahead decoding, an LLM first generate multiple, disjoint (n-grams)[https://en.wikipedia.org/wiki/N-gram] *in parallel* using an algorithm derived from [Jacobi iteration](https://en.wikipedia.org/wiki/Jacobi_method).  
+In lookahead decoding, an LLM first generate multiple, disjoint [n-grams](https://en.wikipedia.org/wiki/N-gram) *in parallel* using an algorithm derived from [Jacobi iteration](https://en.wikipedia.org/wiki/Jacobi_method).  
 These n-grams are captured and later verified; if accepted, they are appended at the end of the generation.  
 
 Lookahead decoding is able to generate n-grams instead of a single token each step, hence it can compress the number of decoding steps -- generating N token using less than N steps. In fact, lookahead decoding can even
@@ -104,6 +104,16 @@ To achieve a high acceptance rate, speculative decoding often requires a draft m
 
 <p style="color:gray; text-align: center;">When the level is large enough, exponentially increasing window size can almost linearly increase the compression ratio. (LLaMA-2-7B-chat on MT-Bench)</p>
 
+**How do you configure windows and levels in practice?** Lookahead decoding should be used in scenarios where latency is vital. Intuitively, a larger window and level will lead to a more considerable per-step cost and a more significant step compression ratio. For powerful GPUs (e.g., A100), you can better squeeze its performance (i.e., larger window and level) to achieve a larger step compression ratio (i.e., lower long sequence generation latency). If the window and level are too large, it will be costly to use Lookahead decoding and slow down the decoding despite the large compression ratio. Increasing the level together with the window to achieve higher performance would be best, avoiding hitting a theoretical upper bound by only increasing one side. Our experimental results show that on A100, the following setting can be optimal in most cases. 
+
+| Model Setting | window | level |
+|----: |:----:  | :----: |
+| 7B| 15| 5 |
+| 13B | 10 | 5|
+| 33B | 7 | 5 |
+
+You can also change the setting to tune a better performance on your specific decoding settings. We will release an auto-tuner to better schedule a window and level on a given model, dataset, and hardware setting. 
+
 ## Overhead of Lookahead Decoding
 
 Here, we follow [Megatron-LM](arxiv.org/pdf/2104.04473.pdf) to estimate the forward computation cost of the LLM. Transformer models' FLOPs are determined by various parameters: sequence length (*s*), model hidden size (*h*), batch size (*B*), vocabulary size (*V*), and the number of layers (*l*) and by this formula:
@@ -122,9 +132,12 @@ We conducted an extensive benchmarking process to evaluate the efficiency of Loo
 
 **MT-Bench Results with LLaMA-Chat** [MT-Bench](https://lmsys.org/blog/2023-06-22-leaderboard/), encompassing a cross-area set of multi-turn questions, served as our testing ground for assessing Lookahead Decoding's overall performance efficacy. Lookahead Decoding achieves roughly 1.5x speedup across several model settings.
 
-**Code Infilling and Code Completion with CodeLLaMA**. Applying Lookahead Decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) also shows large speedups (i.e., more than 2x). In the code infilling task, the generation length is relatively short, and in this case, the speedup is relatively low because Lookahead Decoding requires a large number of steps to fill the window and carry it on smoothly. In code completion tasks, many repeated tokens appear in a generation, and the speedup is larger than other datasets.
+**Code Completion with CodeLLaMA**. Applying Lookahead Decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) also shows large speedups (i.e., more than 2x). In code completion tasks, many repeated tokens appear in a generation, and the speedup is relatively larger than other datasets.
 
-**Instructional Coding Task and Math Problem Solving with CodeLLaMA-Instruct**. Finally, we evaluate Lookahead Decoding's performance on instructional coding tasks and solving math problems. For the [GSM8K](https://arxiv.org/abs/2110.14168) dataset, we evaluated CodeLLaMA-Instruct on the first 1K questions. And the instructional coding task is evaluated on [MBPP](https://arxiv.org/abs/2108.07732). Results show that Lookahead Decoding can bring more than 1.8x speedups on these settings.
+**Math Problem Solving with CodeLLaMA-Instruct**. Finally, we evaluate Lookahead Decoding's performance on solving math problems. For the [GSM8K](https://arxiv.org/abs/2110.14168) dataset, we evaluated CodeLLaMA-Instruct on the first 1K questions. Results show that Lookahead Decoding can bring more than 1.8x speedups on these settings.
+
+**Per-Step Overhead with Lookahead decoding** Despite the wall-clock time reduction in the previous settings, Lookahead decoding actually requires much larger per-step FLOPs to achieve a #step compression. We set a guess token limit to limit the most number of guess n-grams per decoding step. The #token we need to decode per-step will be at most * (window + guess) * (level - 1) *. This number is approximately a multiple of the Vallina autoregressive decoding FLOPs. So we need to have roughly 120x extra FLOPs for 7B models (with level=5, window=15, and guess=15) and 56x extra FLOPs for 33B models (with level=5, window=7 and guess=7) in the previous experiments. Because of the memory-intensive bound characteristic of the LLM decoding, these extra FLOPs only bring little per-step cost and a visible step compression ratio, resulting in a notable speedup.
+
 
 ## Get started with Lookahead Decoding
 
