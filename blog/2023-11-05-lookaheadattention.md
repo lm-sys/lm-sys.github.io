@@ -97,9 +97,9 @@ To achieve a high acceptance rate, speculative decoding often requires a draft m
 
 ## Overhead of Lookahead Decoding
 
-Here, we follow [Megatron-LM](arxiv.org/pdf/2104.04473.pdf) to estimate the forward cost of the LLM. A transformer model will have FLOPs of 
-<img src="/images/blog/laattention/flops.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 10%"></img>
-in its forward pass. Here, *s* is the sequence length, *h* is the model hidden size, and other variables are model-related settings. It considers full self-attention, while the attention cost is lower in autoregressive inference. In Lookahead decoding's inference pass, the sequence length is a roughly *window* * *level* + *kv-cache length*. For the smallest LLaMA-2-7B model, *h* is 4096, and *s/6h* is relatively small with a relatively small *s*. In this case, FLOPs should follow a linear increase together with the *s* (or *window* * *level*). With a long enough *level* setting, an exponentially increased *window* can bring a linear compression ratio increase, as in the previous section. We can linearly compress the steps by exponentially increasing the FLOPS in a certain range.
+Here, we follow [Megatron-LM](arxiv.org/pdf/2104.04473.pdf) to estimate the forward cost of the LLM. In a transformer model's forward pass, the FLOPs will be $$ 96Bslh^2(1+\frac{s}{6h}+\frac{V}{16lh) $$ 
+<img src="/images/blog/laattention/flops.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 30%"></img>
+. Here, *s* is the sequence length, *h* is the model hidden size, and other variables are model-related settings. It considers full self-attention, while the attention cost is lower in autoregressive inference. In Lookahead decoding's inference pass, the sequence length is a roughly *window* * *level* + *kv-cache length*. For the smallest LLaMA-2-7B model, *h* is 4096, and *s/6h* is relatively small with a relatively small *s*. In this case, FLOPs should follow a linear increase together with the *s* (or *window* * *level*). With a long enough *level* setting, an exponentially increased *window* can bring a linear compression ratio increase, as in the previous section. We can linearly compress the steps by exponentially increasing the FLOPS in a certain range.
 
 ## Experimental Result
 
