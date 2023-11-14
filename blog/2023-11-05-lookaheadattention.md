@@ -126,7 +126,7 @@ This estimation accounts for the full self-attention mechanism employed in train
 
 We conducted an extensive benchmarking process to evaluate the efficiency of Lookahead Decoding by integrating it with [LLaMA-2-Chat](https://ai.meta.com/llama/) and [CodeLLaMA](https://ai.meta.com/blog/code-llama-large-language-model-coding/) models. Specifically, our tests focused on the 7B, 13B, and 70B parameter configurations of the LLaMA-2-Chat models and the 7B, 13B, and 33B configurations of the CodeLLaMA models. Our objective was to substantiate the acceleration these models attain in practical and real-world applications through different datasets. The design of Lookahead Decoding makes the speedup without any finetune and draft model and preserves the output distribution. The 7B, 13B and 33B models are evaluated on single A100 GPU with FP16 precision. The 70B model is evaluated on two A100 GPUs with pipeline parallelism.
 
-<img src="/images/blog/laattention/fold-perf.png" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
+<img src="/images/blog/laattention/lookahead-perf.png" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
 <p style="color:gray; text-align: center;">Speedup of Lookahead Decoding on Different Datasets.</p>
 
