@@ -56,16 +56,13 @@ In LLM decoding task, because the accelerator is largely memory bandwidth bounde
 
 ## Lookahead Decoding: Modernize Jacobi Iteration for LLM Decoding
 
-To modernize Jacobi decoding for today's LLM inference, we must effectively generate and verify the tokens. 
-The key to preserving decoding distribution while reducing the number of steps lies in consistently **looking ahead** a series of future tokens and simultaneously **verifying** guess tokens during the decoding process, 
-following the guess-and-verify paradigm. 
-Different from previous methods, Lookahead decoding does not need a draft model and uses itself to generate guess candidates by a modified Jacobi decoding in a **lookahead branch**. 
-Then, Lookahead decoding verifies these guess token candidates in a **verification branch**. The following figure shows the procedure of Lookahead decoding.
-
+To modernize Jacobi decoding for today's LLM inference, we must effectively generate and verify the tokens. The key to preserving decoding distribution while reducing the number of steps lies in consistently **looking ahead** a series of future tokens and simultaneously **verifying** guess tokens during the decoding process, following the guess-and-verify paradigm. To address the limitation of the Jacobi Decoding, we will collect n-grams from the Jacobi generation and stitch them to the current input token to verify the guessed n-grams' correctness. The following gif shows an example of such decoding process.
 
 <img src="/images/blog/laattention/lookahead-decoding.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 
-<p style="color:gray; text-align: center;">Illustration of the proposed lookahead decoding: level is 3 and window size is 4.</p>
+<p style="color:gray; text-align: center;">Illustration of the proposed lookahead decoding.</p>
+
+To make this decoding process more efficient, we split the whole decoding branch into a **lookahead branch** and a **verification branch**. Lookahead branch maintains a fixed-sized multi-level window to generate n-gram token candidates. Verification branch verifies multiple tokens in the same time to boost the overall acceptance rate. They are further discussed in the following paragraph.
 
 ## Lookahead Branch
 
