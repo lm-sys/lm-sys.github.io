@@ -14,7 +14,7 @@ To ensure result validity, we followed OpenAI's decontamination method and found
 
 What's the trick behind it? Well, rephrasing the test set is all you need! We simply paraphrase a test sample or translate it into a different language. It turns out a 13B LLM is smart enough to "generalize" beyond such variations and reaches drastically high benchmark performance. So, did we just make a big breakthrough? Apparently, there is something wrong with our understanding of contamination.
 
-In this blog post, we point out why contamination is still poorly understood and how existing decontamination measures fail to capture such nuances. To address such risks, we propose a stronger [LLM-based decontaminator](https://github.com/lm-sys/llm-decontaminator) and apply it to real-world training datasets, revealing significant test overlap with widely used benchmarks. 
+In this blog post, we point out why contamination is still poorly understood and how existing decontamination measures fail to capture such nuances. To address such risks, we propose a stronger [LLM-based decontaminator](https://github.com/lm-sys/llm-decontaminator) and apply it to real-world training datasets (e.g., the Stack, RedPajama), revealing significant test overlap with widely used benchmarks. 
 For more technical details, please refer to our [paper](https://arxiv.org/pdf/2311.04850.pdf).
 
 
@@ -61,7 +61,7 @@ As shown in the following table, except for the LLM decontaminator, all other de
 
 
 
-<img src="/images/blog/decontaminator/MMLU-us-f1score.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
+<img src="/images/blog/decontaminator/MMLU-us-f1score.png" style="display:block; margin:auto; max-width:100%; height:auto;">
 
 ## **Contamination in Real-World Dataset**
 
