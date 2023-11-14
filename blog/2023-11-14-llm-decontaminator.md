@@ -1,5 +1,5 @@
 ---
-title: "Cache me if you can! How to beat GPT-4 with a 13B model"
+title: "Catch me if you can! How to beat GPT-4 with a 13B model"
 author: "Shuo Yang*, Wei-Lin Chiang*, Lianmin Zheng*, Joseph E. Gonzalez, Ion Stoica"
 date: "Nov 14, 2023"
 previewImg: /images/blog/decontaminator/rephrase-score_with_border.png
