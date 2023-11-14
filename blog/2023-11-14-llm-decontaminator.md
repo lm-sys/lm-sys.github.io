@@ -53,7 +53,7 @@ This LLM decontaminator involves two steps:
 
 Results show that our proposed LLM method works significantly better than existing methods on removing rephrased samples.
 
-### **Evaluating Different Detection Methods**
+#### **Evaluating Different Detection Methods**
 
 To compare different detection methods, we use MMLU benchmark to construct 200 prompt pairs using both the original and rephrased test sets. These comprised 100 random pairs and 100 rephrased pairs.
 The f1 score on these pairs provides insight into the detection methods' ability to detect contamination, with higher values indicating more precise detection.
