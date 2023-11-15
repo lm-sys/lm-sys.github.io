@@ -10,7 +10,6 @@ See the [package.json](./package.json)
 
 2. Develop:
 ```bash
-cd lmsys.org
 npm i
 npm run build
 npm run dev
