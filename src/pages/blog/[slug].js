@@ -4,16 +4,8 @@ import md from "markdown-it";
 import mdgh from "markdown-it-github-headings";
 import Tags from "../../components/Tags";
 import dateFormat from "dateformat";
-import React, { useEffect } from 'react';
 
 export default function Post({ frontmatter, content, slug }) {
-  useEffect(() => {
-    // Check if MathJax object is available
-    if (window.MathJax) {
-      // Typeset / reprocess the math content
-      window.MathJax.typesetPromise();
-    }
-  }, [content]);
   return (
     <div className="w-full flex justify-center py-5 pt-16 md:pt-5">
       <Tags
