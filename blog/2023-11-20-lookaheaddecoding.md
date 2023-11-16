@@ -9,7 +9,7 @@ Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today'
 Making matters worse, each decoding step cannot effectively leverages the parallel processing capabilities of modern GPUs, often leading to GPU underutilization.
 This challenges many real world LLM applications that prioritize rapid response time, such as chatbots and personal assistants, which require frequently generating *long sequences with low latency*. 
 
-One way to accelerate autoregressive decoding is [speculative decoding](https://arxiv.org/abs/2211.17192)(including [Medusa](https://sites.google.com/view/medusa-llm) and [OSD](https://arxiv.org/abs//2310.07177)), which employ a "guess-and-verify" strategy: a smaller draft model predicts several potential future tokens, and the original LLM then verifies these guesses in parallel. 
+One way to accelerate autoregressive decoding is [speculative decoding](https://arxiv.org/abs/2211.17192) (including [Medusa](https://sites.google.com/view/medusa-llm) and [OSD](https://arxiv.org/abs//2310.07177)), which employ a "guess-and-verify" strategy: a smaller draft model predicts several potential future tokens, and the original LLM then verifies these guesses in parallel. 
 These apporaches can opportunistically reduce the number of decoding steps and, consequently lower latency. However, they face several limitations.
 First, the maximum speedup that speculative decoding based methods can achieve is limited by the *token acceptance rate*, or equivalently how accurately the draft model can predict the main model's outputs. Second, creating an accurate draft model is non-trivial, often requiring extra training and careful tuning; Incoparating these draft models into real LLM services may introduce new complications.
 
@@ -25,7 +25,7 @@ See a demo of lookahead decoding accelerating LLaMa-7B-Chat geneartion:
 
 <img src="/images/blog/laattention/acc-demo.gif" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
-<p style="color:gray; text-align: center;">Demo of speedups by Lookahead Decoding on LLaMA-2-7B-Chat generation. Blue fonts were tokens generated in parallel in one decoding step.</p>
+<p style="color:gray; text-align: center;">Figure 1: Demo of speedups by Lookahead Decoding on LLaMA-2-7B-Chat generation. Blue fonts were tokens generated in parallel in one decoding step.</p>
 
 We will show that at a moderate compression rate and insignificant extra FLOPS invested per step, lookahead decoding significantly lowers latency, achieving 1.5x to 2.3x speedups. More importantly, it offers the flexibility to invest more FLOPs for even greater latency reduction, which is particularly beneficial for extremely latency-sensitive applications, albeit with diminishing returns.
 
@@ -34,30 +34,31 @@ We have developed a version of Lookahead Decoding that is compatible with the ``
 ## Background: Parallel LLM Decoding using Jacobi Iteration
 
 The [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) is a classic solver for non-linear systems. In the case of LLM inference, We can also employ it for parallel token generation without a draft model.
-To see this, let's reconsider the autoregressive decoding process. Traditionally, this process is seen as a sequential generation of tokens, illustrated in Figure.1(Left). With some simple rearrangements of equations, it can be conceptualized as solving a system of non-linear equations, as depicted in Figure.1(Right).
+To see this, let's reconsider the autoregressive decoding process. Traditionally, this process is seen as a sequential generation of tokens, illustrated in Figure.2(Left). With some simple rearrangements of equations, it can be conceptualized as solving a system of non-linear equations, as depicted in Figure.2(Right).
 
 <img src="/images/blog/laattention/equations.png" style="width: 70%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
-<p style="color:gray; text-align: center;">Autoregressive deocoding as a process of solving non-linear systems.</p>
+<p style="color:gray; text-align: center;">Figure 2: Autoregressive deocoding as a process of solving non-linear systems.</p>
 
-An alternative approach based on Jacobi iteratoin can precisely solve this non-linear system (solving all *y*) as follows:
-- Start with an initial guess for all variables *y*.
-- Solve new corresponding *y'* values for each equation with the old variables *y*.
-- Substitute all *y* with newly solved *y'*.
-- Continue this process until a predefined stopping condition is met.
+An alternative approach based on Jacobi iteratoin can solve all $[y_1, y_2, ..., y_m]$ of this non-linear system in parallel as follows:
+- Start with an initial guess for all variables $\textbf{y} = [y_1, y_2, ..., y_m]$.
+- Calculate new $\textbf{y}'$ values for each equation with the previous $\textbf{y}$ values.
+- Update $\textbf{y}$ to the newly caldulated $\textbf{y}'$.
+- Repeat this process until a certain stopping condition is achieved (e.g., $\textbf{y} = \textbf{y'}$).
   
-We further illustrate this Jacobi iteration for LLM autoregressive decoding (also referred to as [*Jacobi decoding*](https://arxiv.org/pdf/2305.10427.pdf)) in the subsequent figure. Initially, we randomly generate a list of tokens, then solve for them iteratively until reaching the stopping condition. A plausible aspect of this system is its guarantee for maximum steps, which can solve *m* variables in a maximum of *m* steps (the same as autoregressive decoding steps). Intriguingly, it is sometimes possible to opportunistically accept multiple tokens in a single iteration of Jacobi decoding. This occurrence can reduce the number of decoding steps required. For instance, as depicted in the following figure, Jacobi decoding may successfully predict the token 'computer' and accept two tokens in one step. The drawback of this Jacobi decoding is that it requires decoding multiple equations per iteration. However, the LLM's decoding character can solve these multiple equations in the same decode step, which is suitable for parallel accelerators.
-
-
+We illustrate this parallel decoding process (also referred to as [*Jacobi decoding*](https://arxiv.org/pdf/2305.10427.pdf)) in Figure 3. 
+Jacabi decoding can guarantee solving all *m* variables in at most *m* steps (same number of steps as autoregressive decoding), because each step at least has the very first token correctly decoded. 
+Sometimes, multiple tokens might converge in a single iteration, potentially reducing the overall number of decoding steps. For example, as shown in Figure 3, Jacobi decoding accurately predicts and accepts two tokens "computer" and "scientist" in Step 4. Compared to autoregressive decoding, each Jacobi decoding step is slightly more expensive in terms of FLOPs needed, because it requires LLM forward computation on >1 token. Fortunately, this would not translate into slowdowns thanks to the parallel processing nature of acclerators.
 <img src="/images/blog/laattention/jacobi-iteration.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 
-<p style="color:gray; text-align: center;">Illustration of the Jacobi Iteration process for LLM decoding.</p>
+<p style="color:gray; text-align: center;">Figure 3: Illustration of applying Jacobi iteration method for parallel LLM decoding.</p>
 
 
-**Limitation of Jacobi Decoding**. However, in our study, several problems limit the acceptance rate of Jacobi decoding, making it hard to achieve empirical speedups in real-world applications:
+### Limitations of Jacobi Decoding 
 
-- Vanilla Jacobi decoding can only correctly guess a few tokens. For example, [previous research](https://arxiv.org/pdf/2305.10427.pdf) shows limited speedup (i.e., less than 10%) given a moderate computational budget.
-- Although Jacobi decoding can sometimes correctly guess tokens, it is hard to place tokens in the correct position, and even those valid tokens will be frequently substituted.
-- Unlike Jacobi-Iterations in solving linear systems, the input and output of LLMs are discrete values, and it is hard to converge like continuous values.
+In pracice, we find that Jacobi decoding faces several challenges that impede achieving significant wallclock speedup:
+
+- While Jacobi decoding can decode multiple token sequences simultaneously, the precise positioning of these tokens within the sequence is problematic. Correctly predicted tokens are frequently replaced in later iterations. Consequently, only a small number of iterations observe multiple tokens being correctly decoded at once.
+- The discrete nature of LLM inputs and outputs complicates convergence, unlike the continuous values typically involved in traditional nonlinear systems.
 
 ## Lookahead Decoding: Modernize Jacobi Iteration for LLM Decoding
 
