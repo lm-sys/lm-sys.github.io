@@ -1,49 +1,45 @@
 ---
-title: "Lookahead Decoding: Parallelize Autoregressive Decoding Without A Draft Model"
+title: "Breaking the Sequential Dependency of LLM Inference using Lookahead Decoding"
 author: "Yichao Fu, Peter Bailis, Ion Stoica, Hao Zhang"
-date: "November 14, 2023"
+date: "November 16, 2023"
 previewImg: /images/blog/laattention/acc-demo.gif
 ---
 
-Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today's applications, but their inference -- based on autoregressive decoding -- is notoriously slow and difficult to optimize.
-This is because each autoregressive decoding step generates only one token at a time; as a result, the latency of an LLM request primarily depends on the response length of the request, which is equal to the number of decoding steps. 
-Making matters worse, each decoding step inefficiently leverages the parallel processing power of modern GPUs, often resulting in low GPU utilization.
+Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today's applications, but their inference -- based on autoregressive decoding -- is very slow and difficult to optimize. Each autoregressive decoding step generates only one token at a time; as a result, the latency of an LLM request primarily depends on the response length of the request, or equipvalently the number of decoding steps. 
+Making matters worse, each decoding step cannot effectively leverages the parallel processing capabilities of modern GPUs, often leading to GPU underutilization.
 This challenges many real world LLM applications that prioritize rapid response time, such as chatbots and personal assistants, which require frequently generating *long sequences with low latency*. 
 
-One way to accelerate LLM decoding is [speculative decoding](https://arxiv.org/abs/2211.17192)(and its variants e.g.,[OSD](https://arxiv.org/abs//2310.07177), [Medusa](https://sites.google.com/view/medusa-llm) and [Draft & Verify](https://arxiv.org/pdf/2309.08168.pdf)), which adopts a "guess-and-verify" strategy. 
-In particular, they use a small draft model to guess multiple potential future tokens, then calls the original LLM to verify guessed tokens in parallel.
-While speculative decoding can opportunistically reduce the number of decoding steps (hence reduced latency), they, however, face several fundamental limitations.
-First, the maximum speedup that speculative decoding based methods can achieve is limited by the *token acceptance rate*, or equivalently, how accurately the draft model can predict the target model's outputs.
-Second, obtaining an accurate draft model is a non-trivial task, often requiring additional training and careful tuning; deploying draft models in real serving systems can introduce complications.
+One way to accelerate autoregressive decoding is [speculative decoding](https://arxiv.org/abs/2211.17192)(including [Medusa](https://sites.google.com/view/medusa-llm) and [OSD](https://arxiv.org/abs//2310.07177)), which employ a "guess-and-verify" strategy: a smaller draft model predicts several potential future tokens, and the original LLM then verifies these guesses in parallel. 
+These apporaches can opportunistically reduce the number of decoding steps and, consequently lower latency. However, they face several limitations.
+First, the maximum speedup that speculative decoding based methods can achieve is limited by the *token acceptance rate*, or equivalently how accurately the draft model can predict the main model's outputs. Second, creating an accurate draft model is non-trivial, often requiring extra training and careful tuning; Incoparating these draft models into real LLM services may introduce new complications.
 
-In this blogpost, we introduce a new, exact decoding algorithm, **Lookahead Decoding**, to solve these two burdens in one shot. 
-The key observation driving lookahead decoding is that: while it is impossible to decode multiple next tokens in one step, an LLM can indeed generate multiple, plausible, and disjoint subsequences in parallel; these subsequences may appear in future token position.
-We draw insights from previous work that formulates [autoregressive decoding as solving a system of nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf), and modernizes a classic solver, [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method), for LLM decoding.
-In lookahead decoding, an LLM first generate multiple, disjoint [n-grams](https://en.wikipedia.org/wiki/N-gram) *in parallel* using an algorithm derived from [Jacobi iteration](https://en.wikipedia.org/wiki/Jacobi_method).  
-These n-grams are captured and later verified; if accepted, they are appended at the end of the generation.  
+In this blogpost, we introduce a new, exact decoding algorithm, **Lookahead Decoding**, designed to address these challenges.
+The key observation enabling lookahead decoding is: although it is infeasible to immediately decode multiple next tokens in one step, an LLM can indeed generate multiple, disjoint, yet plausible [n-grams]((https://en.wikipedia.org/wiki/N-gram)) in parallel. These n-grams could potentially fit into future positions of the generated sequence.
+In lookahead decoding, an LLM first generates multiple, disjoint n-grams *in parallel*. This is achieved by viewing [autoregressive decoding as a process of solving nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf), and modernizing the classic [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) for parallel decoding. These n-grams are captured and later verified -- if deemed suitable, are incorporated into the ongoing sequence generation.
 
-Lookahead decoding is able to generate n-grams instead of a single token each step, hence it can compress the number of decoding steps -- generating N token using less than N steps. In fact, lookahead decoding can even
-- compress the decoding steps *without* a draft model
-- Linearly compress decoding steps relative to the per-step log(FLOPs) invested.
+Lookahead decoding is able to generate n-grams in each step, as opposed to producing just one token, hence it can reduce the number of decoding steps -- generating N tokens in fewer than N steps. In fact, lookahead decoding stands out because it:
+- Operates **without** a draft model, simplifying the deployment process.
+- Linearly reduces the number of decoding steps in relation to the logarithm of the FLOPs invested per step.
 
-See a demo of Lookahead decoding accelerating LLaMa-7B-Chat geneartion: 
+See a demo of lookahead decoding accelerating LLaMa-7B-Chat geneartion: 
 
 <img src="/images/blog/laattention/acc-demo.gif" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
-<p style="color:gray; text-align: center;">Demo of speedups by Lookahead Decoding on LLaMA-2-7B-Chat generation. Blue fonts were n-grams generated in parallel in one decoding step.</p>
+<p style="color:gray; text-align: center;">Demo of speedups by Lookahead Decoding on LLaMA-2-7B-Chat generation. Blue fonts were tokens generated in parallel in one decoding step.</p>
 
-We will show that at a moderate compression rate, when the extra FLOPS invested per step is insignificant, lookahead decoding provides a substantial reduction of latency, ranging from 1.5x to 2.3x.
+We will show that at a moderate compression rate and insignificant extra FLOPS invested per step, lookahead decoding significantly lowers latency, achieving 1.5x to 2.3x speedups. More importantly, it offers the flexibility to invest more FLOPs for even greater latency reduction, which is particularly beneficial for extremely latency-sensitive applications, albeit with diminishing returns.
 
-We provide an implementation for Lookahead decoding compatible with `huggingface/transformers`. Users can accelerate HuggingFace's native ```generate```  function with only a few lines of code. Check out our [code](https://github.com/hao-ai-lab/ParallelDecoding) and give it a try!
+We have developed a version of Lookahead Decoding that is compatible with the ```huggingface/transformers``` library. This allows users to enhance the performance of HuggingFace's native ```generate``` function with just a few lines of code. We invite you to explore our [code repository](https://github.com/hao-ai-lab/ParallelDecoding) and experience the benefits of Lookahead Decoding in your LLM applications.
 
 ## Background: Parallel LLM Decoding using Jacobi Iteration
 
-[Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) is a classic solver for solving non-linear systems. In the case of LLM decoding, we can use it for the parallel generation of multiple tokens from an LLM without a draft model. To see this, as shown in Figure 1, we can rewrite the autoregressive decoding process as solving a system of non-linear equations:
-
+The [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) is a classic solver for non-linear systems. In the case of LLM inference, We can also employ it for parallel token generation without a draft model.
+To see this, let's reconsider the autoregressive decoding process. Traditionally, this process is seen as a sequential generation of tokens, illustrated in Figure.1(Left). With some simple rearrangements of equations, it can be conceptualized as solving a system of non-linear equations, as depicted in Figure.1(Right).
 
 <img src="/images/blog/laattention/equations.png" style="width: 70%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<p style="color:gray; text-align: center;">Autoregressive deocoding as a process of solving non-linear systems.</p>
 
-We demonstrate the autoregressive decoding process using a greedy search approach on the left-hand side. Conversely, the right-hand side illustrates the corresponding non-linear system expression. The autoregressive decoding method explicitly resolves the system on the left-hand side (while implicitly addressing the right-hand systems) sequentially. An alternative approach to precisely solve this non-linear system employs a Jacobi iteration method, which can be described as follows:
+An alternative approach based on Jacobi iteratoin can precisely solve this non-linear system (solving all *y*) as follows:
 - Start with an initial guess for all variables *y*.
 - Solve new corresponding *y'* values for each equation with the old variables *y*.
 - Substitute all *y* with newly solved *y'*.
