@@ -117,50 +117,38 @@ Increasing $N$ together with $W$ would be best to achieve balanced performance, 
 
 You can also change the setting to tune a better performance on your specific decoding latency requirement. 
 
+**Per-Step Overhead with Lookahead decoding** Despite the wall-clock time reduction in the previous settings, Lookahead decoding actually requires much larger per-step FLOPs to achieve a #step compression. We set a guess token limit to limit the most number of guess n-grams per decoding step. The #token we need to decode per-step will be at most *(window + guess) * (level - 1)*. This number is approximately a multiple of the Vallina autoregressive decoding FLOPs. So we need to have roughly 120x extra FLOPs for 7B models (with level=5, window=15, and guess=15) and 56x extra FLOPs for 33B models (with level=5, window=7 and guess=7) in the previous experiments. Because of the memory-intensive bound characteristic of the LLM decoding, these extra FLOPs only bring little per-step cost and a visible step compression ratio, resulting in a notable speedup.
+
 
 ## Experimental Result
 
-We evaluate the efficiency of Lookahead Decoding on [LLaMA-2-Chat](https://ai.meta.com/llama/) and [CodeLLaMA](https://ai.meta.com/blog/code-llama-large-language-model-coding/) of various sizes on different datasets. 
-Note that lookahead decoding achieves speedup without any finetuning nor using draft models. The 7B, 13B and 33B models are evaluated on single A100 GPU with FP16 precision. The 70B model is evaluated on two A100 GPUs with pipeline parallelism.
+We evaluate the efficiency of Lookahead Decoding on [LLaMA-2-Chat](https://ai.meta.com/llama/) and [CodeLLaMA](https://ai.meta.com/blog/code-llama-large-language-model-coding/) of various sizes on different datasets including [MT-bench](https://huggingface.co/spaces/lmsys/mt-bench), [HumanEval](https://github.com/openai/human-eval), and [GSM8K](https://huggingface.co/datasets/gsm8k). Note that lookahead decoding achieves speedup without any finetuning nor  draft models. The 7B, 13B and 33B models are evaluated on single A100 GPU and the 70B model is evaluated on two A100 GPUs with pipeline parallelism, all under fp16 precision.
 
 <img src="/images/blog/laattention/lookahead-perf.png" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
-<p style="color:gray; text-align: center;">Figure 7: Speedup of Lookahead Decoding on Different Datasets.</p>
+<p style="color:gray; text-align: center;">Figure 7: Speedup of lookahead decoding on different models and datasets.</p>
 
-**MT-Bench Results with LLaMA-Chat** [MT-Bench](https://lmsys.org/blog/2023-06-22-leaderboard/), encompassing a cross-area set of multi-turn questions, served as our testing ground for assessing Lookahead Decoding's overall performance efficacy. Lookahead Decoding achieves roughly 1.5x speedup across several model settings.
+- **LLaMA-Chat on MT-Bench**. Lookahead Decoding achieves roughly 1.5x speedup across several model settings.
 
-**Code Completion with CodeLLaMA**. Applying Lookahead Decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) also shows large speedups (i.e., more than 2x). In code completion tasks, many repeated tokens appear in a generation, and the speedup is relatively larger than other datasets.
+- **CodeLLaMA on HumanEval**. Applying lookahead decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) shows more than 2x latency reduction. This is because many repeated N-grams are present in code which can be correctly guessed.
 
-**Math Problem Solving with CodeLLaMA-Instruct**. Finally, we evaluate Lookahead Decoding's performance on solving math problems. For the [GSM8K](https://arxiv.org/abs/2110.14168) dataset, we evaluated CodeLLaMA-Instruct on the first 1K questions. Results show that Lookahead Decoding can bring more than 1.8x speedups on these settings.
-
-**Per-Step Overhead with Lookahead decoding** Despite the wall-clock time reduction in the previous settings, Lookahead decoding actually requires much larger per-step FLOPs to achieve a #step compression. We set a guess token limit to limit the most number of guess n-grams per decoding step. The #token we need to decode per-step will be at most $(W + G) * (N - 1)$. This number is approximately a multiple of the Vallina autoregressive decoding FLOPs. So we need to have roughly 120x extra FLOPs for 7B models (with $N=5$, $W=15$, and $G=15$) and 56x extra FLOPs for 33B models (with $N=5$, $W=7$ and $G=7$) in the previous experiments. Because of the memory-intensive bound characteristic of the LLM decoding, these extra FLOPs only bring little per-step cost and a visible step compression ratio, resulting in a notable speedup.
-
+- **CodeLLaMA-Instruct on GSM8K**. Using CodeLLama-Instruct to solve math problems from GSM8K, lookahead decoding achieves 1.8x speedups.
 
 ## Get started with Lookahead Decoding
 
-We have encapsulated the dedicated implementation of Lookahead Decoding in a Python library, and it is easy to use with huggingface's transformers. You can accelerate your transformers' decoding API with only a few LoCs. Please check our [GitHub repo](https://github.com/hao-ai-lab/ParallelDecoding)!
+We have implemented lookahead decoding in huggingface's transformers. You can accelerate your transformers' decoding API with only a few LoCs. Please check our [GitHub repo](https://github.com/hao-ai-lab/ParallelDecoding)!
 
 ## Acknowledgment
-
-We would like to thank .
-
-## The Team
-
-The Lookahead Decoding and this blog post are developed, evaluated, and maintained by the following
+We would like to thank Richard Liaw, Yang Song, and Lianmin Zheng for providing insightful feedback.
 
 ## Citation
 
 ```
-@misc{fold2023,
-
+@misc{fu2023lookahead,
     title = {Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90\%* ChatGPT Quality},
-
-    url = {https://lmsys.org/blog/2023-03-30-vicuna/},
-
-    author = {},
-
+    url = {https://lmsys.org/blog/2023-11-21-lookahead-decoding/},
+    author = {Yichao Fu and Peter Bailis and Ion Stoica and Hao Zhang},
     month = {November},
-
     year = {2023}
 
 }
