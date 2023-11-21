@@ -11,4 +11,4 @@ window.MathJax = {
       }
     }
   };
-  
+
