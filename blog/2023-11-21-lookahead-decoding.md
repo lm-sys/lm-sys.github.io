@@ -1,17 +1,22 @@
 ---
 title: "Breaking the Sequential Dependency of LLM Inference using Lookahead Decoding"
 author: "Yichao Fu, Peter Bailis, Ion Stoica, Hao Zhang"
-date: "November 16, 2023"
+date: "November 21, 2023"
 previewImg: /images/blog/laattention/acc-demo.gif
 ---
 
 **TL;DR:** We introduce a new, exact decoding algorithm, ***lookahead decoding***, for LLM inference. 
 Lookahead decoding parallelizes autoregressive decoding by extracting and verifying n-grams using the LLM based on Jacobi iteration. 
-Lookahead decoding operates **without** a draft model or a data store, and linearly reduces the number of decoding steps in relation to the logarithm of the FLOPs invested per step.
+Lookahead decoding operates **without** a draft model or a data store, and linearly reduces the number of decoding steps in relation to the logarithm of the FLOPs invested per decoding step. 
+See a demo of lookahead decoding accelerating LLaMa-7B-Chat generation: 
+
+<img src="/images/blog/laattention/acc-demo.gif" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
+
+<p style="color:gray; text-align: center;">Figure 1: Demo of speedups by Lookahead Decoding on LLaMA-2-7B-Chat generation. Blue fonts were tokens generated in parallel in one decoding step.</p>
 
 ## Introduction
 Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today's applications, but their inference -- based on autoregressive decoding -- is very slow and difficult to optimize. Each autoregressive decoding step generates only one token at a time; as a result, the latency of an LLM request primarily depends on the response length of the request, or equivalently the number of decoding steps. 
-Making matters worse, each decoding step cannot effectively leverages the parallel processing capabilities of modern GPUs, often leading to GPU underutilization.
+Making matters worse, each decoding step cannot effectively leverage the parallel processing capabilities of modern GPUs, often leading to GPU underutilization.
 This challenges many real world LLM applications that prioritize rapid response time, such as chatbots and personal assistants, which require frequently generating *long sequences with low latency*. 
 
 One way to accelerate autoregressive decoding is [speculative decoding](https://arxiv.org/abs/2211.17192) (including [Medusa](https://sites.google.com/view/medusa-llm) and [OSD](https://arxiv.org/abs//2310.07177)), which employ a "guess-and-verify" strategy: a smaller draft model predicts several potential future tokens, and the original LLM then verifies these guesses in parallel. 
@@ -26,11 +31,6 @@ Lookahead decoding is able to generate n-grams in each step, as opposed to produ
 - Operates **without** a draft model, simplifying the deployment process.
 - Linearly reduces the number of decoding steps in relation to the logarithm of the FLOPs invested per step.
 
-See a demo of lookahead decoding accelerating LLaMa-7B-Chat geneartion: 
-
-<img src="/images/blog/laattention/acc-demo.gif" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
-
-<p style="color:gray; text-align: center;">Figure 1: Demo of speedups by Lookahead Decoding on LLaMA-2-7B-Chat generation. Blue fonts were tokens generated in parallel in one decoding step.</p>
 
 We will show that at a moderate compression rate and insignificant extra FLOPS invested per step, lookahead decoding significantly lowers latency, achieving 1.5x to 2.3x speedups. More importantly, it offers the flexibility to invest more FLOPs for even greater latency reduction, which is particularly beneficial for extremely latency-sensitive applications, albeit with diminishing returns.
 
@@ -132,11 +132,11 @@ We evaluate the efficiency of Lookahead Decoding on [LLaMA-2-Chat](https://ai.me
 
 - **CodeLLaMA on HumanEval**. Applying lookahead decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) shows more than 2x latency reduction. This is because many repeated N-grams are present in code which can be correctly guessed.
 
-- **CodeLLaMA-Instruct on GSM8K**. Using CodeLLama-Instruct to solve math problems from GSM8K, lookahead decoding achieves 1.8x speedups.
+- **CodeLLaMA-Instruct on GSM8K**. Using CodeLLama-Instruct to solve math problems from GSM8K, lookahead decoding achieves 1.8x latency reduction.
 
 ## Get started with Lookahead Decoding
 
-We have implemented lookahead decoding in huggingface's transformers. You can accelerate your transformers' decoding API with only a few LoCs. Please check our [GitHub repo](https://github.com/hao-ai-lab/ParallelDecoding)!
+We have implemented lookahead decoding in huggingface's transformers. You can accelerate your transformers' decoding API with only a few LoCs. Please check our [GitHub repo](https://github.com/hao-ai-lab/ParallelDecoding) and give us feedback!
 
 ## Acknowledgment
 We would like to thank Richard Liaw, Yang Song, and Lianmin Zheng for providing insightful feedback.
@@ -145,7 +145,7 @@ We would like to thank Richard Liaw, Yang Song, and Lianmin Zheng for providing 
 
 ```
 @misc{fu2023lookahead,
-    title = {Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90\%* ChatGPT Quality},
+    title = {Breaking the Sequential Dependency of LLM Inference using Lookahead Decoding},
     url = {https://lmsys.org/blog/2023-11-21-lookahead-decoding/},
     author = {Yichao Fu and Peter Bailis and Ion Stoica and Hao Zhang},
     month = {November},
