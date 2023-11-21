@@ -1,5 +1,5 @@
 ---
-title: "Break the Sequential Dependency of LLM Inference using Lookahead Decoding"
+title: "Break the Sequential Dependency of LLM Inference Using Lookahead Decoding"
 author: "Yichao Fu, Peter Bailis, Ion Stoica, Hao Zhang"
 date: "November 21, 2023"
 previewImg: /images/blog/laattention/acc-demo.gif
@@ -17,13 +17,13 @@ Below is a demo of lookahead decoding accelerating LLaMa-2-Chat 7B generation:
 ## Introduction
 Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today's applications, but their inference -- based on autoregressive decoding -- is very slow and difficult to optimize. Each autoregressive decoding step generates only one token at a time; as a result, the latency of an LLM request primarily depends on the response length of the request, or equivalently the number of decoding steps. 
 Making matters worse, each decoding step does not leverage the parallel processing power of modern GPUs, often resulting in low GPU utilization.
-This challenges many real world LLM applications that prioritize rapid response time, such as chatbots and personal assistants, which require frequently generating *long sequences with low latency*. 
+This challenges many real-world LLM applications that prioritize rapid response time, such as chatbots and personal assistants, which require frequently generating *long sequences with low latency*. 
 
 One way to accelerate autoregressive decoding is [speculative decoding](https://arxiv.org/abs/2211.17192) (including [Medusa](https://sites.google.com/view/medusa-llm) and [OSD](https://arxiv.org/abs//2310.07177)), which employ a "guess-and-verify" strategy: a draft model predicts several potential future tokens, and the original LLM then verifies these guesses in parallel. 
 These approaches can opportunistically reduce the number of decoding steps and, consequently lower latency. However, they face several limitations.
 First, the maximum speedup that speculative decoding based methods can achieve is limited by the *token acceptance rate*, or equivalently how accurately the draft model can predict the main model's outputs. Second, creating an accurate draft model is non-trivial, often requiring extra training and careful tuning, in face of traffic changes over time.
 
-In this blogpost, we introduce a new, exact decoding algorithm, **Lookahead decoding**, designed to overcome these challenges.
+In this blogpost, we introduce a new, exact decoding algorithm, **lookahead decoding**, designed to overcome these challenges.
 The key observation enabling lookahead decoding is that, although decoding multiple next tokens in one step is infeasible, an LLM can indeed generate multiple disjoint [n-grams]((https://en.wikipedia.org/wiki/N-gram)) in parallel. These n-grams could potentially fit into future parts of the generated sequence.
 This is achieved by viewing [autoregressive decoding as solving nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf), and adapting the classic [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) for parallel decoding. The generated n-grams are captured and later verified, if suitable, integrated into the sequence.
 
@@ -35,10 +35,10 @@ Next, we will show that when the extra FLOPS per step is insignificant, lookahea
 
 We have developed an implementation of lookahead decoding compatible with ```huggingface/transformers```. Users can easily enhance the performance of HuggingFace's native ```generate``` function with just a few lines of code. We encourage you to explore our [code repository](https://github.com/hao-ai-lab/ParallelDecoding) and provide feedback.
 
-## Background: Parallel LLM Decoding using Jacobi Iteration
+## Background: Parallel LLM Decoding Using Jacobi Iteration
 
 The [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) is a classic solver for nonlinear systems. In the case of LLM inference, we can also employ it for parallel token generation without a draft model.
-To see this, let's reconsider the autoregressive decoding process. Traditionally, this process is seen as a sequential generation of tokens, illustrated in Figure.2(Left). With some simple rearrangements of equations, it can be conceptualized as solving a system of non-linear equations, as depicted in Figure.2(Right).
+To see this, let's reconsider the autoregressive decoding process. Traditionally, this process is seen as a sequential generation of tokens, illustrated in Figure 2(Left). With some simple rearrangements of equations, it can be conceptualized as solving a system of non-linear equations, as depicted in Figure 2(Right).
 
 <img src="/images/blog/laattention/equations.png" style="width: 70%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">Figure 2: Autoregressive decoding as a process of solving nonlinear systems.</p>
@@ -107,7 +107,7 @@ The findings are illustrated in Figure 6. Notably, when the n-gram size is suffi
 <p style="color:gray; text-align: center;">Figure 6: When $N$ is large enough, exponentially increasing window size $W$ can linearly reduce the number of decoding steps. Here we set $G=W$. Experiments are conducted using LLaMA-2-chat 7B on MT-Bench dataset. </p>
 
 ### Cost, Usage, and Limitations
-The FLOPs needed for each lookahead decoding step are proportional to the number of input tokens per step, which is the sum of the lookahead branch size and the verification branch siz: $W * (N - 1) + G * (N - 1)$. As the scaling law reveals, when $N$ is large enough, an exponential increase in the $W$ can result in a linear reduction of decoding steps. Thus, we can achieve linear compression of the steps by trading exponentially more FLOPs since we set $G=W$.
+The FLOPs needed for each lookahead decoding step are proportional to the number of input tokens per step, which is the sum of the lookahead branch size and the verification branch size: $W * (N - 1) + G * (N - 1)$. As the scaling law reveals, when $N$ is large enough, an exponential increase in the $W$ can result in a linear reduction of decoding steps. Thus, we can achieve linear compression of the steps by trading exponentially more FLOPs since we set $G=W$.
 
 Given this property, lookahead decoding should be used in scenarios where latency is vital, e.g., surplus FLOPs exist that can be traded for latency, or it is even worthwhile to pay extra FLOPs for latency. 
 For powerful GPUs (e.g., A100), lookahead decoding can better squeeze its performance by using a large $W$ and $N$ to achieve low latency when generating long sequences. However, if $W$ and $N$ are too large, each lookahead decoding step might be too costly and slow down the decoding despite reducing decoding steps. 
@@ -157,19 +157,19 @@ You can also change the setting to tune a better performance on your specific de
 
 ## Experimental Result
 
-We evaluate the efficiency of Lookahead Decoding on [LLaMA-2-Chat](https://ai.meta.com/llama/) and [CodeLLaMA](https://ai.meta.com/blog/code-llama-large-language-model-coding/) of various sizes on different datasets including [MT-bench](https://huggingface.co/spaces/lmsys/mt-bench), [HumanEval](https://github.com/openai/human-eval), and [GSM8K](https://huggingface.co/datasets/gsm8k). Note that lookahead decoding achieves speedup without any finetuning nor  draft models. The 7B, 13B and 33B models are evaluated on single A100 GPU and the 70B model is evaluated on two A100 GPUs with pipeline parallelism, all under fp16 precision.
+We evaluate the efficiency of lookahead decoding on [LLaMA-2-Chat](https://ai.meta.com/llama/) and [CodeLLaMA](https://ai.meta.com/blog/code-llama-large-language-model-coding/) of various sizes on different datasets including [MT-bench](https://huggingface.co/spaces/lmsys/mt-bench), [HumanEval](https://github.com/openai/human-eval), and [GSM8K](https://huggingface.co/datasets/gsm8k). Note that lookahead decoding achieves speedup without any finetuning or draft models. The 7B, 13B and 33B models are evaluated on single A100 GPU and the 70B model is evaluated on two A100 GPUs with pipeline parallelism, all under fp16 precision.
 
 <img src="/images/blog/laattention/lookahead-perf.png" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
 <p style="color:gray; text-align: center;">Figure 7: Speedup of lookahead decoding on different models and datasets.</p>
 
-**LLaMA-Chat on MT-Bench**. Lookahead Decoding achieves roughly 1.5x speedup across several model settings.
+**LLaMA-Chat on MT-Bench**. Lookahead decoding achieves roughly 1.5x speedup across several model settings.
 
 **CodeLLaMA on HumanEval**. Applying lookahead decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) shows more than 2x latency reduction. This is because many repeated N-grams are present in code which can be correctly guessed.
 
 **CodeLLaMA-Instruct on GSM8K**. Using CodeLLama-Instruct to solve math problems from GSM8K, lookahead decoding achieves 1.8x latency reduction.
 
-## Get started with Lookahead Decoding
+## Get Started with Lookahead Decoding
 
 We have implemented lookahead decoding in huggingface's transformers. You can accelerate your transformers' decoding API with only a few LoCs. Please check our [GitHub repo](https://github.com/hao-ai-lab/ParallelDecoding) and give us feedback!
 
@@ -180,11 +180,10 @@ We would like to thank Richard Liaw, Yang Song, and Lianmin Zheng for providing 
 
 ```
 @misc{fu2023lookahead,
-    title = {Breaking the Sequential Dependency of LLM Inference using Lookahead Decoding},
+    title = {Breaking the Sequential Dependency of LLM Inference Using Lookahead Decoding},
     url = {https://lmsys.org/blog/2023-11-21-lookahead-decoding/},
     author = {Yichao Fu and Peter Bailis and Ion Stoica and Hao Zhang},
     month = {November},
     year = {2023}
-
 }
 ```
