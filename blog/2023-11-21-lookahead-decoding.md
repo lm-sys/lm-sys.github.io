@@ -90,25 +90,24 @@ Once identified, these n-grams are appended to the current input and subjected t
 To manage the cost, we set a cap $G$ on the number of candidate n-grams considered in the verification branch. In practice, we often set this cap proportional to $W$ (e.g., $G=W$).
 
 ### Lookahead and Verify In The Same Step
-Since LLM decoding is primarily bounded by memory bandwidth, we can merge lookhead branch and verification branch in the same step, leveraging GPU's parallel processing and hiding overheads. This can be achieved by specifying their computation on a designed attention mask shown in Figure 5: (1) The tokens in the lookahead branch cannot see tokens in the verification branch, and vice versa. (2) Each token can only see its previous tokens and itself in both decoding and verification. We have implemented the attention mask in [HuggingFace](https://github.com/huggingface/transformers/tree/main). Stay tuned for a more efficient custom CUDA kernel to further speed up the execution.
+Since LLM decoding is primarily bounded by memory bandwidth, we can merge lookahead and verification branch in the same step, leveraging GPU's parallel processing power to hide overheads. This is achieved by designing a special attention mask shown in Figure 5, which adheres to two rules: (1) The tokens in the lookahead branch cannot see tokens in the verification branch, and vice versa. (2) Each token only sees its preceding tokens and itself as in a casual mask. We have implemented the attention mask in HuggingFace. We are in the development of a more efficient custom CUDA kernel to further speed up the execution.
 
 <img src="/images/blog/laattention/mask.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 100%"></img>
 
 <p style="color:gray; text-align: center;">Figure 5: Attention mask for lookahead decoding with 4-grams and window size 5. In this mask, two 4-gram candidates (bottom right) are verified concurrently with parallel decoding. </p>
 
 ### Scaling Law of Lookahead Decoding
-Unlike speculative decode guessing and verifying **one** prediction per step, 
-Lookahead decoding can generate $W$ different N-grams and verify $G$ candidates per each decoding step. As $W$ and $N$ increases, the flops per step increases, but it is more likely to accept a longer N-gram. In other words, lookahead decoding allows to trade more flops for increasing the acceptance rate of a longer N-gram in a decoding step  -- which translated into reduced latency, as long as the system is not compute-bound.
+Lookahead decoding can generate $W$ different N-grams and verify $G$ candidates per step. As $W$ (the lookahead window size) and $N$ (the N-gram size) increases, so do the computational operations per step. However, this increase also enhance the likelihood of accepting a longer n-gram with a step. In other words, lookahead decoding allows to trade more flops for reducing latency, provided the system is not constrained by computational capacity.
 
-To study this scaling behavior, given a few number of tokens to decode, we illustrate how many lookahead decoding steps are needed when enumerating different values of $N$ and $W$.
-As we can see, when the N-gram (look back window) size is large enough (e.g., $N=11$), the exponential investment in future token guesses (i.e., the window size $W$) can linearly reduce the number of decoding steps. We call it the **scaling law** of lookahead decoding.
+To examine the scaling behavior of lookahead decoding, we analyze the number of decoding steps required for a given number of tokens, varying the values of $N$ and $W$. 
+The findings are illustrated in Figure 6. Notably, when the n-gram size is sufficiently large (e.g., $N=11$), exponentially increasing the future token guesses (window size $W$) can linearly reduce the number of decoding steps. We refer to this phenomenon as the **scaling law** of lookahead decoding.
 
 <img src="/images/blog/laattention/match-scaling.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 100%"></img>
 
-<p style="color:gray; text-align: center;">Figure 6: When $N$ is large enough, exponentially increasing window size $W$ can almost linearly reduce the number of decoding steps. Here we set $G=W$. (LLaMA-2-7B-chat on MT-Bench)</p>
+<p style="color:gray; text-align: center;">Figure 6: When $N$ is large enough, exponentially increasing window size $W$ can linearly reduce the number of decoding steps. Here we set $G=W$. Experiments are conducted using LLaMA-2-chat 7B on MT-Bench dataset. </p>
 
-### Discussion
-The FLOPs needed for each lookahead decoding step are proportional to the number of input tokens per step, which is the sum of the lookahead branch size and the verification branch size -- $W * (N - 1) + G * (N - 1)$. As the scaling law reveals, when $N$ is large enough, an exponential increase in the $W$ can result in a linear reduction of decoding steps. Thus, we can achieve linear compression of the steps by trading exponentially more FLOPs since we set $G=W$.
+### Cost, Usage, and Limitations
+The FLOPs needed for each lookahead decoding step are proportional to the number of input tokens per step, which is the sum of the lookahead branch size and the verification branch siz: $W * (N - 1) + G * (N - 1)$. As the scaling law reveals, when $N$ is large enough, an exponential increase in the $W$ can result in a linear reduction of decoding steps. Thus, we can achieve linear compression of the steps by trading exponentially more FLOPs since we set $G=W$.
 
 Given this property, lookahead decoding should be used in scenarios where latency is vital, e.g., surplus FLOPs exist that can be traded for latency, or it is even worthwhile to pay extra FLOPs for latency. 
 For powerful GPUs (e.g., A100), lookahead decoding can better squeeze its performance by using a large $W$ and $N$ to achieve low latency when generating long sequences. However, if $W$ and $N$ are too large, each lookahead decoding step might be too costly and slow down the decoding despite reducing decoding steps. 
@@ -164,11 +163,11 @@ We evaluate the efficiency of Lookahead Decoding on [LLaMA-2-Chat](https://ai.me
 
 <p style="color:gray; text-align: center;">Figure 7: Speedup of lookahead decoding on different models and datasets.</p>
 
-- **LLaMA-Chat on MT-Bench**. Lookahead Decoding achieves roughly 1.5x speedup across several model settings.
+**LLaMA-Chat on MT-Bench**. Lookahead Decoding achieves roughly 1.5x speedup across several model settings.
 
-- **CodeLLaMA on HumanEval**. Applying lookahead decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) shows more than 2x latency reduction. This is because many repeated N-grams are present in code which can be correctly guessed.
+**CodeLLaMA on HumanEval**. Applying lookahead decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) shows more than 2x latency reduction. This is because many repeated N-grams are present in code which can be correctly guessed.
 
-- **CodeLLaMA-Instruct on GSM8K**. Using CodeLLama-Instruct to solve math problems from GSM8K, lookahead decoding achieves 1.8x latency reduction.
+**CodeLLaMA-Instruct on GSM8K**. Using CodeLLama-Instruct to solve math problems from GSM8K, lookahead decoding achieves 1.8x latency reduction.
 
 ## Get started with Lookahead Decoding
 
