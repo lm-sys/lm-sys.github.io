@@ -86,6 +86,13 @@
         "size": "",
         "desc": "A scalable serving system for multiple concurrent LoRA adapters.",
         "link": "https://github.com/S-LoRA/S-LoRA"
+      },
+      {
+        "name": "Lookahead Decoding",
+        "architecture": "",
+        "size": "",
+        "desc": "An exact, fast, parallel decoding algorithm without the need for draft models or data stores.",
+        "link": "https://github.com/hao-ai-lab/LookaheadDecoding"
       }
     ]
   }
