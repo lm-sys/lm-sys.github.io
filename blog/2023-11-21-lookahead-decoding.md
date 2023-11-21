@@ -5,10 +5,10 @@ date: "November 21, 2023"
 previewImg: /images/blog/laattention/acc-demo.gif
 ---
 
-**TL;DR:** We introduce a new, exact decoding algorithm, ***lookahead decoding***, for LLM inference. 
-Lookahead decoding parallelizes autoregressive decoding by extracting and verifying n-grams using the LLM based on Jacobi iteration. 
-Lookahead decoding operates **without** a draft model or a data store, and linearly reduces the number of decoding steps in relation to the logarithm of the FLOPs invested per decoding step. 
-See a demo of lookahead decoding accelerating LLaMa-7B-Chat generation: 
+**TL;DR:** We introduce  **lookahead decoding**, a new, exact, and parallel decoding algorithm to accelerate LLM inference. 
+Lookahead decoding breaks the sequential dependency in autoregressive decoding by concurrently extracting and verifying n-grams directly with the LLM, utilizing the [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method). 
+Lookahead decoding functions **without** the need  for a draft model or a data store. It linearly decreases the number of decoding steps directly correlating with the logarithm of the FLOPs used per decoding step. 
+See a demo of lookahead decoding accelerating LLaMa-2-Chat 7B generation by more than 2x: 
 
 <img src="/images/blog/laattention/acc-demo.gif" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
@@ -70,7 +70,7 @@ While it is performing parallel decoding using Jacobi iterations for future toke
 
 To make this decoding process more efficient, each lookahead decoding step includes a **lookahead branch** and a **verification branch** running in parallel. The lookahead branch maintains a fixed-sized multi-level window to generate n-gram token candidates from the Jacobi iteration trajectory. The verification branch verifies promising n-gram candidates simultaneously.
 
-## Lookahead Branch
+### Lookahead Branch
 The lookahead branch aims to generate new N-grams. In lookahead branch, we maintain a two-dimensional window, governed by two parameters:
 - *window size $W$*: how long we look ahead in future token positions to perform parallel decoding,
 - *N-gram size $N$*: how many steps we look back in the past Jacobi trajectory to fetch N-grams.
@@ -80,18 +80,18 @@ The blue token 0 in Figure 5 is the current input. The orange, green, and red to
 As the decoding moves forward, tokens from the earliest step are removed from the trajectory to maintain $N$ and $W$.
 It is worth nothing that when $N = 2$, lookahead decoding degenerates into Jacobi decoding. 
 
-## Verification Branch
+### Verification Branch
 Besides the lookahead branch, each decoding step is accompanied by a parallel verification branch to find and verify promising N-grams so that the decoding progresses. 
 In the verification branch, we identify n-grams with their first token matching the last input token (via a simple string match); we append the n-gram to the input and verify them via an LLM forward pass. As the n-gram cache grows, it is common to identify multiple n-grams starting with the same token, thereby increasing the verification cost. Here, we define the maximum number of candidates in the verification branch as $G$. In practice, we often set this limitation proportional to $W$ (e.g., we set $G=W$ throughout our experiments).
 
-## Lookahead and Verify In The Same Step
+### Lookahead and Verify In The Same Step
 Since LLM decoding is primarily bounded by memory bandwidth, we can merge lookhead branch and verification branch in the same step, leveraging GPU's parallel processing and hiding overheads. This can be achieved by specifying their computation on a designed attention mask shown in Figure 5: (1) The tokens in the lookahead branch cannot see tokens in the verification branch, and vice versa. (2) Each token can only see its previous tokens and itself in both decoding and verification. We have implemented the attention mask in [HuggingFace](https://github.com/huggingface/transformers/tree/main). Stay tuned for a more efficient custom CUDA kernel to further speed up the execution.
 
 <img src="/images/blog/laattention/mask.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 100%"></img>
 
 <p style="color:gray; text-align: center;">Figure 5: Attention mask for lookahead decoding with 4-grams and window size 5. In this mask, two 4-gram candidates (bottom right) are verified concurrently with parallel decoding. </p>
 
-## Scaling Law of Lookahead Decoding
+### Scaling Law of Lookahead Decoding
 Unlike speculative decode guessing and verifying **one** prediction per step, 
 Lookahead decoding can generate $W$ different N-grams and verify $G$ candidates per each decoding step. As $W$ and $N$ increases, the flops per step increases, but it is more likely to accept a longer N-gram. In other words, lookahead decoding allows to trade more flops for increasing the acceptance rate of a longer N-gram in a decoding step  -- which translated into reduced latency, as long as the system is not compute-bound.
 
@@ -102,18 +102,50 @@ As we can see, when the N-gram (look back window) size is large enough (e.g., $N
 
 <p style="color:gray; text-align: center;">Figure 6: When $N$ is large enough, exponentially increasing window size $W$ can almost linearly reduce the number of decoding steps. Here we set $G=W$. (LLaMA-2-7B-chat on MT-Bench)</p>
 
-### How to Configure $W$ and $N$ in Practice
+### Discussion
 The FLOPs needed for each lookahead decoding step is proportional to the product of the window size and the n-gram size ($W * N$). As the scaling law reveals, when $N$ is large enough, an exponential increase in the $W$ can result in a linear reduction of decoding steps. Thus, we can achieve linear compression of the steps by trading exponentially more FLOPs.
 
-Given this property, lookahead decoding should be used in scenarios where latency is vital  -- it is worthwhile to pay FLOPs for latency. 
+Given this property, lookahead decoding should be used in scenarios where latency is vital, e.g., surplus FLOPs exist that can be traded for latency, or even it is worthwhile to pay extra FLOPs for latency. 
 For powerful GPUs (e.g., A100), lookahead decoding can better squeeze its performance by using a large $W$ and $N$ to ahieve low latency when generating long sequeneces. However, if $W$ and $N$ are too large, each lookahead decoding step might be too costly and slow down the decoding, despite reducing decoding steps. 
-Increasing $N$ together with $W$ would be best to achieve balanced performance, avoiding hitting a theoretical cap if only increasing one side. Our experimental results show that on A100, the following setting can be optimal in most cases. 
+Increasing $N$ together with $W$ would be best to achieve balanced performance, avoiding hitting a theoretical cap if only increasing one side. Our experimental results show that on A100, the following configs in Table 1 work well in most cases. 
 
-| Model Setting | $W$ | $N$ |
-|----: |:----:  | :----: |
-| 7B| 15| 5 |
-| 13B | 10 | 5|
-| 33B | 7 | 5 |
+
+<p style="color:gray; text-align: center;">Table 1. Good configurations for window size $W$ and N-gram size $N$ on A100. </p>
+
+<style>
+.tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
+.tg td{border-color:#ccc;border-style:solid;border-width:1px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-head{background-color:#c0c0c0;border-color:#ccc;text-align:left;vertical-align:top;}
+.tg .tg-body{text-align:left;vertical-align:top;}
+</style>
+
+<table class="tg" style="display: flex;justify-content: center;">
+<tbody>
+  <tr>
+    <td class="tg-head"><span style="font-weight:bold;">Model</span></td>
+    <td class="tg-head"><span style="font-weight:bold;">Window Size ($W$)</span></td>
+    <td class="tg-head"><span style="font-weight:bold;">N-gram Size ($N$)</span></td>
+  </tr>
+  <tr>
+    <td class="tg-body">7B</td>
+    <td class="tg-body" style="text-align: right">15</td>
+    <td class="tg-body" style="text-align: right">5</td>
+  </tr>
+  <tr>
+    <td class="tg-body">13B</td>
+    <td class="tg-body" style="text-align: right">10</td>
+    <td class="tg-body" style="text-align: right">5</td>
+  </tr>
+  <tr>
+    <td class="tg-body">33B</td>
+    <td class="tg-body" style="text-align: right">7</td>
+    <td class="tg-body" style="text-align: right">5</td>
+  </tr>
+
+</tbody>
+</table>
+<br>
 
 You can also change the setting to tune a better performance on your specific decoding latency requirement. 
 
