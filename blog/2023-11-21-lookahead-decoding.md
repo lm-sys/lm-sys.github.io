@@ -33,7 +33,7 @@ Lookahead decoding is able to generate n-grams each step, as opposed to producin
 
 Next, we will show that when the extra FLOPS per step is insignificant, lookahead decoding provides a substantial reduction of latency, ranging from 1.5x to 2.3x. More importantly, it allows for the allocation of more FLOPs for even greater latency reduction in extremely latency-sensitive applications, albeit this comes with diminishing returns.
 
-We have developed an implementation of lookahead decoding compatible with ```huggingface/transformers```. Users can easily enhance the performance of HuggingFace's native ```generate``` function with just a few lines of code. We encourage you to explore our [code repository](https://github.com/hao-ai-lab/ParallelDecoding) and provide feedback.
+We have developed an implementation of lookahead decoding compatible with ```huggingface/transformers```. Users can easily enhance the performance of HuggingFace's native ```generate``` function with just a few lines of code. We encourage you to explore our [code repository](https://github.com/hao-ai-lab/LookaheadDecoding) and provide feedback.
 
 ## Background: Parallel LLM Decoding Using Jacobi Iteration
 
@@ -171,7 +171,7 @@ We evaluate the efficiency of lookahead decoding on [LLaMA-2-Chat](https://ai.me
 
 ## Get Started with Lookahead Decoding
 
-We have implemented lookahead decoding in huggingface's transformers. You can accelerate your transformers' decoding API with only a few LoCs. Please check our [GitHub repo](https://github.com/hao-ai-lab/ParallelDecoding) and give us feedback!
+We have implemented lookahead decoding in huggingface's transformers. You can accelerate your transformers' decoding API with only a few LoCs. Please check our [GitHub repo](https://github.com/hao-ai-lab/LookaheadDecoding) and give us feedback!
 
 ## Acknowledgment
 We would like to thank Richard Liaw, Yang Song, and Lianmin Zheng for providing insightful feedback.
