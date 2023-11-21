@@ -103,11 +103,11 @@ As we can see, when the N-gram (look back window) size is large enough (e.g., $N
 <p style="color:gray; text-align: center;">Figure 6: When $N$ is large enough, exponentially increasing window size $W$ can almost linearly reduce the number of decoding steps. Here we set $G=W$. (LLaMA-2-7B-chat on MT-Bench)</p>
 
 ### Discussion
-The FLOPs needed for each lookahead decoding step is proportional to the product of the window size and the n-gram size ($W * N$). As the scaling law reveals, when $N$ is large enough, an exponential increase in the $W$ can result in a linear reduction of decoding steps. Thus, we can achieve linear compression of the steps by trading exponentially more FLOPs.
+The FLOPs needed for each lookahead decoding step are proportional to the number of input tokens per step, which is the sum of the lookahead branch size and the verification branch size -- $W * (N - 1) + G * (N - 1)$. As the scaling law reveals, when $N$ is large enough, an exponential increase in the $W$ can result in a linear reduction of decoding steps. Thus, we can achieve linear compression of the steps by trading exponentially more FLOPs since we set $G=W$.
 
-Given this property, lookahead decoding should be used in scenarios where latency is vital, e.g., surplus FLOPs exist that can be traded for latency, or even it is worthwhile to pay extra FLOPs for latency. 
-For powerful GPUs (e.g., A100), lookahead decoding can better squeeze its performance by using a large $W$ and $N$ to ahieve low latency when generating long sequeneces. However, if $W$ and $N$ are too large, each lookahead decoding step might be too costly and slow down the decoding, despite reducing decoding steps. 
-Increasing $N$ together with $W$ would be best to achieve balanced performance, avoiding hitting a theoretical cap if only increasing one side. Our experimental results show that on A100, the following configs in Table 1 work well in most cases. 
+Given this property, lookahead decoding should be used in scenarios where latency is vital, e.g., surplus FLOPs exist that can be traded for latency, or it is even worthwhile to pay extra FLOPs for latency. 
+For powerful GPUs (e.g., A100), lookahead decoding can better squeeze its performance by using a large $W$ and $N$ to achieve low latency when generating long sequences. However, if $W$ and $N$ are too large, each lookahead decoding step might be too costly and slow down the decoding despite reducing decoding steps. 
+Increasing $N$ together with $W$ would be best to achieve balanced performance, avoiding hitting a theoretical cap if only increasing one side. Our experimental results show that on A100, the following configs in Table 1 work well in most cases. The 7B, 13B, and 33B models require 120x, 80x, and 56x extra FLOPs per step, respectively. However, because of the memory-intensive bound characteristic of the LLM decoding, these extra FLOPs only bring little per-step cost and a visible step compression ratio, resulting in a notable speedup.
 
 
 <p style="color:gray; text-align: center;">Table 1. Good configurations for window size $W$ and N-gram size $N$ on A100. </p>
@@ -149,7 +149,6 @@ Increasing $N$ together with $W$ would be best to achieve balanced performance, 
 
 You can also change the setting to tune a better performance on your specific decoding latency requirement. 
 
-**Per-Step Overhead with Lookahead decoding** Despite the wall-clock time reduction in the previous settings, Lookahead decoding actually requires much larger per-step FLOPs to achieve a #step compression. We set a guess token limit to limit the most number of guess n-grams per decoding step. The #token we need to decode per-step will be at most *(window + guess) * (level - 1)*. This number is approximately a multiple of the Vallina autoregressive decoding FLOPs. So we need to have roughly 120x extra FLOPs for 7B models (with level=5, window=15, and guess=15) and 56x extra FLOPs for 33B models (with level=5, window=7 and guess=7) in the previous experiments. Because of the memory-intensive bound characteristic of the LLM decoding, these extra FLOPs only bring little per-step cost and a visible step compression ratio, resulting in a notable speedup.
 
 
 ## Experimental Result
