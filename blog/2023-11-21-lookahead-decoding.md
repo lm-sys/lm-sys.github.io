@@ -15,17 +15,17 @@ Below is a demo of lookahead decoding accelerating LLaMa-2-Chat 7B generation:
 <p style="color:gray; text-align: center;">Figure 1: Demo of speedups by lookahead decoding on LLaMA-2-Chat 7B generation. Blue fonts are tokens generated in parallel in a decoding step.</p>
 
 ## Introduction
-Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today's applications, but their inference -- based on autoregressive decoding -- is very slow and difficult to optimize. Each autoregressive decoding step generates only one token at a time; as a result, the latency of an LLM request primarily depends on the response length of the request, or equivalently the number of decoding steps. 
+Large language models (LLMs) like GPT-4 and LLaMA are rapidly reinventing today's applications, but their inference -- based on autoregressive decoding -- is very slow and difficult to optimize. Each autoregressive decoding step generates only one token at a time; as a result, the latency of an LLM request primarily depends on the response length of the request or, equivalently, the number of decoding steps. 
 Making matters worse, each decoding step does not leverage the parallel processing power of modern GPUs, often resulting in low GPU utilization.
-This challenges many real-world LLM applications that prioritize rapid response time, such as chatbots and personal assistants, which require frequently generating *long sequences with low latency*. 
+This challenges many real-world LLM applications that prioritize rapid response time, such as chatbots and personal assistants, which frequently generate *long sequences with low latency*. 
 
 One way to accelerate autoregressive decoding is [speculative decoding](https://arxiv.org/abs/2211.17192) (including [Medusa](https://sites.google.com/view/medusa-llm) and [OSD](https://arxiv.org/abs//2310.07177)), which employ a "guess-and-verify" strategy: a draft model predicts several potential future tokens, and the original LLM then verifies these guesses in parallel. 
-These approaches can opportunistically reduce the number of decoding steps and, consequently lower latency. However, they face several limitations.
-First, the maximum speedup that speculative decoding based methods can achieve is limited by the *token acceptance rate*, or equivalently how accurately the draft model can predict the main model's outputs. Second, creating an accurate draft model is non-trivial, often requiring extra training and careful tuning, in face of traffic changes over time.
+These approaches can opportunistically reduce the number of decoding steps and, consequently, lower latency. However, they face several limitations.
+First, the maximum speedup that speculative decoding based methods can achieve is limited by the *token acceptance rate*, or equivalently, how accurately the draft model can predict the main model's outputs. Second, creating an accurate draft model is non-trivial, often requiring extra training and careful tuning in the face of traffic changes over time.
 
-In this blogpost, we introduce a new, exact decoding algorithm, **lookahead decoding**, designed to overcome these challenges.
-The key observation enabling lookahead decoding is that, although decoding multiple next tokens in one step is infeasible, an LLM can indeed generate multiple disjoint [n-grams](https://en.wikipedia.org/wiki/N-gram) in parallel. These n-grams could potentially fit into future parts of the generated sequence.
-This is achieved by viewing [autoregressive decoding as solving nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf), and adapting the classic [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) for parallel decoding. The generated n-grams are captured and later verified, if suitable, integrated into the sequence.
+In this blog post, we introduce a new, exact decoding algorithm, **lookahead decoding**, designed to overcome these challenges.
+The key observation enabling lookahead decoding is that, although decoding multiple next tokens in one step is infeasible, an LLM can indeed generate multiple disjoint [n-grams]((https://en.wikipedia.org/wiki/N-gram)) in parallel. These n-grams could potentially fit into future parts of the generated sequence.
+This is achieved by viewing [autoregressive decoding as solving nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf) and adapting the classic [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) for parallel decoding. The generated n-grams are captured and later verified, if suitable, integrated into the sequence.
 
 Lookahead decoding is able to generate n-grams each step, as opposed to producing just one token, hence reducing the total number of decoding steps -- generating N tokens in less than N steps. In fact, lookahead decoding stands out because it:
 - Operates **without** a draft model, streamlining deployment.
@@ -37,11 +37,11 @@ We have developed an implementation of lookahead decoding compatible with ```hug
 
 ## Background: Parallel LLM Decoding Using Jacobi Iteration
 
-The [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) is a classic solver for nonlinear systems. In the case of LLM inference, we can also employ it for parallel token generation without a draft model.
+The [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) is a classic solver for non-linear systems. In the case of LLM inference, we can also employ it for parallel token generation without a draft model.
 To see this, let's reconsider the autoregressive decoding process. Traditionally, this process is seen as a sequential generation of tokens, illustrated in Figure 2(Left). With some simple rearrangements of equations, it can be conceptualized as solving a system of non-linear equations, as depicted in Figure 2(Right).
 
 <img src="/images/blog/laattention/equations.png" style="width: 70%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
-<p style="color:gray; text-align: center;">Figure 2: Autoregressive decoding as a process of solving nonlinear systems.</p>
+<p style="color:gray; text-align: center;">Figure 2: Autoregressive decoding as a process of solving non-linear systems.</p>
 
 An alternative approach based on Jacobi iteration can solve all $[y_1, y_2, ..., y_m]$ of this nonlinear system in parallel as follows:
 - Start with an initial guess for all variables $\textbf{y} = [y_1, y_2, ..., y_m]$.
@@ -50,54 +50,54 @@ An alternative approach based on Jacobi iteration can solve all $[y_1, y_2, ...,
 - Repeat this process until a certain stopping condition is achieved (e.g., $\textbf{y} = \textbf{y}'$).
   
 We illustrate this parallel decoding process (also referred to as [*Jacobi decoding*](https://arxiv.org/pdf/2305.10427.pdf)) in Figure 3. 
-Jacobi decoding can guarantee solving all $m$ variables in at most $m$ steps (i.e., the same number of steps as autoregressive decoding), because each step guarantees at least the very first token correctly decoded. 
-Sometimes, multiple tokens might converge in a single iteration, potentially reducing the overall number of decoding steps. For example, as shown in Figure 3, Jacobi decoding predicts and accepts two tokens "computer" and "scientist" in a single step (Step 4). 
+Jacobi decoding can guarantee solving all $m$ variables in at most $m$ steps (i.e., the same number of steps as autoregressive decoding) because each step guarantees at least the very first token is correctly decoded. 
+Sometimes, multiple tokens might converge in a single iteration, potentially reducing the overall number of decoding steps. For example, as shown in Figure 3, Jacobi decoding predicts and accepts two tokens, "computer" and "scientist," in a single step (Step 4). 
 
-Compared to autoregressive decoding, each Jacobi decoding step is slightly more expensive in terms of FLOPs needed, because it requires LLM forward computation on >1 token. Fortunately, this usually does not translate into slowdowns thanks to the parallel processing nature of GPUs.
+Compared to autoregressive decoding, each Jacobi decoding step is slightly more expensive in terms of FLOPs needed because it requires LLM forward computation on >1 token. Fortunately, this usually does not translate into slowdowns, thanks to the parallel processing nature of GPUs.
 <img src="/images/blog/laattention/jacobi-iteration.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 
 <p style="color:gray; text-align: center;">Figure 3: Illustration of applying Jacobi iteration method for parallel LLM decoding.</p>
 
 ### Limitations of Jacobi Decoding 
-In practical applications, we have found that Jacobi decoding faces several challenges that impede achieving considerable wallclock speedup. While it can decode more than one token in many steps, the precise positioning of these tokens within the sequence often goes wrong. Even when tokens are correctly predicted, they are often replaced in subsequent iterations. Consequently, very few iterations successfully achieve the **simultaneous decoding and correct positioning of multiple tokens**. This defeats the fundamental goal of parallel decoding.
+In practical applications, we have found that Jacobi decoding faces several challenges that impede achieving considerable wallclock speedup. While it can decode more than one token in many steps, precisely positioning these tokens within the sequence often goes wrong. Even when tokens are correctly predicted, they are often replaced in subsequent iterations. Consequently, very few iterations successfully achieve the **simultaneous decoding and correct positioning of multiple tokens**. This defeats the fundamental goal of parallel decoding.
 
 ## Lookahead Decoding
-Lookahead decoding overcomes the limitations of Jacobi Decoding by leveraging its capability of generating parallel n-grams. In Jacobi decoding, we notice that each new token at a position is decoded based on its historical values from previous iterations. This process creates *a trajectory of historical tokens at each token position*,  forming many n-grams. For instance, by looking back over three Jacobi iterations, a 3-gram can be formed at each token position. Lookahead decoding takes advantages of this by collecting and caching these n-grams from their trajectories. 
+Lookahead decoding overcomes the limitations of Jacobi Decoding by leveraging its capability of generating parallel n-grams. In Jacobi decoding, we notice that each new token at a position is decoded based on its historical values from previous iterations. This process creates *a trajectory of historical tokens at each token position*,  forming many n-grams. For instance, by looking back over three Jacobi iterations, a 3-gram can be formed at each token position. Lookahead decoding takes advantage of this by collecting and caching these n-grams from their trajectories. 
 While lookahead decoding performs parallel decoding using Jacobi iterations for future tokens, it also concurrently verifies promising n-grams from the cache. 
 Accepting an N-gram allows us to advance N tokens in one step, significantly accelerating the decoding process. 
-Figure 4 illustrate this process.
+Figure 4 illustrates this process.
 
 <img src="/images/blog/laattention/lookahead-decoding.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 
-<p style="color:gray; text-align: center;">Figure 4: Illustration of lookahead decoding with window size 5 and 2-gram.</p>
+<p style="color:gray; text-align: center;">Figure 4: Illustration of lookahead decoding with 2-gram.</p>
 
 To enhance the efficiency of this process, each lookahead decoding step is divided into two parallel branches: the **lookahead branch** and the **verification branch**. The lookahead branch maintains a fixed-sized, 2D window to generate n-grams from the Jacobi iteration trajectory. Simultaneously, the verification branch selects and verifies promising n-gram candidates.
 
 ### Lookahead Branch
-The lookahead branch aims to generate new N-grams. The branch operates with a two-dimensional window, defined by two parameters:
+The lookahead branch aims to generate new N-grams. The branch operates with a two-dimensional window defined by two parameters:
 - *window size $W$*: how far ahead we look in future token positions to conduct parallel decoding.
 - *N-gram size $N$*: how many steps we look back into the past Jacobi iteration trajectory to retrieve n-grams.
 
-Consider Figure 5 as an illustrative example. Here, we look back 4 steps ($N = 4$) in the trajectory and look ahead 5 tokens ($W=5$) for future positions.
-In the figure, the blue token labelled 0 is the current input. The tokens in orange, green, and red were generated in previous Jacobi iterations at steps $t-3$, $t-2$, $t-1$, respectively. The number on each token indicates its position relative to the current input token (the blue one marked with 0). At the current step $t$, we conduct one Jacobi iteration to generate new tokens for all 5 positions, using the trajectory formed by previous 3 steps. Then, we collect 4-grams -- for example, a 4-gram could comprise the orange token at position 1, the green token at position 2, the red token at position 3, and the newly generated token at the current step. 
+Consider Figure 5 as an illustrative example. Here, we look back at 4 steps ($N = 4$) in the trajectory and look ahead at 5 tokens ($W=5$) for future positions.
+In the figure, the blue token labeled 0 is the current input. The tokens in orange, green, and red were generated in previous Jacobi iterations at steps $t-3$, $t-2$, $t-1$, respectively. The number on each token indicates its position relative to the current input token (the blue one marked with 0). At the current step $t$, we conduct one Jacobi iteration to generate new tokens for all 5 positions, using the trajectory formed by the previous 3 steps. Then, we collect 4-grams -- for example, a 4-gram could comprise the orange token at position 1, the green token at position 2, the red token at position 3, and the newly generated token at the current step. 
 
 As the decoding progresses, tokens from the earliest step in the trajectory are removed to maintain the defined $N$ and $W$ parameters. It's important to note that when $N=2$, lookahead decoding essentially becomes equivalent to Jacobi decoding.
 
 ### Verification Branch
 Alongside the lookahead branch, the verification branch of each decoding step aims to identify and confirm promising n-grams, ensuring the progression of the decoding process.
-In the verification branch, we identify n-grams whose first token matches the last input token. This is determined via simple string match. 
-Once identified, these n-grams are appended to the current input and subjected to verification via an LLM forward pass through them. As the n-gram cache grows, it becomes increasingly common to find multiple n-grams that starts with the same token, which raises the verification cost. 
-To manage the cost, we set a cap $G$ on the number of candidate n-grams considered in the verification branch. In practice, we often set this cap proportional to $W$ (e.g., $G=W$).
+In the verification branch, we identify n-grams whose first token matches the last input token. This is determined via a simple string match. 
+Once identified, these n-grams are appended to the current input and subjected to verification via an LLM forward pass through them. As the n-gram cache grows, it becomes increasingly common to find multiple n-grams that start with the same token, which raises the verification cost. 
+To manage the cost, we set a cap of $G$ on the number of candidate n-grams considered in the verification branch. In practice, we often set this cap proportional to $W$ (e.g., $G=W$).
 
 ### Lookahead and Verify In The Same Step
-Since LLM decoding is primarily bounded by memory bandwidth, we can merge lookahead and verification branch in the same step, leveraging GPU's parallel processing power to hide overheads. This is achieved by designing a special attention mask shown in Figure 5, which adheres to two rules: (1) The tokens in the lookahead branch cannot see tokens in the verification branch, and vice versa. (2) Each token only sees its preceding tokens and itself as in a casual mask. We have implemented the attention mask in HuggingFace. We are in the development of a more efficient custom CUDA kernel to further speed up the execution.
+Since LLM decoding is primarily bounded by memory bandwidth, we can merge the lookahead and verification branches in the same step, leveraging GPU's parallel processing power to hide overheads. This is achieved by designing a special attention mask shown in Figure 5, which adheres to two rules: (1) The tokens in the lookahead branch cannot see tokens in the verification branch, and vice versa. (2) Each token only sees its preceding tokens and itself as in a casual mask. We have implemented the attention mask in HuggingFace. We are in the process of developing a more efficient custom CUDA kernel to speed up the execution further.
 
 <img src="/images/blog/laattention/mask.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 100%"></img>
 
 <p style="color:gray; text-align: center;">Figure 5: Attention mask for lookahead decoding with 4-grams and window size 5. In this mask, two 4-gram candidates (bottom right) are verified concurrently with parallel decoding. </p>
 
 ### Scaling Law of Lookahead Decoding
-Lookahead decoding can generate $W$ different N-grams and verify $G$ candidates per step. As $W$ (the lookahead window size) and $N$ (the N-gram size) increases, so do the computational operations per step. However, this increase also enhance the likelihood of accepting a longer n-gram with a step. In other words, lookahead decoding allows to trade more flops for reducing latency, provided the system is not constrained by computational capacity.
+Lookahead decoding can generate $W$ different N-grams and verify $G$ candidates per step. As $W$ (the lookahead window size) and $N$ (the N-gram size) increases, so do the computational operations per step. However, this increase also enhances the likelihood of accepting a longer n-gram with a step. In other words, lookahead decoding allows to trade more flops for reducing latency, provided the system is not constrained by computational capacity.
 
 To examine the scaling behavior of lookahead decoding, we analyze the number of decoding steps required for a given number of tokens, varying the values of $N$ and $W$. 
 The findings are illustrated in Figure 6. Notably, when the n-gram size is sufficiently large (e.g., $N=11$), exponentially increasing the future token guesses (window size $W$) can linearly reduce the number of decoding steps. We refer to this phenomenon as the **scaling law** of lookahead decoding.
@@ -157,7 +157,7 @@ You can also change the setting to tune a better performance on your specific de
 
 ## Experimental Result
 
-We evaluate the efficiency of lookahead decoding on [LLaMA-2-Chat](https://ai.meta.com/llama/) and [CodeLLaMA](https://ai.meta.com/blog/code-llama-large-language-model-coding/) of various sizes on different datasets including [MT-bench](https://huggingface.co/spaces/lmsys/mt-bench), [HumanEval](https://github.com/openai/human-eval), and [GSM8K](https://huggingface.co/datasets/gsm8k). Note that lookahead decoding achieves speedup without any finetuning or draft models. The 7B, 13B and 33B models are evaluated on single A100 GPU and the 70B model is evaluated on two A100 GPUs with pipeline parallelism, all under fp16 precision.
+We evaluate the efficiency of lookahead decoding on [LLaMA-2-Chat](https://ai.meta.com/llama/) and [CodeLLaMA](https://ai.meta.com/blog/code-llama-large-language-model-coding/) of various sizes on different datasets including [MT-bench](https://huggingface.co/spaces/lmsys/mt-bench), [HumanEval](https://github.com/openai/human-eval), and [GSM8K](https://huggingface.co/datasets/gsm8k). Note that lookahead decoding achieves speedup without any finetuning or draft models. The 7B, 13B, and 33B models are evaluated on a single A100 GPU, and the 70B model is evaluated on two A100 GPUs with pipeline parallelism, all under fp16 precision.
 
 <img src="/images/blog/laattention/lookahead-perf.png" style="width: 200%; max-width: 100%; margin-right: auto; margin-bottom: auto"></img>
 
@@ -167,7 +167,7 @@ We evaluate the efficiency of lookahead decoding on [LLaMA-2-Chat](https://ai.me
 
 **CodeLLaMA on HumanEval**. Applying lookahead decoding to CodeLLaMA on [HumanEval](https://arxiv.org/abs/2107.03374) shows more than 2x latency reduction. This is because many repeated N-grams are present in code which can be correctly guessed.
 
-**CodeLLaMA-Instruct on GSM8K**. Using CodeLLama-Instruct to solve math problems from GSM8K, lookahead decoding achieves 1.8x latency reduction.
+**CodeLLaMA-Instruct on GSM8K**. Using CodeLLama-Instruct to solve math problems from GSM8K, lookahead decoding achieves a 1.8x latency reduction.
 
 ## Get Started with Lookahead Decoding
 
