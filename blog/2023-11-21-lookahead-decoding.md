@@ -24,14 +24,15 @@ These approaches can opportunistically reduce the number of decoding steps and, 
 First, the maximum speedup that speculative decoding based methods can achieve is limited by the *token acceptance rate*, or equivalently, how accurately the draft model can predict the main model's outputs. Second, creating an accurate draft model is non-trivial, often requiring extra training and careful tuning in the face of traffic changes over time.
 
 In this blog post, we introduce a new, exact decoding algorithm, **lookahead decoding**, designed to overcome these challenges.
-The key observation enabling lookahead decoding is that, although decoding multiple next tokens in one step is infeasible, an LLM can indeed generate multiple disjoint [n-grams]((https://en.wikipedia.org/wiki/N-gram)) in parallel. These n-grams could potentially fit into future parts of the generated sequence.
+The key observation enabling lookahead decoding is that, although decoding multiple next tokens in one step is infeasible, an LLM can indeed generate multiple disjoint [n-grams](https://en.wikipedia.org/wiki/N-gram) in parallel. These n-grams could potentially fit into future parts of the generated sequence.
 This is achieved by viewing [autoregressive decoding as solving nonlinear equations](https://proceedings.mlr.press/v139/song21a/song21a.pdf) and adapting the classic [Jacobi iteration method](https://en.wikipedia.org/wiki/Jacobi_method) for parallel decoding. The generated n-grams are captured and later verified, if suitable, integrated into the sequence.
 
 Lookahead decoding is able to generate n-grams each step, as opposed to producing just one token, hence reducing the total number of decoding steps -- generating N tokens in less than N steps. In fact, lookahead decoding stands out because it:
 - Operates **without** a draft model, streamlining deployment.
 - Linearly reduces the number of decoding steps relative to log(FLOPs) per step.
 
-Next, we will show that when the extra FLOPS per step is insignificant, lookahead decoding provides a substantial reduction of latency, ranging from 1.5x to 2.3x. More importantly, it allows for the allocation of more FLOPs for even greater latency reduction in extremely latency-sensitive applications, albeit this comes with diminishing returns.
+Next, we will show that lookahead decoding provides a substantial reduction of latency, ranging from 1.5x to 2.3x with negligible computation overhead. 
+More importantly, it allows one to trade computation for latency reduction, albeit this comes with diminishing returns.
 
 We have developed an implementation of lookahead decoding compatible with ```huggingface/transformers```. Users can easily enhance the performance of HuggingFace's native ```generate``` function with just a few lines of code. We encourage you to explore our [code repository](https://github.com/hao-ai-lab/LookaheadDecoding) and provide feedback.
 
