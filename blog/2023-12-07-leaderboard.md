@@ -43,6 +43,8 @@ On the other hand, 7B models have also shown significant improvements. Fine-tuni
 Congrats to all the teams and we look forward to seeing more models in the future!
 
 Please find the latest and complete leaderboard [here](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard).
+You can find our [notebook](https://colab.research.google.com/drive/1KdwokPjirkTmpO_P1WByFNFiqxWQquwH) to reproduce the calculation of Elo ratings and confidence intervals.
+
 
 <img src="/images/blog/leaderboard_202312/mle_elo.png" style="display:block; margin:auto; max-width:80%; height:auto;"></img>
 
