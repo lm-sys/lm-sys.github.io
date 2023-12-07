@@ -2,7 +2,7 @@
 title: "Chatbot Arena: New models & Elo system update"
 author: "Wei-Lin Chiang, Tim Li, Joseph E. Gonzalez, Ion Stoica"
 date: "Dec 7, 2023"
-previewImg: /images/blog/slora/thumbnail_preview.png
+previewImg: /images/blog/leaderboard_202312/mle_elo.png
 ---
 
 Welcome to our latest update on the Chatbot Arena, our open evaluation platform to test the most advanced LLMs. We're excited to share that over 130,000 votes that are now collected to rank the most capable 40+ models! In this blog post, we'll cover the results of six new models, the transition from the online Elo system to the Bradley-Terry model, which gives us significantly more stable ratings and precise confidence intervals, and our findings from differentiating versions of proprietary models (e.g., GPT-4 => GPT-4-0314, GPT-4-0613).
