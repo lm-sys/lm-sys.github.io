@@ -42,9 +42,8 @@ In November, we added record-breaking nine new models with sizes ranging from 7B
 On the other hand, 7B models have also shown significant improvements. Fine-tuning the 7B Mistral model has led to Zephyr, OpenChat-3.5, Starling-lm-7b-alpha, and OpenHermes-2.5-Mistral-7b which all demonstrate impressive performance despite smaller scale. Shoutout to the open-source community pushing limits! On the other hand, to understand how freshness and grounded information help LLMs in answering user queries, we also bring Perplexity AI’s online LLMs to Arena. We have collected over 1500 votes for PPLX-70B-Online and the preliminary results show great potential.
 Congrats to all the teams and we look forward to seeing more models in the future!
 
-Please find the latest and complete leaderboard [here](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard).
-You can find our [notebook](https://colab.research.google.com/drive/1KdwokPjirkTmpO_P1WByFNFiqxWQquwH) to reproduce the calculation of Elo ratings and confidence intervals.
-
+Please find the latest leaderboard [here](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) or try [Arena demo](https://chat.lmsys.org) to chat with 20+ models!
+We also prepare a [notebook](https://colab.research.google.com/drive/1KdwokPjirkTmpO_P1WByFNFiqxWQquwH) to reproduce all the calculation of Elo ratings and confidence intervals.
 
 <img src="/images/blog/leaderboard_202312/mle_elo.png" style="display:block; margin:auto; max-width:80%; height:auto;"></img>
 
