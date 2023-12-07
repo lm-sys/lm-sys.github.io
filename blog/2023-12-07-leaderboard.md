@@ -61,7 +61,9 @@ Surprisingly, we observe a significant difference between `gpt-4-0314` and `gpt-
 2. No comparison data for 0314 against newly added models after July may be unfair.
 3. Arena users indeed prefer the 0314 version of GPT-4 than 0613.
 
-To address this problem, we have brought up `gpt-4-0314` online again to collect new votes, also directly comparing it against its newer 0613 version. At the time of writing we have collected 1,000 new votes for `gpt-4-0314` and its performance is still robust. We’ll give more updates after more investigation.
+To address this problem, we have brought up `gpt-4-0314` online again to collect new votes, also directly comparing it against its newer 0613 version. At the time of writing we have collected 1,000 new votes for `gpt-4-0314` and its performance is still robust from winrate over other models shown below. We’ll give more updates on this in the future.
+
+<img src="/images/blog/leaderboard_202312/gpt4_winrate.png" style="display:block; margin:auto; max-width:60%; height:auto;">
 
 Interestingly, gpt-3.5-turbo, which has been through a similar version change (0314 -> 0613), seems to be normal. As you can see, `gpt-3.5-turbo-0613` has slightly higher rating than `gpt-3.5-turbo-0314` (1112 vs 1106). However, we again observe a strange performance drop of the latest version `gpt-3.5-turbo-1106` which has obtained over 5,000 votes. We hope to investigate this deeper by developing new tools to analyze user prompts and identify model strengths and weaknesses in different areas.
 
