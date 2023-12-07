@@ -37,12 +37,14 @@ In November, we added record-breaking nine new models with sizes ranging from 7B
 
 On the other hand, 7B models have also shown significant improvements. Fine-tuning the 7B Mistral model has led to Zephyr, OpenChat-3.5, Starling-lm-7b-alpha, and OpenHermes-2.5-Mistral-7b which all demonstrate great chat performance. Shoutout to the open-source community which has been pushing limits. To understand how freshness and grounded information help LLMs in answering user queries, we also bring Perplexity AI’s online LLMs to Arena. We have collected over 1500 votes for PPLX-70B-Online and the preliminary results show great potential.
 
+Please find the latest and complete leaderboard [here](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard).
+
 <img src="/images/blog/leaderboard_202312/mle_elo.png" style="display:block; margin:auto; max-width:80%; height:auto;"></img>
 
 
 ### Topic modeling on user prompts
 
-We've also conducted topic modeling on 50,000 user prompts to better understand how users interact with these models. Our approach utilized OpenAI embeddings `text-embedding-ada-002` and K-means clustering, followed by GPT-4 to summarize the topics for each cluster, provided with the prompts close to the center. This analysis revealed a wide range of topics, from role-playing, story writing to programming advice. We show a few examples below.
+We've also conducted topic modeling on 50,000 user prompts to better understand how users interact with these models. Our approach utilized OpenAI embeddings `text-embedding-ada-002` and K-means clustering, followed by GPT-4 to summarize the topics for each cluster, provided with the prompts close to the center. This analysis revealed a wide range of topics, from role-playing, story writing to programming advice. We show the topic distribution and a few examples below.
 
 <img src="/images/blog/leaderboard_202312/topic_distribution_bar.png" style="display:block; margin:auto; max-width:80%; height:auto;">
 
@@ -110,17 +112,17 @@ More importantly, with the BT model, the bootstrap confidence intervals now bett
 Code to reproduce the calculation can be found at this [notebook](https://colab.research.google.com/drive/1KdwokPjirkTmpO_P1WByFNFiqxWQquwH#scrollTo=c0KvFVr-nR2Q).
 
 
-## Tracking Performance of Proprietary APIs - GPT-4-0314 vs 0613
+## Tracking Performance of Proprietary APIs - GPT-4-0314 vs 0613?
 
 Since OpenAI’s GPT-4 update in June, the community has been wondering whether there's a performance change on the newer version of GPT-4. Some people find performance drop in certain domains ([reference](https://x.com/matei_zaharia/status/1681467961905926144?s=20)), but it’s still unclear what's really going on. Previously we combined votes of the two versions into just GPT-4. As we transition from online Elo to the BT model, we decide to separate out different versions of proprietary model APIs to better satisfy its assumptions on model staying static.
 
 <img src="/images/blog/leaderboard_202312/gpt_version.png" style="display:block; margin:auto; max-width:90%; height:auto;">
 
-Surprisingly, we observe a significant difference between `gpt-4-0314` and `gpt-4-0613` based Arena user preference (Rating 1201 vs 1152). The GPT-4 API was automatically updated from 0314 to 0613 on June 27 and the 0314 version has since then been retired from Arena. Potential hypotheses:
+Surprisingly, we observe a significant difference between `gpt-4-0314` and `gpt-4-0613` (Rating 1201 vs 1152) based on Arena user preference. The GPT-4 API was automatically updated from 0314 to 0613 on June 27 and the 0314 version has since then been retired from Arena. Potential hypotheses:
 
 1. Arena user distribution has shifted before/after July (e.g., prompt distribution, voting behaviors etc)
-2. No comparison data for 0314 vs newly added models after July may be unfair.
-3. There is indeed a regression in the newer version of GPT-4.
+2. No comparison data for 0314 against newly added models after July may be unfair.
+3. Arena users indeed prefer the 0314 version of GPT-4 than 0613.
 
 To address this problem, we have brought up `gpt-4-0314` online again to collect new votes, also directly comparing it against its newer 0613 version. At the time of writing we have collected 1,000 new votes for `gpt-4-0314` and its performance is still robust. We’ll give more updates after more investigation.
 
