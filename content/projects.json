@@ -26,32 +26,6 @@
     ]
   },
   {
-    "name": "Datasets",
-    "entries": [
-      {
-        "name": "LMSYS-Chat-1M",
-        "architecture": "",
-        "size": "",
-        "desc": "This dataset contains one million real-world conversations with 25 state-of-the-art LLMs.",
-        "link": "https://huggingface.co/datasets/lmsys/lmsys-chat-1m"
-      },
-      {
-        "name": "Chatbot Arena Conversations",
-        "architecture": "",
-        "size": "",
-        "desc": "This dataset contains 33K cleaned conversations with pairwise human preferences collected on Chatbot Arena.",
-        "link": "https://huggingface.co/datasets/lmsys/chatbot_arena_conversations"
-      },
-      {
-        "name": "ToxicChat",
-        "architecture": "",
-        "size": "",
-        "desc": "This dataset contains 10K high-quality data for content moderation in real-world user-AI interactions based on user queries from the Vicuna online demo.",
-        "link": "https://huggingface.co/datasets/lmsys/toxic-chat"
-      }
-    ]
-  },
-  {
     "name": "Evaluation",
     "entries": [
       {
@@ -93,6 +67,32 @@
         "size": "",
         "desc": "An exact, fast, parallel decoding algorithm without the need for draft models or data stores.",
         "link": "https://github.com/hao-ai-lab/LookaheadDecoding"
+      }
+    ]
+  },
+  {
+    "name": "Datasets",
+    "entries": [
+      {
+        "name": "LMSYS-Chat-1M",
+        "architecture": "",
+        "size": "",
+        "desc": "This dataset contains one million real-world conversations with 25 state-of-the-art LLMs.",
+        "link": "https://huggingface.co/datasets/lmsys/lmsys-chat-1m"
+      },
+      {
+        "name": "Chatbot Arena Conversations",
+        "architecture": "",
+        "size": "",
+        "desc": "This dataset contains 33K cleaned conversations with pairwise human preferences collected on Chatbot Arena.",
+        "link": "https://huggingface.co/datasets/lmsys/chatbot_arena_conversations"
+      },
+      {
+        "name": "ToxicChat",
+        "architecture": "",
+        "size": "",
+        "desc": "This dataset contains 10K high-quality data for content moderation in real-world user-AI interactions based on user queries from the Vicuna online demo.",
+        "link": "https://huggingface.co/datasets/lmsys/toxic-chat"
       }
     ]
   }
