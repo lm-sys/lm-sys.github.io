@@ -55,10 +55,17 @@
         "link": "https://github.com/lm-sys/FastChat"
       },
       {
+        "name": "SGLang",
+        "architecture": "",
+        "size": "",
+        "desc": "Efficient interface and runtime for complex LLM programs.",
+        "link": "https://github.com/lm-sys/FastChat"
+      },
+      {
         "name": "S-LoRA",
         "architecture": "",
         "size": "",
-        "desc": "A scalable serving system for multiple concurrent LoRA adapters.",
+        "desc": "A system for serving thousands of concurrent LoRA adapters.",
         "link": "https://github.com/S-LoRA/S-LoRA"
       },
       {
