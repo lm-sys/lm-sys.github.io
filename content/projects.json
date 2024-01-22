@@ -59,7 +59,7 @@
         "architecture": "",
         "size": "",
         "desc": "Efficient interface and runtime for complex LLM programs.",
-        "link": "https://github.com/lm-sys/FastChat"
+        "link": "https://github.com/sgl-project/sglang"
       },
       {
         "name": "S-LoRA",
