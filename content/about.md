@@ -8,7 +8,7 @@ We aim to make large models accessible to everyone by co-development of open mod
 
 ### Members
 **Student Team**  
-[Lianmin Zheng](https://lmzheng.net/), [Ying Sheng](https://sites.google.com/view/yingsheng/home), [Wei-Lin Chiang](https://infwinston.github.io/), [Shiyi Cao](https://shiyicao.com/), [Dacheng Li](https://dachengli1.github.io/), [Zhuohan Li](https://people.eecs.berkeley.edu/~zhuohan/), [Zi Lin](https://zi-lin.com/), [Zhanghao Wu](https://zhanghaowu.me/), [Shuo Yang](https://github.com/andy-yang-1), [Siyuan Zhuang](https://github.com/suquark), [Yonghao Zhuang](https://github.com/ZYHowell)
+[Lianmin Zheng](https://lmzheng.net/), [Ying Sheng](https://sites.google.com/view/yingsheng/home), [Wei-Lin Chiang](https://infwinston.github.io/), [Shiyi Cao](https://shiyicao.com/), [Christopher Chou](https://github.com/BabyChouSr), [Dacheng Li](https://dachengli1.github.io/), [Zhuohan Li](https://people.eecs.berkeley.edu/~zhuohan/), [Zi Lin](https://zi-lin.com/), [Zhanghao Wu](https://zhanghaowu.me/), [Shuo Yang](https://github.com/andy-yang-1), [Siyuan Zhuang](https://github.com/suquark), [Yonghao Zhuang](https://github.com/ZYHowell)
 
 **Faculty Team**  
 [Hao Zhang](https://people.eecs.berkeley.edu/~hao/), [Ion Stoica](https://people.eecs.berkeley.edu/~istoica/), [Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/), [Eric P. Xing](http://www.cs.cmu.edu/~epxing/)
