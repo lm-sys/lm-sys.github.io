@@ -50,9 +50,20 @@ The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidan
 
 We can combine the advantages of FSM-based and interleaved-based methods by introducing a new decoding algorithm, **jump-forward** decoding, based on the compressed finite state machine.
 
-We can easily find that when following the FSM to decode, some transitions can be _chunked prefilled_.
+During the decoding process guided by the regex converted from the JSON schema, we can predict forthcoming strings when we reach specific junctures. For instance, in the above JSON schema, at the onset of the decoding process, we can anticipate the incoming string to be:
 
-<!-- Previous research primarily concentrates on the efficiency of processing permitted tokens according to the FSM and state. However, a standard regex converted from a JSON schema always includes numerous transitions that could be compressed, and decoding them is time-consuming. To address this problem, we came up with fast-forward, an operation to skip the compressed part's decoding process, using prefill/extend instead. Benefiting from SGLang's automatic prefix cache mechanism, we only need to calculate the KV cache of the fast-forwarded part, which is much faster than computing the KV cache of all the tokens. -->
+```json
+{
+  "name":
+```
+
+Similarly, when the LLM outputs a `G` while filling in the house attribute of a character, we can confidently predict that the next string will be `ryffindor`, thereby completing the full string as `Gryffindor`.
+
+That is precisely how the jump-forward decoding algorithm makes decoding faster. We examine the finite state machine of the given regular expression, identify all the singular transition edges, and compress consecutive ones together into **singular paths**. Instead of decoding the unique paths token by token, we can directly prefill (extend) them, jumping forward until the next branching point.
+
+(Figure: compressed FSM v.s. original FSM)
+
+The radix cache mechanism of SGLang greatly benefits the jump-forward decoding algorithm. When executing a jump-forward, all the prefix tokens prior to the jump-forwarded part get automatically cached. This cache mechanism ensures that the **extend** primitives performed by the jump-forward algorithm align with SGLang, thus eliminating any additional overhead.
 
 ## Benchmark Results
 
