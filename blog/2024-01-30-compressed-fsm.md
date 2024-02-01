@@ -48,13 +48,11 @@ The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidan
 
 ## Our Method: Jump-Forward Decoding With a Compressed Finite State Machine
 
-Previous research primarily concentrates on the efficiency of processing permitted tokens according to the FSM and state. However, a standard regex converted from a JSON schema always includes numerous transitions that could be compressed, and decoding them is time-consuming. To address this problem, we came up with fast-forward, an operation to skip the compressed part's decoding process, using prefill/extend instead. Benefiting from SGLang's automatic prefix cache mechanism, we only need to calculate the KV cache of the fast-forwarded part, which is much faster than computing the KV cache of all the tokens.
+We can combine the advantages of FSM-based and interleaved-based methods by introducing a new decoding algorithm, **jump-forward** decoding, based on the compressed finite state machine.
 
-## Our Approach
+We can easily find that when following the FSM to decode, some transitions can be _chunked prefilled_.
 
-Describe our approach, drawing a figure to compare with token-by-token methods.
-
-Describe the re-tokenize process or not. I do not know how to analyze it.
+<!-- Previous research primarily concentrates on the efficiency of processing permitted tokens according to the FSM and state. However, a standard regex converted from a JSON schema always includes numerous transitions that could be compressed, and decoding them is time-consuming. To address this problem, we came up with fast-forward, an operation to skip the compressed part's decoding process, using prefill/extend instead. Benefiting from SGLang's automatic prefix cache mechanism, we only need to calculate the KV cache of the fast-forwarded part, which is much faster than computing the KV cache of all the tokens. -->
 
 ## Benchmark Results
 
