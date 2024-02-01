@@ -1,36 +1,50 @@
 ---
 title: "Fastest JSON Decoding for Local LLMs with Compressed Finite State Machine"
 date: "January 30, 2024"
-previewImg: /images/blog/laattention/acc-demo.gif
+previewImg: /images/blog/compressed_fsm/demo.gif
 ---
 
-**TL;DR:** We are excited to introduce the **fastest JSON decoding**, a universal, rapid, and lossless JSON/regex decoding algorithm to accelerate local LLMs.
+In this blog post, we share an optimization for constrained JSON decoding based on the compressed finite state machine. Instead of decoding token by token, our method analyzes the finite state machine of a regular expression, compresses the singular transition path, and decodes multiple tokens in a single step whenever possible. Compared to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce latency by up to 2x and increase throughput by up to 4x. You can try this feature now in [SGLang](https://github.com/sgl-project/sglang).
 
-To use the fastest JSON decoding, all you need to do is add a regex when serving with [SGLang](https://github.com/sgl-project/sglang). The regex constrains LLMs' decoding behaviors, compelling them to follow a [finite state machine (FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) to generate a formatted result. We speed up this process by analyzing individual transition edges in the FSM and compressing them. Rather than decoding the compressed segment token by token, we directly prefill/extend it within our SGLang backend. This strategic approach significantly boosts processing speed, delivering a 4x speedup in performance on standard JSON decoding tasks compared to traditional regex-based methods.
-Below is an example of our fastest JSON decoding accelerating LLaMa-2-Chat 7B JSON generation.
-![JSON-demo](/images/blog/laattention/acc-demo.gif)
+<img src="/images/blog/compressed_fsm/demo.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<p style="color:gray; text-align: center;">Figure 1: Demo of speedups by SGLang's jump-forward decoding algorithm, compared to outlines + vLLM. LLMs generate the specified JSON object to describe the given character.</p>
 
-## Introduction
+## Background
 
-[JSON](https://en.wikipedia.org/wiki/JSON) is one of the world's most important formats for data interchange, and efficiently guiding LLMs to generate JSON is a critical problem for many applications. A notable solution is to convert a preferred JSON schema into a regular expression, which not only defines the key-value format but also allows us to confine each value's range, control the list length, and more. Ensuring that LLMs follow a regular expression can also accommodate a broader range of scenarios, specifically those involving unique formats like IP addresses and emails.
+[JSON](https://en.wikipedia.org/wiki/JSON) is one of the world's most important formats for data interchange, and efficiently guiding LLMs to generate JSON is a critical problem for many applications.
+OpenAI proposed its [JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode) to instruct the model to always return a valid JSON object.
+However, more fine-grained control is often needed to ensure that the generated JSON object follows a specific [schema](https://json-schema.org/), such as:
 
-![JSON-regex (An image showing a JSON schema converted to regex)](/images/blog/laattention/json-regex-fsm.png)
+<img src="/images/blog/compressed_fsm/json_schema.png" style="width: 100%; max-width: 25%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<p style="color:gray; text-align: center;">Figure 2: JSON schema example</p>
 
-Existing methods for JSON decoding involve adding logit bias to the LLMs' decoding outputs based on the current states and transitions. By analyzing all the possible transitions dependent on the current state, we can mask out the invalid tokens and only keep the valid ones.
+For local LLMs, there are two major methods to guide the model to generate JSON objects that follow a specific schema.
 
-![FSM-decode (An image showing how FSM adds logits bias to filter tokens)](/images/blog/laattention/fsm-decode.png)
+### Method 1: Finite State Machine Based
+
+This method involves transforming the JSON schema into a regular expression. We can then construct a [Finite State Machine(FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) based on the regular expression. For every state within the FSM, we can calculate the permissible transitions and identify the acceptable next tokens. This allows us to track the current state during decoding and filter out invalid tokens by applying logit bias to the output.
+
+The FSM-based method utilizes more generalized regular expressions to outline the low-level rules, which can be applied to a wide range of grammars, such as IP addresses and emails.
+
+#### Limitations:
+
+However, the guided decoding process is time-consuming, as it requires decoding the whole JSON object token by token.
+
+### Method 2: Interleaved-Based
+
+Aside from converting the entire JSON schema into a regular expression, another popular approach is to employ interleaved-based decoding. In this method, a given JSON schema can be broken down into several parts, each containing either a chunked prefill part or a constraint decoding part. These different parts are executed interleavedly by the inference system.
+
+The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding.
+
+#### Limitations:
+
+- The method requires custom syntax, making it less versatile and expressive than individual regular expressions.
+- It struggles with correctly handling tokenization boundaries due to potential conflicts between the decoding and chunked prefilling segments.
+- Frequent communication between the model and the guidance brings additional overhead.
+
+## Our Method: Jump-Forward Decoding With a Compressed Finite State Machine
 
 Previous research primarily concentrates on the efficiency of processing permitted tokens according to the FSM and state. However, a standard regex converted from a JSON schema always includes numerous transitions that could be compressed, and decoding them is time-consuming. To address this problem, we came up with fast-forward, an operation to skip the compressed part's decoding process, using prefill/extend instead. Benefiting from SGLang's automatic prefix cache mechanism, we only need to calculate the KV cache of the fast-forwarded part, which is much faster than computing the KV cache of all the tokens.
-
-## Background: Interleaved-based JSON Decoding
-
-Except for regex-based methods, another popular approach to generate JSON is interleaved-based decoding.
-
-### Limitations of Interleaved-Based Decoding
-
-- Overhead of frontend frequently communicating with backend.
-- It is only suitable for JSON-like formats, cannot support complex grammar with more branches, and is not as universal as regex-based methods.
-- Decoding and Prompt race to the same part, resulting in endless decoding until hitting the max length.
 
 ## Our Approach
 
@@ -45,8 +59,3 @@ vllm + outlines
 fastest + sglang
 
 guidance + llama.cpp
-
-## Promising Applications
-
-- Character Information Extraction
-- Long Document Retrieval
