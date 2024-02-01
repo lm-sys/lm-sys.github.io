@@ -11,16 +11,12 @@ We aim to make large models accessible to everyone by co-development of open mod
 [Lianmin Zheng](https://lmzheng.net/), [Ying Sheng](https://sites.google.com/view/yingsheng/home), [Wei-Lin Chiang](https://infwinston.github.io/), [Shiyi Cao](https://shiyicao.com/), [Christopher Chou](https://github.com/BabyChouSr), [Dacheng Li](https://dachengli1.github.io/), [Zhuohan Li](https://people.eecs.berkeley.edu/~zhuohan/), [Zi Lin](https://zi-lin.com/), [Zhanghao Wu](https://zhanghaowu.me/), [Shuo Yang](https://github.com/andy-yang-1), [Siyuan Zhuang](https://github.com/suquark), [Yonghao Zhuang](https://github.com/ZYHowell)
 
 **Faculty Team**  
-[Hao Zhang](https://people.eecs.berkeley.edu/~hao/), [Ion Stoica](https://people.eecs.berkeley.edu/~istoica/), [Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/), [Eric P. Xing](http://www.cs.cmu.edu/~epxing/)
+[Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/), [Ion Stoica](https://people.eecs.berkeley.edu/~istoica/), [Eric P. Xing](http://www.cs.cmu.edu/~epxing/), [Hao Zhang](https://people.eecs.berkeley.edu/~hao/)
 
 **Institutions**  
 UC Berkeley, UCSD, CMU, MBZUAI
-
-### Sponsors
-[Kaggle](https://www.kaggle.com/), [MBZUAI](https://mbzuai.ac.ae/), [AnyScale](https://www.anyscale.com/), [a16z](https://a16z.com/), [HuggingFace](https://huggingface.co/)
 
 ### Contact us
 - Email us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com).
 - Join us on [discord](https://discord.com/invite/HSWAKCrnFx).
 - Follow us on [twitter](https://twitter.com/lmsysorg).
-
