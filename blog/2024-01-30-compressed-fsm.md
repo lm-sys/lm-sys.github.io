@@ -26,6 +26,8 @@ This method involves transforming the JSON schema into a regular expression. We 
 
 The FSM-based method utilizes more generalized regular expressions to outline the low-level rules, which can be applied to a wide range of grammars, such as IP addresses and emails.
 
+(figure: schema -> regex -> fsm -> logit bias)
+
 #### Limitations:
 
 However, the guided decoding process is time-consuming, as it requires decoding the whole JSON object token by token.
@@ -34,7 +36,9 @@ However, the guided decoding process is time-consuming, as it requires decoding 
 
 Aside from converting the entire JSON schema into a regular expression, another popular approach is to employ interleaved-based decoding. In this method, a given JSON schema can be broken down into several parts, each containing either a chunked prefill part or a constraint decoding part. These different parts are executed interleavedly by the inference system.
 
-The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding.
+The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding, using llama.cpp as a backend to accelerate.
+
+(figure: schema -> interleaved syntax -> execution)
 
 #### Limitations:
 
