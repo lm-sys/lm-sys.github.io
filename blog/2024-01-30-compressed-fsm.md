@@ -50,16 +50,17 @@ The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidan
 
 We can combine the advantages of FSM-based and interleaved-based methods by introducing a new decoding algorithm, **jump-forward** decoding, based on the compressed finite state machine.
 
-During the decoding process guided by the regex converted from the JSON schema, we can predict forthcoming strings when we reach specific junctures. For instance, in the above JSON schema, at the onset of the decoding process, we can anticipate the incoming string to be:
+During the decoding process guided by the regex converted from the JSON schema, we can predict forthcoming strings when we reach specific junctures:
 
-```json
-{
-  "name":
-```
+- In the above JSON schema, at the onset of the decoding process, we can anticipate the incoming string to be:
+    ```json
+    {
+      "name":
+    ```
+    Then comes the actual decoding part.
+- Similarly, when the LLM outputs a `G` while filling in the house attribute of a character, we can confidently predict that the next string will be `ryffindor`, thereby completing the full string as `Gryffindor`.
 
-Similarly, when the LLM outputs a `G` while filling in the house attribute of a character, we can confidently predict that the next string will be `ryffindor`, thereby completing the full string as `Gryffindor`.
-
-That is precisely how the jump-forward decoding algorithm makes decoding faster. We examine the finite state machine of the given regular expression, identify all the singular transition edges, and compress consecutive ones together into **singular paths**. Instead of decoding the unique paths token by token, we can directly prefill (extend) them, jumping forward until the next branching point.
+That is precisely how the jump-forward decoding algorithm makes decoding faster. In the jump-forward algorithm, we examine the finite state machine of the given regular expression, identify all the singular transition edges, and compress consecutive ones together into **singular paths**. Instead of decoding the singular paths token by token, we can directly prefill (extend) them, jumping forward until the next branching point.
 
 (Figure: compressed FSM v.s. original FSM)
 
