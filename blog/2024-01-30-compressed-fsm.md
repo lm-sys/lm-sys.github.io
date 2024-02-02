@@ -24,7 +24,7 @@ For local LLMs, there are two major methods to guide the model to generate JSON 
 
 This method involves transforming the JSON schema into a regular expression. We can then construct a [Finite State Machine(FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) based on the regular expression. For every state within the FSM, we can calculate the permissible transitions and identify the acceptable next tokens. This allows us to track the current state during decoding and filter out invalid tokens by applying logit bias to the output.
 
-<img src="/images/blog/compressed_fsm/method1.png" style="width: 100%; max-width: 90%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<img src="/images/blog/compressed_fsm/method1.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">Figure 3: ...</p>
 
 The FSM-based method utilizes more generalized regular expressions to outline the low-level rules, which can be applied to a wide range of grammars, such as IP addresses and emails.
@@ -39,7 +39,8 @@ Aside from converting the entire JSON schema into a regular expression, another 
 
 The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding, using llama.cpp as a backend to accelerate.
 
-(figure: schema -> interleaved syntax -> execution)
+<img src="/images/blog/compressed_fsm/method2.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<p style="color:gray; text-align: center;">Figure 4: ...</p>
 
 #### Limitations:
 
