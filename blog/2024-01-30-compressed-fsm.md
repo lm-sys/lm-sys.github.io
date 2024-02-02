@@ -4,7 +4,7 @@ date: "January 30, 2024"
 previewImg: /images/blog/compressed_fsm/demo.gif
 ---
 
-In this blog post, we share an optimization for constrained JSON decoding based on the compressed finite state machine. Instead of decoding token by token, our method analyzes the finite state machine of a regular expression, compresses the singular transition path, and decodes multiple tokens in a single step whenever possible. Compared to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce latency by up to 2x and increase throughput by up to 4x. You can try this feature now in [SGLang](https://github.com/sgl-project/sglang).
+In this blog post, we share an optimization for constrained JSON decoding based on the compressed finite state machine. Instead of decoding token by token, our method analyzes the finite state machine of a regular expression, compresses the singular transition path, and decodes multiple tokens in a single step whenever possible. Compared to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce latency by up to 2x and increase throughput by up to 3x. You can try this feature now in [SGLang](https://github.com/sgl-project/sglang).
 
 <img src="/images/blog/compressed_fsm/demo.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
@@ -76,6 +76,11 @@ That is precisely how the jump-forward decoding algorithm makes decoding faster.
 The radix cache mechanism of SGLang greatly benefits the jump-forward decoding algorithm. When executing a jump-forward, all the prefix tokens prior to the jump-forwarded part get automatically cached. This cache mechanism ensures that the **extend** primitives performed by the jump-forward algorithm align with SGLang, thus eliminating any additional overhead.
 
 ## Benchmark Results
+
+<img src="/images/blog/compressed_fsm/result.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<p style="color:gray; text-align: center;">
+Figure 6: ...
+</p>
 
 vllm + outlines
 
