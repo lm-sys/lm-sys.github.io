@@ -60,7 +60,7 @@ We can combine the advantages of FSM-based and interleaved-based methods by intr
 
 During the decoding process guided by the regex converted from the JSON schema, we can predict forthcoming strings when we reach specific junctures:
 
-- In the JSON schema in [figure3](#figure3), at the onset of the decoding process, we can anticipate the incoming string to be:
+- In [figure3](#figure3), at the beginning of decoding, according to the regex, we can anticipate the incoming string to be:
     ```json
     {
       "name":
@@ -70,7 +70,8 @@ During the decoding process guided by the regex converted from the JSON schema, 
 
 That is precisely how the jump-forward decoding algorithm makes decoding faster. In the jump-forward algorithm, we examine the finite state machine of the given regular expression, identify all the singular transition edges, and compress consecutive ones together into **singular paths**. Instead of decoding the singular paths token by token, we can directly prefill (extend) them, jumping forward until the next branching point.
 
-(Figure: compressed FSM v.s. original FSM)
+<img src="/images/blog/compressed_fsm/compare.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<p style="color:gray; text-align: center;">Figure 5: ...</p>
 
 The radix cache mechanism of SGLang greatly benefits the jump-forward decoding algorithm. When executing a jump-forward, all the prefix tokens prior to the jump-forwarded part get automatically cached. This cache mechanism ensures that the **extend** primitives performed by the jump-forward algorithm align with SGLang, thus eliminating any additional overhead.
 
