@@ -77,13 +77,14 @@ The radix cache mechanism of SGLang greatly benefits the jump-forward decoding a
 
 ## Benchmark Results
 
+We tested our jump-forward decoding on two typical tasks:
+
+- Crafting a character's data in JSON format, guided by a brief prompt.
+- Extracting a city's information from an extensive document and presenting it in JSON format.
+
+We tested Lllam-7B on NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v0.1.0, outlines v0.2.5 and llama_cpp_python v0.2.38. The following table shows the throughput and latency(with batch size 1) of theses methods:
+
 <img src="/images/blog/compressed_fsm/result.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
 Figure 6: ...
 </p>
-
-vllm + outlines
-
-fastest + sglang
-
-guidance + llama.cpp
