@@ -7,7 +7,9 @@ previewImg: /images/blog/compressed_fsm/demo.gif
 In this blog post, we share an optimization for constrained JSON decoding based on the compressed finite state machine. Instead of decoding token by token, our method analyzes the finite state machine of a regular expression, compresses the singular transition path, and decodes multiple tokens in a single step whenever possible. Compared to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce latency by up to 2x and increase throughput by up to 4x. You can try this feature now in [SGLang](https://github.com/sgl-project/sglang).
 
 <img src="/images/blog/compressed_fsm/demo.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
-<p style="color:gray; text-align: center;">Figure 1: Demo of speedups by SGLang's jump-forward decoding algorithm, compared to outlines + vLLM. LLMs generate the specified JSON object to describe the given character.</p>
+<p style="color:gray; text-align: center;">
+Figure 1: Demo of speedups by SGLang's jump-forward decoding algorithm, compared to outlines + vLLM. LLMs generate the specified JSON object to describe the given character.
+</p>
 
 ## Background
 
@@ -16,7 +18,9 @@ OpenAI proposed its [JSON mode](https://platform.openai.com/docs/guides/text-gen
 However, more fine-grained control is often needed to ensure that the generated JSON object follows a specific [schema](https://json-schema.org/), such as:
 
 <img src="/images/blog/compressed_fsm/json_schema.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
-<p style="color:gray; text-align: center;">Figure 2: Example of how a JSON schema can be used to guide the generation of a JSON object.</p>
+<p style="color:gray; text-align: center;">
+Figure 2: Example of how a JSON schema can guide the generation of a JSON object.
+</p>
 
 For local LLMs, there are two major methods to guide the model to generate JSON objects that follow a specific schema.
 
@@ -24,8 +28,10 @@ For local LLMs, there are two major methods to guide the model to generate JSON 
 
 This method involves transforming the JSON schema into a regular expression. We can then construct a [Finite State Machine(FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) based on the regular expression. For every state within the FSM, we can calculate the permissible transitions and identify the acceptable next tokens. This allows us to track the current state during decoding and filter out invalid tokens by applying logit bias to the output.
 
-<img src="/images/blog/compressed_fsm/method1.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
-<p style="color:gray; text-align: center;">Figure 3: ...</p>
+<img id = "figure3" src="/images/blog/compressed_fsm/method1.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<p style="color:gray; text-align: center;">
+Figure 3: ...
+</p>
 
 The FSM-based method utilizes more generalized regular expressions to outline the low-level rules, which can be applied to a wide range of grammars, such as IP addresses and emails.
 
@@ -44,7 +50,7 @@ The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidan
 
 #### Limitations:
 
-- The method requires custom syntax, making it less versatile and expressive than individual regular expressions.
+- The interleaved-based method requires custom syntax, making it less versatile and expressive than individual regular expressions.
 - It struggles with correctly handling tokenization boundaries due to potential conflicts between the decoding and chunked prefilling segments.
 - Frequent communication between the model and the guidance brings additional overhead.
 
@@ -54,7 +60,7 @@ We can combine the advantages of FSM-based and interleaved-based methods by intr
 
 During the decoding process guided by the regex converted from the JSON schema, we can predict forthcoming strings when we reach specific junctures:
 
-- In the above JSON schema, at the onset of the decoding process, we can anticipate the incoming string to be:
+- In the JSON schema in [figure3](#figure3), at the onset of the decoding process, we can anticipate the incoming string to be:
     ```json
     {
       "name":
