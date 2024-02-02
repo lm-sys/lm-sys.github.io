@@ -17,7 +17,7 @@ Figure 1: Demo of speedups by SGLang's jump-forward decoding algorithm, compared
 OpenAI proposed its [JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode) to instruct the model to always return a valid JSON object.
 However, more fine-grained control is often needed to ensure that the generated JSON object follows a specific [schema](https://json-schema.org/), such as:
 
-<img src="/images/blog/compressed_fsm/json_schema.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<img src="/images/blog/compressed_fsm/json_schema_light.png" style="width: 100%; max-width: 60%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
 Figure 2: Example of how a JSON schema can guide the generation of a JSON object.
 </p>
@@ -28,7 +28,7 @@ For local LLMs, there are two major methods to guide the model to generate JSON 
 
 This method involves transforming the JSON schema into a regular expression. We can then construct a [Finite State Machine(FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) based on the regular expression. For every state within the FSM, we can calculate the permissible transitions and identify the acceptable next tokens. This allows us to track the current state during decoding and filter out invalid tokens by applying logit bias to the output.
 
-<img id = "figure3" src="/images/blog/compressed_fsm/method1.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<img id = "figure3" src="/images/blog/compressed_fsm/method1_light.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
 Figure 3: ...
 </p>
