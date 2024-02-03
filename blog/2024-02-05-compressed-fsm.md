@@ -77,7 +77,34 @@ The radix cache mechanism of SGLang greatly benefits the jump-forward decoding a
 
 ### Tokenization Boundary Handling
 
-### Future Work
+When the LLM is decoding well-structured content, it might prefer(means with higher probability) to combine two entirely different parts into a single token.
+For instance, when decoding
+<code style="color: black; background-color: lightblue;">"Hello"</code>
+in the context of JSON decoding, LLMs may output tokens like this:
+
+<code style="color: black; background-color: lightblue;">"</code>
+<code style="color: black; background-color: lightblue;">He</code>
+<code style="color: black; background-color: lightblue;">llo</code>
+<code style="color: black; background-color: lightblue;">",</code>
+
+Instead of decoding the last
+<code style="color: black; background-color: lightblue;">"</code>
+, it always prefers to combine it with an upcoming 
+<code style="color: black; background-color: lightblue;">,</code>
+to form a more frequent token
+<code style="color: black; background-color: lightblue;">",</code>
+, which may cause endless decoding when the regex is set to 
+<code style="color: black; background-color: lightblue;">"[\w\d\s]*"</code>
+(without the last 
+<code style="color: black; background-color: lightblue;">,</code>
+).
+
+Moreover, during jump-forward decoding, we've found that different tokenization strategies to the jump-forwarded part may lead to different logit distributions for the subsequent tokens. Simply appending the tokenized jump-forwarded section to the current token sequence might yield unexpected outcomes.
+
+To manage these issues, we propose the following solutions:
+
+- Always use an integrated regex to guide the decoding process. This measure will make both the LLM and the compressed FSM cognizant of the intricate format of various grammars and enable them to recognize the boundaries of tokenization.
+- We have implemented a re-tokenization mechanism during the jump-forward phase. This involves appending the string instead of the tokens, followed by re-tokenizing the entire text. This method corresponds with the majority of prevalent LLM inference systems and only results in a minor increase in overhead by approximately 4%.
 
 ## Benchmark Results
 
@@ -86,9 +113,9 @@ We tested our jump-forward decoding on two typical tasks:
 - Crafting a character's data in JSON format, guided by a brief prompt.
 - Extracting a city's information from an extensive document and presenting it in JSON format.
 
-We tested Lllam-7B on NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v0.1.0, outlines v0.2.5 and llama_cpp_python v0.2.38. The following table shows the throughput and latency(with batch size 1) of theses methods:
+We tested Lllam-7B on NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v0.1.0, outlines v0.2.5 and llama.cpp v0.2.38(Python binding) . The following table shows the throughput and latency(with batch size 1) of theses methods:
 
 <img src="/images/blog/compressed_fsm/result.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
-Figure 6: ...
+Figure 6:
 </p>
