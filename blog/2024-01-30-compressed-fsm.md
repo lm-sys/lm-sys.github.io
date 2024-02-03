@@ -4,7 +4,7 @@ date: "January 30, 2024"
 previewImg: /images/blog/compressed_fsm/demo.gif
 ---
 
-In this blog post, we share an optimization for constrained JSON decoding based on the compressed finite state machine. Instead of decoding token by token, our method analyzes the finite state machine of a regular expression, compresses the singular transition path, and decodes multiple tokens in a single step whenever possible. Compared to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce latency by up to 2x and increase throughput by up to 3x. You can try this feature now in [SGLang](https://github.com/sgl-project/sglang).
+In this blog post, we share an optimization for constrained JSON decoding based on the compressed finite state machine. Instead of decoding token by token, our method analyzes the finite state machine of a regular expression, compresses the singular transition path, and decodes multiple tokens in a single step whenever possible. Compared to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce latency by up to 2x and increase throughput by up to 3x. You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
 
 <img src="/images/blog/compressed_fsm/demo.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
