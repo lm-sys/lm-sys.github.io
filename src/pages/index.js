@@ -60,12 +60,12 @@ export default function Home() {
                 </div>
               </Link>
 
-              <Link href="https://github.com/lm-sys/FastChat">
+              <Link href="https://github.com/sgl-project/sglang">
                 <div className="">
-                  <p className="text-2xl pb-1">FastChat</p>
+                  <p className="text-2xl pb-1">SGLang</p>
                   <hr />
                   <p className="pt-2">
-                    An open platform for training, serving, and evaluating LLM-based chatbots.
+                    Efficient interface and runtime for complex LLM programs
                   </p>
                 </div>
               </Link>
@@ -80,22 +80,22 @@ export default function Home() {
                 </div>
               </Link>
 
+              <Link href="https://github.com/lm-sys/FastChat">
+                <div className="">
+                  <p className="text-2xl pb-1">FastChat</p>
+                  <hr />
+                  <p className="pt-2">
+                    An open platform for training, serving, and evaluating LLM-based chatbots.
+                  </p>
+                </div>
+              </Link>
+
               <Link href="https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge">
                 <div className="">
                   <p className="text-2xl pb-1">MT-Bench</p>
                   <hr />
                   <p className="pt-2">
                     A set of challenging, multi-turn, and open-ended questions for evaluating chatbots.
-                  </p>
-                </div>
-              </Link>
-
-              <Link href="https://github.com/DachengLi1/LongChat">
-                <div className="">
-                  <p className="text-2xl pb-1">LongChat</p>
-                  <hr />
-                  <p className="pt-2">
-                    A chatbot supporting 16K context length, available in 7B and 13B sizes.
                   </p>
                 </div>
               </Link>
