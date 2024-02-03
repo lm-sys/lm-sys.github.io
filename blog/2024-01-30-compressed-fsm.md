@@ -75,6 +75,10 @@ That is precisely how the jump-forward decoding algorithm makes decoding faster.
 
 The radix cache mechanism of SGLang greatly benefits the jump-forward decoding algorithm. When executing a jump-forward, all the prefix tokens prior to the jump-forwarded part get automatically cached. This cache mechanism ensures that the **extend** primitives performed by the jump-forward algorithm align with SGLang, thus eliminating any additional overhead.
 
+### Tokenization Boundary Handling
+
+### Future Work
+
 ## Benchmark Results
 
 We tested our jump-forward decoding on two typical tasks:
