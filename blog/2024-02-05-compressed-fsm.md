@@ -34,25 +34,24 @@ This method involves transforming the JSON schema into a regular expression. We 
 Figure 3: ...
 </p>
 
-The FSM-based method utilizes the generalized regular expressions to define the low-level rules, which can be applied to a wide range of grammars, such as IP addresses and emails.
+The FSM-based method utilizes the generalized regular expressions to define the low-level rules, which can be applied to a wide range of grammars, such as JSON schema, IP addresses and emails.
 
-##### Limitations:
+**Limitations:**  
 Since the FSM is constructed at the token level, it can transition the state by only one token at each step. Consequently, it can decode only one token at a time, which results in slow decoding.
 
 ### Method 2: Interleaved-Based
 
-Aside from converting the entire JSON schema into a regular expression, another popular approach is to employ interleaved-based decoding. In this method, a given JSON schema can be broken down into several parts, each containing either a chunked prefill part or a constraint decoding part. These different parts are executed interleavedly by the inference system.
+Aside from converting the entire JSON schema into a regular expression, another popular approach is to employ interleaved-based decoding. In this method, a given JSON schema can be broken down into several parts, each containing either a chunked prefill part or a constrainedt decoding part. These different parts are executed interleavedly by the inference system.
 
-The [guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding, using llama.cpp as a backend to accelerate.
+[Guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding, using llama.cpp as a backend to accelerate.
 
 <img src="/images/blog/compressed_fsm/method2.png" style="width: 100%; max-width: 85%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">Figure 4: ...</p>
 
-#### Limitations:
-
+**Limitations:**  
 - The interleaved-based method requires custom syntax, making it less versatile and expressive than individual regular expressions.
 - It struggles with correctly handling tokenization boundaries due to potential conflicts between the decoding and chunked prefilling segments.
-- Frequent communication between the model and the guidance brings additional overhead.
+- Frequent communication between the interpreter and the backend brings additional overhead.
 
 ## Our Method: Jump-Forward Decoding With a Compressed Finite State Machine
 
@@ -108,12 +107,12 @@ To manage these issues, we propose the following solutions:
 
 ## Benchmark Results
 
-We tested our jump-forward decoding on two typical tasks:
+We benchmark our jump-forward decoding on two tasks:
 
 - Crafting a character's data in JSON format, guided by a brief prompt.
-- Extracting a city's information from an extensive document and presenting it in JSON format.
+- Extracting a city's information from a long document and outputing it in JSON format.
 
-We tested Lllam-7B on NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v0.1.0, outlines v0.2.5 and llama.cpp v0.2.38(Python binding) . The following table shows the throughput and latency(with batch size 1) of theses methods:
+We tested llama-7B on an NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v0.1.0, outlines v0.2.5 and llama.cpp v0.2.38(Python binding) . The following table shows the throughput and latency (with batch size 1) of theses methods:
 
 <img src="/images/blog/compressed_fsm/result.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
