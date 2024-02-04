@@ -41,16 +41,17 @@ Since the FSM is constructed at the token level, it can transition the state by 
 
 ### Method 2: Interleaved-Based
 
-Aside from converting the entire JSON schema into a regular expression, another popular approach is to employ interleaved-based decoding. In this method, a given JSON schema can be broken down into several parts, each containing either a chunked prefill part or a constrainedt decoding part. These different parts are executed interleavedly by the inference system.
+Aside from converting the entire JSON schema into a regular expression, another approach is to employ interleaved-based decoding. In this method, a given JSON schema can be broken down into several parts, each containing either a chunked prefill part or a constrained decoding part. These different parts are executed interleavedly by the inference system.
+Because the chunked prefill can process multiple tokens in a single forward pass, it is faster than token-by-token decoding.
 
-[Guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding, using llama.cpp as a backend to accelerate.
+[Guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding, using llama.cpp as a backend.
 
 <img src="/images/blog/compressed_fsm/method2.png" style="width: 100%; max-width: 85%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">Figure 4: Interleaved JSON Decoding in Guidance</p>
 
 **Limitations:**  
 - The interleaved-based method requires custom syntax, making it less versatile and expressive than individual regular expressions.
-- It struggles with correctly handling tokenization boundaries due to potential conflicts between the decoding and chunked prefilling segments.
+- It struggles with correctly handling tokenization boundaries due to potential conflicts between the decode and chunked prefill segments.
 - Frequent communication between the interpreter and the backend brings additional overhead.
 
 ## Our Method: Jump-Forward Decoding With a Compressed Finite State Machine
