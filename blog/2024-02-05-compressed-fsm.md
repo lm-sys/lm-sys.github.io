@@ -33,10 +33,11 @@ This method involves transforming the JSON schema into a regular expression. We 
 
 <img id = "figure3" src="/images/blog/compressed_fsm/method1.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
-Figure 3: Constrained Decoding based on FSM and Logits Masking
+Figure 3: Constrained Decoding based on FSM and Logits Masking. In the first constrained decoding pass, only
+<code>age</code> is allowed. In the second pass, as the regex requires digits, both <code>0</code> and <code>1</code> are allowed, but the LLM would sample <code>1</code> with a higher probability.
 </p>
 
-The FSM-based method utilizes the generalized regular expressions to define the low-level rules, which can be applied to a wide range of grammars, such as JSON schema, IP addresses and emails.
+The FSM-based method utilizes generalized regular expressions to define the low-level rules, which can be applied to a wide range of grammars, such as JSON schema, IP addresses, and emails.
 
 **Limitations:**  
 Since the FSM is constructed at the token level, it can transition the state by only one token at each step. Consequently, it can decode only one token at a time, which results in slow decoding.
@@ -103,7 +104,7 @@ to form a more frequent token
 <code style="color: black; background-color: lightblue;">"[\w\d\s]*"</code>
 (without the last 
 <code style="color: black; background-color: lightblue;">,</code>
-), it can lead to endless decoding, because an LLM wants to stop with <code style="color: black; background-color: lightblue;">",</code> but this token is not allowed.
+), it can lead to endless decoding because an LLM wants to stop with <code style="color: black; background-color: lightblue;">",</code> but this token is not allowed.
 
 Moreover, during jump-forward decoding, we've found that different tokenization strategies to the jump-forwarded part may lead to different logit distributions for the subsequent tokens. Simply appending the tokenized jump-forwarded section to the current token sequence might yield unexpected outcomes.
 
