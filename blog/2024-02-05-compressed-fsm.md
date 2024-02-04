@@ -5,40 +5,39 @@ date: "Feb 5, 2024"
 previewImg: /images/blog/compressed_fsm/demo.gif
 ---
 
-In this blog post, we share an optimization for constrained JSON decoding based on the compressed finite state machine. Instead of decoding token by token, our method analyzes the finite state machine of a regular expression, compresses the singular transition path, and decodes multiple tokens in a single step whenever possible. Compared to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce latency by up to 2x and increase throughput by up to 2.5x. You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
+Constraining an LLM to consistently generate valid JSON or YAML that adheres to a specific schema is a critical feature for many applications.
+In this blog post, we introduce an optimization that significantly accelerates this type of constrained decoding. Our approach utilizes a compressed finite state machine and is compatible with any regular expression, thereby accommodating any JSON or YAML schema.
+Distinct from existing systems that decode one token at one step, our method analyzes the finite state machine of a regular expression, compresses singular transition paths, and decodes <u>multiple tokens in a single step</u> whenever feasible. In comparison to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce the latency by up to 2x and boost throughput by up to 2.5x. This feature is available now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
 
 <img src="/images/blog/compressed_fsm/demo.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
-Figure 1: Demo of speedups by SGLang's jump-forward decoding algorithm, compared to outlines + vLLM. LLMs generate the specified JSON object to describe the given character.
+Figure 1: Comparison of SGLang and Outlines + vLLM in JSON Decoding.
 </p>
 
 ## Background
 
-[JSON](https://en.wikipedia.org/wiki/JSON) is one of the world's most important formats for data interchange, and efficiently guiding LLMs to generate JSON is a critical problem for many applications.
-OpenAI proposed its [JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode) to instruct the model to always return a valid JSON object.
-However, more fine-grained control is often needed to ensure that the generated JSON object follows a specific [schema](https://json-schema.org/), such as:
+[JSON](https://en.wikipedia.org/wiki/JSON) is one of the most important formats for data interchange. Requiring LLMs to always generate valid JSON can render the output of the LLM easily parsable in a structured manner. Recognizing its significance, OpenAI introduced the [JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode), which constrains the model to always return a valid JSON object. However, more  fine-grained control is often needed to ensure that the generated JSON object adheres to a specific [schema](https://json-schema.org/), such as
 
 <img src="/images/blog/compressed_fsm/json_schema.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
-Figure 2: Example of how a JSON schema can guide the generation of a JSON object.
+Figure 2: Example of Constrained Generation Following a JSON Schema.
 </p>
 
 For local LLMs, there are two major methods to guide the model to generate JSON objects that follow a specific schema.
 
 ### Method 1: Finite State Machine Based
 
-This method involves transforming the JSON schema into a regular expression. We can then construct a [Finite State Machine(FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) based on the regular expression. For every state within the FSM, we can calculate the permissible transitions and identify the acceptable next tokens. This allows us to track the current state during decoding and filter out invalid tokens by applying logit bias to the output.
+This method involves transforming the JSON schema into a regular expression. We can then construct a [Finite State Machine(FSM)](https://en.wikipedia.org/wiki/Finite-state_machine) based on the regular expression. The FSM is used to guide the LLM generation. For every state within the FSM, we can calculate the permissible transitions and identify the acceptable next tokens. This allows us to track the current state during decoding and filter out invalid tokens by applying logit bias to the output. You can learn more about this method in the [outlines](https://arxiv.org/abs/2307.09702) paper.
 
 <img id = "figure3" src="/images/blog/compressed_fsm/method1.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
 Figure 3: ...
 </p>
 
-The FSM-based method utilizes more generalized regular expressions to outline the low-level rules, which can be applied to a wide range of grammars, such as IP addresses and emails.
+The FSM-based method utilizes the generalized regular expressions to define the low-level rules, which can be applied to a wide range of grammars, such as IP addresses and emails.
 
-#### Limitations:
-
-However, the guided decoding process is time-consuming, as it requires decoding the whole JSON object token by token.
+##### Limitations:
+Since the FSM is constructed at the token level, it can transition the state by only one token at each step. Consequently, it can decode only one token at a time, which results in slow decoding.
 
 ### Method 2: Interleaved-Based
 
