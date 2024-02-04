@@ -130,4 +130,4 @@ It can reduce the latency by up to 2x and boost throughput by up to 2.5x.
 
 ## Link
 - You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding)
-- Bencmark code is available [here](https://github.com/sgl-project/sglang/tree/main/benchmark/json_fast_forward)
+- Benchmark code is available [here](https://github.com/sgl-project/sglang/tree/main/benchmark/json_fast_forward)
