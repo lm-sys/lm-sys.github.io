@@ -72,7 +72,8 @@ That is precisely how the jump-forward decoding algorithm makes decoding faster.
 <img src="/images/blog/compressed_fsm/compare.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">Figure 5: Comparison of Jump-Forward Decoding with Compressed FSM and Normal Decoding</p>
 
-The radix cache mechanism of SGLang greatly benefits the jump-forward decoding algorithm. When executing a jump-forward, all the prefix tokens prior to the jump-forwarded part get automatically cached. This cache mechanism ensures that the **extend** primitives performed by the jump-forward algorithm align with SGLang, thus eliminating any additional overhead.
+The RadixAttention mechanism of SGLang greatly simplifies the implementation of the jump-forward decoding algorithm.
+When executing a jump-forward, we can simply terminate the current request and enqueue a new one. The RadixAttention and efficient **extend** primitive in the SGLang runtime will automatically reuse the KV cache of the previous tokens, thereby avoiding redundant computation.
 
 ### Tokenization Boundary Handling
 
