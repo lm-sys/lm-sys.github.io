@@ -76,7 +76,10 @@ The radix cache mechanism of SGLang greatly benefits the jump-forward decoding a
 
 ### Tokenization Boundary Handling
 
-When the LLM is decoding well-structured content, it might prefer(means with higher probability) to combine two entirely different parts into a single token.
+When implementing constrained decoding, it is always tricky to deal with the tokenization boundary, due to the complicated possible mapping between characters and tokens.
+
+
+During LLM decoding, it might prefer (means with higher probability) to combine multiple characters into a single token.
 For instance, when decoding
 <code style="color: black; background-color: lightblue;">"Hello"</code>
 in the context of JSON decoding, LLMs may output tokens like this:
@@ -88,37 +91,38 @@ in the context of JSON decoding, LLMs may output tokens like this:
 
 Instead of decoding the last
 <code style="color: black; background-color: lightblue;">"</code>
-, it always prefers to combine it with an upcoming 
+, it always prefers to combine it with a following 
 <code style="color: black; background-color: lightblue;">,</code>
 to form a more frequent token
 <code style="color: black; background-color: lightblue;">",</code>
-, which may cause endless decoding when the regex is set to 
+. This effect may cause some strange behaviors. For example, in the above case, if the regex is set to
 <code style="color: black; background-color: lightblue;">"[\w\d\s]*"</code>
 (without the last 
 <code style="color: black; background-color: lightblue;">,</code>
-).
+), it can lead to endless decoding, because an LLM wants to stop with <code style="color: black; background-color: lightblue;">",</code> but this token is not allowed.
 
 Moreover, during jump-forward decoding, we've found that different tokenization strategies to the jump-forwarded part may lead to different logit distributions for the subsequent tokens. Simply appending the tokenized jump-forwarded section to the current token sequence might yield unexpected outcomes.
 
 To manage these issues, we propose the following solutions:
 
-- Always use an integrated regex to guide the decoding process. This measure will make both the LLM and the compressed FSM cognizant of the intricate format of various grammars and enable them to recognize the boundaries of tokenization.
-- We have implemented a re-tokenization mechanism during the jump-forward phase. This involves appending the string instead of the tokens, followed by re-tokenizing the entire text. This method corresponds with the majority of prevalent LLM inference systems and only results in a minor increase in overhead by approximately 4%.
+- Prefer the use of a comprehensive regular expression to guide the entire decoding process, rather than employing multiple concatenated regular expressions. This approach ensures that both Finite State Machines (FSM) and Large Language Models (LLM) are cognizant of the entire decoding process, thereby minimizing boundary-related issues as much as possible.
+
+- We have implemented a re-tokenization mechanism during the jump-forward phase. This involves appending the string instead of the tokens, followed by a re-tokenization of the entire text. This method effectively resolves most tokenization issues and results in only a minor increase in computational overhead, approximately 4\%.
 
 ## Benchmark Results
 
-We benchmark our jump-forward decoding on two tasks:
+We benchmarked our jump-forward decoding on two tasks:
 
 - Crafting a character's data in JSON format, guided by a brief prompt.
 - Extracting a city's information from a long document and outputing it in JSON format.
 
-We tested llama-7B on an NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v0.1.0, outlines v0.2.5 and llama.cpp v0.2.38(Python binding) . The following table shows the throughput and latency (with batch size 1) of theses methods:
+We tested llama-7B on an NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v0.1.0, outlines v0.2.5 and llama.cpp v0.2.38(Python binding) . The figure below shows the throughput (using the maximum batch size supported by each system) and latency (with a batch size of 1) of these methods:
 
 <img src="/images/blog/compressed_fsm/result.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
 Figure 6: Benchmark Results
 </p>
 
-The results show that SGLang outperforms all other systems significantly.
+The results show that SGLang with our decoding algorithm significantly outperforms all other systems.
 It can reduce the latency by up to 2x and boost throughput by up to 2.5x.
 You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
