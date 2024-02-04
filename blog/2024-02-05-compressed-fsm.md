@@ -11,7 +11,7 @@ Distinct from existing systems that decode one token at one step, our method ana
 
 <img src="/images/blog/compressed_fsm/demo.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
-Figure 1: Comparison of SGLang and Outlines + vLLM in JSON Decoding.
+Figure 1: Comparison of SGLang and Outlines + vLLM in JSON Decoding
 </p>
 
 ## Background
@@ -20,7 +20,7 @@ Figure 1: Comparison of SGLang and Outlines + vLLM in JSON Decoding.
 
 <img src="/images/blog/compressed_fsm/json_schema.png" style="width: 100%; max-width: 80%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
-Figure 2: Example of Constrained Generation Following a JSON Schema.
+Figure 2: Example of Constrained Generation Following a JSON Schema
 </p>
 
 For local LLMs, there are two major methods to guide the model to generate JSON objects that follow a specific schema.
@@ -31,7 +31,7 @@ This method involves transforming the JSON schema into a regular expression. We 
 
 <img id = "figure3" src="/images/blog/compressed_fsm/method1.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
-Figure 3: ...
+Figure 3: Constrained Decoding based on FSM and Logits Masking
 </p>
 
 The FSM-based method utilizes the generalized regular expressions to define the low-level rules, which can be applied to a wide range of grammars, such as JSON schema, IP addresses and emails.
@@ -46,7 +46,7 @@ Aside from converting the entire JSON schema into a regular expression, another 
 [Guidance](https://github.com/guidance-ai/guidance?tab=readme-ov-file#guidance-acceleration) provides a set of syntax rules for interleaved-based decoding, using llama.cpp as a backend to accelerate.
 
 <img src="/images/blog/compressed_fsm/method2.png" style="width: 100%; max-width: 85%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
-<p style="color:gray; text-align: center;">Figure 4: ...</p>
+<p style="color:gray; text-align: center;">Figure 4: Interleaved JSON Decoding in Guidance</p>
 
 **Limitations:**  
 - The interleaved-based method requires custom syntax, making it less versatile and expressive than individual regular expressions.
@@ -70,7 +70,7 @@ During the decoding process guided by the regex converted from the JSON schema, 
 That is precisely how the jump-forward decoding algorithm makes decoding faster. In the jump-forward algorithm, we examine the finite state machine of the given regular expression, identify all the singular transition edges, and compress consecutive ones together into **singular paths**. Instead of decoding the singular paths token by token, we can directly prefill (extend) them, jumping forward until the next branching point.
 
 <img src="/images/blog/compressed_fsm/compare.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
-<p style="color:gray; text-align: center;">Figure 5: ...</p>
+<p style="color:gray; text-align: center;">Figure 5: Comparison of Jump-Forward Decoding with Compressed FSM and Normal Decoding</p>
 
 The radix cache mechanism of SGLang greatly benefits the jump-forward decoding algorithm. When executing a jump-forward, all the prefix tokens prior to the jump-forwarded part get automatically cached. This cache mechanism ensures that the **extend** primitives performed by the jump-forward algorithm align with SGLang, thus eliminating any additional overhead.
 
@@ -116,5 +116,9 @@ We tested llama-7B on an NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v
 
 <img src="/images/blog/compressed_fsm/result.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
-Figure 6:
+Figure 6: Benchmark Results
 </p>
+
+The results show that SGLang outperforms all other systems significantly.
+It can reduce the latency by up to 2x and boost throughput by up to 2.5x.
+You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
