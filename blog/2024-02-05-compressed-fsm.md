@@ -1,6 +1,6 @@
 ---
 title: "Fastest JSON Decoding for Local LLMs with Compressed Finite State Machine"
-author: "Liangsheng Ying, Ying Sheng, Lianmin Zheng"
+author: "Liangsheng Yin, Ying Sheng, Lianmin Zheng"
 date: "Feb 5, 2024"
 previewImg: /images/blog/compressed_fsm/demo.gif
 ---
