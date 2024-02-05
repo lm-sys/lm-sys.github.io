@@ -112,6 +112,8 @@ To manage these issues, we propose the following solutions:
 - We have implemented a re-tokenization mechanism during the jump-forward phase. This involves appending the string instead of the tokens, followed by a re-tokenization of the entire text. This method effectively resolves most tokenization issues and results in only a minor increase in computational overhead, approximately 4\%.
 - Prefer the use of a comprehensive regular expression to guide the entire decoding process, rather than employing multiple concatenated regular expressions. This approach ensures that both FSM and LLM are cognizant of the entire decoding process, thereby minimizing boundary-related issues as much as possible.
 
+You can also read some additional discussion in this [blog post](http://blog.dottxt.co/coalescence.html).
+
 ## Benchmark Results
 
 We benchmarked our jump-forward decoding on two tasks:
