@@ -134,5 +134,5 @@ We have been testing this feature with [Boson.ai](https://boson.ai/) for two wee
 
 ## Link
 - You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
-- Benchmark code is available [here](https://github.com/sgl-project/sglang/tree/main/benchmark/json_fast_forward).
+- Benchmark code is available [here](https://github.com/sgl-project/sglang/tree/main/benchmark/json_jump_forward).
 - We thank [outlines](https://github.com/outlines-dev/outlines) for open-sourcing its FSM implementation. We built our compressed FSM based on it.
