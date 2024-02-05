@@ -128,6 +128,7 @@ Figure 6: Benchmark Results
 
 The results show that SGLang with our decoding algorithm significantly outperforms all other systems.
 It can reduce the latency by up to 2x and boost throughput by up to 2.5x.
+We suspect that the higher throughput of SGLang with no Jump-Forward compared to Outlines+vLLM is due to some overhead in Outlines.
 
 We have been testing this feature with [Boson.ai](https://boson.ai/) for two weeks, who are bringing this feature into their production use cases due to its effectiveness.
 
