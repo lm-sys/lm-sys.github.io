@@ -132,6 +132,6 @@ It can reduce the latency by up to 2x and boost throughput by up to 2.5x.
 We have been testing this feature with Boson.ai for two weeks and have observed performance improvements of over 2x.
 
 ## Link
-- You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding)
-- Benchmark code is available [here](https://github.com/sgl-project/sglang/tree/main/benchmark/json_fast_forward)
+- You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
+- Benchmark code is available [here](https://github.com/sgl-project/sglang/tree/main/benchmark/json_fast_forward).
 - We thank [Outlines](https://github.com/outlines-dev/outlines) for open-sourcing its FSM implementation. We built our compressed FSM based on it.
