@@ -109,8 +109,8 @@ to form a more frequent token
 Moreover, during jump-forward decoding, we've found that different tokenization strategies to the jump-forwarded part may lead to different logit distributions for the subsequent tokens. Simply appending the tokenized jump-forwarded section to the current token sequence might yield unexpected outcomes.
 
 To manage these issues, we propose the following solutions:
-- Prefer the use of a comprehensive regular expression to guide the entire decoding process, rather than employing multiple concatenated regular expressions. This approach ensures that both Finite State Machines (FSM) and Large Language Models (LLM) are cognizant of the entire decoding process, thereby minimizing boundary-related issues as much as possible.
 - We have implemented a re-tokenization mechanism during the jump-forward phase. This involves appending the string instead of the tokens, followed by a re-tokenization of the entire text. This method effectively resolves most tokenization issues and results in only a minor increase in computational overhead, approximately 4\%.
+- Prefer the use of a comprehensive regular expression to guide the entire decoding process, rather than employing multiple concatenated regular expressions. This approach ensures that both FSM and LLM are cognizant of the entire decoding process, thereby minimizing boundary-related issues as much as possible.
 
 ## Benchmark Results
 
@@ -128,9 +128,18 @@ Figure 6: Benchmark Results
 
 The results show that SGLang with our decoding algorithm significantly outperforms all other systems.
 It can reduce the latency by up to 2x and boost throughput by up to 2.5x.
-We suspect that the higher throughput of SGLang with no Jump-Forward compared to Outlines+vLLM is due to some overhead in Outlines.
+In the character generation task, even SGLang without Jump-Forward achieves higher throughput than Outlines+vLLM; we suspect this is due to some overhead in Outlines.
+
+## Use Cases
 
 We have been testing this feature with [Boson.ai](https://boson.ai/) for two weeks, who are bringing this feature into their production use cases because it guarantees robust response with higher decoding throughput.
+
+Additionally, another user used this feature to extract structured information from images by utilizing the vision language model, LLaVA.
+
+<img src="/images/blog/compressed_fsm/llava_demo.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<p style="color:gray; text-align: center;">
+Figure 7: Extracting structured information from an image using SGLang and LLaVA
+</p>
 
 ## Link
 - You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
