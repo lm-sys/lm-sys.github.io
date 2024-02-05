@@ -121,7 +121,7 @@ We benchmarked our jump-forward decoding on two tasks:
 
 We tested llama-7B on an NVIDIA A10 GPU (24GB), and used vllm v0.2.7, guidance v0.1.0, outlines v0.2.5 and llama.cpp v0.2.38(Python binding) . The figure below shows the throughput (using the maximum batch size supported by each system) and latency (with a batch size of 1) of these methods:
 
-<img src="/images/blog/compressed_fsm/result.png" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
+<img src="/images/blog/compressed_fsm/result.png" style="width: 100%; max-width: 60%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
 <p style="color:gray; text-align: center;">
 Figure 6: Benchmark Results
 </p>
