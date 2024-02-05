@@ -130,7 +130,7 @@ The results show that SGLang with our decoding algorithm significantly outperfor
 It can reduce the latency by up to 2x and boost throughput by up to 2.5x.
 We suspect that the higher throughput of SGLang with no Jump-Forward compared to Outlines+vLLM is due to some overhead in Outlines.
 
-We have been testing this feature with [Boson.ai](https://boson.ai/) for two weeks, who are bringing this feature into their production use cases due to its effectiveness.
+We have been testing this feature with [Boson.ai](https://boson.ai/) for two weeks, who are bringing this feature into their production use cases because it guarantees robust response with higher decoding throughput.
 
 ## Link
 - You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
