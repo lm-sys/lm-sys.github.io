@@ -129,7 +129,7 @@ Figure 6: Benchmark Results
 The results show that SGLang with our decoding algorithm significantly outperforms all other systems.
 It can reduce the latency by up to 2x and boost throughput by up to 2.5x.
 
-We have been testing this feature with [Boson.ai](https://boson.ai/) for two weeks and have observed performance improvements of over 2x.
+We have been testing this feature with [Boson.ai](https://boson.ai/) for two weeks, who are bringing this feature into their production use cases due to its effectiveness.
 
 ## Link
 - You can try this feature now in [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
