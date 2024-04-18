@@ -5,6 +5,24 @@ date: "April 18, 2024"
 previewImg: /images/blog/arena_hard/arena_hard.png
 ---
 
+<style>
+.tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
+.tg td{border-color:#ccc;border-style:solid;border-width:1px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-head{background-color:#c0c0c0;border-color:#ccc;text-align:left;vertical-align:top;}
+.tg .tg-body{text-align:left;vertical-align:top;}
+</style>
+
+<style>
+  iframe {
+    display: block;
+    width: 100%;
+    height: 950px;
+    border: none;
+    overflow: hidden;
+  }
+</style>
+
 ## Introduction
 
 Building an affordable and reliable benchmark for LLM chatbots has become a critical challenge. A high-quality benchmark should 1) robustly separate model capability, 2) reflect human preference in real-world use cases, and 3) frequently update to avoid over-fitting or test set leakage.
@@ -20,7 +38,6 @@ We compare our new benchmark, Arena-hard-v0.1, to a current leading chat LLM ben
 Figure 1: Comparison between MT-bench and Arena-Hard-v0.1. The latter offers significantly better separability between models and tighter confidence intervals. Note: We do not include GPT-4-Turbo in the plot due to potential self-bias. GPT-4-0314 has no variance in Arena-hard-v0.1 because it’s used as the anchor model.
 
 TODO: insert figure
-
 Links:
 - Evaluate your model on Arena-Hard-v0.1: https://github.com/lm-sys/arena-hard
 - Browse Arena-Hard-v0.1 prompts: https://huggingface.co/spaces/lmsys/arena-hard-browser
@@ -56,9 +73,78 @@ Interestingly, we find Spearman Correlation, a popular metric for measuring corr
 
 You can find full statistics in the result section. 
 
-TODO: insert table
-
-*20 top models from Chatbot Arena that are also presented on Alpaca Eval: gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha
+<table>
+  <tbody>
+    <tr>
+      <th> </th>
+      <th>Chatbot Arena (English-only)</th>
+      <th>MT-bench</th>
+      <th>AlpacaEval 2.0 LC (Length Controlled)</th>
+      <th>Arena-Hard-v0.1</th>
+    </tr>
+    <tr>
+      <td>Avg #prompts per model eval</td>
+      <td>~20,000</td>
+      <td>160</td>
+      <td>800</td>
+      <td>1,000</td>
+    </tr>
+    <tr>
+      <td>Agreement to Chatbot Arena with 95% CI</td>
+      <td>N/A</td>
+      <td>27.1%</td>
+      <td>80.7%</td>
+      <td>89.2%</td>
+    </tr>
+    <tr>
+      <td>Separability with 95% CI</td>
+      <td>86.3%</td>
+      <td>23.7%</td>
+      <td>83.7%</td>
+      <td>87.9%</td>
+    </tr>
+    <tr>
+      <td>Spearman Correlation</td>
+      <td>N/A</td>
+      <td>91.0%</td>
+      <td>90.4%</td>
+      <td>94.3%</td>
+    </tr>
+    <tr>
+      <td>Real-world</td>
+      <td>Yes</td>
+      <td>Mixed</td>
+      <td>Mixed</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Freshness</td>
+      <td>Live</td>
+      <td>Static</td>
+      <td>Static</td>
+      <td>Frequent Updates</td>
+    </tr>
+    <tr>
+      <td>Eval cost per model</td>
+      <td>Very High</td>
+      <td>$10</td>
+      <td>$10</td>
+      <td>$25</td>
+    </tr>
+    <tr>
+      <td>Judge</td>
+      <td>Human</td>
+      <td>LLM</td>
+      <td>LLM</td>
+      <td>LLM</td>
+    </tr>
+    <tr>
+      <td colspan="5">*20 top models from Chatbot Arena that are also presented on Alpaca Eval: gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha</td>
+    </tr>
+  </tbody>
+</table>
+<!-- 
+*20 top models from Chatbot Arena that are also presented on Alpaca Eval: gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha -->
 
 Next, we elaborate how to build the prompt selection pipeline to ensure data quality.
 
@@ -68,11 +154,49 @@ We build a pipeline that automatically extracts quality prompts from a dataset o
 - Diversity: Prompt set should cover a wide range of real-world topics
 - Prompt quality: Each prompt should possess high quality to benchmark LLMs. we define several key criteria below (see Table X)
 
-TODO: insert diagram
+<p align="center">
+  <img src="/public/images/blog/arena_hard/method.png" />
+</p>
 
 To ensure prompt diversity, we adopt a topic modeling pipeline in [BERTopic](https://github.com/MaartenGr/BERTopic) by first converting each prompt with OpenAI’s embedding (text-embedding-3-small), reducing dimension with UMAP, and using a hierarchical-based clustering algorithm (HDBSCAN) to identify clusters which are then summarized using GPT-4-turbo. This helps us identify over 4000 topics covering a wide range of domains. However, topic clusters come with varying quality and separability in benchmarking LLMs. We then develop a calibrated system prompt for LLMs to help us select high quality user queries by seven key criteria (e.g., specificity, domain knowledge, problem-solving, etc).
 
-TODO: insert 7 criteria
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">7 Key Criteria</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1. Specificity</td>
+      <td>Does the prompt ask for a specific output?</td>
+    </tr>
+    <tr>
+      <td>2. Domain Knowledge</td>
+      <td>Does the prompt cover one or more specific domains?</td>
+    </tr>
+    <tr>
+      <td>3. Complexity</td>
+      <td>Does the prompt have multiple levels of reasoning, components, or variables?</td>
+    </tr>
+    <tr>
+      <td>4. Problem-Solving</td>
+      <td>Does the prompt directly involve the AI to demonstrate active problem-solving skills?</td>
+    </tr>
+    <tr>
+      <td>5. Creativity</td>
+      <td>Does the prompt involve a level of creativity in approaching the problem?</td>
+    </tr>
+    <tr>
+      <td>6. Technical Accuracy</td>
+      <td>Does the prompt require technical accuracy in the response?</td>
+    </tr>
+    <tr>
+      <td>7. Real-world Application</td>
+      <td>Does the prompt relate to real-world applications?</td>
+    </tr>
+  </tbody>
+</table>
 
 An LLM Judge (GPT-3.5-Turbo, GPT-4-Turbo) annotates each prompt from 0 to 7 to indicate how many criteria are met. We then score each cluster by the average score of its prompts. Below, we show examples of topic clusters ranging from low to high mean scores. We can observe clusters with higher scores often correlate to challenging topics or tasks for LLMs like game development or mathematical proofs. On the other hand, clusters with lower scores point to trivial or ambiguous questions like Design Styles and Influences.
 
