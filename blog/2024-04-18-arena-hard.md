@@ -223,7 +223,7 @@ We use gpt-4-1106-preview as the judge model to generate judgment for the model 
 
 <p style="color:gray; text-align: center;">Table 1. Model Performance Comparison</p>
 
-<table class="tg" style="width:100%; display: flex; justify-content: center;">
+<table class="tg" style="width:100%; ; margin: auto; display: flex; justify-content: center;">
 <tbody>
   <tr>
     <td class="tg-head"><span style="font-weight:bold;">Model Name</span></td>
