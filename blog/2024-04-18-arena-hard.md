@@ -72,7 +72,7 @@ In Table X, Arena-hard-v0.1 shows the highest separability (91.6%) against widel
 Interestingly, we find Spearman Correlation, a popular metric for measuring correlations between rankings, may be an unreliable metric for ranking correlation as it does not consider variance of the rankings, and therefore fails to adequately punish essential ranking granularities of the top models we care about most. For example, when considering 95% CI, MT-bench’s agreement to Chatbot Arena drops from 89.3% to 39.0%.
 
 You can find full statistics in the result section. 
-<p style="color:gray; text-align: center;">Table 1. Separability and agreement per benchmark.</p>
+<p style="width:100%; color:gray; text-align: center;">Table 1. Separability and agreement per benchmark.</p>
 
 <table class="tg" style="display: flex;justify-content: center;">
   <colgroup>
@@ -147,13 +147,10 @@ You can find full statistics in the result section.
       <td class="tg-body">LLM</td>
     </tr>
     <tr>
-      <td class="tg-body" colspan="5">*20 top models from Chatbot Arena that are also presented on Alpaca Eval: gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha</td>
+      <td class="tg-body" colspan="5">*20 top models from Chatbot Arena that are also presented on Alpaca Eval: gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha</td>
     </tr>
 </tbody>
 </table>
-
-<!-- 
-*20 top models from Chatbot Arena that are also presented on Alpaca Eval: gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha -->
 
 Next, we elaborate how to build the prompt selection pipeline to ensure data quality.
 
@@ -226,7 +223,7 @@ We use gpt-4-1106-preview as the judge model to generate judgment for the model 
 
 <p style="color:gray; text-align: center;">Table 1. Model Performance Comparison</p>
 
-<table class="tg" style="display: flex; justify-content: center;">
+<table class="tg" style="width:100%; display: flex; justify-content: center;">
 <tbody>
   <tr>
     <td class="tg-head"><span style="font-weight:bold;">Model Name</span></td>
@@ -235,212 +232,212 @@ We use gpt-4-1106-preview as the judge model to generate judgment for the model 
     <td class="tg-head"><span style="font-weight:bold;">Average #Tokens</span></td>
   </tr>
   <tr>
-    <td class="tg-body">gpt-4-turbo-2024-04-09</td>
+    <td class="tg-body; text-align: left;">gpt-4-turbo-2024-04-09</td>
     <td class="tg-body">82.6</td>
     <td class="tg-body">(-1.9, 2.0)</td>
     <td class="tg-body">662</td>
   </tr>
   <tr>
-    <td class="tg-body">gpt-4-0125-preview</td>
+    <td class="tg-body; text-align: left;">gpt-4-0125-preview</td>
     <td class="tg-body">78.0</td>
     <td class="tg-body">(-1.8, 2.2)</td>
     <td class="tg-body">619</td>
   </tr>
   <tr>
-    <td class="tg-body">claude-3-opus-20240229</td>
+    <td class="tg-body; text-align: left;">claude-3-opus-20240229</td>
     <td class="tg-body">60.4</td>
     <td class="tg-body">(-3.3, 2.3)</td>
     <td class="tg-body">541</td>
   </tr>
 <tr>
-  <td class="tg-body">gpt-4-0314</td>
+  <td class="tg-body; text-align: left;">gpt-4-0314</td>
   <td class="tg-body">50.0</td>
   <td class="tg-body">(0.0, 0.0)</td>
   <td class="tg-body">423</td>
 </tr>
 <tr>
-  <td class="tg-body">claude-3-sonnet-20240229</td>
+  <td class="tg-body; text-align: left;">claude-3-sonnet-20240229</td>
   <td class="tg-body">46.8</td>
   <td class="tg-body">(-2.1, 2.5)</td>
   <td class="tg-body">552</td>
 </tr>
 <tr>
-  <td class="tg-body">claude-3-haiku-20240307</td>
+  <td class="tg-body; text-align: left;">claude-3-haiku-20240307</td>
   <td class="tg-body">41.5</td>
   <td class="tg-body">(-1.9, 2.0)</td>
   <td class="tg-body">505</td>
 </tr>
 <tr>
-  <td class="tg-body">gpt-4-0613</td>
+  <td class="tg-body; text-align: left;">gpt-4-0613</td>
   <td class="tg-body">37.9</td>
   <td class="tg-body">(-2.8, 2.5)</td>
   <td class="tg-body">354</td>
 </tr>
 <tr>
-  <td class="tg-body">mistral-large-2402</td>
+  <td class="tg-body; text-align: left;">mistral-large-2402</td>
   <td class="tg-body">37.7</td>
   <td class="tg-body">(-1.9, 2.7)</td>
   <td class="tg-body">400</td>
 </tr>
 <tr>
-  <td class="tg-body">mixtral-8x22b-instruct-v0.1</td>
+  <td class="tg-body; text-align: left;">mixtral-8x22b-instruct-v0.1</td>
   <td class="tg-body">36.4</td>
   <td class="tg-body">(-1.5, 2.7)</td>
   <td class="tg-body">430</td>
 </tr>
 <tr>
-  <td class="tg-body">Qwen1.5-72B-Chat</td>
+  <td class="tg-body; text-align: left;">Qwen1.5-72B-Chat</td>
   <td class="tg-body">36.1</td>
   <td class="tg-body">(-2.6, 2.2)</td>
   <td class="tg-body">474</td>
 </tr>
 <tr>
-  <td class="tg-body">command-r-plus</td>
+  <td class="tg-body; text-align: left;">command-r-plus</td>
   <td class="tg-body">33.1</td>
   <td class="tg-body">(-2.1, 2.2)</td>
   <td class="tg-body">541</td>
 </tr>
 <tr>
-  <td class="tg-body">mistral-medium</td>
+  <td class="tg-body; text-align: left;">mistral-medium</td>
   <td class="tg-body">31.9</td>
   <td class="tg-body">(-2.2, 2.3)</td>
   <td class="tg-body">485</td>
 </tr>
 <tr>
-  <td class="tg-body">mistral-next</td>
+  <td class="tg-body; text-align: left;">mistral-next</td>
   <td class="tg-body">27.4</td>
   <td class="tg-body">(-2.1, 1.7)</td>
   <td class="tg-body">297</td>
 </tr>
 <tr>
-  <td class="tg-body">gpt-3.5-turbo-0613</td>
+  <td class="tg-body; text-align: left;">gpt-3.5-turbo-0613</td>
   <td class="tg-body">24.8</td>
   <td class="tg-body">(-1.7, 2.1)</td>
   <td class="tg-body">401</td>
 </tr>
 <tr>
-  <td class="tg-body">claude-2.0</td>
+  <td class="tg-body; text-align: left;">claude-2.0</td>
   <td class="tg-body">24.0</td>
   <td class="tg-body">(-2.5, 2.5)</td>
   <td class="tg-body">295</td>
 </tr>
 <tr>
-  <td class="tg-body">dbrx-instruct</td>
+  <td class="tg-body; text-align: left;">dbrx-instruct</td>
   <td class="tg-body">23.9</td>
   <td class="tg-body">(-1.6, 1.6)</td>
   <td class="tg-body">415</td>
 </tr>
 <tr>
-  <td class="tg-body">Mixtral-8x7B-Instruct-v0.1</td>
+  <td class="tg-body; text-align: left;">Mixtral-8x7B-Instruct-v0.1</td>
   <td class="tg-body">23.4</td>
   <td class="tg-body">(-2.2, 2.2)</td>
   <td class="tg-body">457</td>
 </tr>
 <tr>
-  <td class="tg-body">gpt-3.5-turbo-0125</td>
+  <td class="tg-body; text-align: left;">gpt-3.5-turbo-0125</td>
   <td class="tg-body">23.3</td>
   <td class="tg-body">(-2.2, 2.3)</td>
   <td class="tg-body">329</td>
 </tr>
 <tr>
-  <td class="tg-body">Yi-34B-Chat</td>
+  <td class="tg-body; text-align: left;">Yi-34B-Chat</td>
   <td class="tg-body">23.1</td>
   <td class="tg-body">(-2.0, 1.9)</td>
   <td class="tg-body">611</td>
 </tr>
 <tr>
-  <td class="tg-body">Starling-LM-7B-beta</td>
+  <td class="tg-body; text-align: left;">Starling-LM-7B-beta</td>
   <td class="tg-body">23.0</td>
   <td class="tg-body">(-1.8, 2.2)</td>
   <td class="tg-body">530</td>
 </tr>
 <tr>
-  <td class="tg-body">claude-2.1</td>
+  <td class="tg-body; text-align: left;">claude-2.1</td>
   <td class="tg-body">22.8</td>
   <td class="tg-body">(-1.8, 1.9)</td>
   <td class="tg-body">290</td>
 </tr>
 <tr>
-  <td class="tg-body">Snorkel-Mistral-PairRM-DPO</td>
+  <td class="tg-body; text-align: left;">Snorkel-Mistral-PairRM-DPO</td>
   <td class="tg-body">20.7</td>
   <td class="tg-body">(-1.9, 2.0)</td>
   <td class="tg-body">564</td>
 </tr>
 <tr>
-  <td class="tg-body">gpt-3.5-turbo-1106</td>
+  <td class="tg-body; text-align: left;">gpt-3.5-turbo-1106</td>
   <td class="tg-body">18.9</td>
   <td class="tg-body">(-1.7, 1.8)</td>
   <td class="tg-body">285</td>
 </tr>
 <tr>
-  <td class="tg-body">gpt-3.5-turbo-0301</td>
+  <td class="tg-body; text-align: left;">gpt-3.5-turbo-0301</td>
   <td class="tg-body">18.1</td>
   <td class="tg-body">(-1.9, 1.7)</td>
   <td class="tg-body">334</td>
 </tr>
 <tr>
-  <td class="tg-body">gemini-1.0-pro</td>
+  <td class="tg-body; text-align: left;">gemini-1.0-pro</td>
   <td class="tg-body">17.8</td>
   <td class="tg-body">(-1.7, 1.7)</td>
   <td class="tg-body">322</td>
 </tr>
 <tr>
-  <td class="tg-body">command-r</td>
+  <td class="tg-body; text-align: left;">command-r</td>
   <td class="tg-body">17.0</td>
   <td class="tg-body">(-2.0, 1.6)</td>
   <td class="tg-body">432</td>
 </tr>
 <tr>
-  <td class="tg-body">tulu-2-dpo-70b</td>
+  <td class="tg-body; text-align: left;">tulu-2-dpo-70b</td>
   <td class="tg-body">15.0</td>
   <td class="tg-body">(-1.6, 1.4)</td>
   <td class="tg-body">550</td>
 </tr>
 <tr>
-  <td class="tg-body">Starling-LM-7B-alpha</td>
+  <td class="tg-body; text-align: left;">Starling-LM-7B-alpha</td>
   <td class="tg-body">12.8</td>
   <td class="tg-body">(-1.6, 1.5)</td>
   <td class="tg-body">483</td>
 </tr>
 <tr>
-  <td class="tg-body">mistral-7b-instruct-v0.2</td>
+  <td class="tg-body; text-align: left;">mistral-7b-instruct-v0.2</td>
   <td class="tg-body">12.6</td>
   <td class="tg-body">(-1.4, 1.2)</td>
   <td class="tg-body">541</td>
 </tr>
 <tr>
-  <td class="tg-body">Llama-2-70b-chat-hf</td>
+  <td class="tg-body; text-align: left;">Llama-2-70b-chat-hf</td>
   <td class="tg-body">11.6</td>
   <td class="tg-body">(-1.6, 1.4)</td>
   <td class="tg-body">595</td>
 </tr>
 <tr>
-  <td class="tg-body">vicuna-33b-v1.3</td>
+  <td class="tg-body; text-align: left;">vicuna-33b-v1.3</td>
   <td class="tg-body">8.6</td>
   <td class="tg-body">(-1.2, 1.1)</td>
   <td class="tg-body">451</td>
 </tr>
 <tr>
-  <td class="tg-body">gemma-7b-it</td>
+  <td class="tg-body; text-align: left;">gemma-7b-it</td>
   <td class="tg-body">7.5</td>
   <td class="tg-body">(-1.1, 1.1)</td>
   <td class="tg-body">378</td>
 </tr>
 <tr>
-  <td class="tg-body">Llama-2-7b-chat-hf</td>
+  <td class="tg-body; text-align: left;">Llama-2-7b-chat-hf</td>
   <td class="tg-body">4.6</td>
   <td class="tg-body">(-1.0, 0.7)</td>
   <td class="tg-body">561</td>
 </tr>
 <tr>
-  <td class="tg-body">gemma-2b-it</td>
+  <td class="tg-body; text-align: left;">gemma-2b-it</td>
   <td class="tg-body">3.0</td>
   <td class="tg-body">(-0.6, 0.7)</td>
   <td class="tg-body">369</td>
 </tr>
 
   <tr>
-      <td class="tg-body" colspan="4">Baseline: gpt-4-0314</td>
+      <td class="tg-body; text-align: left" colspan="4">Baseline: gpt-4-0314</td>
     </tr>
 </tbody>
 </table>
