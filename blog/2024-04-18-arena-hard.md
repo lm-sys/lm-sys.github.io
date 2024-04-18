@@ -11,6 +11,53 @@ previewImg: /images/blog/arena_hard/arena_hard.png
   overflow:hidden;padding:10px 5px;word-break:normal;}
 .tg .tg-head{background-color:#c0c0c0;border-color:#ccc;text-align:left;vertical-align:top;}
 .tg .tg-body{text-align:left;vertical-align:top;}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+</style>
+
+<style>
+th {text-align: left}
+td {text-align: left}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+
+th {
+  cursor: pointer;
+}
+
+th:hover {
+  background-color: #ddd;
+}
+
+.arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: middle;
+  margin-left: 5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.arrow-up {
+  border-bottom: 5px solid #000;
+}
+
+.arrow-down {
+  border-top: 5px solid #000;
+}
+
+/* Initially sort arrow for descending order */
+th:nth-child(1) .arrow-down {
+  border-top: 5px solid #000;
+}
 </style>
 
 <style>
@@ -76,9 +123,9 @@ You can find full statistics in the result section.
 
 <table class="tg" style="display: flex;justify-content: center;">
   <colgroup>
-    <col style="width: auto;">
-    <col style="width: auto;">
-    <col style="width: auto;">
+    <col style="width: 120px;">
+    <col style="width: 80px;">
+    <col style="width: 60px;">
     <col style="width: 80px;"> <!-- narrower -->
     <col style="width: 120px;"> <!-- wider -->
   </colgroup>
@@ -222,225 +269,229 @@ To avoid potential position bias, we adopt a two-game setup – per query we swa
 We use gpt-4-1106-preview as the judge model to generate judgment for the model response against baseline. We take all the comparisons and compute each model’s Bradley-Terry coefficient. We then transform it to win-rate against the baseline as the final score. The 95% confidence interval is computed via 100 rounds of bootstrapping.
 
 <p style="color:gray; text-align: center;">Table 1. Model Performance Comparison</p>
-
-<table class="tg" style="width:100%; ; margin: auto; display: flex; justify-content: center;">
-<tbody>
-  <tr>
-    <td class="tg-head"><span style="font-weight:bold;">Model Name</span></td>
-    <td class="tg-head"><span style="font-weight:bold;">Score</span></td>
-    <td class="tg-head"><span style="font-weight:bold;">95% CI</span></td>
-    <td class="tg-head"><span style="font-weight:bold;">Average #Tokens</span></td>
-  </tr>
-  <tr>
-    <td class="tg-body; text-align: left;">gpt-4-turbo-2024-04-09</td>
-    <td class="tg-body">82.6</td>
-    <td class="tg-body">(-1.9, 2.0)</td>
-    <td class="tg-body">662</td>
-  </tr>
-  <tr>
-    <td class="tg-body; text-align: left;">gpt-4-0125-preview</td>
-    <td class="tg-body">78.0</td>
-    <td class="tg-body">(-1.8, 2.2)</td>
-    <td class="tg-body">619</td>
-  </tr>
-  <tr>
-    <td class="tg-body; text-align: left;">claude-3-opus-20240229</td>
-    <td class="tg-body">60.4</td>
-    <td class="tg-body">(-3.3, 2.3)</td>
-    <td class="tg-body">541</td>
-  </tr>
-<tr>
-  <td class="tg-body; text-align: left;">gpt-4-0314</td>
-  <td class="tg-body">50.0</td>
-  <td class="tg-body">(0.0, 0.0)</td>
-  <td class="tg-body">423</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">claude-3-sonnet-20240229</td>
-  <td class="tg-body">46.8</td>
-  <td class="tg-body">(-2.1, 2.5)</td>
-  <td class="tg-body">552</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">claude-3-haiku-20240307</td>
-  <td class="tg-body">41.5</td>
-  <td class="tg-body">(-1.9, 2.0)</td>
-  <td class="tg-body">505</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">gpt-4-0613</td>
-  <td class="tg-body">37.9</td>
-  <td class="tg-body">(-2.8, 2.5)</td>
-  <td class="tg-body">354</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">mistral-large-2402</td>
-  <td class="tg-body">37.7</td>
-  <td class="tg-body">(-1.9, 2.7)</td>
-  <td class="tg-body">400</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">mixtral-8x22b-instruct-v0.1</td>
-  <td class="tg-body">36.4</td>
-  <td class="tg-body">(-1.5, 2.7)</td>
-  <td class="tg-body">430</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">Qwen1.5-72B-Chat</td>
-  <td class="tg-body">36.1</td>
-  <td class="tg-body">(-2.6, 2.2)</td>
-  <td class="tg-body">474</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">command-r-plus</td>
-  <td class="tg-body">33.1</td>
-  <td class="tg-body">(-2.1, 2.2)</td>
-  <td class="tg-body">541</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">mistral-medium</td>
-  <td class="tg-body">31.9</td>
-  <td class="tg-body">(-2.2, 2.3)</td>
-  <td class="tg-body">485</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">mistral-next</td>
-  <td class="tg-body">27.4</td>
-  <td class="tg-body">(-2.1, 1.7)</td>
-  <td class="tg-body">297</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">gpt-3.5-turbo-0613</td>
-  <td class="tg-body">24.8</td>
-  <td class="tg-body">(-1.7, 2.1)</td>
-  <td class="tg-body">401</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">claude-2.0</td>
-  <td class="tg-body">24.0</td>
-  <td class="tg-body">(-2.5, 2.5)</td>
-  <td class="tg-body">295</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">dbrx-instruct</td>
-  <td class="tg-body">23.9</td>
-  <td class="tg-body">(-1.6, 1.6)</td>
-  <td class="tg-body">415</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">Mixtral-8x7B-Instruct-v0.1</td>
-  <td class="tg-body">23.4</td>
-  <td class="tg-body">(-2.2, 2.2)</td>
-  <td class="tg-body">457</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">gpt-3.5-turbo-0125</td>
-  <td class="tg-body">23.3</td>
-  <td class="tg-body">(-2.2, 2.3)</td>
-  <td class="tg-body">329</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">Yi-34B-Chat</td>
-  <td class="tg-body">23.1</td>
-  <td class="tg-body">(-2.0, 1.9)</td>
-  <td class="tg-body">611</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">Starling-LM-7B-beta</td>
-  <td class="tg-body">23.0</td>
-  <td class="tg-body">(-1.8, 2.2)</td>
-  <td class="tg-body">530</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">claude-2.1</td>
-  <td class="tg-body">22.8</td>
-  <td class="tg-body">(-1.8, 1.9)</td>
-  <td class="tg-body">290</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">Snorkel-Mistral-PairRM-DPO</td>
-  <td class="tg-body">20.7</td>
-  <td class="tg-body">(-1.9, 2.0)</td>
-  <td class="tg-body">564</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">gpt-3.5-turbo-1106</td>
-  <td class="tg-body">18.9</td>
-  <td class="tg-body">(-1.7, 1.8)</td>
-  <td class="tg-body">285</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">gpt-3.5-turbo-0301</td>
-  <td class="tg-body">18.1</td>
-  <td class="tg-body">(-1.9, 1.7)</td>
-  <td class="tg-body">334</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">gemini-1.0-pro</td>
-  <td class="tg-body">17.8</td>
-  <td class="tg-body">(-1.7, 1.7)</td>
-  <td class="tg-body">322</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">command-r</td>
-  <td class="tg-body">17.0</td>
-  <td class="tg-body">(-2.0, 1.6)</td>
-  <td class="tg-body">432</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">tulu-2-dpo-70b</td>
-  <td class="tg-body">15.0</td>
-  <td class="tg-body">(-1.6, 1.4)</td>
-  <td class="tg-body">550</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">Starling-LM-7B-alpha</td>
-  <td class="tg-body">12.8</td>
-  <td class="tg-body">(-1.6, 1.5)</td>
-  <td class="tg-body">483</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">mistral-7b-instruct-v0.2</td>
-  <td class="tg-body">12.6</td>
-  <td class="tg-body">(-1.4, 1.2)</td>
-  <td class="tg-body">541</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">Llama-2-70b-chat-hf</td>
-  <td class="tg-body">11.6</td>
-  <td class="tg-body">(-1.6, 1.4)</td>
-  <td class="tg-body">595</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">vicuna-33b-v1.3</td>
-  <td class="tg-body">8.6</td>
-  <td class="tg-body">(-1.2, 1.1)</td>
-  <td class="tg-body">451</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">gemma-7b-it</td>
-  <td class="tg-body">7.5</td>
-  <td class="tg-body">(-1.1, 1.1)</td>
-  <td class="tg-body">378</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">Llama-2-7b-chat-hf</td>
-  <td class="tg-body">4.6</td>
-  <td class="tg-body">(-1.0, 0.7)</td>
-  <td class="tg-body">561</td>
-</tr>
-<tr>
-  <td class="tg-body; text-align: left;">gemma-2b-it</td>
-  <td class="tg-body">3.0</td>
-  <td class="tg-body">(-0.6, 0.7)</td>
-  <td class="tg-body">369</td>
-</tr>
-
-  <tr>
-      <td class="tg-body; text-align: left" colspan="4">Baseline: gpt-4-0314</td>
+<div style="display: flex; justify-content: center;">
+<table>
+  <thead>
+    <tr>
+      <th>Model Name</th>
+      <th>Score</th>
+      <th>95% CI</th>
+      <th>Average #Tokens</th>
     </tr>
-</tbody>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left;">gpt-4-turbo-2024-04-09</td>
+      <td>82.6</td>
+      <td>(-1.9, 2.0)</td>
+      <td>662</td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">gpt-4-0125-preview</td>
+      <td>78.0</td>
+      <td>(-1.8, 2.2)</td>
+      <td>619</td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">claude-3-opus-20240229</td>
+      <td>60.4</td>
+      <td>(-3.3, 2.3)</td>
+      <td>541</td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">gpt-4-0314</td>
+      <td>50.0</td>
+      <td>(0.0, 0.0)</td>
+      <td>423</td>
+    </tr>
+    <tr>
+  <td style="text-align: left;">claude-3-sonnet-20240229</td>
+  <td>46.8</td>
+  <td>(-2.1, 2.5)</td>
+  <td>552</td>
+</tr>
+<tr>
+  <td style="text-align: left;">claude-3-haiku-20240307</td>
+  <td>41.5</td>
+  <td>(-1.9, 2.0)</td>
+  <td>505</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-4-0613</td>
+  <td>37.9</td>
+  <td>(-2.8, 2.5)</td>
+  <td>354</td>
+</tr>
+<tr>
+  <td style="text-align: left;">mistral-large-2402</td>
+  <td>37.7</td>
+  <td>(-1.9, 2.7)</td>
+  <td>400</td>
+</tr>
+<tr>
+  <td style="text-align: left;">mixtral-8x22b-instruct-v0.1</td>
+  <td>36.4</td>
+  <td>(-1.5, 2.7)</td>
+  <td>430</td>
+</tr>
+<tr>
+  <td style="text-align: left;">Qwen1.5-72B-Chat</td>
+  <td>36.1</td>
+  <td>(-2.6, 2.2)</td>
+  <td>474</td>
+</tr>
+<tr>
+  <td style="text-align: left;">command-r-plus</td>
+  <td>33.1</td>
+  <td>(-2.1, 2.2)</td>
+  <td>541</td>
+</tr>
+<tr>
+  <td style="text-align: left;">mistral-medium</td>
+  <td>31.9</td>
+  <td>(-2.2, 2.3)</td>
+  <td>485</td>
+</tr>
+<tr>
+  <td style="text-align: left;">mistral-next</td>
+  <td>27.4</td>
+  <td>(-2.1, 1.7)</td>
+  <td>297</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-0613</td>
+  <td>24.8</td>
+  <td>(-1.7, 2.1)</td>
+  <td>401</td>
+</tr>
+<tr>
+  <td style="text-align: left;">claude-2.0</td>
+  <td>24.0</td>
+  <td>(-2.5, 2.5)</td>
+  <td>295</td>
+</tr>
+<tr>
+  <td style="text-align: left;">dbrx-instruct</td>
+  <td>23.9</td>
+  <td>(-1.6, 1.6)</td>
+  <td>415</td>
+</tr>
+<tr>
+  <td style="text-align: left;">Mixtral-8x7B-Instruct-v0.1</td>
+  <td>23.4</td>
+  <td>(-2.2, 2.2)</td>
+  <td>457</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-0125</td>
+  <td>23.3</td>
+  <td>(-2.2, 2.3)</td>
+  <td>329</td>
+</tr>
+<tr>
+  <td style="text-align: left;">Yi-34B-Chat</td>
+  <td>23.1</td>
+  <td>(-2.0, 1.9)</td>
+  <td>611</td>
+</tr>
+<tr>
+  <td style="text-align: left;">Starling-LM-7B-beta</td>
+  <td>23.0</td>
+  <td>(-1.8, 2.2)</td>
+  <td>530</td>
+</tr>
+<tr>
+  <td style="text-align: left;">claude-2.1</td>
+  <td>22.8</td>
+  <td>(-1.8, 1.9)</td>
+  <td>290</td>
+</tr>
+<tr>
+  <td style="text-align: left;">Snorkel-Mistral-PairRM-DPO</td>
+  <td>20.7</td>
+  <td>(-1.9, 2.0)</td>
+  <td>564</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-1106</td>
+  <td>18.9</td>
+  <td>(-1.7, 1.8)</td>
+  <td>285</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-0301</td>
+  <td>18.1</td>
+  <td>(-1.9, 1.7)</td>
+  <td>334</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gemini-1.0-pro</td>
+  <td>17.8</td>
+  <td>(-1.7, 1.7)</td>
+  <td>322</td>
+</tr>
+<tr>
+  <td style="text-align: left;">command-r</td>
+  <td>17.0</td>
+  <td>(-2.0, 1.6)</td>
+  <td>432</td>
+</tr>
+<tr>
+  <td style="text-align: left;">tulu-2-dpo-70b</td>
+  <td>15.0</td>
+  <td>(-1.6, 1.4)</td>
+  <td>550</td>
+</tr>
+<tr>
+  <td style="text-align: left;">Starling-LM-7B-alpha</td>
+  <td>12.8</td>
+  <td>(-1.6, 1.5)</td>
+  <td>483</td>
+</tr>
+<tr>
+  <td style="text-align: left;">mistral-7b-instruct-v0.2</td>
+  <td>12.6</td>
+  <td>(-1.4, 1.2)</td>
+  <td>541</td>
+</tr>
+<tr>
+  <td style="text-align: left;">Llama-2-70b-chat-hf</td>
+  <td>11.6</td>
+  <td>(-1.6, 1.4)</td>
+  <td>595</td>
+</tr>
+<tr>
+  <td style="text-align: left;">vicuna-33b-v1.3</td>
+  <td>8.6</td>
+  <td>(-1.2, 1.1)</td>
+  <td>451</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gemma-7b-it</td>
+  <td>7.5</td>
+  <td>(-1.1, 1.1)</td>
+  <td>378</td>
+</tr>
+<tr>
+  <td style="text-align: left;">Llama-2-7b-chat-hf</td>
+  <td>4.6</td>
+  <td>(-1.0, 0.7)</td>
+  <td>561</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gemma-2b-it</td>
+  <td>3.0</td>
+  <td>(-0.6, 0.7)</td>
+  <td>369</td>
+</tr>
+    <tr>
+      <td style="text-align: left;" colspan="4">Baseline: gpt-4-0314</td>
+    </tr>
+  </tbody>
 </table>
+</div>
+
+
 
 ```
 Baseline: gpt-4-0314
