@@ -13,7 +13,7 @@ We introduce Arena-Hard – a data pipeline to build high-quality benchmarks fro
 1. Agreement to Human preference: whether the benchmark score has high agreement to human preference.
 2. Separability: whether the benchmark can confidently separate models.
 
-We compare our new benchmark, Arena Hard v0.1, to a current leading chat LLM benchmark, MT Bench. In Figure 1, we show Arena Hard v0.1 offers significantly stronger separability against MT Bench with tighter confidence intervals. It also has a higher agreement (89.2%, see Table 1) with the human preference ranking by Chatbot Arena (english-only). We expect to see this benchmark useful for model developers to differentiate their model checkpoints.
+We compare our new benchmark, Arena Hard v0.1, to a current leading chat LLM benchmark, MT Bench. In Figure 1, we show Arena Hard v0.1 offers significantly stronger separability against MT Bench with tighter confidence intervals. It also has a higher agreement (89.1%, see Table 1) with the human preference ranking by Chatbot Arena (english-only). We expect to see this benchmark useful for model developers to differentiate their model checkpoints.
 
 <style>
 .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
@@ -131,9 +131,9 @@ We define **separability** by whether a benchmark can separate given model pairs
 
 We use a set of top-20 models* on [Chatbot Arena](https://chat.lmsys.org/?leaderboard) (April 13, 2024) that are presented on [AlpacaEval leaderboard](https://tatsu-lab.github.io/alpaca_eval/) to calculate separability and agreement per benchmark. We consider the human preference ranking by Chatbot Arena (English only) as the reference to calculate agreement.
 
-In Table 1, Arena-hard-v0.1 shows the highest separability (87.9%) against widely adopted LLM benchmarks and offers highest agreement (89.2%) to Chatbot Arena. It is also cheap and fast to run ($25).
+In Table 1, Arena-hard-v0.1 shows the highest separability (87.4%) against widely adopted LLM benchmarks and offers highest agreement (89.1%) to Chatbot Arena. It is also cheap and fast to run ($25).
 
-Interestingly, we find Spearman Correlation, a popular metric for measuring correlations between rankings, may be an unreliable metric for ranking correlation as it does not consider variance of the rankings, and therefore fails to adequately punish essential ranking granularities of the top models we care about most. For example, when considering 95% CI, MT-bench’s agreement to Chatbot Arena drops from 91.0% to 27.1%.
+Interestingly, we find Spearman Correlation, a popular metric for measuring correlations between rankings, may be an unreliable metric for ranking correlation as it does not consider variance of the rankings, and therefore fails to adequately punish essential ranking granularities of the top models we care about most. For example, when considering 95% CI, MT-bench’s agreement to Chatbot Arena drops from 91.3% to 22.6%.
 
 You can find full statistics in the result section. 
 <p style="color:gray; text-align: center;">Table 1. Separability and agreement per benchmark.</p>
@@ -164,23 +164,23 @@ You can find full statistics in the result section.
     <tr>
       <td class="tg-body">Agreement to Chatbot Arena with 95% CI</td>
       <td class="tg-body">N/A</td>
-      <td class="tg-body">27.1%</td>
-      <td class="tg-body">80.7%</td>
-      <td class="tg-body"><b>89.2%</b></td>
+      <td class="tg-body">22.6%</td>
+      <td class="tg-body">81.2%</td>
+      <td class="tg-body"><b>89.1%</b></td>
     </tr>
     <tr>
       <td class="tg-body">Separability with 95% CI</td>
-      <td class="tg-body">86.3%</td>
+      <td class="tg-body">85.8%</td>
       <td class="tg-body">23.7%</td>
-      <td class="tg-body">83.7%</td>
-      <td class="tg-body"><b>87.9%</b></td>
+      <td class="tg-body">83.2%</td>
+      <td class="tg-body"><b>87.4%</b></td>
     </tr>
     <tr>
       <td class="tg-body">Spearman Correlation</td>
       <td class="tg-body">N/A</td>
-      <td class="tg-body">91.0%</td>
-      <td class="tg-body">90.4%</td>
-      <td class="tg-body"><b>94.3%</b></td>
+      <td class="tg-body">91.3%</td>
+      <td class="tg-body">90.8%</td>
+      <td class="tg-body"><b>94.1%</b></td>
     </tr>
     <tr>
       <td class="tg-body">Real-world</td>
