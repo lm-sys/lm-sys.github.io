@@ -543,17 +543,39 @@ TODO: add model ranking table
 
 We also compare two strongest LLMs: GPT-4-1106-Preview and Claude-3 Opus as the judge mode in Table X. When GPT-4 Judge is used, we observe higher separability across models (ranging from 23.0 to 78.0). When Claude Judge is used, we find the Claude family of models scores in general go up, despite it still favoring gpt-4-0125-preview over itself. Surprisingly, it favors several open models (Mixtral, Yi, Starling) or even gpt-3.5-turbo over gpt-4-0613.
 
-
 TODO: add table
 
 We further compare GPT-4 and Claude Judges using our proposed metrics of separability and agreement in Table X, and find that the GPT-4-turbo Judge is significantly better across all metrics. 
 
-Table X: Statistical comparisons between LLM Judges and Human 
-
-TODO: add table
-
-*Brier Score (lower is better), a statistical scoring function for measuring the accuracy of probabilistic accuracy. (see section View Benchmarking as a Forecasting Problem for more information)
-
+<table style="border-collapse: collapse; border: 1px solid black">
+  <caption>Table X: Statistical comparisons between LLM Judges and Human</caption>
+  <tr>
+    <td style="border: 1px solid black"></td>
+    <td style="border: 1px solid black">Arena-Hard-v0.1 (GPT-4-1106-Preview Judge)</td>
+    <td style="border: 1px solid black">Arena-Hard-v0.1 (Claude-3 Judge)</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black">Agreement to Chatbot Arena with 95% CI</td>
+    <td style="border: 1px solid black">89.1%</td>
+    <td style="border: 1px solid black">66.7%</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black">Separability with 95% confidence intervals</td>
+    <td style="border: 1px solid black">87.4%</td>
+    <td style="border: 1px solid black">83.7%</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black">Spearman Correlation</td>
+    <td style="border: 1px solid black">94.2%</td>
+    <td style="border: 1px solid black">77.0%</td>
+  </tr>
+    <tr>
+    <td style="border: 1px solid black">Brier Score*</td>
+    <td style="border: 1px solid black">0.07</td>
+    <td style="border: 1px solid black">0.17</td>
+  </tr>
+</table>
+<caption>*Brier Score (lower is better), a statistical scoring function for measuring the accuracy of probabilistic accuracy. (see section View Benchmarking as a Forecasting Problem for more information)</caption>
 
 We manually compared different judgment examples between GPT-4-Turbo and Claude as a judge. We found that when the two judges disagreed, it could usually be broken down into two main categories:
 1. Conservative scoring
@@ -619,7 +641,23 @@ In addition, the prompt selection process could be biased by the LLMs. The bench
 
 In this section we attempt to combine both confidence and correlation into one standardized metric for benchmarking.
 
-TODO: add table
+<table style="border-collapse: collapse; border: 1px solid black">
+  <caption>Correlation of Brier Score with Overall Chatbot Arena Score Across Different Models</caption>
+  <tr>
+    <td style="border: 1px solid black">Arena Hard</td>
+    <td style="border: 1px solid black">Chabot Arena* (20K Votes)</td>
+    <td style="border: 1px solid black">MT Bench</td>
+    <td style="border: 1px solid black">Alpaca 2.0 LC</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black">0.07</td>
+    <td style="border: 1px solid black">0.08</td>
+    <td style="border: 1px solid black">0.10</td>
+    <td style="border: 1px solid black">0.11</td>
+  </tr>
+</table>
+<caption>*Brier Score (lower is better), a statistical scoring function for measuring the accuracy of probabilistic accuracy.</caption>
+
 
 Model developers generally use benchmarks for model selection, not ground truth certification of performance.  Benchmarks serve as a cheap and lightweight proxy for more expensive and complex evaluations like ground truth Bradley Terry Coefficients derived from human preference. Thus, we expect benchmarks to tell us, as model developers, some confidence bound on what a model’s real world performance will be. In this sense, a benchmark serves as a forecast for true long-run performance.
 
@@ -648,10 +686,6 @@ We find that Arena Hard averages much lower forecasting loss, demonstrating that
 </div>
 
 Above is the predicted model predicted probability against the bootstrapped arena “ground truth” probability (jittered to show clusters).  While both Alpaca eval and Arena Hard have large clusters around (0,0) and (1,1) signifying good forecasting, Arena Hard has lighter clusters on (0,1) and (1,0), if any, revealing less overconfidence. MT Bench has heavy tails along the top and bottom, revealing underconfidence. However, none of these benchmarks show an “ideal” y=x curve (with dense ends) expected with a perfectly calibrated forecast, signifying room for future research.
-
-TODO: add big table
-
-*Brier Score (lower is better), a statistical scoring function for measuring the accuracy of probabilistic accuracy. (see section View Benchmarking as a Forecasting Problem for more information)
 
 ## Future
 We hope to study deeper into the above limitations and biases in the later technical report. We are also working on diving deeper into the statistics for more studies on how to measure the quality of benchmarks. Lastly, we also hope to upgrade Arena-Hard frequently. So expect frequent new benchmarks! 
