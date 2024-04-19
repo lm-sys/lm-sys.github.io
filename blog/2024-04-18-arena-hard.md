@@ -5,6 +5,16 @@ date: "April 18, 2024"
 previewImg: /images/blog/arena_hard/arena_hard.png
 ---
 
+Building an affordable and reliable benchmark for LLM chatbots has become a critical challenge. A high-quality benchmark should 1) robustly separate model capability, 2) reflect human preference in real-world use cases, and 3) frequently update to avoid over-fitting or test set leakage.
+
+Traditional benchmarks are often static or close-ended (e.g., MMLU multi-choice QA), which do not satisfy the above requirements. On the other hand, models are evolving faster than ever, underscoring the need to build benchmarks with high separability.
+
+We introduce Arena-Hard – a data pipeline to build high-quality benchmarks from live data in [Chatbot Arena](https://arxiv.org/abs/2403.04132), which is a crowd-sourced platform for LLM evals. To measure its quality, we propose two key metrics:
+1. Agreement to Human preference: whether the benchmark score has high agreement to human preference.
+2. Separability: whether the benchmark can confidently separate models.
+
+We compare our new benchmark, Arena-hard-v0.1, to a current leading chat LLM benchmark, MT-bench. In Figure 1, we show Arena-hard-v0.1 offers significantly stronger separability against MT-bench with tighter confidence intervals. It also has a high agreement (93%) with the human preference ranking by Chatbot Arena (english-only). We expect to see this benchmark useful for model developers to differentiate their model checkpoints.
+
 <style>
 .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
 .tg td{border-color:#ccc;border-style:solid;border-width:1px;
@@ -70,28 +80,16 @@ th:nth-child(1) .arrow-down {
   }
 </style>
 
-## Introduction
-
-Building an affordable and reliable benchmark for LLM chatbots has become a critical challenge. A high-quality benchmark should 1) robustly separate model capability, 2) reflect human preference in real-world use cases, and 3) frequently update to avoid over-fitting or test set leakage.
-
-Traditional benchmarks are often static or close-ended (e.g., MMLU multi-choice QA), which do not satisfy the above requirements. On the other hand, models are evolving faster than ever, underscoring the need to build benchmarks with high separability.
-
-We introduce Arena-Hard – a data pipeline to build high-quality benchmarks from live data in [Chatbot Arena](https://arxiv.org/abs/2403.04132), which is a crowd-sourced platform for LLM evals. To measure its quality, we propose two key metrics:
-1. Agreement to Human preference: whether the benchmark score has high agreement to human preference.
-2. Separability: whether the benchmark can confidently separate models.
-
-We compare our new benchmark, Arena-hard-v0.1, to a current leading chat LLM benchmark, MT-bench. In Figure 1, we show Arena-hard-v0.1 offers significantly stronger separability against MT-bench with tighter confidence intervals. It also has a high agreement (93%) with the human preference ranking by Chatbot Arena (english-only). We expect to see this benchmark useful for model developers to differentiate their model checkpoints.
-
 Figure 1: Comparison between MT-bench and Arena-Hard-v0.1. The latter offers significantly better separability between models and tighter confidence intervals. Note: We do not include GPT-4-Turbo in the plot due to potential self-bias. GPT-4-0314 has no variance in Arena-hard-v0.1 because it’s used as the anchor model.
 
 <img src="/images/blog/arena_hard/arena-hard-vs-mt_bench.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
 <p style="color:gray; text-align: center;">Figure 1: Arena-Hard vs MT Bench</p>
 
 Links:
-- Evaluate your model on Arena-Hard-v0.1: https://github.com/lm-sys/arena-hard
-- Browse Arena-Hard-v0.1 prompts: https://huggingface.co/spaces/lmsys/arena-hard-browser
-- Full leaderboard at the Result section
-- https://github.com/lm-sys/arena-hard/tree/main/notebook (bootstrapping experiments)
+- Evaluate your model on Arena-Hard-v0.1: [Link](https://github.com/lm-sys/arena-hard)
+- Browse Arena-Hard-v0.1 prompts: [Link](https://huggingface.co/spaces/lmsys/arena-hard-browser)
+- Statistic Notebook Google Colab: [Link](https://colab.research.google.com/drive/1ar6XLWREN_dXEh404WNOxroFVUe_4njp?usp=sharing)
+- Full leaderboard at the Result section: [Skip](#results)
 
 We explain more technical details in the following sections.
 
