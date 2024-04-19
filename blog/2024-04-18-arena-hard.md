@@ -119,15 +119,15 @@ In Table X, Arena-hard-v0.1 shows the highest separability (91.6%) against widel
 Interestingly, we find Spearman Correlation, a popular metric for measuring correlations between rankings, may be an unreliable metric for ranking correlation as it does not consider variance of the rankings, and therefore fails to adequately punish essential ranking granularities of the top models we care about most. For example, when considering 95% CI, MT-bench’s agreement to Chatbot Arena drops from 89.3% to 39.0%.
 
 You can find full statistics in the result section. 
-<p style="width:100%; color:gray; text-align: center;">Table 1. Separability and agreement per benchmark.</p>
+<p style="width:120%; color:gray; text-align: center;">Table 1. Separability and agreement per benchmark.</p>
 
 <table class="tg" style="display: flex;justify-content: center;">
   <colgroup>
-    <col style="width: 120px;">
-    <col style="width: 80px;">
-    <col style="width: 60px;">
-    <col style="width: 80px;"> <!-- narrower -->
-    <col style="width: 120px;"> <!-- wider -->
+    <col style="width: 20%;">
+    <col style="width: 20%;">
+    <col style="width: 20%;">
+    <col style="width: 20%;"> <!-- narrower -->
+    <col style="width: 20%;"> <!-- wider -->
   </colgroup>
   <tbody>
     <tr>
@@ -193,11 +193,9 @@ You can find full statistics in the result section.
       <td class="tg-body">LLM</td>
       <td class="tg-body">LLM</td>
     </tr>
-    <tr>
-      <td class="tg-body" colspan="5">*20 top models from Chatbot Arena that are also presented on Alpaca Eval: gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha</td>
-    </tr>
 </tbody>
 </table>
+<caption>*20 top models from Chatbot Arena that are also presented on Alpaca Eval: gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha</caption>
 
 Next, we elaborate how to build the prompt selection pipeline to ensure data quality.
 
