@@ -741,8 +741,7 @@ In this section we attempt to combine both confidence and correlation into one s
     <td style="border: 1px solid black">0.11</td>
   </tr>
 </table>
-<caption>*Brier Score (lower is better), a statistical scoring function for measuring the accuracy of probabilistic accuracy.</caption>
-
+<caption>*20K human preference battles randomly sampled from Chatbot Arena between the 20 top models.</caption>
 
 Model developers generally use benchmarks for model selection, not ground truth certification of performance.  Benchmarks serve as a cheap and lightweight proxy for more expensive and complex evaluations like ground truth Bradley Terry Coefficients derived from human preference. Thus, we expect benchmarks to tell us, as model developers, some confidence bound on what a model’s real world performance will be. In this sense, a benchmark serves as a forecast for true long-run performance.
 
