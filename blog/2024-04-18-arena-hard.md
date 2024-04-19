@@ -697,3 +697,6 @@ We thank Matei Zaharia, Yann Dubois, Anastasios Angelopoulos,  Joey Gonzalez, Li
 ## Appendix
 <img src="/images/blog/arena_hard/heatmap.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 120%"></img>
 <p style="color:gray; text-align: center;">Appendix Figure 1: Similarity Heatmap of 50 Arena Hard Clusters</p>
+
+<img src="/images/blog/arena_hard/clustering_filtered_small_64.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 120%"></img>
+<p style="color:gray; text-align: center;">Appendix Figure 2: Top-64 clusters visualized in hierarchy. x-axis represents the cosine similarity distance. y-axis shows the topic title per cluster summarized by gpt-4-turbo.</p>
