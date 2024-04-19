@@ -214,7 +214,7 @@ You can find full statistics in the result section.
 </table>
 <details close style="text-align: left; font-family: monospace; font-size: 15px;">
 <summary>*20 top models from Chatbot Arena that are also presented on Alpaca Eval</summary>
-gpt-4-turbo-2024-04-09, claude-3-opus-20240229, gpt-4-0125-preview, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha
+gpt-4-turbo-2024-04-09, claude-3-opus-20240229, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha, llama-2-70b-chat
 </details>
 
 Next, we elaborate how to build the prompt selection pipeline to ensure data quality.
@@ -665,7 +665,7 @@ Interestingly, the “chatty” system prompt doesn’t affect much on the win-r
   </thead>
   <tbody>
     <tr style="border: 1px solid black;">
-      <td style="text-align: left;">GPT-4-1106-Preview</td>
+      <td style="text-align: left;"><b>GPT-4-1106-Preview</b></td>
       <td></td>
       <td></td>
     </tr>
@@ -690,7 +690,7 @@ Interestingly, the “chatty” system prompt doesn’t affect much on the win-r
   <td></td>
 </tr>
 <tr style="border: 1px solid black;">
-  <td style="text-align: left;">Claude-3-Opus</td>
+  <td style="text-align: left;"><b>Claude-3-Opus</b></td>
   <td></td>
   <td></td>
 </tr>
@@ -771,7 +771,7 @@ In this section we attempt to combine both confidence and correlation into one s
   <tr>
     <td style="border: 1px solid black"><b>0.07</b></td>
     <td style="border: 1px solid black">0.08</td>
-    <td style="border: 1px solid black">0.10</td>
+    <td style="border: 1px solid black">0.09</td>
     <td style="border: 1px solid black">0.11</td>
   </tr>
 </table>
