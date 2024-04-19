@@ -37,7 +37,9 @@ We compare our new benchmark, Arena-hard-v0.1, to a current leading chat LLM ben
 
 Figure 1: Comparison between MT-bench and Arena-Hard-v0.1. The latter offers significantly better separability between models and tighter confidence intervals. Note: We do not include GPT-4-Turbo in the plot due to potential self-bias. GPT-4-0314 has no variance in Arena-hard-v0.1 because it’s used as the anchor model.
 
-TODO: insert figure
+<img src="/images/blog/arena_hard/arena-hard-vs-mt_bench.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
+<p style="color:gray; text-align: center;">Figure 1: Arena-Hard vs MT Bench</p>
+
 Links:
 - Evaluate your model on Arena-Hard-v0.1: https://github.com/lm-sys/arena-hard
 - Browse Arena-Hard-v0.1 prompts: https://huggingface.co/spaces/lmsys/arena-hard-browser
@@ -161,7 +163,7 @@ We build a pipeline that automatically extracts quality prompts from a dataset o
 - Prompt quality: Each prompt should possess high quality to benchmark LLMs. we define several key criteria below (see Table X)
 
 <img src="/images/blog/arena_hard/method.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
-<p style="color:gray; text-align: center;">Arena-Hard Pipeline</p>
+<p style="color:gray; text-align: center;">Figure 2: Arena-Hard Pipeline</p>
 
 To ensure prompt diversity, we adopt a topic modeling pipeline in [BERTopic](https://github.com/MaartenGr/BERTopic) by first converting each prompt with OpenAI’s embedding (text-embedding-3-small), reducing dimension with UMAP, and using a hierarchical-based clustering algorithm (HDBSCAN) to identify clusters which are then summarized using GPT-4-turbo. This helps us identify over 4000 topics covering a wide range of domains. However, topic clusters come with varying quality and separability in benchmarking LLMs. We then develop a calibrated system prompt for LLMs to help us select high quality user queries by seven key criteria (e.g., specificity, domain knowledge, problem-solving, etc).
 
@@ -196,14 +198,14 @@ To ensure prompt diversity, we adopt a topic modeling pipeline in [BERTopic](htt
 An LLM Judge (GPT-3.5-Turbo, GPT-4-Turbo) annotates each prompt from 0 to 7 to indicate how many criteria are met. We then score each cluster by the average score of its prompts. Below, we show examples of topic clusters ranging from low to high mean scores. We can observe clusters with higher scores often correlate to challenging topics or tasks for LLMs like game development or mathematical proofs. On the other hand, clusters with lower scores point to trivial or ambiguous questions like Design Styles and Influences.
 
 <img src="/images/blog/arena_hard/cluster_distribution.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
-<p style="color:gray; text-align: center;">Prompt clusters and their scores</p>
+<p style="color:gray; text-align: center;">Figure 3: Prompt clusters and their scores</p>
 
 To see whether the prompt score correlates with separability, we sample 50 prompts per score and compare the responses from GPT-4 and Llama-70b, with GPT-4-Turbo as judge. We observe a strong correlation between high potential score and the win-rate of GPT-4 over Llama-70b. A similar trend is also observed in other model pairs such as Claude Sonnet vs Haiku and Mistral-large vs Mixtral.
 
-Figure Z: Win-rate between model pairs becomes more separable as the prompt satisfies more of the 7 Key Criteria in Table X
+Figure 4: Win-rate between model pairs becomes more separable as the prompt satisfies more of the 7 Key Criteria in Table X
 
-TODO: insert score to winrate figure
-
+<img src="/images/blog/arena_hard/hard_score_line.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
+<p style="color:gray; text-align: center;">Figure 4: Hardness Score vs Win-rate</p>
 
 ## Results
 
@@ -508,7 +510,8 @@ We manually compared different judgment examples between GPT-4-Turbo and Claude 
 
 We find that Claude-3-Opus is much less likely to give harsh scores – it is particularly hesitant to proclaim one response as "significantly better" than another. In contrast, GPT-4-Turbo will identify errors in a model's response that led to an incorrect answer and penalize the model with a significantly lower score. On the other hand, Claude-3-Opus sometimes overlooks smaller errors. Even when Claude-3-Opus does identify these errors, it tends to treat them as minor issues and shows leniency during scoring. This effect is particularly present in coding and math problems, where small mistakes are more likely to completely derail the final answer; these scorings are still given leniency from Claude-3-Opus but not GPT-4-Turbo. See the appendix below for specific examples of differing judgments, many of which exhibit this phenomenon.
 
-TODO: insert fig
+<img src="/images/blog/arena_hard/score_strength.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
+<p style="color:gray; text-align: center;">Figure 5: Score Strength</p>
 
 There is also a small subset of prompts in which Claude-3-Opus and GPT-4-Turbo judge with fundamentally different perspectives. For example, given a coding question, Claude-3-Opus may choose the response that provides the most educational value to the user, offering a simplistic structure without relying on external libraries. GPT-4-Turbo, however, may prioritize the response that provides the most practical answer, regardless of its educational value to the user.  While both interpretations are valid judging criteria, we find GPT-4-Turbo’s perspective may be more correlated with the average user.
 
@@ -520,7 +523,8 @@ Despite the observed differences between Claude-3-Opus and GPT-4-Turbo judgment 
 
 LLM as judges are known to suffer from verbosity bias (cite ..). Below we plot the avg token length and score per model for both MT-Bench and Arena-Hard-v0.1. We find there seems to be no clear correlation.
 
-TODO: insert fig
+<img src="/images/blog/arena_hard/verbose_scatterplot.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
+<p style="color:gray; text-align: center;">Figure 6: Verbosity Scatterplot</p>
 
 To further examine potential verbosity bias, we conduct an ablation on three different system prompts (original, chatty, detailed) with GPT-3.5-Turbo. We observe that both GPT-4-Turbo and Claude-3-Opus judges may be affected by longer outputs, while Claude being significantly more impacted with a “more detailed” system prompt as GPT-3.5-Turbo reaches a win-rate of over 40% against GPT-4-0314. 
 
@@ -575,8 +579,22 @@ In this problem context, we introduce the prediction criteria as simply the bina
 A well-defined fair-in-expectation loss for forecasting is the Brier score loss. Brier score rewards confidence when forecasts are correct while punishing confident errors. We can calculate the loss over a benchmark prediction of 1{model_a < model_b} for each model pair with respect to the Chatbot Area ground truth scores to quantify a benchmark’s forecasting performance. Here we assume Chatbot Arena as “ground truth” as both Alpaca 2.0 LC and Arena Hard are advertised as an inexpensive alternative to Chatbot Arena as an evaluation pipeline. We will conduct future study on correlation comparison when we draw Arena Bradley Terry from similar distributions as given benchmark.
 
 We find that Arena Hard averages much lower forecasting loss, demonstrating that it is both accurate in score, and accurate in confidence level.
-
-TODO: add figs
+<div style="display: flex; gap: 10px;">
+  <div style="width: 48%;">
+    <img src="/images/blog/arena_hard/forecast_arena_20k.png">
+  </div>
+  <div style="width: 48%;">
+    <img src="/images/blog/arena_hard/forecast_arena_hard.png">
+  </div>
+</div>
+<div style="display: flex; gap: 10px;">
+  <div style="width: 48%;">
+    <img src="/images/blog/arena_hard/forecast_alpaca.png">
+  </div>
+  <div style="width: 48%;">
+    <img src="/images/blog/arena_hard/forecast_mt_bench.png">
+  </div>
+</div>
 
 Above is the predicted model predicted probability against the bootstrapped arena “ground truth” probability (jittered to show clusters).  While both Alpaca eval and Arena Hard have large clusters around (0,0) and (1,1) signifying good forecasting, Arena Hard has lighter clusters on (0,1) and (1,0), if any, revealing less overconfidence. MT Bench has heavy tails along the top and bottom, revealing underconfidence. However, none of these benchmarks show an “ideal” y=x curve (with dense ends) expected with a perfectly calibrated forecast, signifying room for future research.
 
@@ -590,3 +608,7 @@ We hope to study deeper into the above limitations and biases in the later techn
 
 ## Acknowledgment
 We thank Matei Zaharia, Yann Dubois, Anastasios Angelopoulos,  Joey Gonzalez, Lianmin Zheng, Lewis Tunstall, Nathan Lambert, Xuechen Li, Naman Jain, Ying Sheng, Maarten Grootendorst for their valuable feedback. We thank Microsoft [AFMR](https://www.microsoft.com/en-us/research/collaboration/accelerating-foundation-models-research/) for Azure OpenAI credits support. We also thank Together.ai & Anyscale for open model endpoint support.
+
+## Appendix
+<img src="/images/blog/arena_hard/heatmap.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 120%"></img>
+<p style="color:gray; text-align: center;">Appendix Figure 1: Similarity Heatmap of 50 Arena Hard Clusters</p>
