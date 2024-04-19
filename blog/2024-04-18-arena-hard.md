@@ -54,10 +54,6 @@ th:hover {
   border-top: 5px solid #000;
 }
 
-.thin-row {
-  height: 8px;
-}
-
 /* Initially sort arrow for descending order */
 th:nth-child(1) .arrow-down {
   border-top: 5px solid #000;
@@ -276,12 +272,7 @@ We use gpt-4-1106-preview as the judge model to generate judgment for the model 
 
 <p style="color:gray; text-align: center;">Table 2. Arena Hard v0.1 Leaderboard</p>
 <div style="display: flex; justify-content: center; font-family: Consolas, monospace; font-size: 15px">
-<table>
-<style>
-.thin-row {
-  height: 20px;
-}
-</style>
+<table style="line-height: 1; font-size: 0.8em;">
   <caption style="text-align: left;">*Note: GPT-4-Turbo’s high score can be due to the GPT-4 judge favoring GPT-4 outputs.</caption>
   <thead>
     <tr style="border-bottom: thin solid #ccc;">
@@ -500,20 +491,84 @@ We use gpt-4-1106-preview as the judge model to generate judgment for the model 
 </table>
 </div>
 
-
-TODO: add model ranking table
-
-
 ### GPT-4-Turbo or Claude as Judge?
 
-We also compare two strongest LLMs: GPT-4-1106-Preview and Claude-3 Opus as the judge mode in Table X. When GPT-4 Judge is used, we observe higher separability across models (ranging from 23.0 to 78.0). When Claude Judge is used, we find the Claude family of models scores in general go up, despite it still favoring gpt-4-0125-preview over itself. Surprisingly, it favors several open models (Mixtral, Yi, Starling) or even gpt-3.5-turbo over gpt-4-0613.
+We also compare two strongest LLMs: GPT-4-1106-Preview and Claude-3 Opus as the judge mode in Table 3. When GPT-4 Judge is used, we observe higher separability across models (ranging from 23.0 to 78.0). When Claude Judge is used, we find the Claude family of models scores in general go up, despite it still favoring gpt-4-0125-preview over itself. Surprisingly, it favors several open models (Mixtral, Yi, Starling) or even gpt-3.5-turbo over gpt-4-0613.
 
-TODO: add table
+<p style="color:gray; text-align: center;">Table 3. Leaderboard Comparison Between GPT and Claude as Judge</p>
+<div style="display: flex; justify-content: center; font-family: Consolas, monospace; font-size: 15px">
+<table style="line-height: 1; font-size: 0.8em;">
+  <thead>
+    <tr style="border-bottom: thin solid #ccc;">
+      <th style="width: 40%;">Model Name</th>
+      <th style="width: 20%;">Arena-Hard-v0.1 (GPT-4-1106-Preview Judge)</th>
+      <th style="width: 20%;">Arena-Hard-v0.1 (Claude Judge)</th>
+      <th style="width: 20%;">Diff</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left;">gpt-4-0125-preview</td>
+      <td>78.0</td>
+      <td>76.3 (↓)</td>
+      <td>-1.7</td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">claude-3-opus-20240229</td>
+      <td>60.4</td>
+      <td>71.8 (↑)</td>
+      <td>+11.4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">claude-3-sonnet-20240229</td>
+      <td>46.8</td>
+      <td>63.6 (↑)</td>
+      <td>+16.8</td>
+    </tr>
+<tr>
+  <td style="text-align: left;">claude-3-haiku-20240307</td>
+  <td>41.5</td>
+  <td>56.1 (↑)</td>
+  <td>+14.6</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-4-0613</td>
+  <td>37.9</td>
+  <td>30.6 (↓)</td>
+  <td>-7.3</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-0613</td>
+  <td>24.8</td>
+  <td>34.7 (↑)</td>
+  <td>+9.9</td>
+</tr>
+<tr>
+  <td style="text-align: left;">mixtral-8x22b-instruct-v0.1</td>
+  <td>23.4</td>
+  <td>-34.8 (↑)</td>
+  <td>+11.4</td>
+</tr>
+<tr>
+  <td style="text-align: left;">yi-34b-chat</td>
+  <td>23.1</td>
+  <td>46.6 (↑)</td>
+  <td>+23.5</td>
+</tr>
+<tr>
+  <td style="text-align: left;">starling-lm-7b-beta</td>
+  <td>23.0</td>
+  <td>45.0 (↑)</td>
+  <td>+22</td>
+</tr>
+</tbody>
+</table>
+</div>
 
-We further compare GPT-4 and Claude Judges using our proposed metrics of separability and agreement in Table X, and find that the GPT-4-turbo Judge is significantly better across all metrics. 
+We further compare GPT-4 and Claude Judges using our proposed metrics of separability and agreement in Table 4, and find that the GPT-4-turbo Judge is significantly better across all metrics. 
 
 <table style="border-collapse: collapse; border: 1px solid black">
-  <caption>Table X: Statistical comparisons between LLM Judges and Human</caption>
+  <caption>Table 4: Statistical comparisons between LLM Judges and Human</caption>
   <tr>
     <td style="border: 1px solid black"></td>
     <td style="border: 1px solid black">Arena-Hard-v0.1 (GPT-4-1106-Preview Judge)</td>
@@ -568,33 +623,98 @@ To further examine potential verbosity bias, we conduct an ablation on three dif
 
 Interestingly, the “chatty” system prompt doesn’t affect much on the win-rate by both judges, despite the longer average #tokens. This suggests output length is not the only factor. It is possible that more detailed answers are also more helpful and thus preferred by LLM judges.
 
-TODO: insert table
-```
-===== GPT-4-Turbo =====
-gpt-3.5-turbo-0125-detailed    | win-rate: 29.86 | average #tokens: 421
-gpt-3.5-turbo-0125-verbose     | win-rate: 23.89 | average #tokens: 361
-gpt-3.5-turbo-0125-chatty      | win-rate: 23.57 | average #tokens: 375
-gpt-3.5-turbo-0125             | win-rate: 23.2  | average #tokens: 328
 
-======= Claude-3 =======
-gpt-3.5-turbo-0125-detailed    | win-rate: 40.78 | average #tokens: 421
-gpt-3.5-turbo-0125-chatty      | win-rate: 28.49 | average #tokens: 375
-gpt-3.5-turbo-0125             | win-rate: 27.97 | average #tokens: 328
-
-System Prompt:
-detailed: “You are a helpful assistant who thoroughly explains things with as much detail as possible.”
-chatty: “You are a helpful assistant who is chatty.”
-```
+<p style="color:gray; text-align: center;">Table 5. Length Bias Comparison Between GPT and Claude as Judge</p>
+<div style="display: flex; justify-content: center; font-family: Consolas, monospace; font-size: 15px">
+<table style="line-height: 1; font-size: 0.8em;">
+  <thead>
+    <tr style="border-bottom: thin solid #ccc;">
+      <th style="width: 40%;">Model Name</th>
+      <th style="width: 30%;">Win Rate</th>
+      <th style="width: 30%;">Average Token #</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border: 1px solid black;">
+      <td style="text-align: left;">GPT-4-Turbo</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">gpt-3.5-turbo-0125-detailed</td>
+      <td>29.86</td>
+      <td>421</td>
+    </tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-0125-chatty</td>
+  <td>23.89</td>
+  <td>361</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-0125</td>
+  <td>23.2</td>
+  <td>328</td>
+</tr>
+<tr style="border: 1px solid black;">
+  <td style="text-align: left;">Claude-3</td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-0125-detailed</td>
+  <td>40.78</td>
+  <td>421</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-0125-chatty</td>
+  <td>28.49</td>
+  <td>375</td>
+</tr>
+<tr>
+  <td style="text-align: left;">gpt-3.5-turbo-0125</td>
+  <td>27.97</td>
+  <td>328</td>
+</tr>
+</tbody>
+</table>
+</div>
+<caption style="font-family: Consolas, monospace; font-size: 15px;">
+System Prompt:<br>detailed: “You are a helpful assistant who thoroughly explains things with as much detail as possible.”<br>chatty: “You are a helpful assistant who is chatty.”
+</caption>
 
 ### Variance in GPT-4 judgments
 
-We find that even with temperature=0, GPT-4-Turbo may still generate slightly different judgments. Here we repeat the judgments for gpt-3.5-turbo-0125 three times and report its variance. Due to limited budget, we can only evaluate all the models once. But we recommend model developers to evaluate models multiple times and take average.
+We find that even with temperature=0, GPT-4-Turbo may still generate slightly different judgments. Here we repeat the judgments for gpt-3.5-turbo-0125 three times and report its variance. Due to limited budget, we can only evaluate all the models once. We recommend using the confidence intervals to determine model separation.
 
-```
-gpt-3.5-turbo-0125-1      | win-rate: 23.05 | average #tokens: 328
-gpt-3.5-turbo-0125-2      | win-rate: 22.93 | average #tokens: 328
-gpt-3.5-turbo-0125-3      | win-rate: 22.75 | average #tokens: 328
-```
+<p style="color:gray; text-align: center;">Table 6. Variances between runs</p>
+<div style="display: flex; justify-content: center; font-family: Consolas, monospace; font-size: 15px">
+<table style="line-height: 1; font-size: 0.8em;">
+  <thead>
+    <tr style="border-bottom: thin solid #ccc;">
+      <th style="width: 40%;">Model Name</th>
+      <th style="width: 30%;">Win Rate</th>
+      <th style="width: 30%;">Average Token #</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left;">gpt-3.5-turbo-0125-1</td>
+      <td>23.05</td>
+      <td>328</td>
+    </tr>
+    <tr>
+      <td style="text-align: left;">gpt-3.5-turbo-0125-2</td>
+      <td>22.93</td>
+      <td>328</td>
+    </tr>
+        <tr>
+      <td style="text-align: left;">gpt-3.5-turbo-0125-3</td>
+      <td>22.75</td>
+      <td>328</td>
+    </tr>
+</tbody>
+</table>
+</div>
 
 ### Potential self-bias & prompt selection bias
 
@@ -628,9 +748,9 @@ Model developers generally use benchmarks for model selection, not ground truth 
 
 Forecasting is a delicate balance between confidence and uncertainty. Therefore, a good benchmark should show confidence when separating clearly unequal models, but should demonstrate uncertainty when ranking differences between legitimately similar models. One might argue we only need to look at how confident a given benchmark is at separating model pairs. A good benchmark is not necessarily always confident at separating models– you don’t want your benchmark to be confidently incorrect. For example, given a pair of models A and B and benchmark 1 and 2. Let’s assume ground truth is model A is better than model B. We bootstrap both benchmark 1 and 2 and retrieve their confidence intervals for both model’s performances. Benchmark 1 confidently predicts model B is better than A while Benchmark 2 predicts model B is better than A with low confidence. In this case, we should say Benchmark 2 is actually better than Benchmark 1 at predicting this pair of models. This is to say, high confidence should be rewarded only when the answer is correct, and low confidence is better when incorrect.
 
-In this problem context, we introduce the prediction criteria as simply the binary indicator 1{model_a < model_b} for some model pairing.  The forecast gives a probability that this indicator is true, p(a < b).  A higher probability forecast indicates greater confidence that 1{model_a < model_b} will be true.  We can generate these probability predictions using bootstrapped score mean and variance, which in turn define a normal distribution.  We then resolve the ground truth label for 1{model_a < model_b} using Chatbot Arena scores.
+In this problem context, we introduce the prediction criteria as simply the binary indicator **1**$(\pi_a < \pi_b)$ for some model pair ($\pi_a$ and $\pi_b$).  The forecast gives a probability that this indicator is true, $P(\pi_a < \pi_b)$.  A higher probability forecast indicates greater confidence that **1**$(\pi_a < \pi_b)$ will be true.  We can generate these probability predictions using bootstrapped score mean and variance, which in turn define a gaussian distribution. We then resolve the ground truth label for **1**$(\pi_a < \pi_b)$ using Chatbot Arena's Bradley Terry coefficients.
 
-A well-defined fair-in-expectation loss for forecasting is the Brier score loss. Brier score rewards confidence when forecasts are correct while punishing confident errors. We can calculate the loss over a benchmark prediction of 1{model_a < model_b} for each model pair with respect to the Chatbot Area ground truth scores to quantify a benchmark’s forecasting performance. Here we assume Chatbot Arena as “ground truth” as both Alpaca 2.0 LC and Arena Hard are advertised as an inexpensive alternative to Chatbot Arena as an evaluation pipeline. We will conduct future study on correlation comparison when we draw Arena Bradley Terry from similar distributions as given benchmark.
+A well-defined fair-in-expectation loss for forecasting is the Brier score loss. Brier score rewards confidence when forecasts are correct while punishing confident errors. We can calculate the loss over a benchmark prediction of **1**$(\pi_a < \pi_b)$ for each model pair with respect to the Chatbot Area ground truth scores to quantify a benchmark’s forecasting performance. Here we assume Chatbot Arena as “ground truth” as both Alpaca 2.0 LC and Arena Hard are advertised as an inexpensive alternative to Chatbot Arena as an evaluation pipeline. We will conduct future study on correlation comparison where we instead use Chatbot Arena's Bradley Terry coefficient derived from similar distributions as the given benchmark.
 
 We find that Arena Hard averages much lower forecasting loss, demonstrating that it is both accurate in score, and accurate in confidence level.
 <div style="display: flex; gap: 10px;">
