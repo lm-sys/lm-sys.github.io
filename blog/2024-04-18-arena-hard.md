@@ -54,6 +54,10 @@ th:hover {
   border-top: 5px solid #000;
 }
 
+.thin-row {
+  height: 8px;
+}
+
 /* Initially sort arrow for descending order */
 th:nth-child(1) .arrow-down {
   border-top: 5px solid #000;
@@ -270,271 +274,232 @@ To avoid potential position bias, we adopt a two-game setup – per query we swa
 
 We use gpt-4-1106-preview as the judge model to generate judgment for the model response against baseline. We take all the comparisons and compute each model’s Bradley-Terry coefficient. We then transform it to win-rate against the baseline as the final score. The 95% confidence interval is computed via 100 rounds of bootstrapping.
 
-<p style="color:gray; text-align: center;">Table 1. Model Performance Comparison</p>
-<div style="display: flex; justify-content: center;">
+<p style="color:gray; text-align: center;">Table 2. Arena Hard v0.1 Leaderboard</p>
+<div style="display: flex; justify-content: center; font-family: Consolas, monospace; font-size: 15px">
 <table>
+<style>
+.thin-row {
+  height: 20px;
+}
+</style>
+  <caption style="text-align: left;">*Note: GPT-4-Turbo’s high score can be due to the GPT-4 judge favoring GPT-4 outputs.</caption>
   <thead>
-    <tr>
-      <th>Model Name</th>
-      <th>Score</th>
-      <th>95% CI</th>
-      <th>Average #Tokens</th>
+    <tr style="border-bottom: thin solid #ccc;">
+      <th style="width: 40%;">Model Name</th>
+      <th style="width: 20%;">Score</th>
+      <th style="width: 20%;">95% CI</th>
+      <th style="width: 20%;">Average #Tokens</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: left;">gpt-4-turbo-2024-04-09</td>
+      <td style="text-align: left;">gpt-4-turbo-2024-04-09*</td>
       <td>82.6</td>
-      <td>(-1.9, 2.0)</td>
+      <td>-1.9/+2.0</td>
       <td>662</td>
     </tr>
     <tr>
-      <td style="text-align: left;">gpt-4-0125-preview</td>
+      <td style="text-align: left;">gpt-4-0125-preview*</td>
       <td>78.0</td>
-      <td>(-1.8, 2.2)</td>
+      <td>-1.8/+2.2</td>
       <td>619</td>
     </tr>
     <tr>
       <td style="text-align: left;">claude-3-opus-20240229</td>
       <td>60.4</td>
-      <td>(-3.3, 2.3)</td>
+      <td>-3.3/+2.3</td>
       <td>541</td>
     </tr>
     <tr>
       <td style="text-align: left;">gpt-4-0314</td>
       <td>50.0</td>
-      <td>(0.0, 0.0)</td>
+      <td>-0.0/+0.0</td>
       <td>423</td>
     </tr>
     <tr>
   <td style="text-align: left;">claude-3-sonnet-20240229</td>
   <td>46.8</td>
-  <td>(-2.1, 2.5)</td>
+  <td>-2.1/+2.5</td>
   <td>552</td>
 </tr>
 <tr>
   <td style="text-align: left;">claude-3-haiku-20240307</td>
   <td>41.5</td>
-  <td>(-1.9, 2.0)</td>
+  <td>-1.9/+2.0</td>
   <td>505</td>
 </tr>
 <tr>
   <td style="text-align: left;">gpt-4-0613</td>
   <td>37.9</td>
-  <td>(-2.8, 2.5)</td>
+  <td>-2.8/+2.5</td>
   <td>354</td>
 </tr>
 <tr>
   <td style="text-align: left;">mistral-large-2402</td>
   <td>37.7</td>
-  <td>(-1.9, 2.7)</td>
+  <td>-1.9/+2.7</td>
   <td>400</td>
 </tr>
 <tr>
   <td style="text-align: left;">mixtral-8x22b-instruct-v0.1</td>
   <td>36.4</td>
-  <td>(-1.5, 2.7)</td>
+  <td>-1.5/+2.7</td>
   <td>430</td>
 </tr>
 <tr>
   <td style="text-align: left;">Qwen1.5-72B-Chat</td>
   <td>36.1</td>
-  <td>(-2.6, 2.2)</td>
+  <td>-2.6/+2.2</td>
   <td>474</td>
 </tr>
 <tr>
   <td style="text-align: left;">command-r-plus</td>
   <td>33.1</td>
-  <td>(-2.1, 2.2)</td>
+  <td>-2.1/+2.2</td>
   <td>541</td>
 </tr>
 <tr>
   <td style="text-align: left;">mistral-medium</td>
   <td>31.9</td>
-  <td>(-2.2, 2.3)</td>
+  <td>-2.2/+2.3</td>
   <td>485</td>
 </tr>
 <tr>
   <td style="text-align: left;">mistral-next</td>
   <td>27.4</td>
-  <td>(-2.1, 1.7)</td>
+  <td>-2.1/+1.7</td>
   <td>297</td>
 </tr>
 <tr>
   <td style="text-align: left;">gpt-3.5-turbo-0613</td>
   <td>24.8</td>
-  <td>(-1.7, 2.1)</td>
+  <td>-1.7/+2.1</td>
   <td>401</td>
 </tr>
 <tr>
   <td style="text-align: left;">claude-2.0</td>
   <td>24.0</td>
-  <td>(-2.5, 2.5)</td>
+  <td>-2.5/+2.5</td>
   <td>295</td>
 </tr>
 <tr>
   <td style="text-align: left;">dbrx-instruct</td>
   <td>23.9</td>
-  <td>(-1.6, 1.6)</td>
+  <td>-1.6/+1.6</td>
   <td>415</td>
 </tr>
 <tr>
   <td style="text-align: left;">Mixtral-8x7B-Instruct-v0.1</td>
   <td>23.4</td>
-  <td>(-2.2, 2.2)</td>
+  <td>-2.2/+2.2</td>
   <td>457</td>
 </tr>
 <tr>
   <td style="text-align: left;">gpt-3.5-turbo-0125</td>
   <td>23.3</td>
-  <td>(-2.2, 2.3)</td>
+  <td>-2.2/+2.3</td>
   <td>329</td>
 </tr>
 <tr>
   <td style="text-align: left;">Yi-34B-Chat</td>
   <td>23.1</td>
-  <td>(-2.0, 1.9)</td>
+  <td>-2.0/+1.9</td>
   <td>611</td>
 </tr>
 <tr>
   <td style="text-align: left;">Starling-LM-7B-beta</td>
   <td>23.0</td>
-  <td>(-1.8, 2.2)</td>
+  <td>-1.8/+2.2</td>
   <td>530</td>
 </tr>
 <tr>
   <td style="text-align: left;">claude-2.1</td>
   <td>22.8</td>
-  <td>(-1.8, 1.9)</td>
+  <td>-1.8/+1.9</td>
   <td>290</td>
 </tr>
 <tr>
   <td style="text-align: left;">Snorkel-Mistral-PairRM-DPO</td>
   <td>20.7</td>
-  <td>(-1.9, 2.0)</td>
+  <td>-1.9/+2.0</td>
   <td>564</td>
 </tr>
 <tr>
   <td style="text-align: left;">gpt-3.5-turbo-1106</td>
   <td>18.9</td>
-  <td>(-1.7, 1.8)</td>
+  <td>-1.7/+1.8</td>
   <td>285</td>
 </tr>
 <tr>
   <td style="text-align: left;">gpt-3.5-turbo-0301</td>
   <td>18.1</td>
-  <td>(-1.9, 1.7)</td>
+  <td>-1.9/+1.7</td>
   <td>334</td>
 </tr>
 <tr>
   <td style="text-align: left;">gemini-1.0-pro</td>
   <td>17.8</td>
-  <td>(-1.7, 1.7)</td>
+  <td>-1.7/+1.7</td>
   <td>322</td>
 </tr>
 <tr>
   <td style="text-align: left;">command-r</td>
   <td>17.0</td>
-  <td>(-2.0, 1.6)</td>
+  <td>-2.0/+1.6</td>
   <td>432</td>
 </tr>
 <tr>
   <td style="text-align: left;">tulu-2-dpo-70b</td>
   <td>15.0</td>
-  <td>(-1.6, 1.4)</td>
+  <td>-1.6/+1.4</td>
   <td>550</td>
 </tr>
 <tr>
   <td style="text-align: left;">Starling-LM-7B-alpha</td>
   <td>12.8</td>
-  <td>(-1.6, 1.5)</td>
+  <td>-1.6/+1.5</td>
   <td>483</td>
 </tr>
 <tr>
   <td style="text-align: left;">mistral-7b-instruct-v0.2</td>
   <td>12.6</td>
-  <td>(-1.4, 1.2)</td>
+  <td>-1.4/+1.2</td>
   <td>541</td>
 </tr>
 <tr>
   <td style="text-align: left;">Llama-2-70b-chat-hf</td>
   <td>11.6</td>
-  <td>(-1.6, 1.4)</td>
+  <td>-1.6/+1.4</td>
   <td>595</td>
 </tr>
 <tr>
   <td style="text-align: left;">vicuna-33b-v1.3</td>
   <td>8.6</td>
-  <td>(-1.2, 1.1)</td>
+  <td>-1.2/+1.1</td>
   <td>451</td>
 </tr>
 <tr>
   <td style="text-align: left;">gemma-7b-it</td>
   <td>7.5</td>
-  <td>(-1.1, 1.1)</td>
+  <td>-1.1/+1.1</td>
   <td>378</td>
 </tr>
 <tr>
   <td style="text-align: left;">Llama-2-7b-chat-hf</td>
   <td>4.6</td>
-  <td>(-1.0, 0.7)</td>
+  <td>-1.0/+0.7</td>
   <td>561</td>
 </tr>
 <tr>
   <td style="text-align: left;">gemma-2b-it</td>
   <td>3.0</td>
-  <td>(-0.6, 0.7)</td>
+  <td>-0.6/+0.7</td>
   <td>369</td>
 </tr>
-    <tr>
-      <td style="text-align: left;" colspan="4">Baseline: gpt-4-0314</td>
-    </tr>
-  </tbody>
+</tbody>
 </table>
 </div>
 
-
-
-```
-Baseline: gpt-4-0314
-========================
-gpt-4-turbo-2024-04-09         | score: 82.6  | 95% CI: (-1.9, 2.0)  | average #tokens: 662
-gpt-4-0125-preview             | score: 78.0  | 95% CI: (-1.8, 2.2)  | average #tokens: 619
-claude-3-opus-20240229         | score: 60.4  | 95% CI: (-3.3, 2.3)  | average #tokens: 541
-gemini-1.5-pro                 | score: 53.4  | 95% CI: (-2.2, 2.6)  | average #tokens: 478
-gpt-4-0314                     | score: 50.0  | 95% CI:  (0.0, 0.0)  | average #tokens: 423
-claude-3-sonnet-20240229       | score: 46.8  | 95% CI: (-2.1, 2.5)  | average #tokens: 552
-claude-3-haiku-20240307        | score: 41.5  | 95% CI: (-1.9, 2.0)  | average #tokens: 505
-gpt-4-0613                     | score: 37.9  | 95% CI: (-2.8, 2.5)  | average #tokens: 354
-mistral-large-2402             | score: 37.7  | 95% CI: (-1.9, 2.7)  | average #tokens: 400
-mixtral-8x22b-instruct-v0.1    | score: 36.4  | 95% CI: (-1.5, 2.7)  | average #tokens: 430
-Qwen1.5-72B-Chat               | score: 36.1  | 95% CI: (-2.6, 2.2)  | average #tokens: 474
-command-r-plus                 | score: 33.1  | 95% CI: (-2.1, 2.2)  | average #tokens: 541
-mistral-medium                 | score: 31.9  | 95% CI: (-2.2, 2.3)  | average #tokens: 485
-mistral-next                   | score: 27.4  | 95% CI: (-2.1, 1.7)  | average #tokens: 297
-gpt-3.5-turbo-0613             | score: 24.8  | 95% CI: (-1.7, 2.1)  | average #tokens: 401
-claude-2.0                     | score: 24.0  | 95% CI: (-2.5, 2.5)  | average #tokens: 295
-dbrx-instruct                  | score: 23.9  | 95% CI: (-1.6, 1.6)  | average #tokens: 415
-Mixtral-8x7B-Instruct-v0.1     | score: 23.4  | 95% CI: (-2.2, 2.2)  | average #tokens: 457
-gpt-3.5-turbo-0125             | score: 23.3  | 95% CI: (-2.2, 2.3)  | average #tokens: 329
-Yi-34B-Chat                    | score: 23.1  | 95% CI: (-2.0, 1.9)  | average #tokens: 611
-Starling-LM-7B-beta            | score: 23.0  | 95% CI: (-1.8, 2.2)  | average #tokens: 530
-claude-2.1                     | score: 22.8  | 95% CI: (-1.8, 1.9)  | average #tokens: 290
-Snorkel-Mistral-PairRM-DPO     | score: 20.7  | 95% CI: (-1.9, 2.0)  | average #tokens: 564
-gpt-3.5-turbo-1106             | score: 18.9  | 95% CI: (-1.7, 1.8)  | average #tokens: 285
-gpt-3.5-turbo-0301             | score: 18.1  | 95% CI: (-1.9, 1.7)  | average #tokens: 334
-gemini-1.0-pro                 | score: 17.8  | 95% CI: (-1.7, 1.7)  | average #tokens: 322
-command-r                      | score: 17.0  | 95% CI: (-2.0, 1.6)  | average #tokens: 432
-tulu-2-dpo-70b                 | score: 15.0  | 95% CI: (-1.6, 1.4)  | average #tokens: 550
-Starling-LM-7B-alpha           | score: 12.8  | 95% CI: (-1.6, 1.5)  | average #tokens: 483
-mistral-7b-instruct-v0.2       | score: 12.6  | 95% CI: (-1.4, 1.2)  | average #tokens: 541
-Llama-2-70b-chat-hf            | score: 11.6  | 95% CI: (-1.6, 1.4)  | average #tokens: 595
-vicuna-33b-v1.3                | score:  8.6  | 95% CI: (-1.2, 1.1)  | average #tokens: 451
-gemma-7b-it                    | score:  7.5  | 95% CI: (-1.1, 1.1)  | average #tokens: 378
-Llama-2-7b-chat-hf             | score:  4.6  | 95% CI: (-1.0, 0.7)  | average #tokens: 561
-gemma-2b-it                    | score:  3.0  | 95% CI: (-0.6, 0.7)  | average #tokens: 369
-*Note: GPT-4-Turbo’s high score can be due to the GPT-4 judge favoring GPT-4 outputs. 
-```
 
 TODO: add model ranking table
 
