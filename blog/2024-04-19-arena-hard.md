@@ -95,7 +95,7 @@ li::before {
 
 
 <img src="/images/blog/arena_hard/arena-hard-vs-mt_bench.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
-<p style="color:gray; text-align: left;">Figure 1: Comparison between MT-bench and Arena Hard v0.1. The latter offers significantly better separability between models and tighter confidence intervals. Note: We do not include GPT-4-Turbo in the plot due to potential self-bias. GPT-4-0314 has no variance in Arena-hard-v0.1 because it’s used as the anchor model.</p>
+<p style="color:gray; text-align: left;">Figure 1: Comparison between MT-bench and Arena Hard v0.1. The latter offers significantly better separability between models and tighter confidence intervals. Note: We do not include GPT-4-Turbo in the plot due to potential bias towards itself. Also, GPT-4-0314 has no variance in Arena-hard-v0.1 because it's used as the anchor model.</p>
 
 Links:
 - Evaluate your model on Arena-Hard-v0.1: [Link](https://github.com/lm-sys/arena-hard)
@@ -810,7 +810,7 @@ We hope to study deeper into the above limitations and biases in the later techn
 
 
 ## Acknowledgment
-We thank Matei Zaharia, Yann Dubois, Anastasios Angelopoulos,  Joey Gonzalez, Lianmin Zheng, Lewis Tunstall, Nathan Lambert, Xuechen Li, Naman Jain, Ying Sheng, Maarten Grootendorst for their valuable feedback. We thank Microsoft [AFMR](https://www.microsoft.com/en-us/research/collaboration/accelerating-foundation-models-research/) for Azure OpenAI credits support. We also thank Together.ai & Anyscale for open model endpoint support.
+We thank Matei Zaharia, Yann Dubois, Anastasios Angelopoulos, Lianmin Zheng, Lewis Tunstall, Nathan Lambert, Xuechen Li, Naman Jain, Ying Sheng, Maarten Grootendorst for their valuable feedback. We thank Microsoft [AFMR](https://www.microsoft.com/en-us/research/collaboration/accelerating-foundation-models-research/) for Azure OpenAI credits support. We also thank Together.ai & Anyscale for open model endpoint support.
 
 ## Citation
 ```
