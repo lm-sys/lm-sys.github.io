@@ -1,6 +1,6 @@
 ---
 title: "From Live Data to High-Quality Benchmarks: The Arena-Hard Pipeline"
-author: "Tianle Li*, Wei-Lin Chiang*, Evan Frick, Lisa Dunlap, Banghua Zhu"
+author: "Tianle Li*, Wei-Lin Chiang*, Evan Frick, Lisa Dunlap, Banghua Zhu, Joseph E. Gonzalez, Ion Stoica"
 date: "April 19, 2024"
 previewImg: /images/blog/arena_hard/arena_hard.png
 ---
@@ -817,7 +817,7 @@ We thank Matei Zaharia, Yann Dubois, Anastasios Angelopoulos,  Joey Gonzalez, Li
 @misc{arenahard2024,
     title = {From Live Data to High-Quality Benchmarks: The Arena-Hard Pipeline},
     url = {https://lmsys.org/blog/2024-04-19-arena-hard/},
-    author = {Tianle Li*, Wei-Lin Chiang*, Evan Frick, Lisa Dunlap, Banghua Zhu},
+    author = {Tianle Li*, Wei-Lin Chiang*, Evan Frick, Lisa Dunlap, Banghua Zhu, Joseph E. Gonzalez, Ion Stoica},
     month = {April},
     year = {2024}
 }
