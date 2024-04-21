@@ -178,7 +178,7 @@ You can find full statistics in the result section.
     <tr>
       <td class="tg-body"><b>Separability with 95% CI</b></td>
       <td class="tg-body">85.8%</td>
-      <td class="tg-body" style="color:red">23.7%</td>
+      <td class="tg-body" style="color:red">22.6%</td>
       <td class="tg-body">83.2%</td>
       <td class="tg-body" style="color:green"><b>87.4%</b></td>
     </tr>
