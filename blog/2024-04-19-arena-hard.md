@@ -95,7 +95,7 @@ li::before {
 
 
 <img src="/images/blog/arena_hard/arena-hard-vs-mt_bench.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
-<p style="color:gray; text-align: left;">Figure 1: Comparison between MT-bench and Arena Hard v0.1. The latter offers significantly better separability between models and tighter confidence intervals. Note: We do not include GPT-4-Turbo in the plot due to potential bias towards itself. Also, GPT-4-0314 has no variance in Arena-hard-v0.1 because it's used as the anchor model.</p>
+<p style="color:gray; text-align: left;">Figure 1: Comparison between MT-bench and Arena Hard v0.1. The latter offers significantly better separability between models and tighter confidence intervals. GPT-4-0314 has no variance in Arena-hard-v0.1 because it's used as the anchor model.</p>
 
 Links:
 - Evaluate your model on Arena-Hard-v0.1: [Link](https://github.com/lm-sys/arena-hard)
@@ -162,39 +162,39 @@ You can find full statistics in the result section.
       <td class="tg-body">1,000</td>
     </tr>
     <tr>
-      <td class="tg-body">Agreement to Chatbot Arena with 95% CI</td>
+      <td class="tg-body"><b>Agreement to Chatbot Arena with 95% CI</b></td>
       <td class="tg-body">N/A</td>
-      <td class="tg-body">22.6%</td>
+      <td class="tg-body" style="color:red">22.6%</td>
       <td class="tg-body">81.2%</td>
-      <td class="tg-body"><b>89.1%</b></td>
-    </tr>
-    <tr>
-      <td class="tg-body">Separability with 95% CI</td>
-      <td class="tg-body">85.8%</td>
-      <td class="tg-body">23.7%</td>
-      <td class="tg-body">83.2%</td>
-      <td class="tg-body"><b>87.4%</b></td>
+      <td class="tg-body" style="color:green"><b>89.1%</b></td>
     </tr>
     <tr>
       <td class="tg-body">Spearman Correlation</td>
       <td class="tg-body">N/A</td>
       <td class="tg-body">91.3%</td>
       <td class="tg-body">90.8%</td>
-      <td class="tg-body"><b>94.1%</b></td>
+      <td class="tg-body" style="color:green"><b>94.1%</b></td>
+    </tr>
+    <tr>
+      <td class="tg-body"><b>Separability with 95% CI</b></td>
+      <td class="tg-body">85.8%</td>
+      <td class="tg-body" style="color:red">23.7%</td>
+      <td class="tg-body">83.2%</td>
+      <td class="tg-body" style="color:green"><b>87.4%</b></td>
     </tr>
     <tr>
       <td class="tg-body">Real-world</td>
       <td class="tg-body">Yes</td>
       <td class="tg-body">Mixed</td>
       <td class="tg-body">Mixed</td>
-      <td class="tg-body"><b>Yes</b></td>
+      <td class="tg-body" style="color:green"><b>Yes</b></td>
     </tr>
     <tr>
       <td class="tg-body">Freshness</td>
       <td class="tg-body">Live</td>
       <td class="tg-body">Static</td>
       <td class="tg-body">Static</td>
-      <td class="tg-body"><b>Frequent Updates</b></td>
+      <td class="tg-body" style="color:green"><b>Frequent Updates</b></td>
     </tr>
     <tr>
       <td class="tg-body">Eval cost per model</td>
@@ -213,7 +213,7 @@ You can find full statistics in the result section.
 </tbody>
 </table>
 <details close style="text-align: left; font-family: monospace; font-size: 15px;">
-<summary>*20 top models from Chatbot Arena that are also presented on Alpaca Eval</summary>
+<summary>*Results based on 20 top models from Chatbot Arena that are also presented on Alpaca Eval</summary>
 gpt-4-turbo-2024-04-09, claude-3-opus-20240229, claude-3-sonnet-20240229, gpt-4-0314, gpt-4-0613, mistral-large-2402, qwen1.5-72b-chat, mistral-medium, claude-2.0, gpt-3.5-turbo-0613, claude-2.1, gemini-pro, mixtral-8x7b-instruct-v0.1, gpt-3.5-turbo-0314, yi-34b-chat, tulu-2-dpo-70b, dbrx-instruct-preview, vicuna-33b, starling-lm-7b-alpha, llama-2-70b-chat
 </details>
 
