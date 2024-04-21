@@ -100,6 +100,16 @@ export default function Home() {
                 </div>
               </Link>
 
+              <Link href="https://github.com/lm-sys/arena-hard">
+                <div className="">
+                  <p className="text-2xl pb-1">Arena Hard</p>
+                  <hr />
+                  <p className="pt-2">
+                    An automatic pipeline converting live data to high-quality benchmarks for evaluating chatbots.
+                  </p>
+                </div>
+              </Link>
+
             </div>
           </div>
         </div>
