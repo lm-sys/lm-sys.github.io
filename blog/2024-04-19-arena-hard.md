@@ -164,7 +164,7 @@ You can find full statistics in the result section.
     <tr>
       <td class="tg-body"><b>Agreement to Chatbot Arena with 95% CI</b></td>
       <td class="tg-body">N/A</td>
-      <td class="tg-body" style="color:red">22.6%</td>
+      <td class="tg-body" style="color:red">26.1%</td>
       <td class="tg-body">81.2%</td>
       <td class="tg-body" style="color:green"><b>89.1%</b></td>
     </tr>
