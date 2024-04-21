@@ -36,6 +36,13 @@
         "link": "https://chat.lmsys.org/"
       },
       {
+        "name": "Arena Hard",
+        "architecture": "",
+        "size": "",
+        "desc": "An automatic pipeline converting live data to high quality benchmarks for evaluating chat assistants. Next generation MT-Bench.",
+        "link": "https://github.com/lm-sys/arena-hard"
+      },
+      {
         "name": "MT-Bench",
         "architecture": "",
         "size": "",
