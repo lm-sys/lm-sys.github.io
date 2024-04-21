@@ -286,7 +286,7 @@ To avoid potential position bias, we adopt a two-game setup – per query we swa
 
 We use gpt-4-1106-preview as the judge model to generate judgment for the model response against baseline. We take all the comparisons and compute each model’s Bradley-Terry coefficient. We then transform it to win-rate against the baseline as the final score. The 95% confidence interval is computed via 100 rounds of bootstrapping.
 
-<p style="color:gray; text-align: center;">Arena Hard v0.1 Leaderboard</p>
+<p style="color:gray; text-align: center;">Arena Hard v0.1 Leaderboard (baseline: GPT-4-0314)</p>
 <div style="display: flex; justify-content: center; font-family: Consolas, monospace;">
 <table style="line-height: 1; font-size: 1.0em;">
   <caption style="text-align: left; color: red">*Note: GPT-4-Turbo’s high score can be due to the GPT-4 judge favoring GPT-4 outputs.</caption>
