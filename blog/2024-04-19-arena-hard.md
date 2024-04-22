@@ -810,7 +810,7 @@ We hope to study deeper into the above limitations and biases in the later techn
 
 
 ## Acknowledgment
-We thank Matei Zaharia, Yann Dubois, Anastasios Angelopoulos, Lianmin Zheng, Lewis Tunstall, Nathan Lambert, Xuechen Li, Naman Jain, Ying Sheng, Maarten Grootendorst for their valuable feedback. We thank Microsoft [AFMR](https://www.microsoft.com/en-us/research/collaboration/accelerating-foundation-models-research/) for Azure OpenAI credits support. We also thank Together.ai & Anyscale for open model endpoint support.
+We thank Matei Zaharia, Yann Dubois, Anastasios Angelopoulos, Lianmin Zheng, Lewis Tunstall, Nathan Lambert, Xuechen Li, Naman Jain, Ying Sheng, Maarten Grootendorst for their valuable feedback. We thank Siyuan Zhuang and Dacheng Li for the valuable review and debug of the code. We thank Microsoft [AFMR](https://www.microsoft.com/en-us/research/collaboration/accelerating-foundation-models-research/) for Azure OpenAI credits support. We also thank Together.ai & Anyscale for open model endpoint support.
 
 ## Citation
 ```
