@@ -1,31 +1,5 @@
 [
   {
-    "name": "Models",
-    "entries": [
-      {
-        "name": "Vicuna",
-        "architecture": "Base: Llama",
-        "size": "Size: 7B, 13B, 33B",
-        "desc": "An open-source chatbot impressing GPT-4 with 90%* ChatGPT quality.",
-        "link": "/blog/2023-03-30-vicuna"
-      },
-      { 
-        "name": "LongChat",
-        "architecture": "Base: Llama",
-        "size": "Size: 7B, 13B",
-        "desc": "A series of open-source chatbots with long context length (16K - 32K).",
-        "link": "/blog/2023-06-29-longchat"
-      },
-      {
-        "name": "FastChat-T5",
-        "architecture": "Base: Flan-T5",
-        "size": "Size: 3B",
-        "desc": "A commercial-friendly, compact, yet powerful chat assistant.",
-        "link": "https://huggingface.co/lmsys/fastchat-t5-3b-v1.0"
-      }
-    ]
-  },
-  {
     "name": "Evaluation",
     "entries": [
       {
@@ -107,6 +81,32 @@
         "size": "",
         "desc": "This dataset contains 10K high-quality data for content moderation in real-world user-AI interactions based on user queries from the Vicuna online demo.",
         "link": "https://huggingface.co/datasets/lmsys/toxic-chat"
+      }
+    ]
+  },
+  {
+    "name": "Models",
+    "entries": [
+      {
+        "name": "Vicuna",
+        "architecture": "Base: Llama",
+        "size": "Size: 7B, 13B, 33B",
+        "desc": "An open-source chatbot impressing GPT-4 with 90%* ChatGPT quality.",
+        "link": "/blog/2023-03-30-vicuna"
+      },
+      {
+        "name": "LongChat",
+        "architecture": "Base: Llama",
+        "size": "Size: 7B, 13B",
+        "desc": "A series of open-source chatbots with long context length (16K - 32K).",
+        "link": "/blog/2023-06-29-longchat"
+      },
+      {
+        "name": "FastChat-T5",
+        "architecture": "Base: Flan-T5",
+        "size": "Size: 3B",
+        "desc": "A commercial-friendly, compact, yet powerful chat assistant.",
+        "link": "https://huggingface.co/lmsys/fastchat-t5-3b-v1.0"
       }
     ]
   }
