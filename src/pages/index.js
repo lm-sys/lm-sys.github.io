@@ -70,22 +70,22 @@ export default function Home() {
                 </div>
               </Link>
 
-              <Link href="https://github.com/lm-sys/FastChat">
-                <div className="">
-                  <p className="text-2xl pb-1">FastChat</p>
-                  <hr />
-                  <p className="pt-2">
-                    An open platform for training, serving, and evaluating LLM-based chatbots.
-                  </p>
-                </div>
-              </Link>
-
               <Link href="https://huggingface.co/datasets/lmsys/lmsys-chat-1m">
                 <div className="">
                   <p className="text-2xl pb-1">LMSYS-Chat-1M</p>
                   <hr />
                   <p className="pt-2">
                     A large-scale real-world LLM conversation dataset.
+                  </p>
+                </div>
+              </Link>
+
+              <Link href="https://github.com/lm-sys/FastChat">
+                <div className="">
+                  <p className="text-2xl pb-1">FastChat</p>
+                  <hr />
+                  <p className="pt-2">
+                    An open platform for training, serving, and evaluating LLM-based chatbots.
                   </p>
                 </div>
               </Link>
