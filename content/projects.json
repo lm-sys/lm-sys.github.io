@@ -13,7 +13,7 @@
         "name": "Arena Hard",
         "architecture": "",
         "size": "",
-        "desc": "An automatic pipeline converting live data to high quality benchmarks for evaluating chat assistants. Next generation MT-Bench.",
+        "desc": "An automatic pipeline converting live data to high quality benchmarks for evaluating chat assistants. The questions are more difficult than those in MT-Bench.",
         "link": "https://github.com/lm-sys/arena-hard"
       },
       {
