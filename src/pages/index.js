@@ -31,7 +31,7 @@ export default function Home() {
               <p className="italic pb-3">
               </p>
               <p className="pt-2 py-4 max-w-lg flex m-auto">
-                  The Large Model Systems Organization develops large models and systems that are open, accessible, and scalable.
+                  The Large Model Systems Organization develops large models and systems that are open, accessible, and scalable. It is currently run by students and faculty members from UC Berkeley Sky Lab.
               </p>
             </div>
 
