@@ -10,7 +10,7 @@ previewImg: /images/blog/kaggle_competition/thumb_4x.png
 ### Overview
 
 LMSYS and Kaggle are launching a human preference prediction competition! You are challenged to predict which responses users will prefer in head-to-head battles between Large Language Models (LLMs). You'll work with a dataset from the [Chatbot Arena](https://chat.lmsys.org), containing conversations and user preferences across various LLMs. By developing a model that accurately predicts human preferences, you'll contribute to improving chatbot performance and alignment with user expectations. The training dataset includes over 55,000 real-world user and LLM conversations and user preferences, with personally identifiable information removed. Your solution submission will be tested on a hidden test set of 25,000 samples.
-The dataset includes real-world conversations with over 70 state-of-the-art LLMs, such as GPT-4, Claude 2, Llama 2, and Mistral models. [Click here to join the competition.](https://www.kaggle.com/competitions/lmsys-chatbot-arena/overview)
+The dataset includes real-world conversations with over 70 state-of-the-art LLMs, such as GPT-4, Claude 2, Llama 2, and Mistral models. [Click here to join the competition](https://www.kaggle.com/competitions/lmsys-chatbot-arena/overview) and [here to get the dataset from huggingface.](https://huggingface.co/datasets/lmsys/lmsys-arena-human-preference-55k)
 
 ### Background
 
