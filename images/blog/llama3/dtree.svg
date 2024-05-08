@@ -1,0 +1,217 @@
+<?xml version="1.0" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1134pt" height="333pt" viewBox="0.00 0.00 1133.55 332.80">
+<g id="graph0" class="graph" transform="translate(4,328.79998779296875) scale(1)" data-name="Tree">
+
+<polygon fill="white" stroke="none" points="-4,4 -4,-328.8 1129.55,-328.8 1129.55,4 -4,4"/>
+<!-- 0 -->
+<g id="node1" class="node" pointer-events="visible" data-name="0">
+
+<path fill="#fffdfc" stroke="black" d="M594.32,-325C594.32,-325 494.23,-325 494.23,-325 488.23,-325 482.23,-319 482.23,-313 482.23,-313 482.23,-278.2 482.23,-278.2 482.23,-272.2 488.23,-266.2 494.23,-266.2 494.23,-266.2 594.32,-266.2 594.32,-266.2 600.32,-266.2 606.32,-272.2 606.32,-278.2 606.32,-278.2 606.32,-313 606.32,-313 606.32,-319 600.32,-325 594.32,-325"/>
+<text text-anchor="middle" x="544.27" y="-308.2" font-family="Helvetica,sans-Serif" font-size="14.00">Has Specificity</text>
+<text text-anchor="middle" x="544.27" y="-291.4" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 5615</text>
+<text text-anchor="middle" x="544.27" y="-274.6" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 49.6%</text>
+</g>
+<!-- 1 -->
+<g id="node2" class="node" pointer-events="visible" data-name="1">
+
+<path fill="#e1f0fb" stroke="black" d="M498.32,-230.6C498.32,-230.6 398.23,-230.6 398.23,-230.6 392.23,-230.6 386.23,-224.6 386.23,-218.6 386.23,-218.6 386.23,-183.8 386.23,-183.8 386.23,-177.8 392.23,-171.8 398.23,-171.8 398.23,-171.8 498.32,-171.8 498.32,-171.8 504.32,-171.8 510.32,-177.8 510.32,-183.8 510.32,-183.8 510.32,-218.6 510.32,-218.6 510.32,-224.6 504.32,-230.6 498.32,-230.6"/>
+<text text-anchor="middle" x="448.27" y="-213.8" font-family="Helvetica,sans-Serif" font-size="14.00">Has Creativity</text>
+<text text-anchor="middle" x="448.27" y="-197" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 2334</text>
+<text text-anchor="middle" x="448.27" y="-180.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 54.1%</text>
+</g>
+<!-- 0&#45;&gt;1 -->
+<g id="edge1" class="edge" data-name="0-&gt;1">
+
+<path fill="none" stroke="black" d="M514.43,-265.87C505.49,-257.27 495.56,-247.71 486.17,-238.68"/>
+<polygon fill="black" stroke="black" points="488.83,-236.37 479.19,-231.96 483.97,-241.42 488.83,-236.37"/>
+<text text-anchor="middle" x="478.58" y="-251.71" font-family="Helvetica,sans-Serif" font-size="14.00">No</text>
+</g>
+<!-- 8 -->
+<g id="node9" class="node" pointer-events="visible" data-name="8">
+
+<path fill="#fbeee4" stroke="black" d="M757.35,-230.6C757.35,-230.6 597.2,-230.6 597.2,-230.6 591.2,-230.6 585.2,-224.6 585.2,-218.6 585.2,-218.6 585.2,-183.8 585.2,-183.8 585.2,-177.8 591.2,-171.8 597.2,-171.8 597.2,-171.8 757.35,-171.8 757.35,-171.8 763.35,-171.8 769.35,-177.8 769.35,-183.8 769.35,-183.8 769.35,-218.6 769.35,-218.6 769.35,-224.6 763.35,-230.6 757.35,-230.6"/>
+<text text-anchor="middle" x="677.27" y="-213.8" font-family="Helvetica,sans-Serif" font-size="14.00">Has Real-world Application</text>
+<text text-anchor="middle" x="677.27" y="-197" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 3281</text>
+<text text-anchor="middle" x="677.27" y="-180.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 46.4%</text>
+</g>
+<!-- 0&#45;&gt;8 -->
+<g id="edge8" class="edge" data-name="0-&gt;8">
+
+<path fill="none" stroke="black" d="M585.63,-265.87C598.64,-256.83 613.16,-246.75 626.73,-237.32"/>
+<polygon fill="black" stroke="black" points="628.49,-240.36 634.7,-231.78 624.49,-234.61 628.49,-240.36"/>
+<text text-anchor="middle" x="631.51" y="-251.32" font-family="Helvetica,sans-Serif" font-size="14.00">Yes</text>
+</g>
+<!-- 2 -->
+<g id="node3" class="node" pointer-events="visible" data-name="2">
+
+<path fill="#f6fbfe" stroke="black" d="M255.32,-136.2C255.32,-136.2 155.23,-136.2 155.23,-136.2 149.23,-136.2 143.23,-130.2 143.23,-124.2 143.23,-124.2 143.23,-89.4 143.23,-89.4 143.23,-83.4 149.23,-77.4 155.23,-77.4 155.23,-77.4 255.32,-77.4 255.32,-77.4 261.32,-77.4 267.32,-83.4 267.32,-89.4 267.32,-89.4 267.32,-124.2 267.32,-124.2 267.32,-130.2 261.32,-136.2 255.32,-136.2"/>
+<text text-anchor="middle" x="205.27" y="-119.4" font-family="Helvetica,sans-Serif" font-size="14.00">Has Complexity</text>
+<text text-anchor="middle" x="205.27" y="-102.6" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 1525</text>
+<text text-anchor="middle" x="205.27" y="-85.8" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 51.1%</text>
+</g>
+<!-- 1&#45;&gt;2 -->
+<g id="edge2" class="edge" data-name="1-&gt;2">
+
+<path fill="none" stroke="black" d="M386.01,-176.52C353.13,-164.02 312.59,-148.61 278.24,-135.55"/>
+<polygon fill="black" stroke="black" points="279.8,-132.39 269.21,-132.11 277.31,-138.94 279.8,-132.39"/>
+<text text-anchor="middle" x="278.04" y="-150.18" font-family="Helvetica,sans-Serif" font-size="14.00">No</text>
+</g>
+<!-- 5 -->
+<g id="node6" class="node" pointer-events="visible" data-name="5">
+
+<path fill="#bfdff7" stroke="black" d="M519.44,-136.2C519.44,-136.2 377.11,-136.2 377.11,-136.2 371.11,-136.2 365.11,-130.2 365.11,-124.2 365.11,-124.2 365.11,-89.4 365.11,-89.4 365.11,-83.4 371.11,-77.4 377.11,-77.4 377.11,-77.4 519.44,-77.4 519.44,-77.4 525.44,-77.4 531.44,-83.4 531.44,-89.4 531.44,-89.4 531.44,-124.2 531.44,-124.2 531.44,-130.2 525.44,-136.2 519.44,-136.2"/>
+<text text-anchor="middle" x="448.27" y="-119.4" font-family="Helvetica,sans-Serif" font-size="14.00">Has Technical Accuracy</text>
+<text text-anchor="middle" x="448.27" y="-102.6" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 809</text>
+<text text-anchor="middle" x="448.27" y="-85.8" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 59.6%</text>
+</g>
+<!-- 1&#45;&gt;5 -->
+<g id="edge5" class="edge" data-name="1-&gt;5">
+
+<path fill="none" stroke="black" d="M448.27,-171.47C448.27,-164 448.27,-155.81 448.27,-147.86"/>
+<polygon fill="black" stroke="black" points="451.77,-148.03 448.27,-138.03 444.77,-148.03 451.77,-148.03"/>
+<text text-anchor="middle" x="465.95" y="-149.99" font-family="Helvetica,sans-Serif" font-size="14.00">Yes</text>
+</g>
+<!-- 3 -->
+<g id="node4" class="node" pointer-events="visible" data-name="3">
+
+<path fill="#f3f9fd" stroke="black" d="M112.32,-41.4C112.32,-41.4 12.23,-41.4 12.23,-41.4 6.23,-41.4 0.23,-35.4 0.23,-29.4 0.23,-29.4 0.23,-12.2 0.23,-12.2 0.23,-6.2 6.23,-0.2 12.23,-0.2 12.23,-0.2 112.32,-0.2 112.32,-0.2 118.32,-0.2 124.32,-6.2 124.32,-12.2 124.32,-12.2 124.32,-29.4 124.32,-29.4 124.32,-35.4 118.32,-41.4 112.32,-41.4"/>
+<text text-anchor="middle" x="62.27" y="-25" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 1480</text>
+<text text-anchor="middle" x="62.27" y="-8.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 51.6%</text>
+</g>
+<!-- 2&#45;&gt;3 -->
+<g id="edge3" class="edge" data-name="2-&gt;3">
+
+<path fill="none" stroke="black" d="M156.46,-77.13C140.11,-67.52 122,-56.88 106.06,-47.52"/>
+<polygon fill="black" stroke="black" points="108.15,-44.69 97.75,-42.64 104.6,-50.72 108.15,-44.69"/>
+<text text-anchor="middle" x="102.74" y="-61.87" font-family="Helvetica,sans-Serif" font-size="14.00">No</text>
+</g>
+<!-- 4 -->
+<g id="node5" class="node" pointer-events="visible" data-name="4">
+
+<path fill="#f3c7a6" stroke="black" d="M255.32,-41.4C255.32,-41.4 155.23,-41.4 155.23,-41.4 149.23,-41.4 143.23,-35.4 143.23,-29.4 143.23,-29.4 143.23,-12.2 143.23,-12.2 143.23,-6.2 149.23,-0.2 155.23,-0.2 155.23,-0.2 255.32,-0.2 255.32,-0.2 261.32,-0.2 267.32,-6.2 267.32,-12.2 267.32,-12.2 267.32,-29.4 267.32,-29.4 267.32,-35.4 261.32,-41.4 255.32,-41.4"/>
+<text text-anchor="middle" x="205.27" y="-25" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 45</text>
+<text text-anchor="middle" x="205.27" y="-8.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 35.6%</text>
+</g>
+<!-- 2&#45;&gt;4 -->
+<g id="edge4" class="edge" data-name="2-&gt;4">
+
+<path fill="none" stroke="black" d="M205.27,-77.36C205.27,-69.59 205.27,-61.12 205.27,-53.19"/>
+<polygon fill="black" stroke="black" points="208.77,-53.24 205.27,-43.24 201.77,-53.24 208.77,-53.24"/>
+<text text-anchor="middle" x="222.95" y="-55.2" font-family="Helvetica,sans-Serif" font-size="14.00">Yes</text>
+</g>
+<!-- 6 -->
+<g id="node7" class="node" pointer-events="visible" data-name="6">
+
+<path fill="#bbddf6" stroke="black" d="M398.32,-41.4C398.32,-41.4 298.23,-41.4 298.23,-41.4 292.23,-41.4 286.23,-35.4 286.23,-29.4 286.23,-29.4 286.23,-12.2 286.23,-12.2 286.23,-6.2 292.23,-0.2 298.23,-0.2 298.23,-0.2 398.32,-0.2 398.32,-0.2 404.32,-0.2 410.32,-6.2 410.32,-12.2 410.32,-12.2 410.32,-29.4 410.32,-29.4 410.32,-35.4 404.32,-41.4 398.32,-41.4"/>
+<text text-anchor="middle" x="348.27" y="-25" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 761</text>
+<text text-anchor="middle" x="348.27" y="-8.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 60.3%</text>
+</g>
+<!-- 5&#45;&gt;6 -->
+<g id="edge6" class="edge" data-name="5-&gt;6">
+
+<path fill="none" stroke="black" d="M414.14,-77.13C403.35,-68.07 391.47,-58.08 380.8,-49.12"/>
+<polygon fill="black" stroke="black" points="383.24,-46.6 373.33,-42.85 378.74,-51.96 383.24,-46.6"/>
+<text text-anchor="middle" x="374.34" y="-62.58" font-family="Helvetica,sans-Serif" font-size="14.00">No</text>
+</g>
+<!-- 7 -->
+<g id="node8" class="node" pointer-events="visible" data-name="7">
+
+<path fill="#fdf5ef" stroke="black" d="M541.32,-41.4C541.32,-41.4 441.23,-41.4 441.23,-41.4 435.23,-41.4 429.23,-35.4 429.23,-29.4 429.23,-29.4 429.23,-12.2 429.23,-12.2 429.23,-6.2 435.23,-0.2 441.23,-0.2 441.23,-0.2 541.32,-0.2 541.32,-0.2 547.32,-0.2 553.32,-6.2 553.32,-12.2 553.32,-12.2 553.32,-29.4 553.32,-29.4 553.32,-35.4 547.32,-41.4 541.32,-41.4"/>
+<text text-anchor="middle" x="491.27" y="-25" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 48</text>
+<text text-anchor="middle" x="491.27" y="-8.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 47.9%</text>
+</g>
+<!-- 5&#45;&gt;7 -->
+<g id="edge7" class="edge" data-name="5-&gt;7">
+
+<path fill="none" stroke="black" d="M462.83,-77.36C467.05,-69.13 471.66,-60.12 475.92,-51.79"/>
+<polygon fill="black" stroke="black" points="478.94,-53.57 480.38,-43.07 472.71,-50.38 478.94,-53.57"/>
+<text text-anchor="middle" x="488.75" y="-61.32" font-family="Helvetica,sans-Serif" font-size="14.00">Yes</text>
+</g>
+<!-- 9 -->
+<g id="node10" class="node" pointer-events="visible" data-name="9">
+
+<path fill="#f5d1b7" stroke="black" d="M757.33,-136.2C757.33,-136.2 597.22,-136.2 597.22,-136.2 591.22,-136.2 585.22,-130.2 585.22,-124.2 585.22,-124.2 585.22,-89.4 585.22,-89.4 585.22,-83.4 591.22,-77.4 597.22,-77.4 597.22,-77.4 757.33,-77.4 757.33,-77.4 763.33,-77.4 769.33,-83.4 769.33,-89.4 769.33,-89.4 769.33,-124.2 769.33,-124.2 769.33,-130.2 763.33,-136.2 757.33,-136.2"/>
+<text text-anchor="middle" x="677.27" y="-119.4" font-family="Helvetica,sans-Serif" font-size="14.00">Has Problem-Solving Skills</text>
+<text text-anchor="middle" x="677.27" y="-102.6" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 183</text>
+<text text-anchor="middle" x="677.27" y="-85.8" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 38.8%</text>
+</g>
+<!-- 8&#45;&gt;9 -->
+<g id="edge9" class="edge" data-name="8-&gt;9">
+
+<path fill="none" stroke="black" d="M677.27,-171.47C677.27,-164 677.27,-155.81 677.27,-147.86"/>
+<polygon fill="black" stroke="black" points="680.77,-148.03 677.27,-138.03 673.77,-148.03 680.77,-148.03"/>
+<text text-anchor="middle" x="659.6" y="-149.99" font-family="Helvetica,sans-Serif" font-size="14.00">No</text>
+</g>
+<!-- 12 -->
+<g id="node13" class="node" pointer-events="visible" data-name="12">
+
+<path fill="#fcf0e7" stroke="black" d="M970.32,-136.2C970.32,-136.2 870.23,-136.2 870.23,-136.2 864.23,-136.2 858.23,-130.2 858.23,-124.2 858.23,-124.2 858.23,-89.4 858.23,-89.4 858.23,-83.4 864.23,-77.4 870.23,-77.4 870.23,-77.4 970.32,-77.4 970.32,-77.4 976.32,-77.4 982.32,-83.4 982.32,-89.4 982.32,-89.4 982.32,-124.2 982.32,-124.2 982.32,-130.2 976.32,-136.2 970.32,-136.2"/>
+<text text-anchor="middle" x="920.27" y="-119.4" font-family="Helvetica,sans-Serif" font-size="14.00">Has Creativity</text>
+<text text-anchor="middle" x="920.27" y="-102.6" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 3098</text>
+<text text-anchor="middle" x="920.27" y="-85.8" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 46.8%</text>
+</g>
+<!-- 8&#45;&gt;12 -->
+<g id="edge12" class="edge" data-name="8-&gt;12">
+
+<path fill="none" stroke="black" d="M753.16,-171.34C783.18,-159.93 817.53,-146.87 847.26,-135.56"/>
+<polygon fill="black" stroke="black" points="848.47,-138.85 856.57,-132.02 845.98,-132.31 848.47,-138.85"/>
+<text text-anchor="middle" x="847.74" y="-150.09" font-family="Helvetica,sans-Serif" font-size="14.00">Yes</text>
+</g>
+<!-- 10 -->
+<g id="node11" class="node" pointer-events="visible" data-name="10">
+
+<path fill="#f9e3d2" stroke="black" d="M684.32,-41.4C684.32,-41.4 584.23,-41.4 584.23,-41.4 578.23,-41.4 572.23,-35.4 572.23,-29.4 572.23,-29.4 572.23,-12.2 572.23,-12.2 572.23,-6.2 578.23,-0.2 584.23,-0.2 584.23,-0.2 684.32,-0.2 684.32,-0.2 690.32,-0.2 696.32,-6.2 696.32,-12.2 696.32,-12.2 696.32,-29.4 696.32,-29.4 696.32,-35.4 690.32,-41.4 684.32,-41.4"/>
+<text text-anchor="middle" x="634.27" y="-25" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 142</text>
+<text text-anchor="middle" x="634.27" y="-8.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 43.7%</text>
+</g>
+<!-- 9&#45;&gt;10 -->
+<g id="edge10" class="edge" data-name="9-&gt;10">
+
+<path fill="none" stroke="black" d="M662.72,-77.36C658.5,-69.13 653.89,-60.12 649.63,-51.79"/>
+<polygon fill="black" stroke="black" points="652.84,-50.38 645.16,-43.07 646.61,-53.57 652.84,-50.38"/>
+<text text-anchor="middle" x="636.79" y="-61.32" font-family="Helvetica,sans-Serif" font-size="14.00">No</text>
+</g>
+<!-- 11 -->
+<g id="node12" class="node" pointer-events="visible" data-name="11">
+
+<path fill="#eca471" stroke="black" d="M827.32,-41.4C827.32,-41.4 727.23,-41.4 727.23,-41.4 721.23,-41.4 715.23,-35.4 715.23,-29.4 715.23,-29.4 715.23,-12.2 715.23,-12.2 715.23,-6.2 721.23,-0.2 727.23,-0.2 727.23,-0.2 827.32,-0.2 827.32,-0.2 833.32,-0.2 839.32,-6.2 839.32,-12.2 839.32,-12.2 839.32,-29.4 839.32,-29.4 839.32,-35.4 833.32,-41.4 827.32,-41.4"/>
+<text text-anchor="middle" x="777.27" y="-25" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 41</text>
+<text text-anchor="middle" x="777.27" y="-8.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 22.0%</text>
+</g>
+<!-- 9&#45;&gt;11 -->
+<g id="edge11" class="edge" data-name="9-&gt;11">
+
+<path fill="none" stroke="black" d="M711.41,-77.13C722.19,-68.07 734.08,-58.08 744.75,-49.12"/>
+<polygon fill="black" stroke="black" points="746.81,-51.96 752.22,-42.85 742.31,-46.6 746.81,-51.96"/>
+<text text-anchor="middle" x="751.21" y="-62.58" font-family="Helvetica,sans-Serif" font-size="14.00">Yes</text>
+</g>
+<!-- 13 -->
+<g id="node14" class="node" pointer-events="visible" data-name="13">
+
+<path fill="#fbede3" stroke="black" d="M970.32,-41.4C970.32,-41.4 870.23,-41.4 870.23,-41.4 864.23,-41.4 858.23,-35.4 858.23,-29.4 858.23,-29.4 858.23,-12.2 858.23,-12.2 858.23,-6.2 864.23,-0.2 870.23,-0.2 870.23,-0.2 970.32,-0.2 970.32,-0.2 976.32,-0.2 982.32,-6.2 982.32,-12.2 982.32,-12.2 982.32,-29.4 982.32,-29.4 982.32,-35.4 976.32,-41.4 970.32,-41.4"/>
+<text text-anchor="middle" x="920.27" y="-25" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 2690</text>
+<text text-anchor="middle" x="920.27" y="-8.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 46.2%</text>
+</g>
+<!-- 12&#45;&gt;13 -->
+<g id="edge13" class="edge" data-name="12-&gt;13">
+
+<path fill="none" stroke="black" d="M920.27,-77.36C920.27,-69.59 920.27,-61.12 920.27,-53.19"/>
+<polygon fill="black" stroke="black" points="923.77,-53.24 920.27,-43.24 916.77,-53.24 923.77,-53.24"/>
+<text text-anchor="middle" x="902.6" y="-55.2" font-family="Helvetica,sans-Serif" font-size="14.00">No</text>
+</g>
+<!-- 14 -->
+<g id="node15" class="node" pointer-events="visible" data-name="14">
+
+<path fill="#f9fcfe" stroke="black" d="M1113.32,-41.4C1113.32,-41.4 1013.23,-41.4 1013.23,-41.4 1007.23,-41.4 1001.23,-35.4 1001.23,-29.4 1001.23,-29.4 1001.23,-12.2 1001.23,-12.2 1001.23,-6.2 1007.23,-0.2 1013.23,-0.2 1013.23,-0.2 1113.32,-0.2 1113.32,-0.2 1119.32,-0.2 1125.32,-6.2 1125.32,-12.2 1125.32,-12.2 1125.32,-29.4 1125.32,-29.4 1125.32,-35.4 1119.32,-41.4 1113.32,-41.4"/>
+<text text-anchor="middle" x="1063.27" y="-25" font-family="Helvetica,sans-Serif" font-size="14.00">samples = 408</text>
+<text text-anchor="middle" x="1063.27" y="-8.2" font-family="Helvetica,sans-Serif" font-size="14.00">Win-rate = 50.7%</text>
+</g>
+<!-- 12&#45;&gt;14 -->
+<g id="edge14" class="edge" data-name="12-&gt;14">
+
+<path fill="none" stroke="black" d="M969.09,-77.13C985.44,-67.52 1003.55,-56.88 1019.49,-47.52"/>
+<polygon fill="black" stroke="black" points="1020.94,-50.72 1027.79,-42.64 1017.4,-44.69 1020.94,-50.72"/>
+<text text-anchor="middle" x="1022.81" y="-61.87" font-family="Helvetica,sans-Serif" font-size="14.00">Yes</text>
+</g>
+</g>
+</svg>
