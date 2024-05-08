@@ -24,6 +24,7 @@ export default function Nav() {
           <Link href="/blog">Blog</Link>
           <Link href="/about">About</Link>
           <Link href="/donations">Donations</Link>
+          <Link href="/policy">Policy</Link>
           <a
             href="https://arena.lmsys.org"
             target="_blank"
@@ -157,6 +158,9 @@ function Hamburger() {
             </p>
             <p>
               <Link href="/donations">Donations</Link>
+            </p>
+            <p>
+              <Link href="/policy">Policy</Link>
             </p>
             <p>
               <a
