@@ -1,15 +1,34 @@
 ---
-title: "Introducing New Chatbot Arena Category: Hard Prompts"
+title: "Introducing Hard Prompts Category in Chatbot Arena"
 author: "Tianle Li, Wei-Lin Chiang"
 date: "May 17, 2024"
 previewImg: /images/blog/category_hard/preview.png
 ---
 
-We are thrilled to introduce a new category on Chatbot Arena: Hard Prompts. 
+### Background
 
-[Motivations]
+We introduce **Hard Prompts**, a new and challenging category in the Chatbot Arena [Leaderboard](https://leaderboard.lmsys.org).
 
-Through our [Arena-Hard](https://lmsys.org/blog/2024-04-19-arena-hard/) pipeline, we have identified a collection of high-quality prompts from existing Chatbot Arena battles. Each user prompt is evaluated against the 7 Key Criteria defined in Table X, using Llama-3-70B-Instruct as judge. The 7 Key Criteria are:
+Over the past few months, we have been hearing growing interests from the community in seeing more challenging prompts that push the limits of current language models. To address this demand, we are excited to introduce the **Hard Prompts** category, which features Arena's user prompts that are specifically designed to be more complex, demanding, and rigorous. These prompts are carefully curated to test the capabilities of the latest language models and to explore the boundaries of what they can achieve. We believe this new category can provide valuable insights into the strengths and weaknesses of different models in more challenging tasks.
+
+### New Category: Hard Prompts!
+
+To evaluate the difficulty of a prompt, we define several hardness criteria such as domain knowledge, complexity, or problem-solving. A prompt that satisfies multiple criteria is considered to be more challenging and is assigned a higher hardness score. We then use these scores to create a new leaderboard category, **Hard Prompts**.
+
+In Figure 1, we present the ranking shift from English to Hard Prompts (English) . We observe **Llama-3-8B-Instruct**, which performs on par with **GPT-4-0314** on the English leaderboard, has seen a significant drop in ranking. This suggests that the model may struggle with the increased complexity and difficulty of the prompts in this new specialized category. Similarly, we observe **Claude-3-Opus** is now above **Llama-3-70B-Instruct** and slight improvement in **GPT-4o**.
+
+<img src="/images/blog/category_hard/elo_comparison_1.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
+<p style="color:gray; text-align: center;">Figure 1. Comparison between Chatbot Arena Category English vs Hard Prompts (English). We set gpt-4-0314 as anchor model.</p>
+
+We also observe notable improvements in **GPT-3.5-Turbo-1106/0125** and **Claude-2.1**, as well as **Phi-3**, which is trained to perform well in reasoning tasks. 
+
+<img src="/images/blog/category_hard/elo_comparison_2.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
+<p style="color:gray; text-align: center;">Figure 2. Comparison between Chatbot Arena Category English vs Hard Prompts (English). We set mixtral-8x7b-instruct-v0.1 as anchor model.</p>
+
+
+### How to Define Hard Prompts?
+
+A few weeks ago, we introduce the [Arena-Hard](https://lmsys.org/blog/2024-04-19-arena-hard/) pipeline to identify a collection of high-quality prompts from Chatbot Arena. Each user prompt is evaluated against the 7 Key Criteria defined in below Table.
 
 <table style="width:100%; border-collapse: collapse; border: 1px solid black;">
   <tr style="background-color: black; color: white;">
@@ -38,31 +57,32 @@ Through our [Arena-Hard](https://lmsys.org/blog/2024-04-19-arena-hard/) pipeline
   </tr>
 </table>
 
-A Hardness Score is then calculated using the how many criteria are satisfied. Prompts that satisfy 6 or more of these hardness criteria are then designated as part of the "Hard" category and featured on a dedicated leaderboard. We present the distribution of the criteria and hardness score in Figure 1 and 2. We also present several example prompts with labeled criteria in [Example Section](#example).
+We employ Meta's **Llama-3-70B-Instruct** as the judge model to help us label over 1 million Arena battles. Figure 3 shows the criteria breakdown (i.e., how many prompts satisfy each criteria). We observe the most common criteria are Specificity, Domain Knowledge, and Real-world Application, while the relatively rare criteria are Problem-Solving and Complexity.
 
 <img src="/images/blog/category_hard/key_criteria_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
-<p style="color:gray; text-align: center;">Figure 1. The percentage of each criteria within 1 million Chatbot Arena data.</p>
+<p style="color:gray; text-align: center;">Figure 3. The percentage of each criteria within 1 million Chatbot Arena data.</p>
+
+We then calculate its Hardness Score by how many criteria are satisfied and present the distribution in Figure 3. Interestingly, we find that ~20% of prompts are >=6 score. You can find several examples below to demonstrate what a hard prompt actually looks like in the [Example Section](#example).
+
 
 <img src="/images/blog/category_hard/hardness_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
-<p style="color:gray; text-align: center;">Figure 2. The percentage of prompts with different hardness score within 1 million Chatbot Arena data.</p>
+<p style="color:gray; text-align: center;">Figure 4. The percentage of prompts with different hardness score within 1 million Chatbot Arena data.</p>
 
-We are launching the Hard Prompts category for All Languages and English Only, but we are working to expand this offering to other languages as well. For viewing of the full leaderboard, check out (link).
 
-The results from the Hard Prompts (English) category, as shown in Table X, reveal some notable ranking differences. Specifically, we observe that the Llama-3-8B-Instruct model, which had previously performed on par with GPT-4-0314 on the general English leaderboard, has seen a significant drop in ranking within the Hard Prompts (English) category. This suggests that the Llama-3-8B-Instruct may struggle with the increased complexity and difficulty of the prompts in this new specialized category. We also observe improvement in performance among top proprietary models, such as GPT-4-Turbo, Claude-3-Opus, Claude-3-Sonnet, and GPT-4.
+We then take the score>=6 prompts (satisfy 6 or more of these criteria) to be the "Hard Prompts" category and calculate two leaderboards, **Hard Prompt (English)** and **Hard Prompts (Overall)**.
 
-<img src="/images/blog/category_hard/elo_comparison_1.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
-<p style="color:gray; text-align: center;">Figure 3. Comparison between Chatbot Arena Category English vs Hard Prompts (English). We set gpt-4-0314 as anchor when computing elo.</p>
+Below is screenshot of the leaderboard for **Hard Prompts (English)** category (as of May 17, 2024). You can find the latest version at [https://leaderboard.lmsys.org](https://leaderboard.lmsys.org) (-> Category dropdown).
 
-<img src="/images/blog/category_hard/elo_comparison_2.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
-<p style="color:gray; text-align: center;">Figure 4. Comparison between Chatbot Arena Category English vs Hard Prompts (English). We set mixtral-8x7b-instruct-v0.1 as anchor when computing elo.</p>
+<img src="/images/blog/category_hard/leaderboard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 95%"></img>
+<p style="color:gray; text-align: center;">Figure 5. The leaderboard for Hard Prompts (English) category as of May 17, 2024.</p>
 
-## Future
-We are committed to continually enhancing the Chatbot Arena experience for our users. We look forward to seeing how the latest advancements in language models perform on these challenging prompts, and to sharing these insights with the broader community.
+
+We hope to continually enhance the Chatbot Arena leaderboard and its analysis. We look forward to seeing how the latest advancements in language models perform on these challenging prompts, and to sharing these insights with the broader community.
 
 ## Citation
 ```
 @misc{arenacategoryhard2024,
-    title = {Introducing New Chatbot Arena Category: Hard Prompts},
+    title = {Introducing Hard Prompts Category in Chatbot Arena},
     url = {https://lmsys.org/blog/2024-05-17-category-hard/},
     author = {Tianle Li, Wei-Lin Chiang},
     month = {May},
@@ -71,7 +91,7 @@ We are committed to continually enhancing the Chatbot Arena experience for our u
 ```
 
 ## Example
-We present 10 examples of user prompt with criteria labeled by Llama-3-70B-Instruct, in increasing hardness. The labeled criteria are inside the bracket.
+We present 10 examples of user prompt with increasing hardness score. The labeled criteria are inside the bracket.
 
 **Prompt 1:**
 
