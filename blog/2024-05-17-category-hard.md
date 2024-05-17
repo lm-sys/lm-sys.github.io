@@ -38,7 +38,7 @@ Through our [Arena-Hard](https://lmsys.org/blog/2024-04-19-arena-hard/) pipeline
   </tr>
 </table>
 
-A Hardness Score is then calculated using the how many criteria are satisfied. Prompts that satisfy 6 or more of these hardness criteria are then designated as part of the "Hard" category and featured on a dedicated leaderboard. We present the distribution of the criteria and hardness score in Figure 1 and 2.
+A Hardness Score is then calculated using the how many criteria are satisfied. Prompts that satisfy 6 or more of these hardness criteria are then designated as part of the "Hard" category and featured on a dedicated leaderboard. We present the distribution of the criteria and hardness score in Figure 1 and 2. We also present several example prompts with labeled criteria in [Example Section](#example).
 
 <img src="/images/blog/category_hard/criteria_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
 <p style="color:gray; text-align: center;">Figure 1. The percentage of each criteria within 1 million Chatbot Arena data.</p>
@@ -122,5 +122,63 @@ The results from the Hard Prompts (English) category, as shown in Table X, revea
 ## Future
 We are committed to continually enhancing the Chatbot Arena experience for our users. We look forward to seeing how the latest advancements in language models perform on these challenging prompts, and to sharing these insights with the broader community.
 
-## Acknowledgment
-We thank.
+## Example
+
+**Prompt 1:** 
+
+[Specificity, Domain Knowledge, Complexity, Problem-solving, Technical Accuracy, Real World]
+
+Suppose a drawer contains four green socks, five white socks, and three blue socks. We draw one sock from the drawer and it is equally likely that any one of the socks is drawn. Find the probabilities of the following events:
+
+We reach into the drawer without looking to pull out four socks. What is the probability that we get at least two socks of the same color?
+
+Prove that p = 1
+
+
+**Prompt 2:** 
+
+[Specificity, Domain Knowledge, Complexity, Problem-solving, Technical Accuracy, Real World]
+
+tell me how to make a hydroponic nutrient solution at home to grow lettuce with precise amount of each nutrient
+
+
+**Prompt 3:** 
+
+[Specificity, Domain Knowledge, Complexity, Problem-solving, Technical Accuracy, Real World]
+
+Solve the integral $\int_{-\infty}^{+\infty} exp(-x^2) dx $ step-by-step with detailed explanation
+
+
+**Prompt 4:** 
+
+[Specificity, Domain Knowledge, Complexity, Problem-solving, Technical Accuracy, Real World]
+
+write me GLSL code which can gennrate at least 5 colors and 2 waves of particles cross each other	
+
+
+**Prompt 5:** 
+
+[Specificity, Domain Knowledge, Complexity, Problem-solving, Creativity, Technical Accuracy, Real World]
+
+Write me a python script for the foobar problem, but make it so that if read aloud, each pair of lines rhymes. (i.e. lines 1/2 rhyme, 3/4 rhyme and so on)
+
+
+**Prompt 6:**
+
+[Real World]
+
+what is cake
+
+
+**Prompt 7:**
+
+[Specificity, Creativity, Real World]
+
+Writing prompt: write the start of a short story / a man with an iphone is transported back to 1930s USA. 
+
+
+**Prompt 8:**
+
+[Specificity, Creativity, Real World]
+
+writen ten different sentences that end with word "apple"
