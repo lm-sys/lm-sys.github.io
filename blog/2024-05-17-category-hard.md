@@ -77,7 +77,7 @@ Below is screenshot of the leaderboard for **Hard Prompts (English)** category (
 <p style="color:gray; text-align: center;">Figure 5. The leaderboard for Hard Prompts (English) category as of May 17, 2024.</p>
 
 
-We hope to continually enhance the Chatbot Arena leaderboard and its analysis. We look forward to seeing how the latest advancements in language models perform on these challenging prompts, and to sharing these insights with the broader community.
+We continuie to enhance the Chatbot Arena leaderboard and share insights with the broader community. We welcome you to contribute more challenging prompts and look forward to seeing how the latest advancements in language models perform!
 
 ## Citation
 ```
