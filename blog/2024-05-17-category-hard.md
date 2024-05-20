@@ -1,6 +1,6 @@
 ---
 title: "Introducing Hard Prompts Category in Chatbot Arena"
-author: "Tianle Li, Wei-Lin Chiang"
+author: "Tianle Li, Wei-Lin Chiang, Lisa Dunlap"
 date: "May 20, 2024"
 previewImg: /images/blog/category_hard/preview.png
 ---
