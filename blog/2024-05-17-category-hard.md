@@ -1,26 +1,28 @@
 ---
 title: "Introducing Hard Prompts Category in Chatbot Arena"
 author: "Tianle Li, Wei-Lin Chiang"
-date: "May 17, 2024"
+date: "May 20, 2024"
 previewImg: /images/blog/category_hard/preview.png
 ---
 
 ### Background
 
-We introduce **Hard Prompts**, a new and challenging category in the Chatbot Arena [Leaderboard](https://leaderboard.lmsys.org).
+Introducing **Hard Prompts**, a new and challenging category in the Chatbot Arena [Leaderboard](https://leaderboard.lmsys.org).
 
-Over the past few months, we have been hearing growing interests from the community in seeing more challenging prompts that push the limits of current language models. To address this demand, we are excited to introduce the **Hard Prompts** category, which features Arena's user prompts that are specifically designed to be more complex, demanding, and rigorous. These prompts are carefully curated to test the capabilities of the latest language models and to explore the boundaries of what they can achieve. We believe this new category can provide valuable insights into the strengths and weaknesses of different models in more challenging tasks.
+
+Over the past few months, the community has shown a growing interest in more challenging prompts that push the limits of current language models.
+To meet this demand, we are excited to introduce the **Hard Prompts** category. This category features user-submitted prompts from the Arena that are specifically designed to be more complex, demanding, and rigorous. Carefully curated, these prompts test the capabilities of the latest language models, providing valuable insights into their strengths and weaknesses in tackling challenging tasks. We believe this new category will offer insights into the models' performance on more difficult tasks.
 
 ### New Category: Hard Prompts!
 
-To evaluate the difficulty of a prompt, we define several hardness criteria such as domain knowledge, complexity, or problem-solving. A prompt that satisfies multiple criteria is considered to be more challenging and is assigned a higher hardness score. We then use these scores to create a new leaderboard category, **Hard Prompts**.
+To evaluate the difficulty of a prompt, we define several hardness criteria, such as domain knowledge, complexity, and problem-solving. Prompts that meet multiple criteria are considered more challenging and are assigned a higher hardness score. These scores help us create a new leaderboard category: **Hard Prompts**.
 
-In Figure 1, we present the ranking shift from English to Hard Prompts (English) . We observe **Llama-3-8B-Instruct**, which performs on par with **GPT-4-0314** on the English leaderboard, has seen a significant drop in ranking. This suggests that the model may struggle with the increased complexity and difficulty of the prompts in this new specialized category. Similarly, we observe **Claude-3-Opus** is now above **Llama-3-70B-Instruct** and slight improvement in **GPT-4o**.
+In Figure 1, we present the ranking shift from English to Hard Prompts (English). We observe that **Llama-3-8B-Instruct**, which performs comparably to **GPT-4-0314** on the English leaderboard, drops significantly in ranking. This suggests that the model may struggle with the increased complexity and difficulty of the prompts in this new category. We also observe **Claude-3-Opus** surpasses **Llama-3-70B-Instruct**, and **GPT-4o** shows slight improvement.
 
 <img src="/images/blog/category_hard/elo_comparison_1.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
 <p style="color:gray; text-align: center;">Figure 1. Comparison between Chatbot Arena Category English vs Hard Prompts (English). We set gpt-4-0314 as anchor model.</p>
 
-We also observe notable improvements in **GPT-3.5-Turbo-1106/0125** and **Claude-2.1**, as well as **Phi-3**, which is trained to perform well in reasoning tasks. 
+We also observe notable improvements in **GPT-3.5-Turbo-1106/0125** and **Claude-2.1**, as well as **Phi-3**, which is trained for reasoning tasks. 
 
 <img src="/images/blog/category_hard/elo_comparison_2.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
 <p style="color:gray; text-align: center;">Figure 2. Comparison between Chatbot Arena Category English vs Hard Prompts (English). We set mixtral-8x7b-instruct-v0.1 as anchor model.</p>
@@ -28,7 +30,7 @@ We also observe notable improvements in **GPT-3.5-Turbo-1106/0125** and **Claude
 
 ### How to Define Hard Prompts?
 
-A few weeks ago, we introduce the [Arena-Hard](https://lmsys.org/blog/2024-04-19-arena-hard/) pipeline to identify a collection of high-quality prompts from Chatbot Arena. Each user prompt is evaluated against the 7 Key Criteria defined in below Table.
+A few weeks ago, we introduce the [Arena-Hard](https://lmsys.org/blog/2024-04-19-arena-hard/) pipeline to identify a collection of high-quality prompts from Chatbot Arena. Each user prompt is evaluated against the 7 Key Criteria defined in the Table below.
 
 <table style="width:100%; border-collapse: collapse; border: 1px solid black;">
   <tr style="background-color: black; color: white;">
@@ -62,14 +64,13 @@ We employ Meta's **Llama-3-70B-Instruct** as the judge model to help us label ov
 <img src="/images/blog/category_hard/key_criteria_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
 <p style="color:gray; text-align: center;">Figure 3. The percentage of each criteria within 1 million Chatbot Arena data.</p>
 
-We then calculate its Hardness Score by how many criteria are satisfied and present the distribution in Figure 3. Interestingly, we find that ~20% of prompts are >=6 score. You can find several examples below to demonstrate what a hard prompt actually looks like in the [Example Section](#example).
-
+We then calculate its Hardness Score by how many criteria are satisfied and present the distribution in Figure 3. Interestingly, we find that approximately 20% of prompts have a score of 6 or higher. You can find several examples below to demonstrate what a hard prompt looks like in the [Example Section](#example).
 
 <img src="/images/blog/category_hard/hardness_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
 <p style="color:gray; text-align: center;">Figure 4. The percentage of prompts with different hardness score within 1 million Chatbot Arena data.</p>
 
 
-We then take the score>=6 prompts (satisfy 6 or more of these criteria) to be the "Hard Prompts" category and calculate two leaderboards, **Hard Prompt (English)** and **Hard Prompts (Overall)**.
+We use prompts with a score of 6 or higher to create the "Hard Prompts" category and calculate two leaderboards: **Hard Prompt (English)** and **Hard Prompts (Overall)**.
 
 Below is screenshot of the leaderboard for **Hard Prompts (English)** category (as of May 17, 2024). You can find the latest version at [https://leaderboard.lmsys.org](https://leaderboard.lmsys.org) (-> Category dropdown).
 
@@ -78,6 +79,12 @@ Below is screenshot of the leaderboard for **Hard Prompts (English)** category (
 
 
 We are commited to continuously enhance the Chatbot Arena leaderboard and share insights with the broader community. We welcome you to contribute more challenging prompts and look forward to seeing how the latest advancements in language models perform!
+
+### Note: Enhancing Quality Through De-duplication
+
+To improve the overall quality of prompts in Chatbot Arena, we also implement a de-duplication pipeline. This new pipeline aims to remove overly redundant user prompts that might skew the distribution and affect the accuracy of our leaderboard. During our analysis, we noticed that many first-time users tend to ask similar greeting prompts, such as "hello," leading to an over-representation of these types of queries. To address this, we down-sample the top 0.01% most common prompts (approximately 100 prompts, mostly greetings in different languages) to the 99.99% percentile frequency (approximately 150 occurrences). After this process, about 6% of the votes are removed. We believe this helps maintain a diverse and high-quality set of prompts for evaluation.
+
+We have also open-sourced this de-duplication script on [Github](https://github.com/lm-sys/FastChat/tree/main/fastchat/serve/monitor) and publish the vote data with de-duplication tags in the [notebook](https://colab.research.google.com/drive/1KdwokPjirkTmpO_P1WByFNFiqxWQquwH#scrollTo=CP35mjnHfpfN). We will continue to monitor the impact of this de-duplication process on the leaderboard and make adjustments as necessary to ensure the diversity and quality of our dataset.
 
 ## Citation
 ```
