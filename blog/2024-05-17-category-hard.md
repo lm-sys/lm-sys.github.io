@@ -77,15 +77,15 @@ Below is screenshot of the leaderboard for **Hard Prompts (English)** category (
 <p style="color:gray; text-align: center;">Figure 5. The leaderboard for Hard Prompts (English) category as of May 17, 2024.</p>
 
 
-We continuie to enhance the Chatbot Arena leaderboard and share insights with the broader community. We welcome you to contribute more challenging prompts and look forward to seeing how the latest advancements in language models perform!
+We are commited to continuously enhance the Chatbot Arena leaderboard and share insights with the broader community. We welcome you to contribute more challenging prompts and look forward to seeing how the latest advancements in language models perform!
 
 ## Citation
 ```
-@misc{arenacategoryhard2024,
-    title = {Introducing Hard Prompts Category in Chatbot Arena},
-    url = {https://lmsys.org/blog/2024-05-17-category-hard/},
-    author = {Tianle Li, Wei-Lin Chiang},
-    month = {May},
+@misc{arenahard2024,
+    title = {From Live Data to High-Quality Benchmarks: The Arena-Hard Pipeline},
+    url = {https://lmsys.org/blog/2024-04-19-arena-hard/},
+    author = {Tianle Li*, Wei-Lin Chiang*, Evan Frick, Lisa Dunlap, Banghua Zhu, Joseph E. Gonzalez, Ion Stoica},
+    month = {April},
     year = {2024}
 }
 ```
