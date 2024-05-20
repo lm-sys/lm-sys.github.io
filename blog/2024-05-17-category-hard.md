@@ -59,7 +59,7 @@ A few weeks ago, we introduce the [Arena-Hard](https://lmsys.org/blog/2024-04-19
   </tr>
 </table>
 
-We employ Meta's **Llama-3-70B-Instruct** to help us label over 1 million Arena prompts on whether certain critieria are met. Note that we use human preference votes to rank models rather than LLM judges. Figure 3 shows the criteria breakdown (i.e., how many prompts satisfy each criteria). We observe the most common criteria are Specificity, Domain Knowledge, and Real-world Application, while the relatively rare criteria are Problem-Solving and Complexity.
+We employ Meta's **Llama-3-70B-Instruct** to help us label over 1 million Arena prompts on whether certain critieria are met. Note that we do not use LLM as judges to evalute model answers. We use the preference votes casted by Arena users to rank models. Figure 3 shows the criteria breakdown (i.e., how many prompts satisfy each criteria). We observe the most common criteria are Specificity, Domain Knowledge, and Real-world Application, while the relatively rare criteria are Problem-Solving and Complexity.
 
 <img src="/images/blog/category_hard/key_criteria_breakdown.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
 <p style="color:gray; text-align: center;">Figure 3. The percentage of each criteria within 1 million Chatbot Arena data.</p>
