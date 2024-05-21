@@ -13,7 +13,7 @@ We introduce Arena-Hard – a data pipeline to build high-quality benchmarks fro
 1. Agreement to Human preference: whether the benchmark score has high agreement to human preference.
 2. Separability: whether the benchmark can confidently separate models.
 
-We compare our new benchmark, Arena Hard v0.1, to a current leading chat LLM benchmark, MT Bench. In Figure 1, we show Arena Hard v0.1 offers significantly stronger separability against MT Bench with tighter confidence intervals. It also has a higher agreement (89.1%, see Table 1) with the human preference ranking by Chatbot Arena (english-only). We expect to see this benchmark useful for model developers to differentiate their model checkpoints.
+We compare our new benchmark, Arena Hard Auto v0.1, to a current leading chat LLM benchmark, MT Bench. In Figure 1, we show Arena Hard Auto v0.1 offers significantly stronger separability against MT Bench with tighter confidence intervals. It also has a higher agreement (89.1%, see Table 1) with the human preference ranking by Chatbot Arena (english-only). We expect to see this benchmark useful for model developers to differentiate their model checkpoints.
 
 <style>
 .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
@@ -95,11 +95,11 @@ li::before {
 
 
 <img src="/images/blog/arena_hard/arena-hard-vs-mt_bench.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 75%"></img>
-<p style="color:gray; text-align: left;">Figure 1: Comparison between MT-bench and Arena Hard v0.1. The latter offers significantly better separability between models and tighter confidence intervals. GPT-4-0314 has no variance in Arena-hard-v0.1 because it's used as the anchor model.</p>
+<p style="color:gray; text-align: left;">Figure 1: Comparison between MT-bench and Arena Hard Auto v0.1. The latter offers significantly better separability between models and tighter confidence intervals. GPT-4-0314 has no variance in Arena-hard-Auto-v0.1 because it's used as the anchor model.</p>
 
 Links:
-- Evaluate your model on Arena-Hard-v0.1: [Link](https://github.com/lm-sys/arena-hard)
-- Browse Arena-Hard-v0.1 prompts: [Link](https://huggingface.co/spaces/lmsys/arena-hard-browser)
+- Evaluate your model on Arena-Hard-Auto-v0.1: [Link](https://github.com/lm-sys/arena-hard)
+- Browse Arena-Hard-Auto-v0.1 prompts: [Link](https://huggingface.co/spaces/lmsys/arena-hard-browser)
 - Statistic Notebook Google Colab: [Link](https://colab.research.google.com/drive/1ar6XLWREN_dXEh404WNOxroFVUe_4njp?usp=sharing)
 - Full leaderboard at the Result section: [Skip](#full-leaderboard-with-gpt-4-turbo-as-judge)
 
@@ -131,7 +131,7 @@ We define **separability** by whether a benchmark can separate given model pairs
 
 We use a set of top-20 models* on [Chatbot Arena](https://chat.lmsys.org/?leaderboard) (April 13, 2024) that are presented on [AlpacaEval leaderboard](https://tatsu-lab.github.io/alpaca_eval/) to calculate separability and agreement per benchmark. We consider the human preference ranking by Chatbot Arena (English only) as the reference to calculate agreement.
 
-In Table 1, Arena-hard-v0.1 shows the highest separability (87.4%) against widely adopted LLM benchmarks and offers highest agreement (89.1%) to Chatbot Arena. It is also cheap and fast to run ($25).
+In Table 1, Arena-hard-Auto-v0.1 shows the highest separability (87.4%) against widely adopted LLM benchmarks and offers highest agreement (89.1%) to Chatbot Arena. It is also cheap and fast to run ($25).
 
 Interestingly, we find Spearman Correlation, a popular metric for measuring correlations between rankings, may be an unreliable metric for ranking correlation as it does not consider variance of the rankings, and therefore fails to adequately punish essential ranking granularities of the top models we care about most. For example, when considering 95% CI, MT-bench’s agreement to Chatbot Arena drops from 91.3% to 22.6%.
 
@@ -152,7 +152,7 @@ You can find full statistics in the result section.
       <th class="tg-head"><span style="font-weight:bold;">Chatbot Arena<br>(English-only)</span></th>
       <th class="tg-head"><span style="font-weight:bold;">MT-bench</span></th>
       <th class="tg-head"><span style="font-weight:bold;">AlpacaEval 2.0 LC<br>(Length Controlled)</span></th>
-      <th class="tg-head"><span style="font-weight:bold;">Arena-Hard-v0.1</span></th>
+      <th class="tg-head"><span style="font-weight:bold;">Arena-Hard-Auto-v0.1</span></th>
     </tr>
     <tr>
       <td class="tg-body">Avg #prompts per model eval</td>
@@ -272,11 +272,11 @@ To see whether the prompt score correlates with separability, we sample 50 promp
 
 ## Results
 
-### Arena-Hard-v0.1
+### Arena-Hard-Auto-v0.1
 
-Using the above pipeline, we identify 250 high-quality topic clusters with mean score >=6 out of 7. We then randomly sample 2 prompts per cluster to construct 500 high-quality benchmark prompts, Arena-Hard-v0.1. This benchmark set contains mostly well-defined, technical problem-solving queries as required in the above key criteria. You can browse all the prompts at this [link](https://huggingface.co/spaces/lmsys/arena-hard-browser).
+Using the above pipeline, we identify 250 high-quality topic clusters with mean score >=6 out of 7. We then randomly sample 2 prompts per cluster to construct 500 high-quality benchmark prompts, Arena-Hard-Auto-v0.1. This benchmark set contains mostly well-defined, technical problem-solving queries as required in the above key criteria. You can browse all the prompts at this [link](https://huggingface.co/spaces/lmsys/arena-hard-browser).
 
-However, evaluating models on challenging queries such as Arena-Hard-v0.1 is a non-trivial task. Most queries involve deep domain knowledge and problem solving skills, requiring expert-level judgment to evaluate the answer quality. Unfortunately, this is prohibitively expensive and time consuming. Following [LLM-as-a-Judge](https://arxiv.org/abs/2306.05685) and [AlpacaFarm](https://arxiv.org/abs/2305.14387), we employ LLM as a judge framework to approximate human preference.
+However, evaluating models on challenging queries such as Arena-Hard-Auto-v0.1 is a non-trivial task. Most queries involve deep domain knowledge and problem solving skills, requiring expert-level judgment to evaluate the answer quality. Unfortunately, this is prohibitively expensive and time consuming. Following [LLM-as-a-Judge](https://arxiv.org/abs/2306.05685) and [AlpacaFarm](https://arxiv.org/abs/2305.14387), we employ LLM as a judge framework to approximate human preference.
 
 We consider the pairwise comparison setup against a strong baseline model (GPT-4-0314), and ask a strong judge model (e.g., GPT-4-Turbo or Claude-3-Opus) to categorize the preference into five labels: A >> B, A > B, A~=B, .. B>>A. This way, a model will be penalized more in big losses than small losses, which we find to be effective in separating models. We also employ CoT to prompt the LLM judge to generate answers first before giving judgments. Full judge prompt can be found [here](https://github.com/lm-sys/arena-hard/blob/main/config/judge_config.yaml).
 
@@ -286,7 +286,7 @@ To avoid potential position bias, we adopt a two-game setup – per query we swa
 
 We use gpt-4-1106-preview as the judge model to generate judgment for the model response against baseline. We take all the comparisons and compute each model’s Bradley-Terry coefficient. We then transform it to win-rate against the baseline as the final score. The 95% confidence interval is computed via 100 rounds of bootstrapping.
 
-<p style="color:gray; text-align: center;">Arena Hard v0.1 Leaderboard (baseline: GPT-4-0314)</p>
+<p style="color:gray; text-align: center;">Arena Hard Auto v0.1 Leaderboard (baseline: GPT-4-0314)</p>
 <div style="display: flex; justify-content: center; font-family: Consolas, monospace;">
 <table style="line-height: 1; font-size: 1.0em;">
   <caption style="text-align: left; color: red">*Note: GPT-4-Turbo’s high score can be due to the GPT-4 judge favoring GPT-4 outputs.</caption>
@@ -600,8 +600,8 @@ We further compare GPT-4 and Claude Judges using our proposed metrics of separab
   <caption>Table 4: Statistical comparisons between LLM Judges and Human</caption>
   <tr>
     <td style="border: 1px solid black"></td>
-    <td style="border: 1px solid black">Arena-Hard-v0.1 (GPT-4-1106-Preview Judge)</td>
-    <td style="border: 1px solid black">Arena-Hard-v0.1 (Claude-3 Judge)</td>
+    <td style="border: 1px solid black">Arena-Hard-Auto-v0.1 (GPT-4-1106-Preview Judge)</td>
+    <td style="border: 1px solid black">Arena-Hard-Auto-v0.1 (Claude-3 Judge)</td>
   </tr>
   <tr>
     <td style="border: 1px solid black">Agreement to Chatbot Arena with 95% CI</td>
@@ -643,10 +643,10 @@ Despite the observed differences between Claude-3-Opus and GPT-4-Turbo judgment 
 
 ### Verbosity: does the LLM Judge prefer longer responses?
 
-LLM as judges are known to suffer from verbosity bias ([Length-Controlled AlpacaEval](https://arxiv.org/abs/2404.04475)). Below we plot the avg token length and score per model for both MT-Bench and Arena-Hard-v0.1. Visually, there isn't a strong correlation between score and length.
+LLM as judges are known to suffer from verbosity bias ([Length-Controlled AlpacaEval](https://arxiv.org/abs/2404.04475)). Below we plot the avg token length and score per model for both MT-Bench and Arena-Hard-Auto-v0.1. Visually, there isn't a strong correlation between score and length.
 
 <img src="/images/blog/arena_hard/verbose_scatterplot.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 60%"></img>
-<p style="color:gray; text-align: center;">Figure 6: Verbosity scatterplot comparing Arena-Hard-v0.1 and MT Bench.</p>
+<p style="color:gray; text-align: center;">Figure 6: Verbosity scatterplot comparing Arena-Hard-Auto-v0.1 and MT Bench.</p>
 
 To further examine potential verbosity bias, we conduct an ablation on three different system prompts (original, chatty, detailed) with GPT-3.5-Turbo. We observe that both GPT-4-Turbo and Claude-3-Opus judges may be affected by longer outputs, while Claude being significantly more impacted with a “more detailed” system prompt as GPT-3.5-Turbo reaches a win-rate of over 40% against GPT-4-0314. 
 
@@ -720,7 +720,7 @@ System Prompt:<br>detailed: “You are a helpful assistant who thoroughly explai
 
 We find that even with temperature=0, GPT-4-Turbo may still generate slightly different judgments. Here we repeat the judgments for gpt-3.5-turbo-0125 three times and report its variance. Due to limited budget, we can only evaluate all the models once. We recommend using the confidence intervals to determine model separation.
 
-<p style="color:gray; text-align: center;">Table 6. Variances between 3 separate runs of Arena Hard v0.1.</p>
+<p style="color:gray; text-align: center;">Table 6. Variances between 3 separate runs of Arena Hard Auto v0.1.</p>
 <div style="display: flex; justify-content: center; font-family: Consolas, monospace;">
 <table style="line-height: 1; font-size: 1.0em;">
   <thead>
@@ -763,7 +763,7 @@ In this section we attempt to combine both confidence and correlation into one s
 <table style="border-collapse: collapse; border: 1px solid black">
   <caption>Correlation of Brier Score with Overall Chatbot Arena Score Across Different Models</caption>
   <tr>
-    <td style="border: 1px solid black">Arena Hard</td>
+    <td style="border: 1px solid black">Arena Hard Auto v0.1</td>
     <td style="border: 1px solid black">Chabot Arena* (20K Votes)</td>
     <td style="border: 1px solid black">MT Bench</td>
     <td style="border: 1px solid black">Alpaca 2.0 LC</td>
@@ -783,9 +783,9 @@ Forecasting is a delicate balance between confidence and uncertainty. Therefore,
 
 In this problem context, we introduce the prediction criteria as simply the binary indicator **1**$(\pi_a < \pi_b)$ for some model pair ($\pi_a$ and $\pi_b$).  The forecast gives a probability that this indicator is true, $P(\pi_a < \pi_b)$.  A higher probability forecast indicates greater confidence that **1**$(\pi_a < \pi_b)$ will be true.  We can generate these probability predictions using bootstrapped score mean and variance, which in turn define a gaussian distribution. We then resolve the ground truth label for **1**$(\pi_a < \pi_b)$ using Chatbot Arena's Bradley Terry coefficients.
 
-A well-defined fair-in-expectation loss for forecasting is [Brier Score](https://en.wikipedia.org/wiki/Brier_score). Brier score rewards confidence when forecasts are correct while punishing confident errors. We can calculate the loss over a benchmark prediction of **1**$(\pi_a < \pi_b)$ for each model pair with respect to the Chatbot Area ground truth scores to quantify a benchmark’s forecasting performance. Here we assume Chatbot Arena as “ground truth” as both Alpaca 2.0 LC and Arena Hard are advertised as an inexpensive alternative to Chatbot Arena as an evaluation pipeline. We will conduct future study on correlation comparison where we instead use Chatbot Arena's Bradley Terry coefficient derived from similar distributions as the given benchmark.
+A well-defined fair-in-expectation loss for forecasting is [Brier Score](https://en.wikipedia.org/wiki/Brier_score). Brier score rewards confidence when forecasts are correct while punishing confident errors. We can calculate the loss over a benchmark prediction of **1**$(\pi_a < \pi_b)$ for each model pair with respect to the Chatbot Area ground truth scores to quantify a benchmark’s forecasting performance. Here we assume Chatbot Arena as “ground truth” as both Alpaca 2.0 LC and Arena Hard Auto are advertised as an inexpensive alternative to Chatbot Arena as an evaluation pipeline. We will conduct future study on correlation comparison where we instead use Chatbot Arena's Bradley Terry coefficient derived from similar distributions as the given benchmark.
 
-We find that Arena Hard averages much lower forecasting loss, demonstrating that it is both accurate in score, and accurate in confidence level.
+We find that Arena Hard Auto averages much lower forecasting loss, demonstrating that it is both accurate in score, and accurate in confidence level.
 <div style="display: flex; gap: 10px;">
   <div style="width: 48%;">
     <img src="/images/blog/arena_hard/forecast_arena_20k.png">
@@ -803,7 +803,7 @@ We find that Arena Hard averages much lower forecasting loss, demonstrating that
   </div>
 </div>
 
-Above is the predicted model predicted probability against the bootstrapped arena “ground truth” probability (jittered to show clusters).  While both Alpaca eval and Arena Hard have large clusters around (0,0) and (1,1) signifying good forecasting, Arena Hard has lighter clusters on (0,1) and (1,0), if any, revealing less overconfidence. MT Bench has heavy tails along the top and bottom, revealing underconfidence. However, none of these benchmarks show an “ideal” y=x curve (with dense ends) expected with a perfectly calibrated forecast, signifying room for future research.
+Above is the predicted model predicted probability against the bootstrapped arena “ground truth” probability (jittered to show clusters).  While both Alpaca eval and Arena Hard Auto have large clusters around (0,0) and (1,1) signifying good forecasting, Arena Hard Auto has lighter clusters on (0,1) and (1,0), if any, revealing less overconfidence. MT Bench has heavy tails along the top and bottom, revealing underconfidence. However, none of these benchmarks show an “ideal” y=x curve (with dense ends) expected with a perfectly calibrated forecast, signifying room for future research.
 
 ## Future
 We hope to study deeper into the above limitations and biases in the later technical report. We are also working on diving deeper into the statistics for more studies on how to measure the quality of benchmarks. Lastly, we also hope to upgrade Arena-Hard frequently. So expect frequent new benchmarks! 
@@ -825,7 +825,7 @@ We thank Matei Zaharia, Yann Dubois, Anastasios Angelopoulos, Lianmin Zheng, Lew
 
 ## Appendix
 <img src="/images/blog/arena_hard/heatmap.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 120%"></img>
-<p style="color:gray; text-align: center;">Appendix Figure 1: Similarity Heatmap of 50 Arena Hard Clusters</p>
+<p style="color:gray; text-align: center;">Appendix Figure 1: Similarity Heatmap of 50 Arena Hard Auto v0.1 Clusters</p>
 
 <img src="/images/blog/arena_hard/clustering_filtered_small_64.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 120%"></img>
 <p style="color:gray; text-align: center;">Appendix Figure 2: Top-64 clusters visualized in hierarchy. x-axis represents the cosine similarity distance. y-axis shows the topic title per cluster summarized by gpt-4-turbo.</p>
