@@ -98,7 +98,7 @@ li::before {
 <p style="color:gray; text-align: left;">Figure 1: Comparison between MT-bench and Arena Hard Auto v0.1. The latter offers significantly better separability between models and tighter confidence intervals. GPT-4-0314 has no variance in Arena-hard-Auto-v0.1 because it's used as the anchor model.</p>
 
 Links:
-- Evaluate your model on Arena-Hard-Auto-v0.1: [Link](https://github.com/lm-sys/arena-hard)
+- Evaluate your model on Arena-Hard-Auto-v0.1: [Link](https://github.com/lm-sys/arena-hard-auto)
 - Browse Arena-Hard-Auto-v0.1 prompts: [Link](https://huggingface.co/spaces/lmsys/arena-hard-browser)
 - Statistic Notebook Google Colab: [Link](https://colab.research.google.com/drive/1ar6XLWREN_dXEh404WNOxroFVUe_4njp?usp=sharing)
 - Full leaderboard at the Result section: [Skip](#full-leaderboard-with-gpt-4-turbo-as-judge)
@@ -278,7 +278,7 @@ Using the above pipeline, we identify 250 high-quality topic clusters with mean 
 
 However, evaluating models on challenging queries such as Arena-Hard-Auto-v0.1 is a non-trivial task. Most queries involve deep domain knowledge and problem solving skills, requiring expert-level judgment to evaluate the answer quality. Unfortunately, this is prohibitively expensive and time consuming. Following [LLM-as-a-Judge](https://arxiv.org/abs/2306.05685) and [AlpacaFarm](https://arxiv.org/abs/2305.14387), we employ LLM as a judge framework to approximate human preference.
 
-We consider the pairwise comparison setup against a strong baseline model (GPT-4-0314), and ask a strong judge model (e.g., GPT-4-Turbo or Claude-3-Opus) to categorize the preference into five labels: A >> B, A > B, A~=B, .. B>>A. This way, a model will be penalized more in big losses than small losses, which we find to be effective in separating models. We also employ CoT to prompt the LLM judge to generate answers first before giving judgments. Full judge prompt can be found [here](https://github.com/lm-sys/arena-hard/blob/main/config/judge_config.yaml).
+We consider the pairwise comparison setup against a strong baseline model (GPT-4-0314), and ask a strong judge model (e.g., GPT-4-Turbo or Claude-3-Opus) to categorize the preference into five labels: A >> B, A > B, A~=B, .. B>>A. This way, a model will be penalized more in big losses than small losses, which we find to be effective in separating models. We also employ CoT to prompt the LLM judge to generate answers first before giving judgments. Full judge prompt can be found [here](https://github.com/lm-sys/arena-hard-auto/blob/main/config/judge_config.yaml).
 
 To avoid potential position bias, we adopt a two-game setup – per query we swap the models on the first & second position. This results in 500x2=1000 judgments per model evaluation. Following Chatbot Arena, we adopt the Bradley-Terry model to produce model’s the final model scores. By bootstrapping the comparisons from all models, we find it to be statistically stable compared to only considering win-rate against the baseline model.
 
