@@ -10,11 +10,11 @@
         "link": "https://chat.lmsys.org/"
       },
       {
-        "name": "Arena Hard",
+        "name": "Arena Hard Auto",
         "architecture": "",
         "size": "",
         "desc": "An automatic pipeline converting live data to high quality benchmarks for evaluating chat assistants. The questions are more difficult than those in MT-Bench.",
-        "link": "https://github.com/lm-sys/arena-hard"
+        "link": "https://github.com/lm-sys/arena-hard-auto"
       },
       {
         "name": "MT-Bench",
