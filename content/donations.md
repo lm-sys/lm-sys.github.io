@@ -6,11 +6,9 @@ LMSYS Org primarily relies on university grants and donations to serve models an
 
 ## Current Sponsors and Supporters
 
-We thank the following sponsors for supplying resources for supporting our infrastructure: 
+We thank the following sponsors for supplying resources for supporting our infrastructure. All resources supplied are gifts with no strings attached.
 
-[Kaggle](https://www.kaggle.com/), [MBZUAI](https://mbzuai.ac.ae/), [a16z](https://a16z.com/), [Together](https://www.together.ai/), [Hyperbolic](https://hyperbolic.xyz),  [AnyScale](https://www.anyscale.com/), [HuggingFace](https://huggingface.co/), [NVIDIA](https://www.nvidia.com/)
+[Kaggle](https://www.kaggle.com/), [MBZUAI](https://mbzuai.ac.ae/), [a16z](https://a16z.com/), [Together](https://www.together.ai/), [Hyperbolic](https://hyperbolic.xyz), [RunPod](https://www.runpod.io/), [NVIDIA](https://build.nvidia.com/), [Anyscale](https://www.anyscale.com/), [HuggingFace](https://huggingface.co/)
 
-We also thank the following companies which provide API credits to serve their models on the arena: 
-[OpenAI]((https://www.openai.com/)), [Anthropic](https://www.anthropic.com/), [Google](https://gemini.google.com/), [Mistral](https://mistral.ai/), [Reka,](https://www.reka.ai/) [Cohere](https://cohere.com/), [Databricks](https://www.databricks.com/), [Microsoft](https://www.microsoft.com/), [01ai](https://www.01.ai/)
-
-All resources supplied are gifts with no strings attached. 
+We also thank the following companies which provide API credits to serve their models on Chatbot Arena:
+[Anthropic](https://www.anthropic.com/), [Cohere](https://cohere.com/), [Databricks](https://www.databricks.com/), [Google](https://ai.google.dev/), [Mistral](https://mistral.ai/), [OpenAI](https://www.openai.com/), [Reka](https://www.reka.ai/), [01ai](https://www.01.ai/)
