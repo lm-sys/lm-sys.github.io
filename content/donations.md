@@ -13,4 +13,4 @@ We thank the following sponsors for supplying resources for supporting our infra
 We also thank the following companies which provide API credits to serve their models on the arena: 
 [OpenAI]((https://www.openai.com/)), [Anthropic](https://www.anthropic.com/), [Google](https://gemini.google.com/), [Mistral](https://mistral.ai/), [Reka,](https://www.reka.ai/) [Cohere](https://cohere.com/), [Databricks](https://www.databricks.com/), [Microsoft](https://www.microsoft.com/), [01ai](https://www.01.ai/)
 
-All resources supplied are no strings attached and do not influence evaluations in Chatbot Arena.
+All resources supplied are gifts with no strings attached. 
