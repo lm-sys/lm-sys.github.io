@@ -2,10 +2,13 @@
 title: "Donations"
 ---
         
-LMSYS Org primarily relies on university grants and donations.
+LMSYS Org primarily relies on university grants and donations to serve models and support infrastructure. We welcome diverse forms of donations and sponsorships, including cash, GPU hardware and hours, cloud credits, computing resources, and more. To donate, please contact us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com?subject=Donation%20to%20LMSYS%20Org).
 
-We welcome diverse forms of donations and sponsorships, including cash, GPU hardware and hours, cloud credits, other computing resources, and more.
-If you would like to support our research and development efforts on large models, please contact us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com?subject=Donation%20to%20LMSYS%20Org).
+## Current Sponsors and Supporters
 
-### Current Sponsors
-[Kaggle](https://www.kaggle.com/), [MBZUAI](https://mbzuai.ac.ae/), [a16z](https://a16z.com/), [Together](https://www.together.ai/), [Hyperbolic](https://hyperbolic.xyz),  [AnyScale](https://www.anyscale.com/), [HuggingFace](https://huggingface.co/)
+We thank the following sponsors for supplying resources for supporting our infrastructure. All resources supplied are gifts with no strings attached.
+
+[Kaggle](https://www.kaggle.com/), [MBZUAI](https://mbzuai.ac.ae/), [a16z](https://a16z.com/), [Together](https://www.together.ai/), [Hyperbolic](https://hyperbolic.xyz), [RunPod](https://www.runpod.io/), [NVIDIA](https://build.nvidia.com/), [Anyscale](https://www.anyscale.com/), [HuggingFace](https://huggingface.co/)
+
+We also thank the following companies which provide API credits to serve their models on Chatbot Arena:
+[Alibaba](https://www.alibabacloud.com/en/solutions/generative-ai/qwen), [Anthropic](https://www.anthropic.com/api), [Cohere](https://cohere.com/), [Databricks](https://www.databricks.com/), [Google](https://ai.google.dev/), [Mistral](https://mistral.ai/), [OpenAI](https://www.openai.com/), [Reka](https://www.reka.ai/), [Zhipu AI](https://open.bigmodel.cn/), [01ai](https://www.01.ai/)
