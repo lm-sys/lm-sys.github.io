@@ -2,19 +2,22 @@
 title: "The Multimodal Arena is Here!"
 author: "Christopher Chou*, Lisa Dunlap*, Wei-Lin Chiang, Ying Sheng, Lianmin Zheng, Anastasios Angelopoulos, Trevor Darrell, Ion Stoica, Joseph E. Gonzalez"
 date: "June 25, 2024"
-previewImg: /images/blog/arena/cover.png
+previewImg: /images/blog/vision_arena/llama_gallery.png
 ---
+
 
 ### Multimodal Chatbot Arena
 
-We added image support to [Chatbot Arena](https://chat.lmsys.org/)! You can now chat with your favorite vision-language models from OpenAI, Anthropic, Google, and most other major LLM providers to help you decide:
+We added image support to [Chatbot Arena](https://chat.lmsys.org/)! You can now chat with your favorite vision-language models from OpenAI, Anthropic, Google, and most other major LLM providers to help discover how these models stack up against eachother. 
 
-<!-- **Which model is the best for you?** -->
-<p class="center-text"><strong>Which model is the best for you?</strong></p>
+In just two weeks, we have collected **over 12,000 user preference votes across over 60 languages**. In this post we show the initial leaderboard and statistics, some interesting conversations submitted to the arena, and include a short discussion on the future of the multimodal arena. 
 
-In just two weeks, we have collected over 12,000 user preference votes across over 60 languages. In this post we show the initial leaderboard and statistics, some interesting conversations submitted to the arena, and include a short discussion on the future of the multimodal arena. 
-
-### Leaderboard results
+<div class="video-container">
+    <video controls>
+        <source src="/images/blog/vision_arena/demo.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
 
 
 <style>
@@ -107,22 +110,6 @@ In just two weeks, we have collected over 12,000 user preference votes across ov
         max-width: 800px; /* Set a maximum width if needed */
     }
 </style>
-
-### Multimodal Chatbot Arena
-
-We added image support to [Chatbot Arena](https://chat.lmsys.org/)! You can now chat with your favorite vision-language models from OpenAI, Anthropic, Google, and most other major LLM providers to help you decide:
-
-<!-- **Which model is the best for you?** -->
-<p class="center-text"><strong>Which model is the best for you?</strong></p>
-
-In just two weeks, we have collected over 12,000 user preference votes across over 60 languages. In this post we show the initial leaderboard and statistics, some interesting conversations submitted to the arena, and include a short discussion on the future of the multimodal arena. 
-
-<div class="video-container">
-    <video controls>
-        <source src="/images/blog/vision_arena/demo.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-</div>
 
 ### Leaderboard results
 
@@ -325,4 +312,4 @@ Below we have some examples from these categories as well as some other fun exam
 </body>
 
 ### What's next?
-We look forward to adding multi-image support and supporting new modalities such as PDFs, video, and audio. Please feel free to join our [Discord](https://discord.gg/HSWAKCrnFx) and give us any feedback about what feature you want next!
+Along with rolling out some fun new categories for the multimodal leaderboard, we look forward to adding multi-image support and supporting new modalities such as PDFs, video, and audio. Please feel free to join our [Discord](https://discord.gg/HSWAKCrnFx) and give us any feedback about what feature you want next!
