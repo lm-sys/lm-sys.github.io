@@ -183,6 +183,11 @@ multimodal leaderboard ranking aligns closely with the LLM leaderboard, but with
 * While Claude 3 Opus achieves significantly higher performance than Gemini 1.5 flash on the LLM leaderboard but on the multimodal leaderboard they have similar performance
 * Llava-v1.6-34b, one of the best open-source VLMs achieves slightly higher performance than claude-3-haiku.
 
+<div class="container">
+    <p style="color:gray; text-align: center;">Figure 1. Comparison of the model ranks in the language arena and the vision arena.</p>
+    <img src="/images/blog/vision_arena/shift.png" alt="Image" style="width: 75%;">
+</div>
+
 As a small note, you might also notice that the “Elo rating” column from earlier Arena leaderboards has been renamed to “Arena score.” Rest assured: nothing has changed in the way we compute this quantity; we just renamed it. (The reason for the change is that we were computing the Bradley-Terry coefficients, which are slightly different from the Elo score, and wanted to avoid future confusion.) You should think of the Arena score as a measure of *model strength*. If model A has an Arena score $s_A$ and model B has an arena score $s_B$, you can calculate the win rate of model A over model B as
 $$\mathbb{P}A (\text{ beats } B) = \frac{1}{1 + e^{s_B  - s_A}}.$$
 For additional information on how the leaderboard is computed, please see [this notebook](https://colab.research.google.com/drive/1eNPrurghAWlNB1H5uyW244hoVpsvWInc?usp=sharing ). We also want to give a shout-out to the WildVision leaderboard, another amazing VLM ranking platform!
