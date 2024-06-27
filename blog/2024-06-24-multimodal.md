@@ -83,6 +83,17 @@ previewImg: /images/blog/arena/cover.png
     .center-text {
         text-align: center;
     }
+
+    .video-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 20px 0;
+    }
+    .video-container video {
+        width: 80%; /* Adjust this value to make the video bigger or smaller */
+        max-width: 800px; /* Set a maximum width if needed */
+    }
 </style>
 
 ### Multimodal Chatbot Arena
@@ -93,6 +104,13 @@ We added image support to [Chatbot Arena](https://chat.lmsys.org/)! You can now 
 <p class="center-text"><strong>Which model is the best for you?</strong></p>
 
 In just two weeks, we have collected over 12,000 user preference votes across over 60 languages. In this post we show the initial leaderboard and statistics, some interesting conversations submitted to the arena, and include a short discussion on the future of the multimodal arena. 
+
+<div class="video-container">
+    <video controls>
+        <source src="/images/blog/vision_arena/demo.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
 
 ### Leaderboard results
 
@@ -142,10 +160,10 @@ td {text-align: left}
 
 
 This multi-modal leaderboard is computed from only the battles which contain an image, and in Figure 1 we compare the ranks of the models in the language arena VS the vision arena. We see that the 
-multimodal leaderboard ranking aligns closely with the LLM leaderboard, but with a few interesting differences. Our overall finds are summarized below:
-* GPT-4o and Claude 3.5 achieve notably higher performance compared to Gemini 1.5 Pro and GPT-4 turbo. This gap is much more apparent in the vision arena compared to the language arena.
-* While Claude 3 Opus achieves significantly higher performance than Gemini 1.5 flash on the LLM leaderboard but on the multimodal leaderboard they have similar performance
-* Llava-v1.6-34b, one of the best open-source VLMs achieves slightly higher performance than claude-3-haiku.
+multimodal leaderboard ranking aligns closely with the LLM leaderboard, but with a few interesting differences. Our overall findings are summarized below:
+1. GPT-4o and Claude 3.5 achieve notably higher performance compared to Gemini 1.5 Pro and GPT-4 turbo. This gap is much more apparent in the vision arena compared to the language arena.
+2. While Claude 3 Opus achieves significantly higher performance than Gemini 1.5 flash on the LLM leaderboard but on the multimodal leaderboard they have similar performance
+3. Llava-v1.6-34b, one of the best open-source VLMs achieves slightly higher performance than claude-3-haiku.
 
 <div class="container">
     <p style="color:gray; text-align: center;">Figure 1. Comparison of the model ranks in the language arena and the vision arena.</p>
@@ -274,6 +292,23 @@ Below we have some examples from these categories as well as some other fun exam
         </div>
     </div>
 </div>
+
+<!-- <div class="container">
+    <div class="image-container">
+        <img src="/images/blog/vision_arena/geoguesser.png" alt="Image" width="300">
+    </div>
+    <div class="chat-container">
+        <div class="chatbox">
+            <div class="message user-message"><strong>User:</strong> I'm playing Geoguessr. Where is this?</div>
+            <div class="message model-message">
+                <strong>Gemini 1.5 Pro:</strong> The number hidden in the image is <strong>8</strong>.
+            </div>
+            <div class="message model-message">
+                <strong>Claude 3 Haiku:</strong> There is no number visible in this image. The image shows a colorful abstract pattern composed of various sized colored circles arranged in a circular pattern against a dark background.
+            </div>
+        </div>
+    </div>
+</div> -->
 </body>
 
 ### What's next?
