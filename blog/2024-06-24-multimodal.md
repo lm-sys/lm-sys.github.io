@@ -5,6 +5,18 @@ date: "June 25, 2024"
 previewImg: /images/blog/arena/cover.png
 ---
 
+### Multimodal Chatbot Arena
+
+We added image support to [Chatbot Arena](https://chat.lmsys.org/)! You can now chat with your favorite vision-language models from OpenAI, Anthropic, Google, and most other major LLM providers to help you decide:
+
+<!-- **Which model is the best for you?** -->
+<p class="center-text"><strong>Which model is the best for you?</strong></p>
+
+In just two weeks, we have collected over 12,000 user preference votes across over 60 languages. In this post we show the initial leaderboard and statistics, some interesting conversations submitted to the arena, and include a short discussion on the future of the multimodal arena. 
+
+### Leaderboard results
+
+
 <style>
     th {text-align: left}
     td {text-align: left}
@@ -171,7 +183,8 @@ multimodal leaderboard ranking aligns closely with the LLM leaderboard, but with
 </div>
 
 As a small note, you might also notice that the “Elo rating” column from earlier Arena leaderboards has been renamed to “Arena score.” Rest assured: nothing has changed in the way we compute this quantity; we just renamed it. (The reason for the change is that we were computing the Bradley-Terry coefficients, which are slightly different from the Elo score, and wanted to avoid future confusion.) You should think of the Arena score as a measure of *model strength*. If model A has an Arena score $s_A$ and model B has an arena score $s_B$, you can calculate the win rate of model A over model B as
-$$\mathbb{P}A (\text{ beats } B) = \frac{1}{1 + e^{s_B  - s_A}}.$$
+$$\mathbb{P}A (\text{ beats } B) = \frac{1}{1 + e^{\frac{s_B  - s_A}{400}}},$$
+where the number 400 is an arbitrary scaling factor that we chose in order to display the Arena score in a more human-readable format (as whole numbers).
 For additional information on how the leaderboard is computed, please see [this notebook](https://colab.research.google.com/drive/1eNPrurghAWlNB1H5uyW244hoVpsvWInc?usp=sharing ). 
 
 ## Examples of Multimodal Usage
