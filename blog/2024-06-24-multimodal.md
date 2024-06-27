@@ -265,3 +265,6 @@ Below we have some examples from these categories as well as some other fun exam
     </div>
 </div>
 </body>
+
+# What's next?
+We look forward to adding multi-image support and supporting new modalities such as PDFs, video, and audio. Please feel free to join our [Discord](https://discord.gg/HSWAKCrnFx) and give us any feedback about what feature you want next!
