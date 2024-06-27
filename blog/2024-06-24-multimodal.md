@@ -134,11 +134,11 @@ For additional information on how the leaderboard is computed, please see [this 
 ## Examples of Multimodal Usage
 
 Now that we’ve looked at the leaderboard results, let’s look at some of the data! We are currently working to better group this data into categories, but these are some common tasks we have noticed so far:
-General captioning questions
-Math questions
-Document understanding
-Meme explanation
-Story writing
+* General captioning questions
+* Math questions
+* Document understanding
+* Meme explanation
+* Story writing
 
 Below we have some examples from these categories as well as some other fun examples we found!
 
