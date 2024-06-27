@@ -1,7 +1,7 @@
 ---
 title: "The Multimodal Arena is Here!"
 author: "Christopher Chou*, Lisa Dunlap*, Wei-Lin Chiang, Ying Sheng, Lianmin Zheng, Anastasios Angelopoulos, Trevor Darrell, Ion Stoica, Joseph E. Gonzalez"
-date: "June 25, 2024"
+date: "June 27, 2024"
 previewImg: /images/blog/vision_arena/llama_gallery.png
 ---
 
