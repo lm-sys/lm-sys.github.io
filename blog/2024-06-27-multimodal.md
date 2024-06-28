@@ -183,7 +183,7 @@ Now that we’ve looked at the leaderboard results, let’s look at some of the 
 * Meme explanation
 * Story writing
 
-Below we have some examples from these categories as well as some other fun examples we found!
+Note that we currently only consider conversations which pass our moderation filter. Below we have some examples from these categories as well as some other fun examples we found!
 
 
 <body>
