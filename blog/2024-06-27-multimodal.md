@@ -121,7 +121,7 @@ td {text-align: left}
 
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. Multimodal Arena Leaderboard (Timeframe: June 10th - June 25th, 2024). Total votes = 17,429. The latest and detailed version <a href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard" target="_blank">here</a>.</p>
+<p style="color:gray; text-align: center;">Table 1. Multimodal Arena Leaderboard (Timeframe: June 10th - June 25th, 2024). Total votes = 17,429. The latest and detailed version <a href="https://leaderboard.lmsys.org/" target="_blank">here</a>.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Rank</th> <th>Model</th> <th>Arena Score</th> <th>95% CI</th> <th>Votes</th></tr>
