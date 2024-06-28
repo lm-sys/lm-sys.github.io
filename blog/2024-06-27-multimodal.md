@@ -121,13 +121,13 @@ td {text-align: left}
 
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. Multimodal Arena Leaderboard (Timeframe: June 10th - June 22, 2023). Total votes = 12,827. The latest and detailed version <a href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard" target="_blank">here</a>.</p>
+<p style="color:gray; text-align: center;">Table 1. Multimodal Arena Leaderboard (Timeframe: June 10th - June 25th, 2024). Total votes = 12,827. The latest and detailed version <a href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard" target="_blank">here</a>.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Rank</th> <th>Model</th> <th>Arena Score</th> <th>95% CI</th> <th>Votes</th></tr>
 
 
-<tr> <td>1</td> <td> <a href="https://chat.openai.com/" target="_blank">GPT-4o</a></td> <td>1226</td> <td>+7/-7</td> <td>3878</td> </tr>
+<tr> <td>1</td> <td> <a href="https://openai.com/index/hello-gpt-4o/" target="_blank">GPT-4o</a></td> <td>1226</td> <td>+7/-7</td> <td>3878</td> </tr>
 
 
 <tr> <td>2</td> <td> <a href="https://www.anthropic.com/news/claude-3-5-sonnet" target="_blank">Claude 3.5 Sonnet</a></td> <td>1209</td> <td>+5/-6</td> <td>5664</td> </tr>
@@ -136,7 +136,7 @@ td {text-align: left}
 <tr> <td>3</td> <td> <a href="https://deepmind.google/technologies/gemini/pro/" target="_blank">Gemini 1.5 Pro</a></td> <td>1171</td> <td>+10/-6</td> <td>3851</td></tr>
 
 
-<tr> <td>3</td> <td> <a href="https://chat.openai.com/" target="_blank">GPT-4 Turbo</a></td> <td>1167</td> <td>+10/-9</td> <td>3385</td></tr>
+<tr> <td>3</td> <td> <a href="https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4" target="_blank">GPT-4 Turbo</a></td> <td>1167</td> <td>+10/-9</td> <td>3385</td></tr>
 
 
 <tr> <td>5</td> <td> <a href="https://www.anthropic.com/news/claude-3-family" target="_blank">Claude 3 Opus</a></td> <td>1084</td> <td>+8/-7</td> <td>3988</td></tr>
@@ -170,7 +170,7 @@ multimodal leaderboard ranking aligns closely with the LLM leaderboard, but with
 </div>
 
 As a small note, you might also notice that the “Elo rating” column from earlier Arena leaderboards has been renamed to “Arena score.” Rest assured: nothing has changed in the way we compute this quantity; we just renamed it. (The reason for the change is that we were computing the Bradley-Terry coefficients, which are slightly different from the Elo score, and wanted to avoid future confusion.) You should think of the Arena score as a measure of *model strength*. If model A has an Arena score $s_A$ and model B has an arena score $s_B$, you can calculate the win rate of model A over model B as
-$$\mathbb{P}A (\text{ beats } B) = \frac{1}{1 + e^{\frac{s_B  - s_A}{400}}},$$
+$$\mathbb{P}(A \text{ beats } B) = \frac{1}{1 + e^{\frac{s_B  - s_A}{400}}},$$
 where the number 400 is an arbitrary scaling factor that we chose in order to display the Arena score in a more human-readable format (as whole numbers).
 For additional information on how the leaderboard is computed, please see [this notebook](https://colab.research.google.com/drive/1eNPrurghAWlNB1H5uyW244hoVpsvWInc?usp=sharing ). 
 
