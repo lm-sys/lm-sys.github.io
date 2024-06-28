@@ -10,7 +10,7 @@ previewImg: /images/blog/vision_arena/llama_gallery.png
 
 We added image support to [Chatbot Arena](https://chat.lmsys.org/)! You can now chat with your favorite vision-language models from OpenAI, Anthropic, Google, and most other major LLM providers to help discover how these models stack up against eachother. 
 
-In just two weeks, we have collected **over 12,000 user preference votes across over 60 languages**. In this post we show the initial leaderboard and statistics, some interesting conversations submitted to the arena, and include a short discussion on the future of the multimodal arena. 
+In just two weeks, we have collected **over 17,000 user preference votes across over 60 languages**. In this post we show the initial leaderboard and statistics, some interesting conversations submitted to the arena, and include a short discussion on the future of the multimodal arena. 
 
 <div class="video-container">
     <video controls>
@@ -121,7 +121,7 @@ td {text-align: left}
 
 
 <br>
-<p style="color:gray; text-align: center;">Table 1. Multimodal Arena Leaderboard (Timeframe: June 10th - June 25th, 2024). Total votes = 12,827. The latest and detailed version <a href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard" target="_blank">here</a>.</p>
+<p style="color:gray; text-align: center;">Table 1. Multimodal Arena Leaderboard (Timeframe: June 10th - June 25th, 2024). Total votes = 17,429. The latest and detailed version <a href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard" target="_blank">here</a>.</p>
 <table style="display: flex; justify-content: center;" align="left" >
 <tbody>
 <tr> <th>Rank</th> <th>Model</th> <th>Arena Score</th> <th>95% CI</th> <th>Votes</th></tr>
