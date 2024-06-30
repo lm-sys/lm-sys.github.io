@@ -8,7 +8,7 @@ previewImg: /images/blog/compressed_fsm/demo.gif
 Constraining an LLM to consistently generate valid JSON or YAML that adheres to a specific schema is a critical feature for many applications.
 In this blog post, we introduce an optimization that significantly accelerates this type of constrained decoding. Our approach utilizes a compressed finite state machine and is compatible with any regular expression, thereby accommodating any JSON or YAML schema.
 Distinct from existing systems that decode one token at one step, our method analyzes the finite state machine of a regular expression, compresses singular transition paths, and decodes <u>multiple tokens in a single step</u> whenever feasible. In comparison to state-of-the-art systems (guidance + llama.cpp, outlines + vLLM), our method can reduce the latency by up to 2x and boost throughput by up to 2.5x.
-This optimization also makes constrained decoding even faster than normal deocding.
+This optimization also makes constrained decoding even faster than normal decoding.
 You can try it now on [SGLang](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#json-decoding).
 
 <img src="/images/blog/compressed_fsm/demo.gif" style="width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; margin-bottom: auto"></img>
