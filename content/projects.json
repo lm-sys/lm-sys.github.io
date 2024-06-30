@@ -55,6 +55,13 @@
         "size": "",
         "desc": "An exact, fast, parallel decoding algorithm without the need for draft models or data stores.",
         "link": "https://github.com/hao-ai-lab/LookaheadDecoding"
+      },
+      {
+        "name": "RouteLLM",
+        "architecture": "",
+        "size": "",
+        "desc": "A framework for serving and evaluating large language model routers.",
+        "link": "https://github.com/lm-sys/RouteLLM"
       }
     ]
   },
