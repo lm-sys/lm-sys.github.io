@@ -53,7 +53,7 @@
         "name": "RouteLLM",
         "architecture": "",
         "size": "",
-        "desc": "A framework for serving and evaluating large language model routers.",
+        "desc": "A framework for serving and evaluating LLM routers.",
         "link": "https://github.com/lm-sys/RouteLLM"
       },
       {
