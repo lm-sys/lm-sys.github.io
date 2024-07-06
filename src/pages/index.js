@@ -110,6 +110,16 @@ export default function Home() {
                 </div>
               </Link>
 
+              <Link href="https://github.com/lm-sys/routellm">
+                <div className="">
+                  <p className="text-2xl pb-1">RouteLLM</p>
+                  <hr />
+                  <p className="pt-2">
+                    An open-source framework for serving and evaluating LLM routers. <br/><br/>
+                  </p>
+                </div>
+              </Link>
+
             </div>
           </div>
         </div>
