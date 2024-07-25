@@ -1,11 +1,11 @@
 ---
-title: "Achieving Faster Open-Source Llama3 Serving with SGLang (vs. TensorRT-LLM, vLLM)"
+title: "Achieving Faster Open-Source Llama3 Serving with SGLang Runtime (vs. TensorRT-LLM, vLLM)"
 author: "The SGLang Team"
 date: "Jul 25, 2024"
 previewImg: /images/blog/sglang_llama3/preview.png
 ---
 
-At LMSYS.org, we've been running the large-scale online LLM chat platform, [Chatbot Arena](https://chat.lmsys.org/), for over a year, serving millions of users. We know firsthand how crucial efficient serving is for AI products and research. Through our operational experiences and in-depth research and engineering, we've continuously enhanced our underlying serving systems, spanning from the high-level multi-model serving framework, [FastChat](https://github.com/lm-sys/FastChat/tree/main), to our efficient serving engine, [SGLang](https://github.com/sgl-project/sglang).
+At LMSYS.org, we've been running the large-scale online LLM chat platform, [Chatbot Arena](https://chat.lmsys.org/), for over a year, serving millions of users. We know firsthand how crucial efficient serving is for AI products and research. Through our operational experiences and in-depth research and engineering, we've continuously enhanced our underlying serving systems, spanning from the high-level multi-model serving framework, [FastChat](https://github.com/lm-sys/FastChat/tree/main), to our efficient serving engine, [SGLang Runtime (SRT)](https://github.com/sgl-project/sglang).
 
 In this blog post, we want to share our latest progress and benchmark results on the SGLang Runtime by comparing its performance to other popular options. There are already several popular serving engine options, such as TensorRT-LLM, vLLM, MLC-LLM, and Hugging Face TGI. However, our experience with these solutions revealed that they are often hard to use, difficult to customize, or suffer from compromised performance. This motivated us to develop SGLang v0.2, aiming to create a serving engine that is not only user-friendly and easily modifiable but also delivers top-tier performance.
 
@@ -20,7 +20,10 @@ We benchmark both offline and online use cases.
 - For the offline case, we send 2K to 3K requests at once, measuring output throughput (tokens/second), which is defined as the number of output tokens divided by the total duration. We test using the ShareGPT dataset and several synthetic datasets. We use In\[2048, 4096\]-Out\[256, 512\] to indicate a synthetic dataset with input lengths sampled from a uniform distribution \[2048, 4096\] and output lengths from \[256, 512\].  
 - For the online case, we send requests at a rate ranging from 1 to 16 requests per second (RPS), measuring the median end-to-end latency. We use a synthetic dataset In\[512, 4096\]-Out\[128, 1024\].
 
-We use vLLM 0.5.2 with default arguments and TensorRT-LLM with the recommended arguments and tuned batch sizes. The prefix cache is turned off for all engines. More details and reproducible scripts are provided in Appendix A. For each model, we will first present the offline results and then present the online results.
+We use vLLM 0.5.2 with default arguments and TensorRT-LLM with the recommended arguments and tuned batch sizes. The prefix cache is turned off for all engines.
+We use OpenAI-compatible APIs to benchmark SGLang and vLLM, and the Triton interface for TensorRT-LLM.
+
+More details and reproducible scripts are provided in Appendix A. For each model, we will first present the offline results and then present the online results.
 
 ## Llama-8B on 1 x A100 (bf16)
 
@@ -90,7 +93,7 @@ We're excited to share our latest benchmark results. While there's still more to
 1. [Install](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#install) SGLang with pip, from source, or using Docker.
 2. Launch a server:
     ```
-    # Llama 3B
+    # Llama 8B
     python -m sglang.launch_server --model-path meta-llama/Meta-Llama-3.1-8B-Instruct
 
     # Llama 405B
@@ -120,6 +123,6 @@ This blog post is contributed by Liangsheng Yin, Yineng Zhang, Ying Sheng, and o
 
 The instructions to reproduce the benchmark is at [sglang/benchmark/blog\_v0\_2](https://github.com/sgl-project/sglang/tree/main/benchmark/blog\_v0\_2).
 
-For all benchmarks, we set \`ignore\_eos\` or \`min\_length/end\_id\` to ensure each engine outputs the same number of tokens. We use OpenAI-compatible APIs to benchmark SGLang and vLLM, and the Triton interface for TensorRT-LLM. We tried using vLLM 0.5.3.post1, but it often crashes under high loads and seems to have similar or worse performance compared to vLLM 0.5.2 from our partial benchmarking. Therefore, we report results from vLLM 0.5.2 instead. While we are aware that different server configurations can significantly impact serving performance, we mostly use the default arguments in each engine to mimic the case of a normal user.
+For all benchmarks, we set \`ignore\_eos\` or \`min\_length/end\_id\` to ensure each engine outputs the same number of tokens. We tried using vLLM 0.5.3.post1, but it often crashes under high loads and seems to have similar or worse performance compared to vLLM 0.5.2 from our partial benchmarking. Therefore, we report results from vLLM 0.5.2 instead. While we are aware that different server configurations can significantly impact serving performance, we mostly use the default arguments in each engine to mimic the case of a normal user.
 
 For the 8B and 70B models, we use the [meta-llama/Meta-Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) and [meta-llama/Meta-Llama-3-70B-Instruct](http://meta-llama/Meta-Llama-3-70B-Instruct) bf16 checkpoints, and the [neuralmagic/Meta-Llama-3-70B-Instruct-FP8](https://huggingface.co/neuralmagic/Meta-Llama-3-70B-Instruct-FP8) fp8 checkpoint. For the 405B models, we use dummy weights for all benchmarks. Since the TensorRT-LLM latest image r24.06 does not support fbgemm\_fp8 quantization in the official [meta-llama/Meta-Llama-3.1-405B-FP8](https://huggingface.co/meta-llama/Meta-Llama-3.1-405B-FP8) checkpoint, we use per-layer fp8 quantization in all frameworks and quantize all layers except lm\_head. We believe this provides a fair comparison among all engines. The A100 and H100 GPUs are 80GB SXM versions.
