@@ -11,7 +11,7 @@ This post focuses on SGLang Runtime, a general-purpose serving engine for LLMs a
 
 Compared to TensorRT-LLM and vLLM, SGLang Runtime consistently delivers superior or competitive performance in both online and offline scenarios, handling models from Llama-8B to Llama-405B, and on A100 and H100 GPUs, using FP8 and FP16. **SGLang consistently outperforms vLLM, achieving up to 3.8x higher throughput on Llama-70B. It also often matches or exceeds TensorRT-LLM, with up to 2.1x higher throughput on Llama-405B.** More importantly, SGLang is fully open-source, written in pure Python, with the core schedulers implemented in fewer than 4K lines of code.
 
-SGLang is an open-source project licensed under the Apache 2.0 license. It has been used by LMSYS Chatbot Arena to support parts of the models, Databricks, several startups, and research institutes, generating trillions of tokens and enabling faster iterations. As it evolves from a research prototype, we invite the community to join us in creating the next-generation efficient engine.
+SGLang is an open-source project licensed under the Apache 2.0 license. It has been used by LMSYS Chatbot Arena to support parts of the models, Databricks, several startups, and research institutes, generating trillions of tokens and enabling faster iterations. As it gradually matures from a research prototype, we invite the community to join us in creating the next-generation efficient engine.
 
 ## Benchmark Setup
 
