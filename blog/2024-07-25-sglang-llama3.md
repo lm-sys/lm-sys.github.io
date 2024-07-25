@@ -114,7 +114,7 @@ We're excited to share our latest benchmark results. While there's still more to
 
 ## The Team
 
-This blog post is contributed by Liangsheng Yin, Yineng Zhang, Ying Sheng, and over 65 open-source [contributors](https://github.com/sgl-project/sglang/graphs/contributors). We thank the support from Databricks, and Ying Sheng’s work was done at Databricks. We especially thank Lianmin Zheng and Zihao Ye for their technical support, and Matei Zaharia for helpful advice.
+This blog post is contributed by Liangsheng Yin, Yineng Zhang, Ying Sheng, and over 65 open-source [contributors](https://github.com/sgl-project/sglang/graphs/contributors). We thank the support from Databricks, and Ying Sheng’s work was done at Databricks. We especially thank Lianmin Zheng and Zihao Ye for their technical support, Matei Zaharia for his helpful advice, and Cody Yu for his feedback.
 
 ## Appendix A: Detailed Benchmark Setups
 
