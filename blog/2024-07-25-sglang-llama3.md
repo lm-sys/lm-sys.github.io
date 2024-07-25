@@ -119,7 +119,7 @@ You can serve a Llama model easily with the following steps.
 
 ## The Team
 
-This blog post is contributed by Liangsheng Yin, Yineng Zhang, Ying Sheng, and over 65 open-source [contributors](https://github.com/sgl-project/sglang/graphs/contributors). We thank the support from Databricks, and Ying Sheng’s work was done at Databricks. We especially thank Lianmin Zheng and Zihao Ye for their technical support, Matei Zaharia for his helpful advice, and Cody Yu for his feedback.
+This blog post is contributed by Liangsheng Yin, Yineng Zhang, Ying Sheng, and over 65 open-source [contributors](https://github.com/sgl-project/sglang/graphs/contributors). We thank the support from Databricks, and Ying Sheng’s work was done at Databricks. We especially thank Lianmin Zheng, Zihao Ye, and Horace He for their technical support, Matei Zaharia for his helpful advice, and Cody Yu for his feedback.
 
 ## Appendix A: Detailed Benchmark Setups
 
