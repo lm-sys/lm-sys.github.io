@@ -5,13 +5,13 @@ date: "Jul 25, 2024"
 previewImg: /images/blog/sglang_llama3/preview.png
 ---
 
-At LMSYS.org, we've been running the large-scale online LLM chat platform, [Chatbot Arena](https://chat.lmsys.org/), for over a year, serving millions of users. We know firsthand how crucial efficient serving is for AI products and research. Through our operational experiences and in-depth research and engineering, we've continuously enhanced our underlying serving systems, spanning from the high-level multi-model serving framework, [FastChat](https://github.com/lm-sys/FastChat/tree/main), to our efficient serving engine, [SGLang Runtime (SRT)](https://github.com/sgl-project/sglang).
+At LMSYS.org, we've been running the [Chatbot Arena](https://chat.lmsys.org/) platform for over a year, serving millions of users. We know firsthand how crucial efficient serving is for AI products and research. Through our operational experiences and in-depth research, we've continuously enhanced the underlying serving systems, spanning from the high-level multi-model serving framework, [FastChat](https://github.com/lm-sys/FastChat/tree/main), to the efficient serving engine, [SGLang Runtime (SRT)](https://github.com/sgl-project/sglang/tree/main).
 
-In this blog post, we want to share our latest progress and benchmark results on the SGLang Runtime by comparing its performance to other popular options. There are already several popular serving engine options, such as TensorRT-LLM, vLLM, MLC-LLM, and Hugging Face TGI. However, our experience with these solutions revealed that they are often hard to use, difficult to customize, or suffer from compromised performance. This motivated us to develop SGLang v0.2, aiming to create a serving engine that is not only user-friendly and easily modifiable but also delivers top-tier performance.
+This post focuses on SGLang Runtime, a general-purpose serving engine for LLMs and VLMs. While existing options like TensorRT-LLM, vLLM, MLC-LLM, and Hugging Face TGI have their merits, we found them sometimes hard to use, difficult to customize, or lacking in performance. This motivated us to develop SGLang v0.2, aiming to create a serving engine that is not only user-friendly and easily modifiable but also delivers top-tier performance. While SGLang includes frontend language features, this post will focus solely on the backend runtime and use "SGLang" and "SGLang Runtime" interchangeably to refer to the runtime.
 
-Compared to TensorRT-LLM and vLLM, SGLang consistently delivers superior or competitive performance in both online and offline scenarios, on models ranging from Llama-8B to Llama-405B, and on A100 and H100 GPUs, using FP8 and FP16. **SGLang consistently outperforms vLLM, achieving up to 3.8x higher throughput on Llama-70B. It also often matches or exceeds TensorRT-LLM, with up to 2.1x higher throughput on Llama-405B.** More importantly, SGLang is fully open-source, written in pure Python, with the core schedulers implemented in fewer than 4K lines of code.
+Compared to TensorRT-LLM and vLLM, SGLang Runtime consistently delivers superior or competitive performance in both online and offline scenarios, handling models from Llama-8B to Llama-405B, and on A100 and H100 GPUs, using FP8 and FP16. **SGLang consistently outperforms vLLM, achieving up to 3.8x higher throughput on Llama-70B. It also often matches or exceeds TensorRT-LLM, with up to 2.1x higher throughput on Llama-405B.** More importantly, SGLang is fully open-source, written in pure Python, with the core schedulers implemented in fewer than 4K lines of code.
 
-SGLang is an open-source project under the Apache 2.0 license. It has been used by LMSYS Chatbot Arena, Databricks, several startups, and research institutes, generating trillions of tokens and enabling faster iterations. As it gradually matures from a research prototype, we invite the community to join us in building the next-generation efficient engine.
+SGLang is an open-source project licensed under the Apache 2.0 license. It has been used by LMSYS Chatbot Arena to support parts of the models, Databricks, several startups, and research institutes, generating trillions of tokens and enabling faster iterations. As it evolves from a research prototype, we invite the community to join us in creating the next-generation efficient engine.
 
 ## Benchmark Setup
 
@@ -48,7 +48,7 @@ In the online figure below, TensorRT-LLM shows excellent latency performance tha
 
 ## Llama-70B on 8 x H100 (fp8)
 
-Now, let us test the FP8 performance. Both vLLM and SGLang use FP8 kernels from CUTLASS. In the offline setting, SGLang’s batch scheduler is very efficient and can continue to scale the throughput with larger batch sizes, achieving the highest throughput in this case. Other systems cannot scale their throughput or batch sizes due to OOM, missing manual tuning, or other overheads. This trend continues in the online case as well, with both SGLang and TensorRT achieving similar median latency.  
+Now, let us test the FP8 performance. Both vLLM and SGLang use FP8 kernels from CUTLASS. In the offline setting, SGLang’s batch scheduler is very efficient and can continue to scale the throughput with larger batch sizes, achieving the highest throughput in this case. Other systems cannot scale their throughput or batch sizes due to OOM, missing extensive manual tuning, or other overheads. This trend continues in the online case as well, with both SGLang and TensorRT achieving similar median latency.  
 
 <img src="/images/blog/sglang_llama3/70b_fp8_throughput.svg" style="display: flex; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 70%;"></img>
 
@@ -58,7 +58,7 @@ Now, let us test the FP8 performance. Both vLLM and SGLang use FP8 kernels from 
 
 ## Llama-405B on 8 x H100 (fp8)
 
-At last, we benchmark the performance on the largest 405B model. Because the model is large, most of the time is spent on the GPU kernels. The gap between different frameworks shrinks. The poor performance of TensorRT-LLM is probably due to the fact that the 405B model just came out, and the version we used in the provided image has not integrated some latest optimizations.  
+At last, we benchmark the performance on the largest 405B model. Because the model is large, most of the time is spent on the GPU kernels. The gap between different frameworks shrinks. The poor performance of TensorRT-LLM is probably due to the fact that the 405B model just came out, and the version we used in the provided image has not integrated some latest optimizations. In both online and offline cases, SGLang performs the best.
 
 <img src="/images/blog/sglang_llama3/405b_fp8_throughput.svg" style="display: flex; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 70%;"></img>
 
@@ -86,9 +86,11 @@ Table. 1 Comparison
 
 ## What is Next
 
-We're excited to share our latest benchmark results. While there's still more to do, this shows our philosophy of developing a simple, customizable, and high-performance serving engine is achievable. Stay tuned for new features like long context and MoE optimizations, and detailed technical walkthroughs. Join us in building the next-generation serving engine at https://github.com/sgl-project/sglang.
+We're excited to share our latest benchmark results. While there's still more to do, this shows our philosophy of developing a simple, customizable, and high-performance serving engine is achievable. Stay tuned for new features like long context and MoE optimizations, and detailed technical walkthroughs. Join us in building the next-generation serving engine at [https://github.com/sgl-project/sglang](https://github.com/sgl-project/sglang).
 
 ## Try Llama Serving
+
+You can serve a Llama model easily with the following steps.
 
 1. [Install](https://github.com/sgl-project/sglang/tree/main?tab=readme-ov-file#install) SGLang with pip, from source, or using Docker.
 2. Launch a server:
