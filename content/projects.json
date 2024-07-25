@@ -39,7 +39,7 @@
         "name": "SGLang",
         "architecture": "",
         "size": "",
-        "desc": "Efficient interface and runtime for complex LLM programs.",
+        "desc": "A fast serving engine for LLMs and VLMs.",
         "link": "https://github.com/sgl-project/sglang"
       },
       {

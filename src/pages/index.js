@@ -65,7 +65,7 @@ export default function Home() {
                   <p className="text-2xl pb-1">SGLang</p>
                   <hr />
                   <p className="pt-2">
-                    Efficient interface and runtime for complex LLM programs
+                    A fast serving engine for LLMs and VLMs.
                   </p>
                 </div>
               </Link>
