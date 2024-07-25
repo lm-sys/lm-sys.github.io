@@ -20,7 +20,7 @@ We benchmark both offline and online use cases.
 - For the offline case, we send 2K to 3K requests at once, measuring output throughput (tokens/second), which is defined as the number of output tokens divided by the total duration. We test using the ShareGPT dataset and several synthetic datasets. We use In\[2048, 4096\]-Out\[256, 512\] to indicate a synthetic dataset with input lengths sampled from a uniform distribution \[2048, 4096\] and output lengths from \[256, 512\].  
 - For the online case, we send requests at a rate ranging from 1 to 16 requests per second (RPS), measuring the median end-to-end latency. We use a synthetic dataset In\[512, 4096\]-Out\[128, 1024\].
 
-We use vLLM 0.5.2 with default arguments and TensorRT-LLM with the recommended arguments and tuned batch sizes. The prefix cache is turned off for all engines.
+We use vLLM 0.5.2 with default arguments and TensorRT-LLM with the recommended arguments and tuned batch sizes. The prefix cache is turned off for all engines. The purpose is to benchmark the base performance without any additional features, such as speculative decoding or caching.
 We use OpenAI-compatible APIs to benchmark SGLang and vLLM, and the Triton interface for TensorRT-LLM.
 
 More details and reproducible scripts are provided in Appendix A. For each model, we will first present the offline results and then present the online results.
