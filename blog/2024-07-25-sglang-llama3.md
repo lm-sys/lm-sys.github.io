@@ -27,7 +27,7 @@ More details and reproducible scripts are provided in Appendix A. For each model
 
 ## Llama-8B on 1 x A100 (bf16)
 
-We will start with the small model Llama-8B. The figure below shows the maximum output throughput each engine can achieve under offline settings on five different datasets. TensorRT-LLM and SGLang can both reach a throughput of around 4000 tokens per second, while vLLM lags behind.  
+Starting with the small model Llama-8B, the figure below shows the maximum output throughput each engine can achieve in offline settings across five different datasets. Both TensorRT-LLM and SGLang can achieve a throughput of approximately 4000 tokens per second, while vLLM falls behind.
 
 <img src="/images/blog/sglang_llama3/8b_throughput.svg" style="display: flex; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 70%;"></img>
 
