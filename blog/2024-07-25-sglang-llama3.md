@@ -25,7 +25,7 @@ We use OpenAI-compatible APIs to benchmark SGLang and vLLM, and the Triton inter
 
 More details and reproducible scripts are provided in Appendix A. For each model, we will first present the offline results and then present the online results.
 
-> Update (2024-07-25 8 PM PST): The dataset descriptions above are accurate but differ from the initial version of this blog post. We identified some issues in our synthetic data generation pipeline, so we corrected the dataset description to reflect the actual tested datasets. The comparison is still fair because all engines are benchmarked under the same conditions. The issues caused our benchmark to cover only the normal ShareGPT dataset distribution but miss long prompt cases. We are working on obtaining more benchmark results for longer prompts. However, we expect the speedup of SGLang to be less significant for long prompts since it primarily accelerates the decoding phase.
+<span style="color: red;"> Update (2024-07-25 8 PM PST) </span>: The dataset descriptions above are accurate but differ from the initial version of this blog post. We identified some issues in our synthetic data generation pipeline, so we corrected the dataset description to reflect the actual tested datasets. The comparison is still fair because all engines are benchmarked under the same conditions. The issues caused our benchmark to cover only the normal ShareGPT dataset distribution but miss long prompt cases. We are working on obtaining more benchmark results for longer prompts. However, we expect the speedup of SGLang to be less significant for long prompts since it primarily accelerates the decoding phase.
 
 ## Llama-8B on 1 x A100 (bf16)
 
