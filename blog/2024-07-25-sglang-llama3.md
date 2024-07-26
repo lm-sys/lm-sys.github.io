@@ -9,7 +9,7 @@ At LMSYS.org, we've been running the [Chatbot Arena](https://chat.lmsys.org/) pl
 
 This post focuses on SGLang Runtime, a general-purpose serving engine for LLMs and VLMs. While existing options like TensorRT-LLM, vLLM, MLC-LLM, and Hugging Face TGI have their merits, we found them sometimes hard to use, difficult to customize, or lacking in performance. This motivated us to develop SGLang v0.2, aiming to create a serving engine that is not only user-friendly and easily modifiable but also delivers top-tier performance. While SGLang includes frontend language features, this post will focus solely on the backend runtime and use "SGLang" and "SGLang Runtime" interchangeably to refer to the runtime.
 
-Compared to TensorRT-LLM and vLLM, SGLang Runtime consistently delivers superior or competitive performance in both online and offline scenarios, handling models from Llama-8B to Llama-405B, and on A100 and H100 GPUs, using FP8 and FP16. **SGLang consistently outperforms vLLM, achieving up to 3.8x higher throughput on Llama-70B. It also often matches or exceeds TensorRT-LLM, with up to 2.1x higher throughput on Llama-405B.** More importantly, SGLang is fully open-source, written in pure Python, with the core schedulers implemented in fewer than 4K lines of code.
+Compared to TensorRT-LLM and vLLM, SGLang Runtime consistently delivers superior or competitive performance in both online and offline scenarios, handling models from Llama-8B to Llama-405B, and on A100 and H100 GPUs, using FP8 and FP16. **SGLang consistently outperforms vLLM, achieving up to 3.1x higher throughput on Llama-70B. It also often matches or sometimes outperforms TensorRT-LLM**. More importantly, SGLang is fully open-source, written in pure Python, with the core schedulers implemented in fewer than 4K lines of code.
 
 SGLang is an open-source project licensed under the Apache 2.0 license. It has been used by LMSYS Chatbot Arena to support parts of the models, Databricks, several startups, and research institutes, generating trillions of tokens and enabling faster iterations. As it gradually matures from a research prototype, we invite the community to join us in creating the next-generation efficient engine.
 
@@ -17,19 +17,18 @@ SGLang is an open-source project licensed under the Apache 2.0 license. It has b
 
 We benchmark both offline and online use cases:
 
-- **Offline:** We send 2K to 3K requests at once, measuring output throughput (tokens/second), defined as the number of output tokens divided by the total duration. We test synthetic datasets derived from the ShareGPT dataset. For example, I-512-O-1024 indicates a dataset with an average input of 512 tokens and an average output of 1024 tokens. The five tested datasets are: Dataset 1: I-243-O-770, Dataset 2: I-295-O-770, Dataset 3: I-243-O-386, Dataset 4: I-295-O-386, Dataset 5: I-221-O-201.
-- **Online:** We send requests at rates ranging from 1 to 16 requests per second (RPS), measuring the median end-to-end latency. We use the synthetic dataset I-292-O-579.
+- **Offline:** We send 1K to 6K requests at once, measuring output throughput (tokens/second), defined as the number of output tokens divided by the total duration. The tested datasets include several synthetic datasets and the ShareGPT dataset. We use Input-512-Output-1024 to indicate a dataset where the input lengths are sampled from a uniform distribution [1, 512] and the output lengths from [1, 1024].
+- **Online:** We send requests at rates ranging from 1 to 16 requests per second (RPS), measuring the median end-to-end latency. We use the synthetic dataset Input-1024-Output-1024.
 
-We use vLLM 0.5.2 with default arguments and TensorRT-LLM with the recommended arguments and tuned batch sizes. The prefix cache is turned off for all engines. The purpose is to benchmark the base performance without any additional features, such as speculative decoding or caching.
-We use OpenAI-compatible APIs to benchmark SGLang and vLLM, and the Triton interface for TensorRT-LLM.
+We use vLLM 0.5.2 with default arguments and TensorRT-LLM v0.10.0 with the recommended arguments and tuned batch sizes. The prefix cache is turned off for all engines. The purpose is to benchmark the base performance without any additional features, such as speculative decoding or caching. OpenAI-compatible APIs are used to benchmark SGLang and vLLM, and the Triton interface for TensorRT-LLM.
 
-More details and reproducible scripts are provided in Appendix A. For each model, we will first present the offline results and then present the online results.
+More details and reproducible scripts are provided in Appendix A. For each model, we will first present the offline results and then the online results.
 
-<span style="color: red;"> Update (2024-07-25 8 PM PST) </span>: The dataset descriptions above are accurate but differ from the initial version of this blog post. We identified some issues in our synthetic data generation pipeline, so we corrected the dataset description to reflect the actual tested datasets. The comparison is still fair because all engines are benchmarked under the same conditions. The issues caused our benchmark to cover only the normal ShareGPT dataset distribution but miss long prompt cases. We are working on obtaining more benchmark results for longer prompts. However, we expect the speedup of SGLang to be less significant for long prompts since it primarily accelerates the decoding phase.
+<span style="color: red;">Update (2024-07-26 4 AM PST):</span> We noticed some issues in our original synthetic data generation pipeline, which primarily generated short inputs, making the dataset description in the first version of this blog post inaccurate. In the current version, we have fixed these issues and introduced more dataset configurations to cover both long and short inputs.
 
 ## Llama-8B on 1 x A100 (bf16)
 
-Starting with the small model Llama-8B, the figure below shows the maximum output throughput each engine can achieve in offline settings across five different datasets. Both TensorRT-LLM and SGLang can achieve a throughput of approximately 4000 tokens per second, while vLLM falls behind.
+Starting with the small model Llama-8B, the figure below shows the maximum output throughput each engine can achieve in offline settings across six different datasets. Both TensorRT-LLM and SGLang can achieve an excellent throughput of up to 5000 tokens per second on a dataset with short inputs, while vLLM lags behind.
 
 <img src="/images/blog/sglang_llama3/8b_throughput.svg" style="display: flex; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 70%;"></img>
 
@@ -50,17 +49,17 @@ In the online figure below, TensorRT-LLM shows excellent latency performance tha
 
 ## Llama-70B on 8 x H100 (fp8)
 
-Now, let us test the FP8 performance. Both vLLM and SGLang use FP8 kernels from CUTLASS. In the offline setting, SGLang’s batch scheduler is very efficient and can continue to scale the throughput with larger batch sizes, achieving the highest throughput in this case. Other systems cannot scale their throughput or batch sizes due to OOM, missing extensive manual tuning, or other overheads. This trend continues in the online case as well, with both SGLang and TensorRT achieving similar median latency.  
+Now, let us test the FP8 performance. Both vLLM and SGLang use FP8 kernels from CUTLASS. In the offline setting, SGLang’s batch scheduler is very efficient and can continue to scale the throughput with larger batch sizes, achieving the highest throughput in this case. Other systems cannot scale their throughput or batch sizes due to OOM, missing extensive manual tuning, or other overheads. Generally, SGLang performs better on short inputs, while TensorRT-LLM performs better on long inputs. This is likely due to their different kernel implementations and batch scheduling policies.
 
 <img src="/images/blog/sglang_llama3/70b_fp8_throughput.svg" style="display: flex; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 70%;"></img>
 
-<br>
+The above trend continues in the online case as well, with both SGLang and TensorRT achieving similar median latency.
 
 <img src="/images/blog/sglang_llama3/70b_fp8_latency.svg" style="display: flex; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 70%;"></img>
 
 ## Llama-405B on 8 x H100 (fp8)
 
-At last, we benchmark the performance on the largest 405B model. Because the model is large, most of the time is spent on the GPU kernels. The gap between different frameworks shrinks. The poor performance of TensorRT-LLM is probably due to the fact that the 405B model just came out, and the version we used in the provided image has not integrated some latest optimizations. In both online and offline cases, SGLang performs the best.
+Finally, we benchmarked the performance on the largest 405B model. Because the model is large, most of the time is spent on the GPU kernels. The limited KV cache size makes less room for scheduling as well, so the gap between different frameworks shrinks. SGLang still outperforms vLLM, but the improvement is less significant. As the 405B model just came out, some of the latest optimizations in TensorRT-LLM have not been included in the pre-built Docker image, so we omitted the performance of TensorRT-LLM here. We are working with the NVIDIA team to correctly benchmark the performance of TensorRT-LLM on this model.
 
 <img src="/images/blog/sglang_llama3/405b_fp8_throughput.svg" style="display: flex; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 70%;"></img>
 
@@ -72,9 +71,8 @@ At last, we benchmark the performance on the largest 405B model. Because the mod
 
 SGLang is a serving framework for large language models and vision-language models. It builds on and enhances many good designs from several open-source LLM serving engines, including [LightLLM](https://github.com/ModelTC/lightllm), [vLLM](https://blog.vllm.ai/2023/06/20/vllm.html), and [Guidance](https://github.com/guidance-ai/guidance). It leverages high-performance attention CUDA kernels from [FlashInfer](https://flashinfer.ai/2024/02/02/introduce-flashinfer.html) and integrates torch.compile inspired by [gpt-fast](https://pytorch.org/blog/accelerating-generative-ai-2/).
 
-Additionally, we introduced innovations such as [RadixAttention](https://arxiv.org/abs/2312.07104) for automatic KV cache reuse and [compressed state machine](https://lmsys.org/blog/2024-02-05-compressed-fsm/) for fast constrained decoding. SGLang is known for its highly efficient [batch scheduler](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/managers), which is implemented entirely in Python.
-To make an apples-to-apples comparison, this blog tests the base performance of these serving engines with scenario- or workload-specific optimizations (like prefix caching and speculative decoding) turned off. The speedup in SGLang is achieved through proper engineering.
-SGLang's efficient Python-based batch scheduler scales well, often matching or even outperforming closed-source implementations built with C++.
+Additionally, we introduced innovations such as [RadixAttention](https://arxiv.org/abs/2312.07104) for automatic KV cache reuse and [compressed state machine](https://lmsys.org/blog/2024-02-05-compressed-fsm/) for fast constrained decoding. SGLang is known for its highly efficient [batch scheduler](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/managers), which is implemented entirely in Python. SGLang's efficient Python-based batch scheduler scales well, often matching or even outperforming closed-source implementations built with C++.
+The speedup shown in this blog post mainly comes from the excellent system engineering.
 
 Table 1 compares various aspects of SGLang, TensorRT-LLM, and vLLM. In terms of performance, both SGLang and TensorRT-LLM excel. Regarding usability and customizability, SGLang's lightweight and modular core makes it easy to customize, whereas TensorRT-LLM's complex C++ tech stack and setup instructions make it harder to use and modify. SGLang's source code is fully open-source, while TensorRT-LLM is only partially open-source. In contrast, vLLM suffers from high CPU scheduling overhead.
 
