@@ -15,15 +15,17 @@ SGLang is an open-source project licensed under the Apache 2.0 license. It has b
 
 ## Benchmark Setup
 
-We benchmark both offline and online use cases.
+We benchmark both offline and online use cases:
 
-- For the offline case, we send 2K to 3K requests at once, measuring output throughput (tokens/second), which is defined as the number of output tokens divided by the total duration. We test using the ShareGPT dataset and several synthetic datasets. We use In\[2048, 4096\]-Out\[256, 512\] to indicate a synthetic dataset with input lengths sampled from a uniform distribution \[2048, 4096\] and output lengths from \[256, 512\].  
-- For the online case, we send requests at a rate ranging from 1 to 16 requests per second (RPS), measuring the median end-to-end latency. We use a synthetic dataset In\[512, 4096\]-Out\[128, 1024\].
+- **Offline:** We send 2K to 3K requests at once, measuring output throughput (tokens/second), defined as the number of output tokens divided by the total duration. We test synthetic datasets derived from the ShareGPT dataset. For example, I-512-O-1024 indicates a dataset with an average input of 512 tokens and an average output of 1024 tokens. The five tested datasets are: Dataset 1: I-243-O-770, Dataset 2: I-295-O-770, Dataset 3: I-243-O-386, Dataset 4: I-295-O-386, Dataset 5: I-221-O-201.
+- **Online:** We send requests at rates ranging from 1 to 16 requests per second (RPS), measuring the median end-to-end latency. We use the synthetic dataset I-292-O-579.
 
 We use vLLM 0.5.2 with default arguments and TensorRT-LLM with the recommended arguments and tuned batch sizes. The prefix cache is turned off for all engines. The purpose is to benchmark the base performance without any additional features, such as speculative decoding or caching.
 We use OpenAI-compatible APIs to benchmark SGLang and vLLM, and the Triton interface for TensorRT-LLM.
 
 More details and reproducible scripts are provided in Appendix A. For each model, we will first present the offline results and then present the online results.
+
+> Update (2024-07-25 8 PM PST): The dataset descriptions above are accurate but differ from the initial version of this blog post. We identified some issues in our synthetic data generation pipeline, so we corrected the dataset description to reflect the actual tested datasets. The comparison is still fair because all engines are benchmarked under the same conditions. The issues caused our benchmark to cover only the normal ShareGPT dataset distribution but miss long prompt cases. We are working on obtaining more benchmark results for longer prompts. However, we expect the speedup of SGLang to be less significant for long prompts since it primarily accelerates the decoding phase.
 
 ## Llama-8B on 1 x A100 (bf16)
 
