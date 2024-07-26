@@ -74,9 +74,7 @@ SGLang is a serving framework for large language models and vision-language mode
 Additionally, we introduced innovations such as [RadixAttention](https://arxiv.org/abs/2312.07104) for automatic KV cache reuse and [compressed state machine](https://lmsys.org/blog/2024-02-05-compressed-fsm/) for fast constrained decoding. SGLang is known for its highly efficient [batch scheduler](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/managers), which is implemented entirely in Python. SGLang's efficient Python-based batch scheduler scales well, often matching or even outperforming closed-source implementations built with C++.
 The speedup shown in this blog post mainly comes from the excellent system engineering.
 
-Table 1 compares various aspects of SGLang, TensorRT-LLM, and vLLM. In terms of performance, both SGLang and TensorRT-LLM excel. Regarding usability and customizability, SGLang's lightweight and modular core makes it easy to customize, whereas TensorRT-LLM's complex C++ tech stack and setup instructions make it harder to use and modify. SGLang's source code is fully open-source, while TensorRT-LLM is only partially open-source. In contrast, vLLM suffers from high CPU scheduling overhead.
-
-Table. 1 Comparison
+The table below compares various aspects of SGLang, TensorRT-LLM, and vLLM. In terms of performance, both SGLang and TensorRT-LLM excel. Regarding usability and customizability, SGLang's lightweight and modular core makes it easy to customize, whereas TensorRT-LLM's complex C++ tech stack and setup instructions make it harder to use and modify. SGLang's source code is fully open-source, while TensorRT-LLM is only partially open-source. In contrast, vLLM suffers from high CPU scheduling overhead.
 
 |  | SGLang | TensorRT-LLM | vLLM |
 | :---- | :---- | :---- | :---- |
