@@ -129,7 +129,7 @@ An agreement score of 1 implies benchmark A confidently agrees on the preference
 
 We define **separability** by whether a benchmark can separate given model pairs with derived confidence intervals (via bootstrapping). This metric can also serve to measure the variances in ranking outputs provided by a benchmark. We quantify this metric by the percentage of model pairs which have non-overlapping confidence intervals of the benchmark scores.
 
-We use a set of top-20 models* on [Chatbot Arena](https://chat.lmsys.org/?leaderboard) (April 13, 2024) that are presented on [AlpacaEval leaderboard](https://tatsu-lab.github.io/alpaca_eval/) to calculate separability and agreement per benchmark. We consider the human preference ranking by Chatbot Arena (English only) as the reference to calculate agreement.
+We use a set of top-20 models* on [Chatbot Arena](https://lmarena.ai/?leaderboard) (April 13, 2024) that are presented on [AlpacaEval leaderboard](https://tatsu-lab.github.io/alpaca_eval/) to calculate separability and agreement per benchmark. We consider the human preference ranking by Chatbot Arena (English only) as the reference to calculate agreement.
 
 In Table 1, Arena-hard-Auto-v0.1 shows the highest separability (87.4%) against widely adopted LLM benchmarks and offers highest agreement (89.1%) to Chatbot Arena. It is also cheap and fast to run ($25).
 

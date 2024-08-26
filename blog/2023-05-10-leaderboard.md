@@ -14,7 +14,7 @@ In this update, we have added 4 new yet strong players into the Arena, including
 - Anthropic Claude-v1
 - RWKV-4-Raven-14B 
 
-Table 1 displays the Elo ratings of all 13 models, which are based on the 13K voting data and calculations shared in this [notebook](https://colab.research.google.com/drive/1RAWb22-PFNI-X1gPVzc927SGUdfr6nsR?usp=sharing). You can also try the voting [demo](https://arena.lmsys.org).
+Table 1 displays the Elo ratings of all 13 models, which are based on the 13K voting data and calculations shared in this [notebook](https://colab.research.google.com/drive/1RAWb22-PFNI-X1gPVzc927SGUdfr6nsR?usp=sharing). You can also try the voting [demo](https://lmarena.ai).
 
 <style>
 th {text-align: left}
