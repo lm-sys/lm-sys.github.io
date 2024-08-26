@@ -7,7 +7,7 @@
         "architecture": "",
         "size": "",
         "desc": "A benchmark platform for large language models (LLMs) that features anonymous, randomized battles in a crowdsourced manner. It comes with a leaderboard based on Elo ratings.",
-        "link": "https://chat.lmsys.org/"
+        "link": "https://lmarena.ai/"
       },
       {
         "name": "Arena Hard Auto",

@@ -8,7 +8,7 @@ previewImg: /images/blog/vision_arena/llama_gallery.png
 
 ### Multimodal Chatbot Arena
 
-We added image support to [Chatbot Arena](https://chat.lmsys.org/)! You can now chat with your favorite vision-language models from OpenAI, Anthropic, Google, and most other major LLM providers to help discover how these models stack up against eachother. 
+We added image support to [Chatbot Arena](https://lmarena.ai/)! You can now chat with your favorite vision-language models from OpenAI, Anthropic, Google, and most other major LLM providers to help discover how these models stack up against eachother. 
 
 In just two weeks, we have collected **over 17,000 user preference votes across over 60 languages**. In this post we show the initial leaderboard and statistics, some interesting conversations submitted to the arena, and include a short discussion on the future of the multimodal arena. 
 

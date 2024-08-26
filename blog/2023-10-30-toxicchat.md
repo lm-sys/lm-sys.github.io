@@ -22,7 +22,7 @@ For example, the following prompts do not include specific toxic words but will 
 
 Therefore, it is critical to develop toxicity benchmarks rooted in real-world user-AI dialogues, which can help develop a better conversational AI system for addressing toxic behavior embedded within this specific conversation context.
 
-In this work, we conduct a benchmark study focused on toxicity in real-world user-AI interactions. We create a comprehensive toxicity benchmark ToxicChat based on real chat data from the Vicuna and Chatbot Arena [demo](https://chat.lmsys.org/), which can be utilized to understand user behaviors and improve the performance of moderation for AI chatbots. The dataset can be downloaded at <https://huggingface.co/datasets/lmsys/toxic-chat>.
+In this work, we conduct a benchmark study focused on toxicity in real-world user-AI interactions. We create a comprehensive toxicity benchmark ToxicChat based on real chat data from the Vicuna and Chatbot Arena [demo](https://lmarena.ai/), which can be utilized to understand user behaviors and improve the performance of moderation for AI chatbots. The dataset can be downloaded at <https://huggingface.co/datasets/lmsys/toxic-chat>.
 
 ## Data Collection
 
