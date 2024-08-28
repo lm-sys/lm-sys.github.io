@@ -2,7 +2,7 @@
 title: "Controlling for Style in Chatbot Arena"
 author: "Tianle Li*, Anastasios Angelopoulos*, Wei-Lin Chiang*"
 date: "Aug 28, 2024"
-previewImg: /images/blog/category_hard/preview.png
+previewImg: /images/blog/style_control/logo.png
 ---
 
 Why is GPT-4o-mini so good? Why does Claude rank so low, when anecdotal experience suggests otherwise? Are models “gaming” the Arena with long, markdown-filled responses?
