@@ -15,7 +15,7 @@ In this update, we are excited to welcome the following models joining the [Chat
 A new Elo rating leaderboard based on the 27K anonymous voting data collected **in the wild** between April 24 and May 22, 2023 is released in Table 1 below. 
 
 We provide a [Google Colab notebook](https://colab.research.google.com/drive/1RAWb22-PFNI-X1gPVzc927SGUdfr6nsR?usp=sharing) to analyze the voting data, including the computation of the Elo ratings.
-You can also try the voting [demo](https://lmarena.ai).
+You can also try the voting [demo](https://arena.lmsys.org).
 
 <style>
 th {text-align: left}

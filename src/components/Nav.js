@@ -25,7 +25,7 @@ export default function Nav() {
           <Link href="/about">About</Link>
           <Link href="/donations">Donations</Link>
           <a
-            href="https://lmarena.ai"
+            href="https://arena.lmsys.org"
             target="_blank"
             rel="noopener noreferrer">
             Chatbot Arena
@@ -160,7 +160,7 @@ function Hamburger() {
             </p>
             <p>
               <a
-                href="https://lmarena.ai"
+                href="https://arena.lmsys.org"
                 target="_blank"
                 rel="noopener noreferrer">
                 Chatbot Arena

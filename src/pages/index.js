@@ -50,7 +50,7 @@ export default function Home() {
                 </div>
               </Link>
 
-              <Link href="https://lmarena.ai/">
+              <Link href="https://chat.lmsys.org/">
                 <div className="">
                   <p className="text-2xl pb-1">Chatbot Arena</p>
                   <hr />

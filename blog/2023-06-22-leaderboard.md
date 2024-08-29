@@ -177,7 +177,7 @@ th:nth-child(1) .arrow-down {
 
 &shy;
 
-Welcome to try the Chatbot Arena voting [demo](https://lmarena.ai).
+Welcome to try the Chatbot Arena voting [demo](https://chat.lmsys.org/?arena).
 Keep in mind that each benchmark has its limitations. Please consider the results as guiding references. See our discussion below for more technical details.
 
 ## Evaluating Chatbots with MT-bench and Arena
@@ -190,7 +190,7 @@ Traditional benchmarks often test LLMs on close-ended questions with concise out
 
 To fill this gap, in this leaderboard update, in addition to the Chatbot Arena Elo system, we add a new benchmark: MT-Bench.
 - [MT-bench](https://arxiv.org/abs/2306.05685) is a challenging multi-turn question set designed to evaluate the conversational and instruction-following ability of models. You can view sample questions and answers of MT-bench [here](https://huggingface.co/spaces/lmsys/mt-bench).
-- [Chatbot Arena](https://lmarena.ai) is a crowd-sourced battle platform, where users ask chatbots any question and vote for their preferred answer.
+- [Chatbot Arena](https://chat.lmsys.org/?arena) is a crowd-sourced battle platform, where users ask chatbots any question and vote for their preferred answer.
 
 Both benchmarks are designed to use human preferences as the primary metric.
 
