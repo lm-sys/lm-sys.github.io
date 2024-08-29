@@ -11,7 +11,7 @@ We have answers for you. We controlled for the effect of length and markdown, an
 
 **Check out the results below!** Style indeed has a strong effect on models’ performance in the leaderboard. This makes sense—from the perspective of human preference, it’s not just what you say, but how you say it. But now, we have a way of _separating_ the effect of writing style from the content, so you can see both effects individually.
 
-When adjusting for length and style, we found noticeable shifts in the ranking. GPT-4o-mini and Grok-2-mini drop below most frontier models, and Claude 3.5 Sonnet, Opus, and Llama-3.1-405B rise substantially. In the Hard Prompt subset, we observe Claude 3.5 Sonnet jumping to joint #1 with chatgpt-4o-latest, and Llama improved significantly. We are looking forward to seeing what the community does with this new tool for disaggregating style and substance.
+When controlling for length and style, we found noticeable shifts in the ranking. GPT-4o-mini and Grok-2-mini drop below most frontier models, and Claude 3.5 Sonnet, Opus, and Llama-3.1-405B rise substantially. In the Hard Prompt subset, we observe Claude 3.5 Sonnet jumping to joint #1 with chatgpt-4o-latest, and Llama improved significantly. We are looking forward to seeing what the community does with this new tool for disaggregating style and substance.
 
 
 ## Overall ranking + Style Control
@@ -46,21 +46,21 @@ Please read below for the technical details. We also controlled not just for len
 
 We publicly release our data with vote and style elements and code on [google colab](https://colab.research.google.com/drive/19VPOril2FjCX34lJoo7qn4r6adgKLioY#scrollTo=dYANZPG_8a9N)! You can try out experimenting with style control now. More improvements to come, and please reach out if you want to help contribute! 
 
-**Background.** To produce the results above, we controlled for the effect of style by adding extra “style features” into our Bradley-Terry regression. This is a [standard technique](https://en.wikipedia.org/wiki/Controlling_for_a_variable) in statistics, and has been recently used in LLM evaluations, such as AlpacaEval 2.0 [1]. Additionally, there are studies suggesting potential bias for “prettier” and more detailed responses in humans [2, 3]. The idea is that, by including any confounding variables (e.g. response length) in the regression, we can attribute any increase in strength to the confounder, as opposed to the model. Then, the Bradley-Terry coefficient will be more reflective of the model’s intrinsic ability, as opposed to possible confounders. The definition of a confounder is to some extent up to our interpretation; as our style features, we use the (normalized) difference in response lengths, the number of markdown headers, and the number of lists.
+**Background.** To produce the results above, we controlled for the effect of style by adding extra “style features” into our Bradley-Terry regression. This is a [standard technique](https://en.wikipedia.org/wiki/Controlling_for_a_variable) in statistics, and has been recently used in LLM evaluations [1]. Additionally, there are studies suggesting potential bias for “pretty” and more detailed responses in humans [2, 3]. The idea is that, by including any confounding variables (e.g. response length) in the regression, we can attribute any increase in strength to the confounder, as opposed to the model. Then, the Bradley-Terry coefficient will be more reflective of the model’s intrinsic ability, as opposed to possible confounders. The definition of a confounder is to some extent up to our interpretation; as our style features, we use the (normalized) difference in response lengths, the number of markdown headers, and the number of lists.
 
 More formally, consider vectors $X_1, \ldots, X_n \in \mathbb{R}^M$ and $Y_1, \ldots, Y_n \in \{0,1\}$, where $n$ is the number of battles and $M$ is the number of models. 
 
-For every $i \in [n]$, We have that $X_{i,m}=1$ only if model $m \in [M]$ is the model shown in the left-hand side in Chatbot Arena, and $X_{i,m}=-1$ only if it is shown on the right. That is, $X_i$ is a two-hot vector. The outcome $Y_i$ takes the value $Y_i=1$ if the left-hand model wins, and $Y_i=0$ otherwise. 
+For every $i \in [n]$, We have that $X_{i,m}=1$ only if model $m \in [M]$ is the model shown in the left-hand side in Chatbot Arena, and $X_{i,m}=-1$ only if it is shown on the right. That is, $X_i$ is a vector with two nonzero elements. The outcome $Y_i$ takes the value $Y_i=1$ if the left-hand model wins, and $Y_i=0$ otherwise. 
 
 The standard method for computing the Arena Score (i.e., the Bradley-Terry coefficients, which we formerly called the Elo score) is to run a logistic regression of $Y_i$ onto $X_i$. That is, for every model $m$, we associate a scalar $\hat{\beta}_m$ that describes its strength, and the vector $\hat{\beta}$ is determined by solving the following logistic regression:
 
-$$\hat{\beta} = \arg \min_{\beta \in \mathbb{R}^M} \frac{1}{n}\sum\limits_{i=1}^n \mathsf{BCELoss}(X_i^\top \beta, Y_i)$$
+$$\hat{\beta} = \arg \min_{\beta \in \mathbb{R}^M} \frac{1}{n}\sum\limits_{i=1}^n \mathsf{BCELoss}(\mathsf{sigmoid}(X_i^\top \beta), Y_i)$$
 
 where  $\mathsf{BCELoss}$ represents the binary cross-entropy loss. (In practice, we also reweight this objective to handle non-uniform model sampling, but let’s ignore that for now.)
 
 ## Style Control
 
-Now, for every battle $i \in [n]$, let’s say that in addition to $X_i$ that we observe some additional style features, $Z_i \in \mathbb{R}^S$. These style features can be as simple or complicated as you want. For example, $Z_i$ could just be the difference in response lengths of the two models, in which case $S=1$. Or, we could have $S>1$ and include other style-related features, for example, the number of markdown headers, or even style features that are automatically extracted by a model!
+Now, for every battle $i \in [n]$, let’s say that in addition to $X_i$ that we observe some additional style features, $Z_i \in \mathbb{R}^S$. These style features can be as simple or complicated as you want. For example, $Z_i$ could just be the difference in response lengths of the two models, in which case $S=1$. Or, we could have $S>1$ and include other style-related features, for example, the number of markdown headers, common words associated with refusal, or even style features that are automatically extracted by a model!
 
 Here, we define each style feature as
 $$\text{normalize }(\frac{\text{feature}_A - \text{feature}_B}{\text{feature}_A + \text{feature}_B})$$
@@ -68,10 +68,13 @@ $$\text{normalize }(\frac{\text{feature}_A - \text{feature}_B}{\text{feature}_A 
 For example, the first new feature, token length difference between answer A and answer B, would be expressed as 
 $$\text{normalize }(\frac{\text{length}_A - \text{length}_B}{\text{length}_A + \text{length}_B})$$
 
-We divide the difference by the sum of both answers' token length to make the length difference proportional to the pairwise answer token lengths. An answer with 500 tokens is roughly equal in length to an answer with 520 tokens, while an answer with 20 tokens is very different from an answer with 40 tokens, even though the difference is 20 tokens for both scenarios.
+We divide the difference by the sum of both answers' token length to make the length difference proportional to the pairwise answer token lengths. An answer with 500 tokens is roughly equal in length to an answer with 520 tokens, while an answer with 20 tokens is very different from an answer with 40 tokens, even though the difference is 20 tokens for both scenarios. Alternatively, AlpacaEval LC uses the following normalization technique. 
+
+$$\tanh\left(\frac{\text{feature}_A - \text{feature}_B)}{\sigma(\text{feature}_A - \text{feature}_B)}\right)$$.
+ 
 
 The idea of style control is very basic. We perform the same logistic regression as below:
-$$\hat{\beta}, \hat{\gamma} = \arg \min_{\beta \in \mathbb{R}^M, \gamma \in \mathbb{R}^S} \frac{1}{n}\sum\limits_{i=1}^n \mathsf{BCELoss}(X_i^\top \beta + Z_i^{\top}\gamma, Y_i).$$
+$$\hat{\beta}, \hat{\gamma} = \arg \min_{\beta \in \mathbb{R}^M, \gamma \in \mathbb{R}^S} \frac{1}{n}\sum\limits_{i=1}^n \mathsf{BCELoss}(\mathsf{sigmoid}(X_i^\top \beta + Z_i^{\top}\gamma), Y_i).$$
 We refer to the results $\hat{\beta}$ and $\hat{\gamma}$ as the “model coefficients” and the “style coefficients” respectively. The model coefficients have the same interpretation as before; however, they are controlled for the effect of style, which is explicitly modeled by the style coefficients!
 
 When the style coefficients are big, that means that the style feature has a big effect on the response. To define “big”, you need to properly normalize the style coefficients so they can be compared. All in all, when analyzing the style coefficients, we found that length was the dominant style factor. All other markdown effects are second order.
@@ -371,9 +374,12 @@ We also perform the same comparison on Chatbot Arena Hard Prompt Category.
 </table>
 
 
-## Future Work
+## Limitations and Future Work 
 
-We want to continue building a pipeline to disentangle style and substance in the arena. Although controlling for style is a big step forward, our analysis is still _observational_. We are looking forward to implementing _causal inference_ in our pipeline, and running prospective randomized trials to assess the effect of length, markdown, and more. Stay tuned, and let us know if you want to help!
+We want to continue building a pipeline to disentangle style and substance in the arena. Although controlling for style is a big step forward, our analysis is still _observational_. There are possible unobserved confounders such as positive correlation between length and substantive quality that are _not_ accounted for by our study. For example, well-known example of a possible unobserved confounder that might positively impact both length and quality is a chain-of-thought explanation for a reasoning question.
+
+To address these limitations, we are looking forward to implementing _causal inference_ in our pipeline, and running prospective randomized trials to assess the effect of length, markdown, and more. Our pipeline for style control will be changing as we continue to improve our system and refine the analysis. Stay tuned, and let us know if you want to help!
+
 
 ## Reference
 
