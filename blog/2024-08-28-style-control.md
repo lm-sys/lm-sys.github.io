@@ -48,7 +48,9 @@ More formally, consider vectors $X_1, \ldots, X_n \in \mathbb{R}^M$ and $Y_1, \l
 For every $i \in [n]$, We have that $X_{i,m}=1$ only if model $m \in [M]$ is the model shown in the left-hand side in Chatbot Arena, and $X_{i,m}=-1$ only if it is shown on the right. That is, $X_i$ is a two-hot vector. The outcome $Y_i$ takes the value $Y_i=1$ if the left-hand model wins, and $Y_i=0$ otherwise. 
 
 The standard method for computing the Arena Score (i.e., the Bradley-Terry coefficients, which we formerly called the Elo score) is to run a logistic regression of $Y_i$ onto $X_i$. That is, for every model $m$, we associate a scalar $\hat{\beta}_m$ that describes its strength, and the vector $\hat{\beta}$ is determined by solving the following logistic regression:
+
 $$\hat{\beta} = \arg \min_{\beta \in \mathbb{R}^M} \frac{1}{n}\sum\limits_{i=1}^n \mathsf{BCELoss}(X_i^\top \beta, Y_i)$$
+
 where  $\mathsf{BCELoss}$ represents the binary cross-entropy loss. (In practice, we also reweight this objective to handle non-uniform model sampling, but let’s ignore that for now.)
 
 ## Style Control
@@ -75,134 +77,266 @@ Length: 0.249, Markdown List: 0.031, Markdown Header: 0.024, Markdown Bold: 0.01
 
 ## Ablation
 
-<table border="1">
+Next, we compare the ranking changes between controlling for answer length only, markdown element only, and both. We present the Chatbot Arena Overall table first.
+<table style="border-collapse: collapse; width: 100%;">
   <tr>
-    <th width: 30%;>Model</th>
-    <th width: 20%;>Rank Diff (Length Only)</th>
-    <th width: 30%;>Rank Diff (Markdown Only)</th>
-    <th width: 20%;>Rank Diff (Both)</th>
+    <th style="text-align: left; padding: 8px; width: 30%;">Model</th>
+    <th style="text-align: center; padding: 8px; width: 25%;">Rank Diff (Length Only)</th>
+    <th style="text-align: center; padding: 8px; width: 25%;">Rank Diff (Markdown Only)</th>
+    <th style="text-align: center; padding: 8px; width: 20%;">Rank Diff (Both)</th>
+  </tr>
+<tr>
+    <td style="text-align: left; padding: 8px;">chatgpt-4o-latest</td>
+    <td style="text-align: center; padding: 8px;">1->1</td>
+    <td style="text-align: center; padding: 8px;">1->1</td>
+    <td style="text-align: center; padding: 8px;">1->1</td>
   </tr>
   <tr>
-    <td>chatgpt-4o-latest</td>
-    <td>1->1</td>
-    <td>1->1</td>
-    <td>1->1</td>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-pro-exp-0827</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
   </tr>
   <tr>
-    <td>grok-2-2024-08-13</td>
-    <td style="color: red;">2->4</td>
-    <td style="color: red;">2->4</td>
-    <td style="color: red;">2->5</td>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-pro-exp-0801</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
   </tr>
   <tr>
-    <td>gemini-1.5-pro-exp-0827</td>
-    <td>2->2</td>
-    <td>2->2</td>
-    <td>2->2</td>
+    <td style="text-align: left; padding: 8px;">gpt-4o-2024-05-13</td>
+    <td style="text-align: center; padding: 8px; color: green;">5->3</td>
+    <td style="text-align: center; padding: 8px; color: green;">5->3</td>
+    <td style="text-align: center; padding: 8px; color: green;">5->2</td>
   </tr>
   <tr>
-    <td>gemini-1.5-pro-exp-0801</td>
-    <td>2->2</td>
-    <td>2->2</td>
-    <td>2->2</td>
+    <td style="text-align: left; padding: 8px;">claude-3-5-sonnet-20240620</td>
+    <td style="text-align: center; padding: 8px; color: green;">6->5</td>
+    <td style="text-align: center; padding: 8px; color: green;">6->4</td>
+    <td style="text-align: center; padding: 8px; color: green;">6->4</td>
   </tr>
   <tr>
-    <td>gpt-4o-2024-05-13</td>
-    <td style="color: green;">5->3</td>
-    <td style="color: green;">5->3</td>
-    <td style="color: green;">5->2</td>
+    <td style="text-align: left; padding: 8px;">gemini-advanced-0514</td>
+    <td style="text-align: center; padding: 8px; color: green;">7->5</td>
+    <td style="text-align: center; padding: 8px; color: red;">7->8</td>
+    <td style="text-align: center; padding: 8px; color: green;">7->6</td>
   </tr>
   <tr>
-    <td>gpt-4o-mini-2024-07-18</td>
-    <td style="color: red;">6->8</td>
-    <td style="color: red;">6->11</td>
-    <td style="color: red;">6->11</td>
+    <td style="text-align: left; padding: 8px;">grok-2-2024-08-13</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->4</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->4</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->5</td>
   </tr>
   <tr>
-    <td>llama-3.1-405b-instruct</td>
-    <td>6->6</td>
-    <td style="color: green;">6->4</td>
-    <td>6->6</td>
+    <td style="text-align: left; padding: 8px;">llama-3.1-405b-instruct</td>
+    <td style="text-align: center; padding: 8px;">6->6</td>
+    <td style="text-align: center; padding: 8px; color: green;">6->4</td>
+    <td style="text-align: center; padding: 8px;">6->6</td>
   </tr>
   <tr>
-    <td>gemini-1.5-flash-exp-0827</td>
-    <td style="color: red;">6->8</td>
-    <td style="color: red;">6->9</td>
-    <td style="color: red;">6->9</td>
+    <td style="text-align: left; padding: 8px;">gpt-4o-2024-08-06</td>
+    <td style="text-align: center; padding: 8px; color: green;">7->6</td>
+    <td style="text-align: center; padding: 8px; color: red;">7->8</td>
+    <td style="text-align: center; padding: 8px; color: green;">7->6</td>
   </tr>
   <tr>
-    <td>claude-3-5-sonnet-20240620</td>
-    <td style="color: green;">6->5</td>
-    <td style="color: green;">6->4</td>
-    <td style="color: green;">6->4</td>
+    <td style="text-align: left; padding: 8px;">gpt-4-turbo-2024-04-09</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->8</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->8</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->9</td>
   </tr>
   <tr>
-    <td>grok-2-mini-2024-08-13</td>
-    <td style="color: red;">6->15</td>
-    <td style="color: red;">6->15</td>
-    <td style="color: red;">6->18</td>
+    <td style="text-align: left; padding: 8px;">claude-3-opus-20240229</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->14</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->8</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->10</td>
   </tr>
   <tr>
-    <td>gpt-4o-2024-08-06</td>
-    <td style="color: green;">7->6</td>
-    <td style="color: red;">7->8</td>
-    <td style="color: green;">7->6</td>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-pro-api-0514</td>
+    <td style="text-align: center; padding: 8px; color: green;">10->8</td>
+    <td style="text-align: center; padding: 8px; color: red;">10->13</td>
+    <td style="text-align: center; padding: 8px;">10->10</td>
   </tr>
   <tr>
-    <td>gemini-advanced-0514</td>
-    <td style="color: green;">7->5</td>
-    <td style="color: red;">7->8</td>
-    <td style="color: green;">7->6</td>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-flash-exp-0827</td>
+    <td style="text-align: center; padding: 8px; color: red;">6->8</td>
+    <td style="text-align: center; padding: 8px; color: red;">6->9</td>
+    <td style="text-align: center; padding: 8px; color: red;">6->9</td>
   </tr>
   <tr>
-    <td>gemini-1.5-pro-api-0514</td>
-    <td style="color: green;">10->8</td>
-    <td style="color: red;">10->13</td>
-    <td>10->10</td>
+    <td style="text-align: left; padding: 8px;">gpt-4-1106-preview</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->14</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->8</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->11</td>
   </tr>
   <tr>
-    <td>gpt-4-turbo-2024-04-09</td>
-    <td style="color: green;">11->8</td>
-    <td style="color: green;">11->8</td>
-    <td style="color: green;">11->9</td>
+    <td style="text-align: left; padding: 8px;"><strong>gpt-4o-mini-2024-07-18</strong></td>
+    <td style="text-align: center; padding: 8px; color: red;">6->8</td>
+    <td style="text-align: center; padding: 8px; color: red;">6->11</td>
+    <td style="text-align: center; padding: 8px; color: red;">6->11</td>
   </tr>
   <tr>
-    <td>gemini-1.5-pro-api-0409-preview</td>
-    <td style="color: red;">11->16</td>
-    <td style="color: red;">11->21</td>
-    <td style="color: red;">11->18</td>
+    <td style="text-align: left; padding: 8px;">gpt-4-0125-preview</td>
+    <td style="text-align: center; padding: 8px; color: green;">17->14</td>
+    <td style="text-align: center; padding: 8px; color: green;">17->12</td>
+    <td style="text-align: center; padding: 8px; color: green;">17->13</td>
   </tr>
   <tr>
-    <td>athene-70b-0725</td>
-    <td>16->16</td>
-    <td style="color: red;">16->17</td>
-    <td style="color: red;">16->17</td>
+    <td style="text-align: left; padding: 8px;">mistral-large-2407</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->14</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->13</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->13</td>
   </tr>
   <tr>
-    <td>claude-3-opus-20240229</td>
-    <td style="color: green;">16->14</td>
-    <td style="color: green;">16->8</td>
-    <td style="color: green;">16->10</td>
+    <td style="text-align: left; padding: 8px;">athene-70b-0725</td>
+    <td style="text-align: center; padding: 8px;">16->16</td>
+    <td style="text-align: center; padding: 8px; color: red;">16->17</td>
+    <td style="text-align: center; padding: 8px; color: red;">16->17</td>
   </tr>
   <tr>
-    <td>gpt-4-1106-preview</td>
-    <td style="color: green;">16->14</td>
-    <td style="color: green;">16->8</td>
-    <td style="color: green;">16->11</td>
+    <td style="text-align: left; padding: 8px;"><strong>grok-2-mini-2024-08-13</strong></td>
+    <td style="text-align: center; padding: 8px; color: red;">6->15</td>
+    <td style="text-align: center; padding: 8px; color: red;">6->15</td>
+    <td style="text-align: center; padding: 8px; color: red;">6->18</td>
   </tr>
   <tr>
-    <td>llama-3.1-70b-instruct</td>
-    <td style="color: red;">16->20</td>
-    <td>16->16</td>
-    <td style="color: red;">16->18</td>
-  </tr>
-  <tr>
-    <td>mistral-large-2407</td>
-    <td style="color: green;">16->14</td>
-    <td style="color: green;">16->13</td>
-    <td style="color: green;">16->13</td>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-pro-api-0409-preview</td>
+    <td style="text-align: center; padding: 8px; color: red;">11->16</td>
+    <td style="text-align: center; padding: 8px; color: red;">11->21</td>
+    <td style="text-align: center; padding: 8px; color: red;">11->18</td>
   </tr>
 </table>
+
+We also perform the same comparison on Chatbot Arena Hard Prompt Category.
+<table style="border-collapse: collapse; width: 100%;">
+  <tr>
+    <th style="text-align: left; padding: 8px; width: 30%;">Model</th>
+    <th style="text-align: center; padding: 8px; width: 25%;">Rank Diff (Length Only)</th>
+    <th style="text-align: center; padding: 8px; width: 25%;">Rank Diff (Markdown Only)</th>
+    <th style="text-align: center; padding: 8px; width: 20%;">Rank Diff (Both)</th>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">chatgpt-4o-latest</td>
+    <td style="text-align: center; padding: 8px;">1->1</td>
+    <td style="text-align: center; padding: 8px;">1->1</td>
+    <td style="text-align: center; padding: 8px;">1->1</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;"><strong>claude-3-5-sonnet-20240620</strong></td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px; color: green;">2->1</td>
+    <td style="text-align: center; padding: 8px; color: green;">2->1</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-pro-exp-0827</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px; color: green;">2->1</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-pro-exp-0801</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->3</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->3</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->3</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gpt-4o-2024-05-13</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px;">2->2</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->3</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">llama-3.1-405b-instruct</td>
+    <td style="text-align: center; padding: 8px;">4->4</td>
+    <td style="text-align: center; padding: 8px; color: green;">4->2</td>
+    <td style="text-align: center; padding: 8px; color: green;">4->3</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">grok-2-2024-08-13</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->3</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->3</td>
+    <td style="text-align: center; padding: 8px; color: red;">2->4</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-flash-exp-0827</td>
+    <td style="text-align: center; padding: 8px;">4->4</td>
+    <td style="text-align: center; padding: 8px; color: red;">4->6</td>
+    <td style="text-align: center; padding: 8px;">4->4</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gemini-1.5-pro-api-0514</td>
+    <td style="text-align: center; padding: 8px; color: green;">7->6</td>
+    <td style="text-align: center; padding: 8px;">7->7</td>
+    <td style="text-align: center; padding: 8px;">7->7</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gpt-4o-2024-08-06</td>
+    <td style="text-align: center; padding: 8px;">4->4</td>
+    <td style="text-align: center; padding: 8px; color: red;">4->6</td>
+    <td style="text-align: center; padding: 8px;">4->4</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gemini-advanced-0514</td>
+    <td style="text-align: center; padding: 8px; color: green;">9->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">9->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">9->7</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">claude-3-opus-20240229</td>
+    <td style="text-align: center; padding: 8px; color: green;">14->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">14->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">14->7</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">mistral-large-2407</td>
+    <td style="text-align: center; padding: 8px;">7->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">7->6</td>
+    <td style="text-align: center; padding: 8px;">7->7</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gpt-4-1106-preview</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->10</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->7</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gpt-4-turbo-2024-04-09</td>
+    <td style="text-align: center; padding: 8px; color: green;">9->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">9->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">9->7</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">athene-70b-0725</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->7</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->8</td>
+    <td style="text-align: center; padding: 8px; color: green;">11->7</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gpt-4o-mini-2024-07-18</td>
+    <td style="text-align: center; padding: 8px; color: red;">4->7</td>
+    <td style="text-align: center; padding: 8px; color: red;">4->7</td>
+    <td style="text-align: center; padding: 8px; color: red;">4->11</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">gpt-4-0125-preview</td>
+    <td style="text-align: center; padding: 8px; color: green;">15->14</td>
+    <td style="text-align: center; padding: 8px; color: green;">15->10</td>
+    <td style="text-align: center; padding: 8px; color: green;">15->13</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">grok-2-mini-2024-08-13</td>
+    <td style="text-align: center; padding: 8px; color: red;">5->12</td>
+    <td style="text-align: center; padding: 8px; color: red;">5->8</td>
+    <td style="text-align: center; padding: 8px; color: red;">5->13</td>
+  </tr>
+  <tr>
+    <td style="text-align: left; padding: 8px;">deepseek-coder-v2-0724</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->14</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->13</td>
+    <td style="text-align: center; padding: 8px; color: green;">16->14</td>
+  </tr>
+</table>
+
 
 ## Future Work
 
