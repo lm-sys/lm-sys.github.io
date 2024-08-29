@@ -1,4 +1,4 @@
----
+f---
 title: "Does style matter? Disentangling style and substance in Chatbot Arena"
 author: "Tianle Li*, Anastasios Angelopoulos*, Wei-Lin Chiang*"
 date: "Aug 29, 2024"
@@ -74,7 +74,7 @@ We divide the difference by the sum of both answers' token length to make the le
 $$\tanh\left(\frac{\text{feature}_A - \text{feature}_B)}{\sigma(\text{feature}_A - \text{feature}_B)}\right)$$.
  
 
-The idea of style control is very basic. We perform the same logistic regression as below:
+The idea of style control is very basic. We perform the same logistic regression as before, but with some extra, additive style coefficients:
 $$\hat{\beta}, \hat{\gamma} = \arg \min_{\beta \in \mathbb{R}^M, \gamma \in \mathbb{R}^S} \frac{1}{n}\sum\limits_{i=1}^n \mathsf{BCELoss}(\mathsf{sigmoid}(X_i^\top \beta + Z_i^{\top}\gamma), Y_i).$$
 We refer to the results $\hat{\beta}$ and $\hat{\gamma}$ as the “model coefficients” and the “style coefficients” respectively. The model coefficients have the same interpretation as before; however, they are controlled for the effect of style, which is explicitly modeled by the style coefficients!
 
