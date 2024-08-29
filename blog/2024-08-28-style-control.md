@@ -1,23 +1,30 @@
 ---
-title: "Controlling for Style in Chatbot Arena"
+title: "Does style matter? Disentangling style and substance in Chatbot Arena"
 author: "Tianle Li*, Anastasios Angelopoulos*, Wei-Lin Chiang*"
 date: "Aug 28, 2024"
 previewImg: /images/blog/style_control/logo.png
 ---
 
-Why is GPT-4o-mini so good? Why does Claude rank so low, when anecdotal experience suggests otherwise? Are models “gaming” the Arena with long, markdown-filled responses?
+Why is GPT-4o-mini so good? 
 
-We have answers for you. We controlled for the effect of length and markdown, and indeed, the ranking changed. This is just a first step towards our larger goal of disentangling **substance** and **style** in Chatbot Arena leaderboard.
+Why does Claude rank so low, when anecdotal experience suggests otherwise?
 
-**Check out the results below!** Many of the community’s suspicions are confirmed: when adjusting for length and style, GPT-4o-mini drops below Claude 3 Opus. And Sonnet-3.5 rises to the top.
+We have answers for you. We controlled for the effect of length and markdown, and indeed, *the ranking changed*. This is just a first step towards our larger goal of disentangling **substance** and **style** in Chatbot Arena leaderboard.
+
+**Check out the results below!** It turns out that style has a strong effect on models’ performance in the leaderboard. This makes sense—from the perspective of human preference, it’s not just what you say, but how you say it. But now, we have a way of _separating_ the effect of writing style from the content, so you can see both, and they aren’t mixed up.
+
+When adjusting for length and style, GPT-4o-mini and Grok-2-mini drop below most frontier models, and Claude 3.5 Sonnet, Opus, and Llama-3.1-405B rise substantially. In the Hard Prompt subset, we..  [Wei-Lin Chiang Tianle Li add any other major takeaways] We are looking forward to seeing what the community does with this new tool for disaggregating style and substance.
+
 
 ## Overall ranking + Style Control
-insert plot
+<img src="/images/blog/style_control/comparison_overall.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
+<p style="color:gray; text-align: center;">Figure 1. Overall Chatbot Arena ranking vs Overall Chatbot Arena ranking where answer length, markdown header count, markdown bold count, and markdown list element count are being “controlled”.</p>
 
 ## Hard Prompt ranking + Style Control
-insert plot
+<img src="/images/blog/style_control/comparison_hard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
+<p style="color:gray; text-align: center;">Figure 2. Hard Prompt category ranking vs Hard Prompt category ranking where answer length, markdown header count, markdown bold count, and markdown list element count are being “controlled”.</p>
 
-# Methodology
+## Methodology
 
 **High-Level Idea.** The goal here is to understand the effect of _style_ vs _substance_ on the Arena Score. Consider models A and B. Model A is great at producing code, factual and unbiased answers, etc., but it outputs short and terse responses. Model B is not so great on substance, but it outputs great markdown, and gives long, detailed, flowery responses. Which is better, model A, or model B?
 
@@ -25,10 +32,16 @@ The answer is not one dimensional. Model A is better on substance, and Model B i
 
 Our methodology is a first step towards this goal. We explicitly model style as an independent variable in our Bradley-Terry regression. For example, we added length as a feature—just like each model, the length difference has its _own_ Arena Score! By doing this, we expect that the Arena Score of each model will reflect its strength, controlled for the effect of length. 
 
-Please read below for the technical details. We also controlled not just for length, but also a few other style features. More improvements to come, and please reach out if you want to help contribute!
+Please read below for the technical details. We also controlled not just for length, but also a few other style features. As a first version, we propose controlling
+1. Answer token length
+2. Number of markdown headers
+3. Number of markdown bold elements
+4. Number of markdown lists
+
+We publicly release our data with vote and style elements and code on [insert google colab link]! You can try out experimenting with style control now. More improvements to come, and please reach out if you want to help contribute! 
+
 
 **Background.** To produce the results above, we controlled for the effect of style by adding extra “style features” into our Bradley-Terry regression. This is a [standard technique](https://en.wikipedia.org/wiki/Controlling_for_a_variable) in statistics, and has been recently used in LLM evaluations [1](https://arxiv.org/abs/2404.04475). The idea is that, by including any confounding variables (e.g. response length) in the regression, we can attribute any increase in strength to the confounder, as opposed to the model. Then, the Bradley-Terry coefficient will be more reflective of the model’s intrinsic properties, as opposed to undesirable confounders. The definition of a confounder is to some extent up to our interpretation; as our style features, we use the (normalized) difference in response lengths, the number of markdown headers, and the number of lists.
-
 
 More formally, consider vectors $X_1, \ldots, X_n \in \mathbb{R}^M$ and $Y_1, \ldots, Y_n \in \{0,1\}$, where $n$ is the number of battles and $M$ is the number of models. 
 
@@ -56,12 +69,140 @@ We refer to the results $\hat{\beta}$ and $\hat{\gamma}$ as the “model coeffic
 
 When the style coefficients are big, that means that the style feature has a big effect on the response. To define “big”, you need to properly normalize the style coefficients so they can be compared. All in all, when analyzing the style coefficients, we found that length was the dominant style factor. All other markdown effects are second order.
 
-[Report style coefficients here]. Tianle Li
+We report the following coefficient for each style attribute:
 Length: 0.249, Markdown List: 0.031, Markdown Header: 0.024, Markdown Bold: 0.019
+
 
 ## Ablation
 
-insert ablation
+<table border="1">
+  <tr>
+    <th width: 30%;>Model</th>
+    <th width: 20%;>Rank Diff (Length Only)</th>
+    <th width: 30%;>Rank Diff (Markdown Only)</th>
+    <th width: 20%;>Rank Diff (Both)</th>
+  </tr>
+  <tr>
+    <td>chatgpt-4o-latest</td>
+    <td>1->1</td>
+    <td>1->1</td>
+    <td>1->1</td>
+  </tr>
+  <tr>
+    <td>grok-2-2024-08-13</td>
+    <td style="color: red;">2->4</td>
+    <td style="color: red;">2->4</td>
+    <td style="color: red;">2->5</td>
+  </tr>
+  <tr>
+    <td>gemini-1.5-pro-exp-0827</td>
+    <td>2->2</td>
+    <td>2->2</td>
+    <td>2->2</td>
+  </tr>
+  <tr>
+    <td>gemini-1.5-pro-exp-0801</td>
+    <td>2->2</td>
+    <td>2->2</td>
+    <td>2->2</td>
+  </tr>
+  <tr>
+    <td>gpt-4o-2024-05-13</td>
+    <td style="color: green;">5->3</td>
+    <td style="color: green;">5->3</td>
+    <td style="color: green;">5->2</td>
+  </tr>
+  <tr>
+    <td>gpt-4o-mini-2024-07-18</td>
+    <td style="color: red;">6->8</td>
+    <td style="color: red;">6->11</td>
+    <td style="color: red;">6->11</td>
+  </tr>
+  <tr>
+    <td>llama-3.1-405b-instruct</td>
+    <td>6->6</td>
+    <td style="color: green;">6->4</td>
+    <td>6->6</td>
+  </tr>
+  <tr>
+    <td>gemini-1.5-flash-exp-0827</td>
+    <td style="color: red;">6->8</td>
+    <td style="color: red;">6->9</td>
+    <td style="color: red;">6->9</td>
+  </tr>
+  <tr>
+    <td>claude-3-5-sonnet-20240620</td>
+    <td style="color: green;">6->5</td>
+    <td style="color: green;">6->4</td>
+    <td style="color: green;">6->4</td>
+  </tr>
+  <tr>
+    <td>grok-2-mini-2024-08-13</td>
+    <td style="color: red;">6->15</td>
+    <td style="color: red;">6->15</td>
+    <td style="color: red;">6->18</td>
+  </tr>
+  <tr>
+    <td>gpt-4o-2024-08-06</td>
+    <td style="color: green;">7->6</td>
+    <td style="color: red;">7->8</td>
+    <td style="color: green;">7->6</td>
+  </tr>
+  <tr>
+    <td>gemini-advanced-0514</td>
+    <td style="color: green;">7->5</td>
+    <td style="color: red;">7->8</td>
+    <td style="color: green;">7->6</td>
+  </tr>
+  <tr>
+    <td>gemini-1.5-pro-api-0514</td>
+    <td style="color: green;">10->8</td>
+    <td style="color: red;">10->13</td>
+    <td>10->10</td>
+  </tr>
+  <tr>
+    <td>gpt-4-turbo-2024-04-09</td>
+    <td style="color: green;">11->8</td>
+    <td style="color: green;">11->8</td>
+    <td style="color: green;">11->9</td>
+  </tr>
+  <tr>
+    <td>gemini-1.5-pro-api-0409-preview</td>
+    <td style="color: red;">11->16</td>
+    <td style="color: red;">11->21</td>
+    <td style="color: red;">11->18</td>
+  </tr>
+  <tr>
+    <td>athene-70b-0725</td>
+    <td>16->16</td>
+    <td style="color: red;">16->17</td>
+    <td style="color: red;">16->17</td>
+  </tr>
+  <tr>
+    <td>claude-3-opus-20240229</td>
+    <td style="color: green;">16->14</td>
+    <td style="color: green;">16->8</td>
+    <td style="color: green;">16->10</td>
+  </tr>
+  <tr>
+    <td>gpt-4-1106-preview</td>
+    <td style="color: green;">16->14</td>
+    <td style="color: green;">16->8</td>
+    <td style="color: green;">16->11</td>
+  </tr>
+  <tr>
+    <td>llama-3.1-70b-instruct</td>
+    <td style="color: red;">16->20</td>
+    <td>16->16</td>
+    <td style="color: red;">16->18</td>
+  </tr>
+  <tr>
+    <td>mistral-large-2407</td>
+    <td style="color: green;">16->14</td>
+    <td style="color: green;">16->13</td>
+    <td style="color: green;">16->13</td>
+  </tr>
+</table>
 
 ## Future Work
 
