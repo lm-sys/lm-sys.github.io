@@ -1,19 +1,17 @@
 ---
 title: "Does style matter? Disentangling style and substance in Chatbot Arena"
 author: "Tianle Li*, Anastasios Angelopoulos*, Wei-Lin Chiang*"
-date: "Aug 28, 2024"
+date: "Aug 29, 2024"
 previewImg: /images/blog/style_control/logo.png
 ---
 
-Why is GPT-4o-mini so good? 
-
-Why does Claude rank so low, when anecdotal experience suggests otherwise?
+Why is GPT-4o-mini so good? Why does Claude rank so low, when anecdotal experience suggests otherwise?
 
 We have answers for you. We controlled for the effect of length and markdown, and indeed, *the ranking changed*. This is just a first step towards our larger goal of disentangling **substance** and **style** in Chatbot Arena leaderboard.
 
-**Check out the results below!** It turns out that style has a strong effect on models’ performance in the leaderboard. This makes sense—from the perspective of human preference, it’s not just what you say, but how you say it. But now, we have a way of _separating_ the effect of writing style from the content, so you can see both, and they aren’t mixed up.
+**Check out the results below!** Style indeed has a strong effect on models’ performance in the leaderboard. This makes sense—from the perspective of human preference, it’s not just what you say, but how you say it. But now, we have a way of _separating_ the effect of writing style from the content, so you can see both effects individually.
 
-When adjusting for length and style, GPT-4o-mini and Grok-2-mini drop below most frontier models, and Claude 3.5 Sonnet, Opus, and Llama-3.1-405B rise substantially. In the Hard Prompt subset, we..  [Wei-Lin Chiang Tianle Li add any other major takeaways] We are looking forward to seeing what the community does with this new tool for disaggregating style and substance.
+When adjusting for length and style, we found noticeable shifts in the ranking. GPT-4o-mini and Grok-2-mini drop below most frontier models, and Claude 3.5 Sonnet, Opus, and Llama-3.1-405B rise substantially. In the Hard Prompt subset, we observe Claude 3.5 Sonnet jumping to joint #1 with chatgpt-4o-latest, and Llama improved significantly. We are looking forward to seeing what the community does with this new tool for disaggregating style and substance.
 
 
 ## Overall ranking + Style Control
@@ -24,9 +22,17 @@ When adjusting for length and style, GPT-4o-mini and Grok-2-mini drop below most
 <img src="/images/blog/style_control/comparison_hard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
 <p style="color:gray; text-align: center;">Figure 2. Hard Prompt category ranking vs Hard Prompt category ranking where answer length, markdown header count, markdown bold count, and markdown list element count are being “controlled”.</p>
 
+Leaderboard [link](lmarena.ai/?leaderboard)
+
+Colab [link](https://colab.research.google.com/drive/19VPOril2FjCX34lJoo7qn4r6adgKLioY#scrollTo=dYANZPG_8a9N)
+
+<img src="/images/blog/style_control/arena_leaderboard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
+
+We will be rolling out style control soon to all the categories. Stay tuned!
+
 ## Methodology
 
-**High-Level Idea.** The goal here is to understand the effect of _style_ vs _substance_ on the Arena Score. Consider models A and B. Model A is great at producing code, factual and unbiased answers, etc., but it outputs short and terse responses. Model B is not so great on substance, but it outputs great markdown, and gives long, detailed, flowery responses. Which is better, model A, or model B?
+**High-Level Idea.** The goal here is to understand the effect of _style_ vs _substance_ on the Arena Score. Consider models A and B. Model A is great at producing code, factual and unbiased answers, etc., but it outputs short and terse responses. Model B is not so great on substance (e.g., correctness), but it outputs great markdown, and gives long, detailed, flowery responses. Which is better, model A, or model B?
 
 The answer is not one dimensional. Model A is better on substance, and Model B is better on style. Ideally, we would have a way of teasing apart this distinction: capturing how much of the model’s Arena Score is due to substance or style. 
 
@@ -38,10 +44,9 @@ Please read below for the technical details. We also controlled not just for len
 3. Number of markdown bold elements
 4. Number of markdown lists
 
-We publicly release our data with vote and style elements and code on [insert google colab link]! You can try out experimenting with style control now. More improvements to come, and please reach out if you want to help contribute! 
+We publicly release our data with vote and style elements and code on [google colab](https://colab.research.google.com/drive/19VPOril2FjCX34lJoo7qn4r6adgKLioY#scrollTo=dYANZPG_8a9N)! You can try out experimenting with style control now. More improvements to come, and please reach out if you want to help contribute! 
 
-
-**Background.** To produce the results above, we controlled for the effect of style by adding extra “style features” into our Bradley-Terry regression. This is a [standard technique](https://en.wikipedia.org/wiki/Controlling_for_a_variable) in statistics, and has been recently used in LLM evaluations [1](https://arxiv.org/abs/2404.04475). The idea is that, by including any confounding variables (e.g. response length) in the regression, we can attribute any increase in strength to the confounder, as opposed to the model. Then, the Bradley-Terry coefficient will be more reflective of the model’s intrinsic properties, as opposed to undesirable confounders. The definition of a confounder is to some extent up to our interpretation; as our style features, we use the (normalized) difference in response lengths, the number of markdown headers, and the number of lists.
+**Background.** To produce the results above, we controlled for the effect of style by adding extra “style features” into our Bradley-Terry regression. This is a [standard technique](https://en.wikipedia.org/wiki/Controlling_for_a_variable) in statistics, and has been recently used in LLM evaluations, such as AlpacaEval 2.0 [1]. Additionally, there are studies suggesting potential bias for “prettier” and more detailed responses in humans [2, 3]. The idea is that, by including any confounding variables (e.g. response length) in the regression, we can attribute any increase in strength to the confounder, as opposed to the model. Then, the Bradley-Terry coefficient will be more reflective of the model’s intrinsic ability, as opposed to possible confounders. The definition of a confounder is to some extent up to our interpretation; as our style features, we use the (normalized) difference in response lengths, the number of markdown headers, and the number of lists.
 
 More formally, consider vectors $X_1, \ldots, X_n \in \mathbb{R}^M$ and $Y_1, \ldots, Y_n \in \{0,1\}$, where $n$ is the number of battles and $M$ is the number of models. 
 
@@ -55,7 +60,7 @@ where  $\mathsf{BCELoss}$ represents the binary cross-entropy loss. (In practice
 
 ## Style Control
 
-Now, for every battle $i \in [n]$, let’s say that in addition to $X_i$ that we observe some additional style features, $Z_i \in \mathbb{R}^S$. These style features can be as simple or complicated as you want. For example, $Z_i$ could just be the difference in response lengths of the two models, in which case $S=1$. Or, we could have $S>1$ and include a bunch of other style-related features, for example, the number of markdown headers, or even style features that are automatically extracted by a model!
+Now, for every battle $i \in [n]$, let’s say that in addition to $X_i$ that we observe some additional style features, $Z_i \in \mathbb{R}^S$. These style features can be as simple or complicated as you want. For example, $Z_i$ could just be the difference in response lengths of the two models, in which case $S=1$. Or, we could have $S>1$ and include other style-related features, for example, the number of markdown headers, or even style features that are automatically extracted by a model!
 
 Here, we define each style feature as
 $$\text{normalize }(\frac{\text{feature}_A - \text{feature}_B}{\text{feature}_A + \text{feature}_B})$$
@@ -71,9 +76,37 @@ We refer to the results $\hat{\beta}$ and $\hat{\gamma}$ as the “model coeffic
 
 When the style coefficients are big, that means that the style feature has a big effect on the response. To define “big”, you need to properly normalize the style coefficients so they can be compared. All in all, when analyzing the style coefficients, we found that length was the dominant style factor. All other markdown effects are second order.
 
-We report the following coefficient for each style attribute:
-Length: 0.249, Markdown List: 0.031, Markdown Header: 0.024, Markdown Bold: 0.019
-
+We report the following coefficient for each style attribute across different methods of controlling the style.
+<table style="border-collapse: collapse; width: 100%;">
+  <tr>
+    <th style="text-align: center; padding: 8px;"></th>
+    <th style="text-align: center; padding: 8px;">Length</th>
+    <th style="text-align: center; padding: 8px;">Markdown List</th>
+    <th style="text-align: center; padding: 8px;">Markdown Header</th>
+    <th style="text-align: center; padding: 8px;">Markdown Bold</th>
+  </tr>
+<tr>
+    <td style="text-align: left; padding: 8px;">Control Both</td>
+    <td style="text-align: center; padding: 8px;">0.249</td>
+    <td style="text-align: center; padding: 8px;">0.031</td>
+    <td style="text-align: center; padding: 8px;">0.024</td>
+    <td style="text-align: center; padding: 8px;">0.019</td>
+  </tr>
+<tr>
+    <td style="text-align: left; padding: 8px;">Control Markdown Only</td>
+    <td style="text-align: center; padding: 8px;">N/A</td>
+    <td style="text-align: center; padding: 8px;">0.111</td>
+    <td style="text-align: center; padding: 8px;">0.044</td>
+    <td style="text-align: center; padding: 8px;">0.056</td>
+  </tr>
+<tr>
+    <td style="text-align: left; padding: 8px;">Control Length Only</td>
+    <td style="text-align: center; padding: 8px;">0.267</td>
+    <td style="text-align: center; padding: 8px;">N/A</td>
+    <td style="text-align: center; padding: 8px;">N/A</td>
+    <td style="text-align: center; padding: 8px;">N/A</td>
+  </tr>
+</table>
 
 ## Ablation
 
@@ -341,6 +374,15 @@ We also perform the same comparison on Chatbot Arena Hard Prompt Category.
 ## Future Work
 
 We want to continue building a pipeline to disentangle style and substance in the arena. Although controlling for style is a big step forward, our analysis is still _observational_. We are looking forward to implementing _causal inference_ in our pipeline, and running prospective randomized trials to assess the effect of length, markdown, and more. Stay tuned, and let us know if you want to help!
+
+## Reference
+
+[1] Dubois et al. “Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators”, arXiv preprint
+
+[2] Chen et al. “Humans or LLMs as the Judge? A Study on Judgement Bias”, arXiv preprint
+
+[3] Park et al. “Disentangling Length from Quality in Direct Preference Optimization”, arXiv preprint
+
 
 ## Citation
 ```
