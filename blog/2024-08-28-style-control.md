@@ -1,4 +1,4 @@
-f---
+---
 title: "Does style matter? Disentangling style and substance in Chatbot Arena"
 author: "Tianle Li*, Anastasios Angelopoulos*, Wei-Lin Chiang*"
 date: "Aug 29, 2024"
