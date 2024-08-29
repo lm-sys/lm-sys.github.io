@@ -11,24 +11,25 @@ We have answers for you. We controlled for the effect of length and markdown, an
 
 **Check out the results below!** Style indeed has a strong effect on models’ performance in the leaderboard. This makes sense—from the perspective of human preference, it’s not just what you say, but how you say it. But now, we have a way of _separating_ the effect of writing style from the content, so you can see both effects individually.
 
-When controlling for length and style, we found noticeable shifts in the ranking. GPT-4o-mini and Grok-2-mini drop below most frontier models, and Claude 3.5 Sonnet, Opus, and Llama-3.1-405B rise substantially. In the Hard Prompt subset, we observe Claude 3.5 Sonnet jumping to joint #1 with chatgpt-4o-latest, and Llama improved significantly. We are looking forward to seeing what the community does with this new tool for disaggregating style and substance.
+When controlling for length and style, we found noticeable shifts in the ranking. GPT-4o-mini and Grok-2-mini drop below most frontier models, and Claude 3.5 Sonnet, Opus, and Llama-3.1-405B rise substantially. In the Hard Prompt subset, Claude 3.5 Sonnet ties for #1 with chatgpt-4o-latest and Llama-3.1-405B climbs to #3. We are looking forward to seeing what the community does with this new tool for disaggregating style and substance!
 
 
-## Overall ranking + Style Control
-<img src="/images/blog/style_control/comparison_overall.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
+### Overall Ranking + Style Control
+<img src="/images/blog/style_control/comparison_overall.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 80%"></img>
 <p style="color:gray; text-align: center;">Figure 1. Overall Chatbot Arena ranking vs Overall Chatbot Arena ranking where answer length, markdown header count, markdown bold count, and markdown list element count are being “controlled”.</p>
 
-## Hard Prompt ranking + Style Control
-<img src="/images/blog/style_control/comparison_hard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
+### Hard Prompt Ranking + Style Control
+<img src="/images/blog/style_control/comparison_hard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 80%"></img>
 <p style="color:gray; text-align: center;">Figure 2. Hard Prompt category ranking vs Hard Prompt category ranking where answer length, markdown header count, markdown bold count, and markdown list element count are being “controlled”.</p>
 
-Leaderboard [link](lmarena.ai/?leaderboard)
+### Full Leaderboard with Style Control
 
-Colab [link](https://colab.research.google.com/drive/19VPOril2FjCX34lJoo7qn4r6adgKLioY#scrollTo=dYANZPG_8a9N)
+<img src="/images/blog/style_control/arena_leaderboard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 90%"></img>
 
-<img src="/images/blog/style_control/arena_leaderboard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 85%"></img>
+Please find the below links to leaderboard and colab notebook. We will be rolling out style control soon to all the categories. Stay tuned!
+- Leaderboard [link](lmarena.ai/?leaderboard)
+- Colab [link](https://colab.research.google.com/drive/19VPOril2FjCX34lJoo7qn4r6adgKLioY#scrollTo=dYANZPG_8a9N)
 
-We will be rolling out style control soon to all the categories. Stay tuned!
 
 ## Methodology
 
@@ -97,7 +98,7 @@ We report the following coefficient for each style attribute across different me
   </tr>
 <tr>
     <td style="text-align: left; padding: 8px;">Control Markdown Only</td>
-    <td style="text-align: center; padding: 8px;">N/A</td>
+    <td style="text-align: center; padding: 8px;">-</td>
     <td style="text-align: center; padding: 8px;">0.111</td>
     <td style="text-align: center; padding: 8px;">0.044</td>
     <td style="text-align: center; padding: 8px;">0.056</td>
@@ -105,9 +106,9 @@ We report the following coefficient for each style attribute across different me
 <tr>
     <td style="text-align: left; padding: 8px;">Control Length Only</td>
     <td style="text-align: center; padding: 8px;">0.267</td>
-    <td style="text-align: center; padding: 8px;">N/A</td>
-    <td style="text-align: center; padding: 8px;">N/A</td>
-    <td style="text-align: center; padding: 8px;">N/A</td>
+    <td style="text-align: center; padding: 8px;">-</td>
+    <td style="text-align: center; padding: 8px;">-</td>
+    <td style="text-align: center; padding: 8px;">-</td>
   </tr>
 </table>
 
