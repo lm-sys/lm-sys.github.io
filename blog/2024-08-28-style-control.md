@@ -27,8 +27,8 @@ When controlling for length and style, we found noticeable shifts in the ranking
 <img src="/images/blog/style_control/arena_leaderboard.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 90%"></img>
 
 Please find the below links to leaderboard and colab notebook. We will be rolling out style control soon to all the categories. Stay tuned!
-- Leaderboard [link](lmarena.ai/?leaderboard)
-- Colab [link](https://colab.research.google.com/drive/19VPOril2FjCX34lJoo7qn4r6adgKLioY#scrollTo=dYANZPG_8a9N)
+- Leaderboard [link](https://lmarena.ai/?leaderboard)
+- Colab [link](https://colab.research.google.com/drive/19VPOril2FjCX34lJoo7qn4r6adgKLioY#scrollTo=C4xnVybEy0OO)
 
 
 ## Methodology
