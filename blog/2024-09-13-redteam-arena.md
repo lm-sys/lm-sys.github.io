@@ -1,6 +1,6 @@
 ---
 title: "Introducing RedTeam Arena"
-author: "Anastasios Angelopoulos*, Luca Vivona*, Wei-Lin Chiang*, Aryan Vichare, Lisa Dunlap, Salvivona, Pliny"
+author: "Anastasios Angelopoulos*, Luca Vivona*, Wei-Lin Chiang*, Aryan Vichare, Lisa Dunlap, Salvivona, Pliny, Ion Stoica"
 date: "Sep 13, 2024"
 previewImg: /images/blog/redteam_arena/badwords.png
 ---
