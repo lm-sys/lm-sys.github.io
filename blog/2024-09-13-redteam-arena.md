@@ -12,7 +12,7 @@ We are excited to launch [RedTeam Arena](https://redarena.ai), a community-drive
 <img src="/images/blog/redteam_arena/badwords.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 80%"></img>
 <p style="color:gray; text-align: center;">Figure 1: RedTeam Arena with Bad Words at <a href="https://redarena.ai">redarena.ai</a></p>
 
-RedTeam Arena is an open-source red-teaming platform for LLMs. Our plan is to provide games that people can play to have fun, while sharpening their red-teaming skills. The first game we created is called *[Bad Words](https://redarena.ai)*, challenging players to convince models to say target "bad words”. It already has strong community adoption, with thousands of users participating and competing for the top spot on the jailbreaker leaderboard.
+RedTeam Arena is an [open-source](https://github.com/redteaming-arena/redteam-arena) red-teaming platform for LLMs. Our plan is to provide games that people can play to have fun, while sharpening their red-teaming skills. The first game we created is called *[Bad Words](https://redarena.ai)*, challenging players to convince models to say target "bad words”. It already has strong community adoption, with thousands of users participating and competing for the top spot on the jailbreaker leaderboard.
 
 We plan to open the data after a short responsible disclosure delay. We hope this data will help the community determine the boundaries of AI models—how they can be controlled and convinced.
 
