@@ -18,7 +18,7 @@ We plan to open the data after a short responsible disclosure delay. We hope thi
 
 This is not a bug bounty program, and it is not your grandma’s jailbreak arena. Our goal is to serve and grow the redteaming community. To make this one of the most massive crowdsourced red teaming initiatives of all time. From our perspective, models that are easily persuaded are not worse: they are just more controllable, and less resistant to persuasion. This can be good or bad depending on your use-case; it’s not black-and-white.
 
-We need your help. Join our jailbreaking game at [redarena.ai](redarena.ai). All the code is open-sourced on [Github](https://github.com/redteaming-arena/redteam-arena). You can open issues and also send feedback on [Discord](https://discord.gg/qn2JkWbe). You are welcome to propose new games, or new bad words on X (just tag @[lmsysorg](https://x.com/lmsysorg) and @[elder_plinius](https://x.com/elder_plinius) so we see it)!
+We need your help. Join our jailbreaking game at [redarena.ai](redarena.ai). All the code is open-sourced on [Github](https://github.com/redteaming-arena/redteam-arena). You can open issues and also send feedback on [Discord](https://discord.gg/mP3PwbKG9m). You are welcome to propose new games, or new bad words on X (just tag @[lmsysorg](https://x.com/lmsysorg) and @[elder_plinius](https://x.com/elder_plinius) so we see it)!
 
 
 ## The Leaderboard: Extended Elo
@@ -57,4 +57,4 @@ That’s it! After updating the model coefficients in this way, we report them i
 
 ## What’s next?
 
-[RedTeam Arena](https://redarena.ai) is a community-driven project, and we’re eager to grow it further with your help! Whether through raising Github issues, creating PRs [here](https://github.com/redteaming-arena/redteam-arena), or providing feedback on [Discord](https://discord.gg/qn2JkWbe), we welcome all your contributions!
+[RedTeam Arena](https://redarena.ai) is a community-driven project, and we’re eager to grow it further with your help! Whether through raising Github issues, creating PRs [here](https://github.com/redteaming-arena/redteam-arena), or providing feedback on [Discord](https://discord.gg/mP3PwbKG9m), we welcome all your contributions!
