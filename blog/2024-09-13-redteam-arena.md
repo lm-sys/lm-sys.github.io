@@ -37,7 +37,7 @@ People have been asking how we compute the leaderboard of players, models, and p
 
 We then model the win probability of the player as
 \begin{equation}
-	\mathbb{P}(Y_i = 1) = \frac{e^{X_i^{\rm Player}\beta^{\rm Player}}}{e^{X_i^{\rm Player}\beta^{\rm Player}} + e^{X_i^{\rm Model}\beta^{\rm Model} + X_i^{\rm Prompt}\beta^{\rm Prompt}}}.
+	\mathbb{P}(Y_i = 1 | X_i^{\rm Model}, X_i^{\rm Player}, X_i^{\rm Prompt}) = \frac{e^{X_i^{\rm Player}\beta^{\rm Player}}}{e^{X_i^{\rm Player}\beta^{\rm Player}} + e^{X_i^{\rm Model}\beta^{\rm Model} + X_i^{\rm Prompt}\beta^{\rm Prompt}}}.
 \end{equation}
 This form might look familiar, since it is the same type of model as the Arena Score: a logistic model. This is just a logistic model with a different, _additive_ structure—the model scores $\beta^{\rm Model}$ and prompt scores $\beta^{\rm Prompt}$ combine additively to generate a notion of total strength for the model-prompt pair. The player scores $\beta^{\rm Player}$ have a similar interpretation as the standard Elo score, and we let $\beta$ denote the concatenation $(\beta^{\rm Player}, \beta^{\rm Model}, \beta^{\rm Prompt})$. For lack of a better term, we call this model “Extended Elo”.
 
@@ -48,8 +48,9 @@ There are $M\times R$ model-prompt pairs, and only $M+R$ distinct models and pro
 
 Now, we solve this logistic regression problem _online_. That is, letting $\ell(x,y;\beta)$ be the binary cross-entropy loss, we use the iteration
 \begin{equation}
-  \beta_n = \beta_{n-1} - \nabla_\beta \ell(X_{n-1}, Y_{n-1}; \beta_{n-1}).
+  \beta_n = \beta_{n-1} - \eta \nabla_\beta \ell(X_{n-1}, Y_{n-1}; \beta_{n-1}),
 \end{equation}
+for some learning rate $\eta$.
 This is a generalization of the Elo update. In fact, if one removes the prompt coefficient, it reduces exactly to the Elo update between players and models, as if these were 1-1 games.
 
 That’s it! After updating the model coefficients in this way, we report them in the tables in the [RedTeam Arena](https://redarena.ai/leaderboard). We also have more plans for this approach: extended Elo can be used not just for 1v2 leaderboards, like this one, but any $N$v$M$-player leaderboards in order to attribute notions of strength to each subpart using binary human preference feedback.
