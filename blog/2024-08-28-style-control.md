@@ -64,10 +64,10 @@ where  $\mathsf{BCELoss}$ represents the binary cross-entropy loss. (In practice
 Now, for every battle $i \in [n]$, let’s say that in addition to $X_i$ that we observe some additional style features, $Z_i \in \mathbb{R}^S$. These style features can be as simple or complicated as you want. For example, $Z_i$ could just be the difference in response lengths of the two models, in which case $S=1$. Or, we could have $S>1$ and include other style-related features, for example, the number of markdown headers, common words associated with refusal, or even style features that are automatically extracted by a model!
 
 Here, we define each style feature as
-$$\text{normalize }(\frac{\text{feature}_A - \text{feature}_B}{\text{feature}_A + \text{feature}_B})$$
+$$\text{normalize }\left(\frac{\text{feature}_A - \text{feature}_B}{\text{feature}_A + \text{feature}_B}\right)$$
 
 For example, the first new feature, token length difference between answer A and answer B, would be expressed as 
-$$\text{normalize }(\frac{\text{length}_A - \text{length}_B}{\text{length}_A + \text{length}_B})$$
+$$\text{normalize }\left(\frac{\text{length}_A - \text{length}_B}{\text{length}_A + \text{length}_B}\right)$$
 
 We divide the difference by the sum of both answers' token length to make the length difference proportional to the pairwise answer token lengths. An answer with 500 tokens is roughly equal in length to an answer with 520 tokens, while an answer with 20 tokens is very different from an answer with 40 tokens, even though the difference is 20 tokens for both scenarios. Alternatively, AlpacaEval LC uses the following normalization technique. 
 
