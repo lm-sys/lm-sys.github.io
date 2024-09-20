@@ -5,7 +5,7 @@ date: "Sep 20, 2024"
 previewImg: /images/blog/arena_new_site/graduation.png
 ---
 
-We’re excited to share that Chatbot Arena now has its own dedicated website: [lmarena.ai](https://lmarena.ai) and [blog](https://chatbot-arena.github.io/)!
+We’re excited to share that Chatbot Arena now has its own dedicated website: [lmarena.ai](https://lmarena.ai) and [blog](https://blog.lmarea.ai)!
 
 You might be wondering why we’re making this change. Over the past year, with the incredible support of our community, Chatbot Arena has evolved into a mature ecosystem and platform. We believe it’s time for it to **graduate** and stand on its own. By giving Chatbot Arena its own platform, we aim to provide it with more independence and ensure its long-term growth.
 
