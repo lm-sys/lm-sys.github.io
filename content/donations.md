@@ -1,14 +1,21 @@
 ---
-title: "Donations"
+title: "Donation"
 ---
-        
-LMSYS Org primarily relies on university grants and donations to serve models and support infrastructure. We welcome diverse forms of donations and sponsorships, including cash, GPU hardware and hours, cloud credits, computing resources, and more. To donate, please contact us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com?subject=Donation%20to%20LMSYS%20Org).
 
-## Current Sponsors and Supporters
+LMSYS is a non-profit organization that depends entirely on donations. These funds are mostly used to cover the computing expenses for our projects.
+We welcome diverse forms of donations and sponsorships, including but not limited to cash, computing devices (e.g., GPUs), and cloud credits. Please contact us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com) to learn more about sponsorships and benefits.
 
-We thank the following sponsors for supplying resources for supporting our infrastructure. All resources supplied are gifts with no strings attached.
+## Sponsors
+[NVIDIA](https://www.nvidia.com/),
+[a16z](https://a16z.com/),
+[Hyperbolic](https://hyperbolic.xyz),
+[RunPod](https://www.runpod.io/),
+[Kaggle](https://www.kaggle.com/),
+[MBZUAI](https://mbzuai.ac.ae/),
+[Together](https://www.together.ai/),
+[Anyscale](https://www.anyscale.com/),
+[HuggingFace](https://huggingface.co/)
 
-[Kaggle](https://www.kaggle.com/), [MBZUAI](https://mbzuai.ac.ae/), [a16z](https://a16z.com/), [Together](https://www.together.ai/), [Hyperbolic](https://hyperbolic.xyz), [RunPod](https://www.runpod.io/), [NVIDIA](https://build.nvidia.com/), [Anyscale](https://www.anyscale.com/), [HuggingFace](https://huggingface.co/)
-
-We also thank the following companies which provide API credits to serve their models on Chatbot Arena:
+We also thank the following companies for providing API credits to serve their models on Chatbot Arena (graduated):
 [Alibaba](https://www.alibabacloud.com/en/solutions/generative-ai/qwen), [Anthropic](https://www.anthropic.com/api), [Cohere](https://cohere.com/), [Databricks](https://www.databricks.com/), [Google](https://ai.google.dev/), [Mistral](https://mistral.ai/), [OpenAI](https://www.openai.com/), [Reka](https://www.reka.ai/), [Zhipu AI](https://open.bigmodel.cn/), [01ai](https://www.01.ai/)
+
