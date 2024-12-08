@@ -9,6 +9,7 @@ We welcome diverse forms of donations and sponsorships, including but not limite
 LMSYS is supported by donations from the following institutions:
 
 [NVIDIA](https://www.nvidia.com/),
+[AMD](https://www.amd.com/),
 [a16z](https://a16z.com/),
 [Hyperbolic](https://hyperbolic.xyz),
 [RunPod](https://www.runpod.io/),
