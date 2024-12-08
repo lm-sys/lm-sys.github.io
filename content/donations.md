@@ -6,6 +6,8 @@ LMSYS is a non-profit organization that depends entirely on donations. These fun
 We welcome diverse forms of donations and sponsorships, including but not limited to cash, computing devices (e.g., GPUs), and cloud credits. Please contact us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com) to learn more about sponsorships and benefits.
 
 ## Sponsors
+LMSYS is supported by donations from the following institutions:
+
 [NVIDIA](https://www.nvidia.com/),
 [a16z](https://a16z.com/),
 [Hyperbolic](https://hyperbolic.xyz),

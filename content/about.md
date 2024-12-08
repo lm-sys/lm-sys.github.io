@@ -29,7 +29,6 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 ## Advisors
 [Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/), [Ion Stoica](https://people.eecs.berkeley.edu/~istoica/), [Eric P. Xing](http://www.cs.cmu.edu/~epxing/), [Hao Zhang](https://people.eecs.berkeley.edu/~hao/)
 
-
 ## Sponsors
 LMSYS is supported by donations from the following institutions:
 
