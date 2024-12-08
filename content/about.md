@@ -22,7 +22,7 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Zhanghao Wu](https://zhanghaowu.me/),
 [Zhiqiang Xie](https://zhiqiangxie.com/)
 [Shuo Yang](https://github.com/andy-yang-1),
-[Liangsheng Yin](https://www.lsyin.me/)
+[Liangsheng Yin](https://www.lsyin.me/),
 [Yineng Zhang](https://zhyncs.com/),
 [Chenyang Zhao](https://zhaochenyang20.github.io/Chayenne/),
 [Siyuan Zhuang](https://github.com/suquark),
