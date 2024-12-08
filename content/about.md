@@ -9,7 +9,7 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Lianmin Zheng](https://lmzheng.net/), [Ying Sheng](https://sites.google.com/view/yingsheng/home), [Wei-Lin Chiang](https://infwinston.github.io/), [Zihao Ye](https://homes.cs.washington.edu/~zhye/), [Yusi Chen]()
 
 ## Members of flagship projects
-[SGLang](https://github.com/sgl-project/sglang/tree/main) steering developers:
+SGLang major developers:
 [Lianmin Zheng](https://lmzheng.net/),
 [Ying Sheng](https://sites.google.com/view/yingsheng/home),
 [Liangsheng Yin](https://www.lsyin.me),
@@ -22,10 +22,9 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Yichuan Wang](https://yichuan520030910320.github.io),
 [Shiyi Cao](https://shiyicao.com)
 
-[Chatbot Arena (graduated)](https://lmarena.ai):
-See https://blog.lmarena.ai/about
+Chatbot Arena (graduated): See [https://blog.lmarena.ai/about](https://blog.lmarena.ai/about)
 
-[Vicuna LLM](https://en.wikipedia.org/wiki/Vicuna_LLM):
+Vicuna LLM:
 [Wei-Lin Chiang](https://infwinston.github.io/),
 [Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/),
 [Dacheng Li](https://dachengli1.github.io),
