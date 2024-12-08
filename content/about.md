@@ -8,25 +8,38 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 ## Directors and officers
 [Lianmin Zheng](https://lmzheng.net/), [Ying Sheng](https://sites.google.com/view/yingsheng/home), [Wei-Lin Chiang](https://infwinston.github.io/), [Zihao Ye](https://homes.cs.washington.edu/~zhye/), [Yusi Chen]()
 
-## Project members
+## Members of flagship projects
+[SGLang](https://github.com/sgl-project/sglang/tree/main) steering developers:
+[Lianmin Zheng](https://lmzheng.net/),
+[Ying Sheng](https://sites.google.com/view/yingsheng/home),
+[Liangsheng Yin](https://www.lsyin.me),
+[Yineng Zhang](https://zhyncs.com),
 [Ke Bao](https://github.com/ispobock),
-[Shiyi Cao](https://shiyicao.com/),
-[Christopher Chou](https://github.com/BabyChouSr),
-[Lisa Dunlap](https://lisabdunlap.com),
-[Evan Frick](https://efrick2002.github.io/),
-[Dacheng Li](https://dachengli1.github.io/),
-[Tianle Li](https://codingwithtim.github.io/),
-[Zhuohan Li](https://people.eecs.berkeley.edu/~zhuohan/),
-[Zi Lin](https://zi-lin.com/),
-[Isaac Ong](https://isaacong.me),
-[Zhanghao Wu](https://zhanghaowu.me/),
-[Zhiqiang Xie](https://zhiqiangxie.com/)
+[Byron Hsu](https://www.linkedin.com/in/byronhsu1230),
+[Chenyang Zhao](https://zhaochenyang20.github.io/Chayenne),
+[Zhiqiang Xie](https://zhiqiangxie.com)
 [Shuo Yang](https://github.com/andy-yang-1),
-[Liangsheng Yin](https://www.lsyin.me/),
-[Yineng Zhang](https://zhyncs.com/),
-[Chenyang Zhao](https://zhaochenyang20.github.io/Chayenne/),
+[Yichuan Wang](https://yichuan520030910320.github.io),
+[Shiyi Cao](https://shiyicao.com)
+
+[Chatbot Arena (graduated)](https://lmarena.ai):
+See https://blog.lmarena.ai/about
+
+[Vicuna LLM](https://en.wikipedia.org/wiki/Vicuna_LLM):
+[Wei-Lin Chiang](https://infwinston.github.io/),
+[Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/),
+[Dacheng Li](https://dachengli1.github.io),
+[Zhuohan Li](https://people.eecs.berkeley.edu/~zhuohan),
+[Zi Lin](https://zi-lin.com),
+[Ying Sheng](https://sites.google.com/view/yingsheng/home),
+[Ion Stoica](https://people.eecs.berkeley.edu/~istoica/),
+[Zhanghao Wu](https://zhanghaowu.me),
+[Eric P. Xing](http://www.cs.cmu.edu/~epxing/),
+[Hao Zhang](https://people.eecs.berkeley.edu/~hao/),
+[Lianmin Zheng](https://lmzheng.net/),
 [Siyuan Zhuang](https://github.com/suquark),
 [Yonghao Zhuang](https://github.com/ZYHowell)
+
 
 Project memberships are granted to individuals who have demonstrated outstanding technical contributions and research impact in LMSYS projects, as evaluated by our advisory board of distinguished academics and industry leaders.
 
