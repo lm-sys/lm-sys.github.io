@@ -2,11 +2,11 @@
 title: "About"
 ---
 
-Large Model Systems Organization (LMSYS Corp) is a 501(c)(3) non-profit focused on incubating open-source projects and research.
+Large Model Systems (LMSYS Corp.) is a 501(c)(3) non-profit focused on incubating open-source projects and research.
 Our mission is to make large AI models accessible to everyone by co-developing open models, datasets, systems, and evaluation tools. We conduct cutting-edge machine learning research, develop open-source software, train large language models for broad accessibility, and build distributed systems to optimize their training and inference.
 
 ## Directors and officers
-[Lianmin Zheng](https://lmzheng.net/), [Ying Sheng](https://sites.google.com/view/yingsheng/home), [Wei-Lin Chiang](https://infwinston.github.io/), [Zihao Ye](https://homes.cs.washington.edu/~zhye/)
+[Lianmin Zheng](https://lmzheng.net/), [Ying Sheng](https://sites.google.com/view/yingsheng/home), [Wei-Lin Chiang](https://infwinston.github.io/), [Zihao Ye](https://homes.cs.washington.edu/~zhye/), [Yusi Chen]()
 
 ## Project members
 [Ke Bao](https://github.com/ispobock),
@@ -20,7 +20,9 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Zi Lin](https://zi-lin.com/),
 [Isaac Ong](https://isaacong.me),
 [Zhanghao Wu](https://zhanghaowu.me/),
+[Zhiqiang Xie](https://zhiqiangxie.com/)
 [Shuo Yang](https://github.com/andy-yang-1),
+[Liangsheng Yin](https://www.lsyin.me/)
 [Yineng Zhang](https://zhyncs.com/),
 [Chenyang Zhao](https://zhaochenyang20.github.io/Chayenne/),
 [Siyuan Zhuang](https://github.com/suquark),
