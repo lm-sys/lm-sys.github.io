@@ -28,7 +28,7 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Siyuan Zhuang](https://github.com/suquark),
 [Yonghao Zhuang](https://github.com/ZYHowell)
 
-Project memberships are granted to individuals who have demonstrated outstanding technical contributions and research impact in artificial intelligence, as evaluated by our advisory board of distinguished academics and industry leaders.
+Project memberships are granted to individuals who have demonstrated outstanding technical contributions and research impact in LMSYS projects, as evaluated by our advisory board of distinguished academics and industry leaders.
 
 ## Advisors
 [Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/), [Ion Stoica](https://people.eecs.berkeley.edu/~istoica/), [Eric P. Xing](http://www.cs.cmu.edu/~epxing/), [Hao Zhang](https://people.eecs.berkeley.edu/~hao/)
