@@ -9,7 +9,7 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Lianmin Zheng](https://lmzheng.net/), [Ying Sheng](https://sites.google.com/view/yingsheng/home), [Wei-Lin Chiang](https://infwinston.github.io/), [Zihao Ye](https://homes.cs.washington.edu/~zhye/), [Yusi Chen]()
 
 ## Members of flagship projects
-SGLang major developers:
+**SGLang** major developers:
 [Lianmin Zheng](https://lmzheng.net/),
 [Ying Sheng](https://sites.google.com/view/yingsheng/home),
 [Liangsheng Yin](https://www.lsyin.me),
@@ -20,11 +20,17 @@ SGLang major developers:
 [Zhiqiang Xie](https://zhiqiangxie.com)
 [Shuo Yang](https://github.com/andy-yang-1),
 [Yichuan Wang](https://yichuan520030910320.github.io),
-[Shiyi Cao](https://shiyicao.com)
+[Shiyi Cao](https://shiyicao.com).
+More information see [SGLang GitHub](https://github.com/sgl-project/sglang).
 
-Chatbot Arena (graduated): See [https://blog.lmarena.ai/about](https://blog.lmarena.ai/about)
 
-Vicuna LLM:
+**FlashInfer**:
+[Zihao Ye](https://homes.cs.washington.edu/~zhye/).
+More information see [FlashInfer GitHub](https://github.com/flashinfer-ai/flashinfer).
+
+**Chatbot Arena** (graduated): See [https://blog.lmarena.ai/about](https://blog.lmarena.ai/about)
+
+**Vicuna LLM**:
 [Wei-Lin Chiang](https://infwinston.github.io/),
 [Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/),
 [Dacheng Li](https://dachengli1.github.io),
