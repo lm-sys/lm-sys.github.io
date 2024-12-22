@@ -28,7 +28,7 @@ export default function Nav() {
             href="https://lmarena.ai"
             target="_blank"
             rel="noopener noreferrer">
-            Chatbot Arena (graduated)
+            Chatbot Arena
           </a>
           {/* <Link href="/dataset-requests">Dataset Requests</Link> */}
         </div>
