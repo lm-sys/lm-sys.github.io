@@ -2,9 +2,11 @@ import fs from "fs";
 import matter from "gray-matter";
 import md from "markdown-it";
 import mdgh from "markdown-it-github-headings";
+import mdhl from "markdown-it-highlightjs";
 import Tags from "../../components/Tags";
 import dateFormat from "dateformat";
 import React, { useEffect } from 'react';
+import Head from 'next/head';
 
 export default function Post({ frontmatter, content, slug }) {
   useEffect(() => {
@@ -14,8 +16,13 @@ export default function Post({ frontmatter, content, slug }) {
       window.MathJax.typesetPromise();
     }
   }, [content]);
+  
   return (
     <div className="w-full flex justify-center py-5 pt-16 md:pt-5">
+      <Head>
+        {/* Add highlight.js CSS for styling code blocks */}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-light.min.css" />
+      </Head>
       <Tags
         title={frontmatter.title}
         desc={md({ html: true }).use(mdgh, {prefixHeadingIds: false}).render(content).slice(0, 157) + "..."}
@@ -38,7 +45,10 @@ export default function Post({ frontmatter, content, slug }) {
         <div
           className="pt-2 article"
           dangerouslySetInnerHTML={{
-            __html: md({ html: true }).use(mdgh, {prefixHeadingIds: false}).render(content),
+            __html: md({ html: true })
+              .use(mdgh, {prefixHeadingIds: false})
+              .use(mdhl)
+              .render(content),
           }}
         />
       </div>
