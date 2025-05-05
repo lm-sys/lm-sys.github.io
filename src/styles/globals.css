@@ -267,3 +267,7 @@ a:hover {
 a:hover {
   opacity: 75%;
 }
+
+table {
+  word-wrap: break-word;
+}
