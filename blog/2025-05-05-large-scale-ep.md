@@ -9,11 +9,11 @@ DeepSeek is a popular open-source large language model (LLM) praised for its str
 
 <img src="/images/blog/large_scale_ep/overall-arch.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 90%; image-orientation: none;"></img>
 
-Our implementation, shown in the figure above, runs on 12 nodes, each with 8 H100 GPUs.
-It uses prefill-decode disaggreegation and large-scale expert parallelism (EP), achieving a speed of **52.3k input tokens per second and 22.3k output tokens per second per node** for 2000-token input sequences.
+Our implementation, shown in the figure above, runs on 12 nodes in the Atlas Cloud, each equipped with 8 H100 GPUs. 
+It uses prefill-decode disaggregation and large-scale expert parallelism (EP), achieving a speed of **52.3k input tokens per second and 22.3k output tokens per second per node** for 2000-token input sequences.
 To the best of our knowledge, this represents **the first open-source implementation to nearly match the throughput reported in the official DeepSeek blog** at large scale.
 By deploying this implementation locally, it translates to a cost of $0.20/1M output tokens, which is about one-fifth the cost of the official DeepSeek Chat API.
-Compared to standard tensor parallelism using the same resources, our optimized strategy improves the output throuhgput by up to 5x.
+Compared to vanilla tensor parallelism using the same resources, this optimized strategy improves the output throuhgput by up to 5x.
 This blog dives into our parallelism design, optimization methods, and results. All components of our work are fully open-source, allowing others to explore and build on our efforts. The instructions for reproducing our experiments are fully available [here](https://github.com/sgl-project/sglang/issues/6017).
 
 
@@ -23,7 +23,7 @@ This blog dives into our parallelism design, optimization methods, and results. 
 
 ✅ Leveraging these new features, our team successfully replicated DeepSeek's inference system using 12 nodes, each with 8 H100 GPUs. In total, SGLang achieves a throughput of 52.3k input tokens per second and 22.3k output tokens per second per node for input sequences of 2000 tokens.
 
-✅ This blog explains technical details of our approach, focusing on optimizations for efficiency, peak memory usage reduction, and workload balancing. The profile results show that our implementation achieves on-par performance with the official DeepSeek’s report.
+✅ This blog explains technical details of our approach, focusing on optimizations for efficiency, peak memory usage reduction, and workload balancing. The profile results show that our implementation achieves nearly on-par performance with the official DeepSeek’s report.
 
 ✅ All experiments and code are fully open-sourced for community access and further development.
 
@@ -50,10 +50,10 @@ DeepSeek employs **Multi-head Latent Attention (MLA)** to effectively model comp
 
 ### Dense FFNs
 
-Despite DeepSeek-V3 only uses three dense feed-forward network (FFN) layers, their computation can significantly increase peak memory usage, potentially leading to system crashes if not carefully managed. To address this, we adopt **Data Parallelism (DP)** over tensor parallelism (TP), leveraging the following advantages:
+Despite using only three dense FFN layers, DeepSeek-V3's computation can significantly increase peak memory usage, potentially leading to system crashes if not carefully managed. To address this, we adopt **Data Parallelism (DP)** over tensor parallelism (TP), leveraging the following advantages:
 
 - **Enhanced Scalability**: With an intermediate dimension of 18,432, high TP degrees (e.g., TP32) result in inefficient fragmentation into small-unit segments (e.g., 576 units), which are not divisible by 128—a common alignment boundary for modern GPUs such as H100. This misalignment hampers computational efficiency and memory utilization. DP provides a more scalable solution by avoiding fragmentation, ensuring balanced workload distribution across devices.
-- **Optimized Memory Efficiency**: Traditionally, TP reduces memory usage as worker size increases, but this advantage diminishes under DP attention. In a pure TP setup, memory demand scales with DP size as: $$\text{Memory}=\frac{N_{\text{param}}}{\text{TP}}+(1+k)N_{\text{hidden\_state}}\cdot \text{TP}\notag$$ Here, $N_{\text{param}}$ is the number of model parameters, $N_{\text{hidden\_state}}$ is the size of the hidden state per device, and $k$ is a coefficient representing extra memory overhead from CUDA Graph duplication. This memory usage function is minimized when $\text{TP}=\sqrt{\frac{N_{\text{param}}}{(1+k)N_{\text{hidden\_state}}}}$. DeepSeek-V3 uses an intermediate size of 18,432. During the prefill phase, CUDA Graph is typically disabled, so $k = 0$. However, the token size per device can easily exceed 2,048, resulting in an optimal TP size of 3 or less. In the decode phase, a practical configuration might use 128 tokens per device and set $k = 3$. In this case, the memory-optimal TP size is 6. In both phases, a lower TP degree minimizes memory usage per device. As a result, DP may offer a more memory-efficient approach for scaling compared to relying solely on TP.
+- **Optimized Memory Efficiency**: Traditionally, TP reduces memory usage as worker size increases, but this advantage diminishes under DP attention. In a pure TP setup, memory demand for a single-layer Transformer model scales with DP size as: $$\text{Memory}=\frac{N_{\text{param}}}{\text{TP}}+(1+k)N_{\text{hidden\_state}}\cdot \text{DP}\notag$$ Here, $N_{\text{hidden\_state}}=n_\text{token}\times n_\text{intermediate\_size}$ is the size of the hidden state on each device (DP rank), $N_{\text{param}}=n_\text{hidden\_size}\times n_\text{intermediate\_size}$ is the number of model parameters, and $k$ is a coefficient representing extra memory overhead from CUDA Graph duplication. By assuming $\text{DP}=\text{TP}$, this memory usage function is minimized when $\text{TP}=\sqrt{\frac{N_{\text{param}}}{(1+k)N_{\text{hidden\_state}}}}$. DeepSeek-V3 uses an intermediate size of 18,432. During the prefill phase, CUDA Graph is typically disabled, so $k = 0$. However, the token size per device can easily exceed 2,048, resulting in an optimal TP size of 3 or less. In the decode phase, a practical configuration might use 128 tokens per device and set $k = 3$. In this case, the memory-optimal TP size is 6. In both phases, a lower TP degree minimizes memory usage per device. As a result, DP may offer a more memory-efficient approach for scaling compared to relying solely on TP.
 - **Minimized Communication Overhead**: In pure TP, each FFN necessitates two all-reduce operations, resulting in substantial communication overhead. By leveraging DP, we optimize this process to a single reduce-scatter following the prior attention layer and an all-gather before the next, reducing communication costs by 50%. Furthermore, when attention is also computed under pure DP, inter-device communication is entirely eliminated, significantly enhancing overall efficiency.
 
 The integration of DP dense FFN with DP attention is illustrated in the left figure below. Users can enable this feature by setting `--moe-dense-tp-size=1`.
@@ -79,15 +79,15 @@ The LM head computes output probabilities over a large vocabulary, a resource-in
 
 ## Prefill and Decode Disaggregation
 
-Large Language Model (LLM) inference comprises two distinct phases: **Prefill** and **Decode**. The Prefill phase is computation-intensive, processing the entire input sequence, while the Decode phase is memory-intensive, managing the Key-Value (KV) cache for token generation. Traditionally, these phases are handled within a unified engine, where combined scheduling of prefill and decode batches introduces inefficiencies. To address these challenges, we introduce **Prefill and Decode (PD) Disaggregation** in SGLang.
+LLM inference comprises two distinct phases: **Prefill** and **Decode**. The Prefill phase is computation-intensive, processing the entire input sequence, while the Decode phase is memory-intensive, managing the Key-Value (KV) cache for token generation. Traditionally, these phases are handled within a unified engine, where combined scheduling of prefill and decode batches introduces inefficiencies. To address these challenges, we introduce **Prefill and Decode (PD) Disaggregation** in SGLang.
 
 ### Issues with Unified Scheduling
 
-The conventional unified engine, which processes prefill and decode batches together, results in two significant problems:
+The conventional unified engine, which processes prefill and decode batches together, results in three significant problems:
 
 1. **Prefill Interruption**: Incoming prefill batches frequently interrupt ongoing decode batches, causing substantial delays in token generation.
 2. **DP Attention Imbalance**: In DP attention, one DP worker may process a prefill batch while another handles a decode batch simultaneously, leading to increased decode latency.
-3. **Incompatible with DeepEP**: As we will discuss in [the later section](#deepep), DeepEP executes different dispatch modes for prefill and decode, making unified scheduling imcompatible with DeepEP.
+3. **Incompatible with DeepEP**: As we will discuss in [a later section](#expert-parallelism-with-deepep), DeepEP executes different dispatch modes for prefill and decode, making unified scheduling imcompatible with DeepEP.
 
 PD Disaggregation resolves these by separating the two stages, enabling tailored optimizations for each.
 
@@ -127,7 +127,7 @@ DeepEP provides two specialized dispatch modes to address varying workload deman
 - **Normal Dispatch**: Optimized for handling long input sequences, such as during the prefill phase, this mode prioritizes maximum computational throughput. However, it generates symbolic shapes that are incompatible with CUDA Graph, rendering it less effective for the decode phase, where kernel launch overhead becomes a significant bottleneck.
 - **Low-Latency Dispatch**: Tailored for generating output tokens during the decode phase, this mode prioritizes minimal delay to ensure real-time performance. It supports CUDA Graph but requires preallocating a fixed memory size. If the memory demand exceeds this preallocation, a runtime error occurs.
 
-In SGLang, the integration of DeepEP provides **auto mode** that dynamically selects between these two dispatch modes based on the workload. However, without PD disaggregation, the auto mode faces a limitation: it cannot simultaneously support both normal dispatch (for prefill) and low-latency dispatch (for decode) within the same device group. This restriction hinders its compatibility with DP attention, which is crucial for memory-efficient inference. The compatibility of each mode is outlined in the table below:
+In SGLang, the integration of DeepEP provides **auto mode** that dynamically selects between these two dispatch modes based on the workload. However, without PD disaggregation, the auto mode faces a limitation: it cannot simultaneously support both normal dispatch (for prefill) and low-latency dispatch (for decode) within the same communication group. This restriction hinders its compatibility with DP attention, which is crucial for memory-efficient inference. The compatibility of each mode is outlined in the table below:
 
 | **Mode**    | **Long Input** | **Long Output** | **DP Attention** | **CUDA Graph** |
 | ----------- | -------------- | --------------- | ---------------- | -------------- |
@@ -251,7 +251,7 @@ We evaluated the end-to-end performance of different configurations of SGLang us
 To accommodate varying workload demands, we independently evaluated the prefill (P) and decode (D) phases, assuming unlimited resources for the non-tested phase to isolate and maximize the load on the tested nodes—mirroring the setup used by DeepSeek. The results are summarized below:
 
 - **Prefill Phase**: On 4 nodes (4×8×H100, EP32), the system achieved per-node throughputs of 57,674, 54,543, and 50,302 tokens per second for prompt lengths of 1K, 2K, and 4K, respectively. As shown in the bar chart below, this represents up to a 3.3× improvement over the TP16 baseline, largely attributable to the optimized GroupedGeMM kernel (DeepGEMM) and two-batch overlap. Assuming a perfectly balanced workload, our system’s throughput is within 5.6% of DeepSeek's official profile.
-- **Decode Phase**: Evaluated on 9 nodes (9×8×H100, EP72; half the scale of DeepSeek), the system achieved 22,282 tokens/sec per node for 2K inputs—representing a 5.2× speedup over the TP16 baseline. Under simulated MTP conditions—with attention kernels intentionally slowed to reflect real-world latency—the system sustained a high throughput of 17,373 tokens/sec per node for 4K inputs, just 6.6% below DeepSeek’s official profile. As shown in the figure on the right, these performance gains are largely attributed to 4× larger batch sizes enabled by EP, which enhances scalability by significantly reducing memory consumed by model weights.
+- **Decode Phase**: Evaluated on 9 nodes (9×8×H100, EP72; half the scale of DeepSeek), the system achieved 22,282 tokens/sec per node for 2K inputs—representing a 5.2× speedup over the TP16 baseline. Under simulated MTP conditions—with attention kernels intentionally slowed to reflect real-world latency—the system sustained a high throughput of 17,373 tokens/sec per node for 4K inputs, just 6.6% below DeepSeek’s official profile. As shown in the figure on the right, these performance gains are largely attributed to 4× larger batch sizes enabled by EP, which enhances scalability by significantly reducing per-GPU memory consumption of model weights.
 
 <img src="/images/blog/large_scale_ep/e2e-prefill-decode.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 80%"></img>
 
@@ -267,11 +267,11 @@ The results are presented below:
 
 |                       | DeepSeek Blog (excl. cache hit) | DeepSeek Profile | SGLang (Default) | SGLang + Simulated Perfect EPLB |
 | --------------------- | ------------------------------- | ---------------- | ---------------- | ------------------------------- |
-| Batch Size            | 16,384                          | 16,384           | 16,384           | 16,384                          |
+| Batch Size            | N/A                             | 16,384           | 16,384           | 16,384                          |
 | Input Length          | N/A                             | 4,096            | 4,096            | 4,096                           |
 | Throughput (per node) | 32,206                          | 62,713           | 50,302           | 59,337                          |
 
-DeepSeek’s profile reports a throughput roughly twice that of its production environment. SGLang with default expert imbalance is 20% slower than DeepSeek’s profile, while the simulated perfect EPLB case narrows the gap to 5%.
+DeepSeek’s profile reports a throughput roughly twice that of its production environment. SGLang with default expert imbalance is 20% slower than DeepSeek’s profile, while the simulated perfect EPLB case narrows the gap to 6%.
 
 For decode, the results are shown below:
 
@@ -406,7 +406,7 @@ hidden_state = ffn(hidden_state, linear1, linear2)
 
 In this code, `del hidden_state` is intended to release the memory occupied by `hidden_state` after `intermediate_state` is computed. However, as `hidden_state` is still referenced outside the function, the `del` operation has no effect. This increases peak memory usage, risking performance slowdowns or out-of-memory errors.
 
-SGLang addresses this with the DisposableTensor class, which introduces a dispose() method to explicitly and immediately release a tensor’s memory, circumventing Python’s reference counting limitations. Here’s how it works:
+SGLang addresses this with the DisposableTensor class, a subclass of `torch.Tensor` which introduces a dispose() method to explicitly and immediately release a tensor’s memory, circumventing Python’s reference counting limitations. Here’s how it works:
 
 ```python
 def ffn(hidden_state: torch.Tensor, linear1: nn.Linear, linear2: nn.Linear):
@@ -456,7 +456,7 @@ We would like to express our heartfelt gratitude to the following teams and coll
 
 - **SGLang Core Team and Community Contributors** — Jingyi Chen, Cheng Wan, Liangsheng Yin, Baizhou Zhang, Ke Bao, Jiexin Liang, Xiaoyu Zhang, Yanbo Yang, Fan Yin, Chao Wang, Laixin Xie, Runkai Tao, Yuhong Guo, Kaihong Zhang, Lei Yu, Yu-Hsuan Tseng, Qilin Tian, Peng Zhang, Yi Zhang, Yineng Zhang, Byron Hsu, and many others.
 - **[Atlas Cloud](https://www.atlascloud.ai) Team** —  Jerry Tang, Wei Xu, Simon Xue, Harry He, Eva Ma, and colleagues — for providing a 96-device NVIDIA H100 cluster and offering responsive engineering support.
-- **NVIDIA Solution Architect Team** — Ting Xu, Jinyan Chen, and colleagues — for their work on the seamless integration of expert parallelism.
+- **NVIDIA Solution Architect Team** — Xuting Zhou, Jinyan Chen, and colleagues — for their work on the seamless integration of expert parallelism.
 - **NVIDIA Enterprise Product Team** — Trevor Morris, Elfie Guo, Kaixi Hou, Kushan Ahmadian, and colleagues — for optimizing the DeepSeek R1 kernels.
 - **LinkedIn Team** — Biao He, Qingquan Song, Chunan Zeng, Yun Dai, Yubo Wang, and colleagues — for optimizing the Flash-Attention 3 backend.
 - **Mooncake Team** — Shangming Cai, Teng Ma, Mingxing Zhang, and colleagues — for their collaboration on PD disaggregation in SGLang.
