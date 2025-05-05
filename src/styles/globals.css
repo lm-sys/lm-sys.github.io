@@ -113,6 +113,10 @@ h6 {
   align-items: center;
 }
 
+h5 {
+  font-size: 1.25rem;
+}
+
 h2::after,
 h3::after,
 h4::after,
