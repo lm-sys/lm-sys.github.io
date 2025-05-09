@@ -55,13 +55,19 @@ Project memberships are granted to individuals who have demonstrated outstanding
 LMSYS is supported by donations from the following institutions:
 
 [NVIDIA](https://www.nvidia.com/),
-[AMD](https://www.amd.com/),
+[Nebius](https://nebius.com/),
+[AtlasCloud](https://www.atlascloud.ai/),
 [a16z](https://a16z.com/),
+[AMD](https://www.amd.com/),
+[InnoMatrix](https://innomatrix.ai/),
 [Hyperbolic](https://hyperbolic.xyz),
-[RunPod](https://www.runpod.io/),
+[NovitaAI](https://novita.ai/),
+[DataCrunch](https://datacrunch.io/),
+[Sky9](https://www.sky9capital.com/),
 [Kaggle](https://www.kaggle.com/),
 [MBZUAI](https://mbzuai.ac.ae/),
 [Together](https://www.together.ai/),
+[RunPod](https://www.runpod.io/),
 [Anyscale](https://www.anyscale.com/),
 [HuggingFace](https://huggingface.co/)
 
