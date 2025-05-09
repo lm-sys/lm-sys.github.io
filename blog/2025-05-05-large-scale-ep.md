@@ -1,5 +1,5 @@
 ---
-title: "Deploying DeepSeek with PD Disaggregation and Large-scale Expert Parallelism on 96 H100 GPUs"
+title: "Deploying DeepSeek with PD Disaggregation and Large-Scale Expert Parallelism on 96 H100 GPUs"
 author: "The SGLang Team"
 date: "May 5, 2025"
 previewImg: /images/blog/large_scale_ep/cover.jpg
