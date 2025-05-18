@@ -18,9 +18,12 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Byron Hsu](https://www.linkedin.com/in/byronhsu1230),
 [Chenyang Zhao](https://zhaochenyang20.github.io/Chayenne),
 [Zhiqiang Xie](https://zhiqiangxie.com),
-[Shuo Yang](https://github.com/andy-yang-1),
-[Yichuan Wang](https://yichuan520030910320.github.io),
-[Shiyi Cao](https://shiyicao.com).
+[Jingyi Chen](https://github.com/fzyzcjy),
+[Xiaoyu Zhang](https://github.com/BBuf),
+[Baizhou Zhang](https://github.com/Fridge003),
+[Yi Zhang](https://github.com/yizhang2077),
+[Jiexin Liang](https://github.com/Alcanderian),
+[Chang Su](https://github.com/CatherineSue).
 More information see [SGLang GitHub](https://github.com/sgl-project/sglang).
 
 
