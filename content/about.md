@@ -23,7 +23,8 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Baizhou Zhang](https://github.com/Fridge003),
 [Yi Zhang](https://github.com/yizhang2077),
 [Jiexin Liang](https://github.com/Alcanderian),
-[Chang Su](https://github.com/CatherineSue).
+[Chang Su](https://github.com/CatherineSue),
+[Hai Xiao](https://github.com/HaiShaw).
 More information see [SGLang GitHub](https://github.com/sgl-project/sglang).
 
 
