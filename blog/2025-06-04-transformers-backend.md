@@ -19,7 +19,7 @@ Let’s walk through a simple text generation example with `meta-llama/Llama-3.2
 
 ## Transformers
 
-The transformers library is great for experimentation, small-scale tasks and training, but it's not optimized for high-volume or low-latency scenarios.
+transformers library is great for experimentation, small-scale tasks and training, but it's not optimized for high-volume or low-latency scenarios.
 
 ```python
 from transformers import pipeline
@@ -90,7 +90,7 @@ With the new transformers backend integration, SGLang can now automatically fall
 - Support for custom models from the Hugging Face Hub
 - Less engineering overhead
 
-This unlocks faster inference and optimized deployment (e.g enabling RadixAttention) without sacrificing the simplicity and versatility of the transformers ecosystem. 
+This unlocks faster inference and optimized deployment (e.g enabling RadixAttention) without sacrificing the simplicity and versatility of transformers ecosystem. 
 
 ## Usage
 
@@ -98,7 +98,7 @@ This unlocks faster inference and optimized deployment (e.g enabling RadixAttent
 llm = sgl.Engine(model_path="new-transformers-model", impl="transformers")
 ```
 
-Note that specifying the impl parameter is optional. If the model is not natively supported by SGLang, it switches to the transformers implementation on its own.
+Note that specifying the impl parameter is optional. If the model is not natively supported by SGLang, it switches to transformers implementation on its own.
 
 Any model on the Hugging Face Hub that works with `transformers` using `trust_remote_code=True` and properly implements attention is compatible with SGLang. You can find the exact requirements in the official [documentation](https://docs.sglang.ai/supported_models/transformers_fallback.html#remote-code). If your custom model meets these criteria, all you need to do is set trust_remote_code=True when loading it.
 
@@ -108,7 +108,7 @@ llm = sgl.Engine(model_path="new-custom-transformers-model", impl="transformers"
 
 ## Example 
 
-Kyutai Team’s Helium isn’t yet natively supported by SGLang. This is where the transformers backend shines, enabling optimized inference without waiting for native support.
+Kyutai Team’s Helium isn’t yet natively supported by SGLang. This is where transformers backend shines, enabling optimized inference without waiting for native support.
 
 ```bash
 python3 -m sglang.launch_server \
