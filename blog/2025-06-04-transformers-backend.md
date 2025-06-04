@@ -90,7 +90,7 @@ With the new transformers backend integration, SGLang can now automatically fall
 - Support for custom models from the Hugging Face Hub
 - Less engineering overhead
 
-This unlocks faster inference and optimized deployment without sacrificing the simplicity and versatility of the transformers ecosystem. 
+This unlocks faster inference and optimized deployment (e.g enabling RadixAttention) without sacrificing the simplicity and versatility of the transformers ecosystem. 
 
 ## Usage
 
