@@ -15,7 +15,7 @@ Let’s dive into what this integration enables and how you can use it.
 
 # Transformers and SGLang
 
-Let’s walk through a simple text generation example with `meta-llama/Llama-3.2-1B` to compare both approaches.
+Let’s walk through a simple text generation example with `meta-llama/Llama-3.2-1B-Instruct` to compare both approaches.
 
 ## Transformers
 
@@ -24,9 +24,14 @@ The transformers library is great for experimentation, small-scale tasks and tra
 ```python
 from transformers import pipeline
 
-pipe = pipeline("text-generation", model="meta-llama/Llama-3.2-1B")
-result = pipe("The future of AI is")
-
+pipe = pipeline("text-generation", model="meta-llama/Llama-3.2-1B-Instruct")
+generate_kwargs = {
+    "top_p": 0.95,
+    "top_k": 20,
+    "temperature": 0.8,
+    "max_new_tokens": 256
+}
+result = pipe("The future of AI is", **generate_kwargs)
 print(result[0]["generated_text"])
 ```
 
@@ -35,14 +40,19 @@ print(result[0]["generated_text"])
 SGLang takes a different track, prioritizing efficiency with features like RadixAttention (a memory-efficient attention mechanism). Inference with SGLang is noticeably faster and more resource-efficient, especially under load. Here’s the same task in SGlang using an offline engine:
 
 ```python
-
 import sglang as sgl
-llm = sgl.Engine(model_path="meta-llama/Llama-3.2-1B-Instruct")
-prompts = ["The future of AI is"]
-sampling_params = {"temperature": 0.8, "top_p": 0.95, "max_new_tokens": 512}
-outputs = llm.generate(prompts, sampling_params)
 
-print(outputs[0])
+if __name__ == '__main__':
+    llm = sgl.Engine(model_path="meta-llama/Llama-3.2-1B-Instruct")
+    prompts = ["The future of AI is"]
+    sampling_params =  {
+        "top_p": 0.95,
+        "top_k": 20,
+        "temperature": 0.8,
+        "max_new_tokens": 256
+    }
+    outputs = llm.generate(prompts, sampling_params)
+    print(outputs[0])
 ```
 
 Or you can spin a server and send requests:
@@ -51,18 +61,19 @@ Or you can spin a server and send requests:
 python3 -m sglang.launch_server \
   --model-path meta-llama/Llama-3.2-1B-Instruct \
   --host 0.0.0.0 \
-  --port 30000 \
+  --port 30000
 ```
 
 ```python
 response = requests.post(
     "http://localhost:30000/generate",
     json={
-        "text": "The capital of France is",
+        "text": "The future of AI is",
         "sampling_params": {
+            "top_p": 0.95,
+            "top_k": 20,
             "temperature": 0.8,
-            "top_p": 0.95, 
-            "max_new_tokens": 512
+            "max_new_tokens": 256
         },
     },
 )
@@ -104,7 +115,7 @@ python3 -m sglang.launch_server \
   --model-path kyutai/helium-1-preview-2b \
   --impl transformers \
   --host 0.0.0.0 \
-  --port 30000 \
+  --port 30000
 ```
 
 
@@ -114,9 +125,10 @@ response = requests.post(
     json={
         "text": "The capital of France is",
         "sampling_params": {
+            "top_p": 0.95,
+            "top_k": 20,
             "temperature": 0.8,
-            "top_p": 0.95, 
-            "max_new_tokens": 512
+            "max_new_tokens": 256
         },
     },
 )
