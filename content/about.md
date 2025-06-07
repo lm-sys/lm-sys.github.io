@@ -94,5 +94,5 @@ These projects feature open models with millions of downloads, crowdsourced plat
 
 ## Contact us
 - Email us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com).
-- Join us on [discord](https://discord.com/invite/HSWAKCrnFx).
-- Follow us on [twitter](https://twitter.com/lmsysorg).
+- Join us on [Discord](https://discord.com/invite/HSWAKCrnFx).
+- Follow us on [X](https://twitter.com/lmsysorg).
