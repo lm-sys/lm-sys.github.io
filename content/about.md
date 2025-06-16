@@ -18,9 +18,13 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Byron Hsu](https://www.linkedin.com/in/byronhsu1230),
 [Chenyang Zhao](https://zhaochenyang20.github.io/Chayenne),
 [Zhiqiang Xie](https://zhiqiangxie.com),
-[Shuo Yang](https://github.com/andy-yang-1),
-[Yichuan Wang](https://yichuan520030910320.github.io),
-[Shiyi Cao](https://shiyicao.com).
+[Jingyi Chen](https://github.com/fzyzcjy),
+[Xiaoyu Zhang](https://github.com/BBuf),
+[Baizhou Zhang](https://github.com/Fridge003),
+[Yi Zhang](https://github.com/yizhang2077),
+[Jiexin Liang](https://github.com/Alcanderian),
+[Chang Su](https://github.com/CatherineSue),
+[Hai Xiao](https://github.com/HaiShaw).
 More information see [SGLang GitHub](https://github.com/sgl-project/sglang).
 
 
@@ -55,13 +59,19 @@ Project memberships are granted to individuals who have demonstrated outstanding
 LMSYS is supported by donations from the following institutions:
 
 [NVIDIA](https://www.nvidia.com/),
-[AMD](https://www.amd.com/),
+[Nebius](https://nebius.com/),
+[AtlasCloud](https://www.atlascloud.ai/),
 [a16z](https://a16z.com/),
+[AMD](https://www.amd.com/),
+[InnoMatrix](https://innomatrix.ai/),
 [Hyperbolic](https://hyperbolic.xyz),
-[RunPod](https://www.runpod.io/),
+[NovitaAI](https://novita.ai/),
+[DataCrunch](https://datacrunch.io/),
+[Sky9](https://www.sky9capital.com/),
 [Kaggle](https://www.kaggle.com/),
 [MBZUAI](https://mbzuai.ac.ae/),
 [Together](https://www.together.ai/),
+[RunPod](https://www.runpod.io/),
 [Anyscale](https://www.anyscale.com/),
 [HuggingFace](https://huggingface.co/)
 
@@ -84,5 +94,5 @@ These projects feature open models with millions of downloads, crowdsourced plat
 
 ## Contact us
 - Email us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com).
-- Join us on [discord](https://discord.com/invite/HSWAKCrnFx).
-- Follow us on [twitter](https://twitter.com/lmsysorg).
+- Join us on [Discord](https://discord.com/invite/HSWAKCrnFx).
+- Follow us on [X](https://twitter.com/lmsysorg).

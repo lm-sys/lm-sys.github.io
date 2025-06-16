@@ -1,5 +1,5 @@
 ---
-title: "Deploying DeepSeek with PD Disaggregation and Large-scale Expert Parallelism on 96 H100 GPUs"
+title: "Deploying DeepSeek with PD Disaggregation and Large-Scale Expert Parallelism on 96 H100 GPUs"
 author: "The SGLang Team"
 date: "May 5, 2025"
 previewImg: /images/blog/large_scale_ep/cover.jpg
@@ -243,7 +243,7 @@ We evaluated the end-to-end performance of different configurations of SGLang us
 
 - **SGLang with TP16 x 6**: Every two nodes are paired with an independent group, running DeepSeek-V3 inference with a TP size of 16 and DP attention.
 - **SGLang with PD Disaggregation**: This version incorporates PD disaggregation and full EP optimization. For the EPLB, we adopt a distribution matching the input/output data, as real-time serving statistics are unavailable.
-- **SGLang with PD Disaggregation and simulated MTP**: To simulate MTP’s effects, we firstly double the batch size and halve the Key-Value KV cache length to maintain the same workload for GroupedGeMM computation and memory access. Moreover, we insert dummy kernels after the real attention computation to ensure the attention phase takes the same time as in DeepSeek’s profile, accurately reflecting the slowdown caused by MTP’s attention mechanism. We conservatively assume a 60% acceptance rate under MTP.
+- **SGLang with PD Disaggregation and simulated MTP**: To simulate MTP’s effects, we firstly double the batch size and halve the Key-Value KV cache length to maintain the same workload for GroupedGeMM computation and memory access. Moreover, we insert dummy kernels after the real attention computation to ensure the attention phase takes the same time as in DeepSeek’s profile, accurately reflecting the slowdown caused by MTP’s attention mechanism. We conservatively assume a 70% acceptance rate under MTP.
 - **DeepSeek Profile Results**: Throughput estimates are derived from [DeepSeek’s official profiling data](https://github.com/deepseek-ai/profile-data).
 
 ##### Performance Analysis of Prefill and Decode Phases
@@ -277,7 +277,7 @@ For decode, the results are shown below:
 
 |                       | DeepSeek Blog | DeepSeek Profile | SGLang (Default) | SGLang + Simulated MTP (Slow Attention) |
 | --------------------- | ------------- | ---------------- | ---------------- | --------------------------------------- |
-| Batch Size            | 128           | 128              | 256              | 128                                     |
+| Batch Size            | N/A           | 128              | 256              | 128                                     |
 | KV Cache Length       | 4,989         | 4,096            | 2,000            | 4,000                                   |
 | Number of Nodes       | 18            | 16               | 9                | 9                                       |
 | Throughput (per node) | 14,800        | 18,598           | 22,282           | 17,373                                  |
