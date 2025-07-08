@@ -40,7 +40,7 @@
     </defs>
     
     <!-- Title -->
-    <text x="800" y="30" text-anchor="middle" font-size="24" font-weight="bold" fill="#333" font-family="Arial, sans-serif">OME (Operator for Machine learning Endpoints) Architecture</text>
+    <text x="800" y="30" text-anchor="middle" font-size="24" font-weight="bold" fill="#333" font-family="Arial, sans-serif">OME (Open Model Engine) Architecture</text>
     
     <!-- User Layer -->
     <g id="userLayer">
