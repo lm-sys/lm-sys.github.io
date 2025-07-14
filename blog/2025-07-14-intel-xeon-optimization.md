@@ -53,7 +53,7 @@ Overall, the kernel level optimizations on MLA provide approximately **1.9x** pe
 A naïve implementation of MoE with torch would involve looping through experts sequentially, and gather (mask) activations for each of the expert before linear projection. To improve efficiency, a common strategy is to sort the index for activation and chunk them into blocks. We followed the implementation from existing GPU kernels on SGLang, as shown in **Fig-4**, run `argsort` on `topk_ids` and keep indices of activations in `sorted_ids` according to expert ids.
 
 We made several additional optimizations for the CPU kernel:
-* **SiLU Fusion**: to fuse `up_proj` and `SiLU`, we implemented GEMM kernel that operates in the pattern of `A×[B1, B2]=[C1, C2]`. With `B1` from left half and `B2` from right half, we can fuse `SiLU(C1 ) * C2` together, illuminate additional load/store for the output of `up_proj`.
+* **SiLU Fusion**: to fuse `up_proj` and `SiLU`, we implemented GEMM kernel that operates in the pattern of `A×[B1, B2]=[C1, C2]`. With `B1` from left half and `B2` from right half, we can fuse `SiLU(C1 ) * C2` together, eliminate additional load/store for the output of `up_proj`.
 * **Dynamic Quant Fusion**: in our INT8 dynamic quant kernels for MoE, we fuse the quantization from BF16 to UINT8 with fetching of activation. We implement both AVX512 and AMX kernels and choose in between according to input configurations. Unlike AMX that supports both U8S8 and S8S8, AVX512-VNNI only supports U8S8 (UNIT8 for A and INT8 for B), we have to make a compromise to align the weights to U8S8 pattern, which indicates a compensation factor of `-128×B` is needed to convert S8S8 to U8S8: `A × B=(A + 128) × B - 128 × B`.
 
 ![Fig-4: MoE Implementationn](/images/blog/xeon/fig-4.png)
