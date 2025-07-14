@@ -61,7 +61,7 @@ We made several additional optimizations for the CPU kernel:
 With these optimizations combined, we achieve **85%** memory bandwidth efficiency for INT8 MoE, or **1.45TB/s** effective memory bandwidth on Multiplexed Rank Dual Inline Memory Modules (MRDIMMs).
 
 ### FP8 Inference
-DeepSeek V3 employs FP8 hybrid training, which is a great challenge for CPU devices, due to an obvious reason that existing x86 devices don’t have native support for FP8. However, providing FP8 support is essential since it represents the original user experience. We made a couple of optimizations for FP8 MoE and GEMM:
+DeepSeek R1 employs FP8 hybrid training, which is a great challenge for CPU devices, due to an obvious reason that existing x86 devices don’t have native support for FP8. However, providing FP8 support is essential since it represents the original user experience. We made a couple of optimizations for FP8 MoE and GEMM:
 
 *	**Weight Only FP8**: we followed a weight-only pattern for FP8 MoE/GEMM, in which FP8 is converted to BF16 (same as activation), and make the computation.
 *	**Effective Vectorized Conversion**: the data type conversion from FP8 to BF16 is major performance bottleneck on CPU, we experimented with two approaches: a) LUT that gather BF16 data from a 2^8 table; b) intrinsics vectorized conversion. Notably both approaches are equally slow, take 60 to 70 cycles to accomplish, unacceptable for any performance critical scenario. We made a trade-off for b) and skipped the NaN checks and DENORM handling, which reduce the conversion time by half.
