@@ -165,6 +165,8 @@ SGLANG_CPU_OMP_THREADS_BIND='0-42|43-85|86-127' python3 -m sglang.launch_server 
 python3 -m sglang.bench_serving --dataset-path ShareGPT_V3_unfiltered_cleaned_split.json --dataset-name random --random-input 1024 --random-output 1024 --num-prompts 1 --request-rate inf --random-range-ratio 1.0 --max-concurrency 1 --host 127.0.0.1 --port 3000
 ```
 
+**[NOTEs]**: The current CPU native backend only supports CPUs with Intel® AMX support, slow performance are expected for other x86 platforms.
+
 ### Product and Performance Information
 Measurement on Intel(R) Xeon(R) 6980P, HT On, Turbo On, NUMA 6, Integrated Accelerators Available [used]: DLB [8], DSA [8], IAA[8], QAT[on CPU, 8], Total Memory 1536GB (24x64GB DDR5 12800 MT/s [8800 MT/s]), BIOS BHSDCRB1.IPC.3544.D02.2410010029, microcode 0x11000314,  CentOS Stream 9 Test by Intel on July 7th 2025.
 
