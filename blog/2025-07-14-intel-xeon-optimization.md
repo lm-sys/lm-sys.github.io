@@ -115,7 +115,7 @@ In this blog, we explained the technical details of achieving high performance w
 The enabling and optimization of Intel® Xeon® in SGLang is a big milestone as provided new alternative solution of LLM inference in industry, it would not have been possible without the deep collaboration and contributions from the community.
 
 We extend our heartfelt thanks to：
-* **SGLang Core Team and Community Contributors**: Yineng Zhang, Jiexin Liang, [Thien](https://github.com/gau-nernst) – for sharing their invaluable ideas, meticulously reviewing PRs, providing insightful feedback on RFCs, and solid code contributions.
+* **SGLang Core Team and Community Contributors**: Yineng Zhang, Jiexin Liang, [Mick](mickjagger19@icloud.com), [Thien](https://github.com/gau-nernst) – for sharing their invaluable ideas, meticulously reviewing PRs, providing insightful feedback on RFCs, and solid code contributions.
 *	**KTransformers Team**: Mingxing Zhang – for sharing insights and innovative ideas for GPU/CPU hybrid execution.
 
 Also, we, as Intel PyTorch team, pressed forward in the face of adversity to contribute to this taskforce: Mingfei Ma, Chunyuan Wu, Yanbing Jiang, Guobing Chen, Beilei Zheng, Jianan Gu, Zaili Wang, Hengyu Meng, Weiwen Xia, E Cao, Mingxu Zhang, Diwei Sun.
