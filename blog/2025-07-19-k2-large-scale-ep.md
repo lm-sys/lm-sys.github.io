@@ -1,7 +1,7 @@
 ---
 title: "Deploying Kimi K2 with PD Disaggregation and Large-Scale Expert Parallelism on 128 H200 GPUs"
 author: "The Mooncake Team"
-date: "July 17, 2025"
+date: "July 19, 2025"
 previewImg: /images/blog/k2_large_scale/preview.png
 ---
 
@@ -111,6 +111,23 @@ kubectl apply -f https://raw.githubusercontent.com/sgl-project/ome/refs/heads/ma
 
 With these declarative resources in place, OME will automatically handle model downloading, runtime orchestration, and endpoint provisioning—enabling scalable, production-grade inference for the Kimi K2 model family.
 
+**Interacting with the Model**
+This command forwards local port 8080 to model on port 80:
+```bash
+kubectl port-forward -n kimi-k2-instruct service/kimi-k2-instruct 8080:80
+```
+Leave this running in one terminal. It will route your local http://localhost:8080 to the SGlang router. After the port-forward is active, run this in a second terminal:
+```bash
+curl -s -X POST http://localhost:8080/generate \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer None' \
+  -d '{
+    "text": "The future of AI is",
+    "max_new_tokens": 50,
+    "temperature": 0.7
+  }'
+```
+
 ---
 
 ### **OME Advantages & PD + DeepEP + Router Insights**
@@ -122,7 +139,7 @@ This configuration demonstrates a powerful setup leveraging **Prefill-Decode (PD
 - **Disaggregated scaling** of prefill and decode workloads with independent resource control
 - **Low-latency decode** via deepep-mode=low_latency and token-aware dispatch tuning
 - **Advanced expert routing** with ep-dispatch-algorithm=dynamic and enable-eplb
-- **RDMA acceleration using mlx5_1 for high-throughput kv-cache transfer**
+- **RDMA acceleration for high-throughput kv-cache transfer**
 
 The deployment is orchestrated by a lightweight **SGLang Router**, which provides:
 
@@ -216,11 +233,9 @@ We would like to express our heartfelt gratitude to the following teams and coll
 
  - **Mooncake Team:** Boxin Zhang, Shangming Cai, Mingxing Zhang, and colleagues.
 
- - **SGLang Team and community:** Simo Lin, Jingyi Chen, Qiaolin Yu, Yineng Zhang, and many others.
+ - **SGLang Team and community:** Simo Lin, Jingyi Chen, Qiaolin Yu, Yanbo Yang, Yineng Zhang, and many others.
 
 We extend our thanks to the **MoonshotAI Team**—including Shaowei Liu, Zhengtao Wang, Weiran He, Xinran Xu, and others—for their support in tuning the big beautiful model K2.
-
-SGLang’s inference framework running on NVIDIA GPUs enables AI practitioners to easily deliver inference at scale, empowering end users to “think smart” and harness the reasoning capabilities of state-of-the-art language models at the highest performance.
 
 ---
 
