@@ -2,7 +2,7 @@
 title: "Deploying Kimi K2 with PD Disaggregation and Large-Scale Expert Parallelism on 128 H200 GPUs"
 author: "The Mooncake Team"
 date: "July 17, 2025"
-previewImg: /images/blog/gb200_part_1/primary.png
+previewImg: /images/blog/k2_large_scale/preview.png
 ---
 
 
@@ -117,7 +117,7 @@ With these declarative resources in place, OME will automatically handle model d
 
 OME (Open Model Engine) offers a declarative, production-ready framework for deploying large models like Kimi K2. It abstracts the complexities of GPU topology, distributed configuration, and runtime tuning—eliminating the need for custom orchestration logic. With a single ClusterServingRuntime definition, teams can launch optimized multi-node inference workloads at scale.
 
-This configuration demonstrates a powerful setup leveraging **Prefill-Decode (PD) disaggregation** and **DeepEP**, enabling:
+This configuration demonstrates a powerful setup leveraging **Prefill-Decode (PD) disaggregation** and **Large Scale EP**, enabling:
 
 - **Disaggregated scaling** of prefill and decode workloads with independent resource control
 - **Low-latency decode** via deepep-mode=low_latency and token-aware dispatch tuning
@@ -150,7 +150,6 @@ Prefill and Decode are deployed as independent services, each scaled and optimiz
 
 Kimi K2 activates a subset of **384 experts** per token. We implemented:
 
-- **24-way expert parallelism**
 - **96 redundant experts on decode nodes** to balance MoE routing
 - **NUMA-aware GPU grouping** for optimal NVLink and PCIe utilization on H200 clusters
 
@@ -180,7 +179,6 @@ Note: The prefill-to-decode ratio is workload-dependent. We prioritized decode n
 | --- | --- |
 | **Prefill Throughput** | **896k tokens/sec** |
 | **Decode Throughput** | **384k tokens/sec** |
-| **End-to-End Latency** (2k in / 100 out / batch 480) | **< 2 seconds** |
 | **Cost per 1M Output Tokens** | **~$0.21 (H200 $2.3 / hour; cost varies by hardware)** |
 
 ---
@@ -205,7 +203,6 @@ The next step involves evaluating and optimizing long-context scenarios. As K2 i
 
 By combining **OME**, **SGLang**, **PD Disaggregation**, and **Large-Scale Expert Parallelism**, we deployed Kimi K2 on **128 H200 GPUs**, achieving:
 
-- **4–5× throughput improvement** over vanilla tensor parallelism
 - **Cost-effective large-scale inference** (~$0.21 per 1M output tokens on H200) is available for short-context scenarios, with ongoing efforts to optimize the long-context scenarios.
 - **Simplified deployment workflows** with model-driven configuration
 
@@ -215,13 +212,13 @@ All components of this deployment are **fully open-source and reproducible**. We
 
 ### Acknowledgments
 
-Mooncake Team: xxx
+We would like to express our heartfelt gratitude to the following teams and collaborators:
 
-SGLang Team and community: xxx
+ - **Mooncake Team:** Boxin Zhang, Shangming Cai, Mingxing Zhang, and colleagues.
 
-We extend our thanks to the MoonshotAI Team—including Shaowei Liu, Zhengtao Wang, Weiran He, Xinran Xu, and others—for their support in tuning the big beautiful model K2.
+ - **SGLang Team and community:** Simo Lin, Jingyi Chen, Qiaolin Yu, Yineng Zhang, and many others.
 
-With NVIDIA DGX Cloud GPUs and support for operational excellence from the DGX Cloud team, Moonshot and SGLang together were able to accelerate their release of KIMI K2 .... (fill in outcome details) … XX AND YY …  As a result of this collaboration, customers can leverage SGLang to easily deliver inference at scale with KIMI k2 just days after it was announced, enabling end users to “think smart,” and harness reasoning capabilities of state-of-the-art language models at the highest possible performance.
+We extend our thanks to the **MoonshotAI Team**—including Shaowei Liu, Zhengtao Wang, Weiran He, Xinran Xu, and others—for their support in tuning the big beautiful model K2.
 
 SGLang’s inference framework running on NVIDIA GPUs enables AI practitioners to easily deliver inference at scale, empowering end users to “think smart” and harness the reasoning capabilities of state-of-the-art language models at the highest performance.
 
