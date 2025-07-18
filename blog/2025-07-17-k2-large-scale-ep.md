@@ -220,8 +220,6 @@ We would like to express our heartfelt gratitude to the following teams and coll
 
 We extend our thanks to the **MoonshotAI Team**—including Shaowei Liu, Zhengtao Wang, Weiran He, Xinran Xu, and others—for their support in tuning the big beautiful model K2.
 
-SGLang’s inference framework running on NVIDIA GPUs enables AI practitioners to easily deliver inference at scale, empowering end users to “think smart” and harness the reasoning capabilities of state-of-the-art language models at the highest performance.
-
 ---
 
 ## Further Reading
