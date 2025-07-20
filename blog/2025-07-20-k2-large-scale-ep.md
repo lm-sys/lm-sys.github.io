@@ -1,8 +1,8 @@
 ---
 title: "Deploying Kimi K2 with PD Disaggregation and Large-Scale Expert Parallelism on 128 H200 GPUs"
 author: "The Mooncake Team"
-date: "July 19, 2025"
-previewImg: /images/blog/k2_large_scale/preview.png
+date: "July 20, 2025"
+previewImg: /images/blog/k2_large_scale/preview.jpg
 ---
 
 
