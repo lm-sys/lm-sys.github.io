@@ -93,7 +93,7 @@ To enable OME to manage the Kimi K2 model family, apply the following ClusterBas
 kubectl apply -f https://raw.githubusercontent.com/sgl-project/ome/refs/heads/main/config/models/moonshotai/Kimi-K2-Instruct.yaml
 ```
 
-Note: You may customize the path field to specify where the model should be stored locally. OME will download the model directly from Hugging Face with optimized parallelism and automatically verify the artifact checksum to ensure integrity.
+Note: You may download the YAML file and customize the path field to specify where the model should be stored locally. OME will download the model directly from Hugging Face with optimized parallelism and automatically verify the artifact checksum to ensure integrity.
 
 **Installing the Kimi K2 latest SGLang Serving Runtime**
 
