@@ -112,6 +112,7 @@ kubectl apply -f https://raw.githubusercontent.com/sgl-project/ome/refs/heads/ma
 With these declarative resources in place, OME will automatically handle model downloading, runtime orchestration, and endpoint provisioning—enabling scalable, production-grade inference for the Kimi K2 model family.
 
 **Interacting with the Model**
+
 This command forwards local port 8080 to model on port 80:
 ```bash
 kubectl port-forward -n kimi-k2-instruct service/kimi-k2-instruct 8080:80
