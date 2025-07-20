@@ -19,7 +19,7 @@ Released by Moonshot AI in 2025, it features:
 
 Kimi K2 achieves strong performance in **frontier knowledge, math, and coding**, and is optimized for **agentic tasks**—not just answering questions but taking multi-step actions.
 
-Moonshot AI has open-sourced two versions:
+Moonshot AI open-sourced two versions:
 
 - **Kimi-K2-Base**: The foundation model for research and fine-tuning
 - **Kimi-K2-Instruct**: A post-trained model for general-purpose chat and agentic applications
@@ -30,9 +30,9 @@ For more details, please refer to the [official Kimi K2 release](https://moonsho
 
 ### Why Large-Scale Deployment Matters
 
-Large-scale deployment fully leverages hardware capabilities and reduces costs concerning the model’s architecture.
+Large-scale deployment fully leverages hardware capabilities and reduces costs given the model’s architecture.
 
-- **Serve More, Faster:** Higher throughput, lower latency, more concurrent sessions, and shorter queues.
+- **Serve More Requests, Faster:** Higher throughput, lower latency, more concurrent sessions, and shorter queues.
 - **Lower $/Token:** Saturate hardware and amortize model load; efficiency improves at scale.
 
 However, the large-scale deployment of trillion-scale MoE models present unique challenges:
@@ -41,7 +41,7 @@ However, the large-scale deployment of trillion-scale MoE models present unique 
 - **Cross-node** communication takes a large amount of time and requires optimizations
 - **Sparse expert activation** leads to load imbalance
 
-Deploying Kimi K2 efficiently on **128 H200 GPUs** is not a trivial task—it requires rethinking both the system design and the deployment workflow.
+Efficient deployment of Kimi K2 on **128 H200 GPUs** requires rethinking both system design and deployment workflows.
 
 In this blog, we explain how we solved this problem using **OME** and **SGLang**.
 
@@ -196,7 +196,7 @@ Note: The prefill-to-decode ratio is workload-dependent. We prioritized decode n
 | --- | --- |
 | **Prefill Throughput** | **896k tokens/sec** |
 | **Decode Throughput** | **384k tokens/sec** |
-| **Cost per 1M Output Tokens** | **~$0.21 (H200 $2.3 / hour; cost varies by hardware)** |
+| **Cost per 1M Output Tokens** | **~$0.21**(**H200 $2.3/hour**) |
 
 ---
 
@@ -225,15 +225,16 @@ By combining **OME**, **SGLang**, **PD Disaggregation**, and **Large-Scale Exper
 
 All components of this deployment are **fully open-source and reproducible**. We welcome the community to build on this work.
 
+This deployment was made possible not only by open collaboration between Mooncake and the SGLang community, but also through the generous infrastructure support from NVIDIA DGX Cloud. NVIDIA provided the SGLang team with access to 128 H200 GPUs via DGX Cloud, enabling us to accelerate the deployment of Kimi K2 from model release to production-grade inference very quickly. As a result, organizations can now leverage SGLang to serve Kimi K2 at scale, unlocking advanced reasoning capabilities with state-of-the-art performance.
+
 ---
 
 ### Acknowledgments
 
 We would like to express our heartfelt gratitude to the following teams and collaborators:
 
- - **Mooncake Team:** Boxin Zhang, Shangming Cai, Mingxing Zhang, and colleagues.
-
- - **SGLang Team and community:** Simo Lin, Jingyi Chen, Qiaolin Yu, Yanbo Yang, Yineng Zhang, and many others.
+- **Mooncake Team:** Boxin Zhang, Shangming Cai, Mingxing Zhang, and colleagues.
+- **SGLang Team and community:** Simo Lin, Jingyi Chen, Qiaolin Yu, Yanbo Yang, Yineng Zhang, and many others.
 
 We extend our thanks to the **MoonshotAI Team**—including Shaowei Liu, Zhengtao Wang, Weiran He, Xinran Xu, and others—for their support in tuning the big beautiful model K2.
 
