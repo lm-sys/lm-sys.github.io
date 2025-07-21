@@ -195,8 +195,8 @@ Note: The prefill-to-decode ratio is workload-dependent. We prioritized decode n
 
 | Metric | Value |
 | --- | --- |
-| **Prefill Throughput** | **896k tokens/sec** |
-| **Decode Throughput** | **384k tokens/sec** |
+| **Prefill Throughput** | **224k tokens/sec (4 P Nodes)** |
+| **Decode Throughput** | **288k tokens/sec (12 D Nodes)** |
 | **Cost per 1M Output Tokens** | **~$0.21**(**H200 $2.3/hour**) |
 
 ---
