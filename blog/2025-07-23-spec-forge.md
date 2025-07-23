@@ -58,7 +58,7 @@ To scale effectively, SpecForge leverages PyTorch’s FSDP framework and has imp
 
 ## Experiments
 
-Using SpecForge, we trained the LLaMA 4 Scout and Maverick models on a 320K-sample dataset from ShareGPT and UltraChat. The models' strong performance on benchmarks like MT-Bench demonstrates their effectiveness and readiness for Eagle3 inference. Our draft model for Llama4 Maverick achieves 1.45 times speedup on the MT-Bench. Detailed results are summarized below.
+Using SpecForge, we trained the Llama 4 Scout and Maverick models on a 320K-sample dataset from ShareGPT and UltraChat. The models' strong performance on benchmarks like MT-Bench demonstrates their effectiveness and readiness for Eagle3 inference. Our draft model for Llama4 Maverick achieves 1.45 times speedup on the MT-Bench. Detailed results are summarized below.
 
 We evaluated various draft token lengths for Scout and Maverick.
 
@@ -75,7 +75,7 @@ Explore our source code on GitHub and try the pre-trained models on Hugging Face
 
 **[💻 GitHub Repository](https://github.com/sgl-project/SpecForge)**: The complete source code for our training framework, including implementation details for TTT and data processing.
 
-🤗 Hugging Face Models: Download the LLaMA 4 [Scout](https://huggingface.co/lmsys/sglang-EAGLE3-Llama-4-Scout-17B-16E-Instruct-v1) & [Maverick](https://huggingface.co/lmsys/sglang-EAGLE3-Llama-4-Maverick-17B-128E-Instruct-v1) Eagle3 heads (w/o full model) for your projects.
+🤗 Hugging Face Models: Download the Llama 4 [Scout](https://huggingface.co/lmsys/sglang-EAGLE3-Llama-4-Scout-17B-16E-Instruct-v1) & [Maverick](https://huggingface.co/lmsys/sglang-EAGLE3-Llama-4-Maverick-17B-128E-Instruct-v1) Eagle3 heads (w/o full model) for your projects.
 
 ## Roadmap
 
