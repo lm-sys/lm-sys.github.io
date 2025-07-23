@@ -1,4 +1,8 @@
-SpecForge: Powering Fast Speculative Decoding Training For SGLang
+---
+title: SpecForge: Powering Fast Speculative Decoding Training For SGLang
+date: "July 23, 2025"
+previewImg: /images/blog/spec_forge/logo.svg 
+---
 
 Speculative decoding is a popular and powerful method for accelerating Large Language Model (LLM) inference. In this blog post, we are excited to announce the open-sourcing of **SpecForge**, our new training framework for Eagle3-based speculative decoding. We designed **SpecForge** to be incredibly **easy to use** and **tightly integrated** with the **SGLang** inference engine, enabling a seamless transition from training to deployment.
 
