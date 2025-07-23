@@ -91,7 +91,7 @@ We would like to express our heartfelt gratitude to the following teams and coll
 
 **Voltage Park** — our official infrastructure partner, for providing critical GPU resources that enabled the development of SpecForge.
 
-**SGLang Core Team** — Shenggui Li, Fan Yin, Chao Wang, Shuai Shi, Yikai Zhu, Yi Zhang, Yingyi Huang, Haoshuai Zheng, Yineng Zhang and many others.
+**SGLang Team and Community** — Shenggui Li, Yikai Zhu, Fan Yin, Chao Wang, Shuai Shi, Yi Zhang, Yingyi Huang, Haoshuai Zheng, Yineng Zhang and many others.
 
 **SafeAILab Team** — Yuhui Li, Hongyang Zhang and members — for their pioneering work on the Eagle3 algorithm.
 
