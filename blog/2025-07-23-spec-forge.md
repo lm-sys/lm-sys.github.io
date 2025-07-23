@@ -25,7 +25,7 @@ Key capabilities include:
 
 Eagle is a state-of-the-art method for speculative decoding designed to accelerate large language model inference. It achieves this by training a specialized, lightweight draft model to accurately predict the token distributions of a larger target model, leading to high acceptance rates and significant performance improvements.
 
-![intro.svg](/images/blog/spec_forge/eagleintro.svg)
+![intro.svg](/images/blog/spec_forge/eagleintro.PNG)
 
 #### Training-time Test Support
 
