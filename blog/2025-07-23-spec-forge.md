@@ -1,5 +1,6 @@
 ---
 title: "SpecForge: Powering Fast Speculative Decoding Training For SGLang"
+author: "The SGLang Team"
 date: "July 23, 2025"
 previewImg: /images/blog/spec_forge/logo.jpg
 ---
