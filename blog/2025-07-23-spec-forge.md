@@ -77,7 +77,7 @@ Explore our source code on GitHub and try the pre-trained models on Hugging Face
 
 🤗 Hugging Face Models: Download the LLaMA 4 [Scout](https://huggingface.co/lmsys/sglang-EAGLE3-Llama-4-Scout-17B-16E-Instruct-v1) & [Maverick](https://huggingface.co/lmsys/sglang-EAGLE3-Llama-4-Maverick-17B-128E-Instruct-v1) Eagle3 heads (w/o full model) for your projects.
 
-## Future Roadmap
+## Roadmap
 
 In the near future, we plan to extend SpecForge with the following support.
 
