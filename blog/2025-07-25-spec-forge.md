@@ -33,7 +33,7 @@ This high performance is largely driven by Eagle's novel Training-Time Test (TTT
 
 ### Two Training Modes: Online and Offline
 
-SpecForge simplifies hidden state collection by offering two versatile modes for training: **Online** and **Offline**. This two-mode design ensures flexibility across workflows, regardless of your model access rights or hardware limitations.
+SpecForge simplifies hidden state collection by offering two versatile modes for training: **Online** and **Offline**. This two-mode design ensures flexibility across workflows, regardless of your model sizes or hardware limitations.
 
 ![offline_vs_online.svg](/images/blog/spec_forge/offline_online.jpg)
 
@@ -55,7 +55,7 @@ To support large-scale models, SpecForge leverages PyTorch’s FSDP and integrat
 
 Using SpecForge, we trained the Llama 4 Scout and Maverick models on a 320K-sample dataset from ShareGPT and UltraChat. The models' strong performance on benchmarks like MT-Bench demonstrates their effectiveness and readiness for Eagle3 inference. Our Llama 4 Maverick draft model achieves a 2.18× speedup on MT-Bench, while the Scout variant delivers a 2.0× acceleration—demonstrating SpecForge’s performance gains across model variants. Detailed results are summarized below.
 
-We evaluated various draft token lengths for Scout and Maverick. 
+We evaluated various draft token lengths for Scout and Maverick.
 
 In all the tests shown in the figure below, the x-axis represents steps, corresponding to `speculative-num-steps` in SGLang. Meanwhile, we fixed SGLang's `speculative-eagle-topk` to 8 and `speculative-num-draft-tokens` to 10 to ensure that `tree attention` can be enabled. To find the optimal speculative decoding parameters, we can use the **[bench_speculative](https://github.com/sgl-project/sglang/blob/main/scripts/playground/bench_speculative.py)** script in the SGLang repository. It runs throughput benchmarks across different configurations and helps us tune for the best performance on the hardware.
 
