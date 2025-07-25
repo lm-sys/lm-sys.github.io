@@ -33,7 +33,7 @@ This high performance is largely driven by Eagle's novel Training-Time Test (TTT
 
 ### Two Training Modes: Online and Offline
 
-SpecForge simplifies hidden state collection by offering two versatile modes for training: **Online** and **Offline**. This two-mode design ensures flexibility across workflows, regardless of your model sizes or hardware limitations
+SpecForge simplifies hidden state collection by offering two versatile modes for training: **Online** and **Offline**. This two-mode design ensures flexibility across workflows, regardless of your model sizes or hardware limitations.
 
 ![offline_vs_online.svg](/images/blog/spec_forge/offline_online.jpg)
 
