@@ -1,7 +1,7 @@
 ---
 title: "SpecForge: Powering Efficient Speculative Decoding Training for SGLang"
 author: "The SGLang Team"
-date: "July 24, 2025"
+date: "July 25, 2025"
 previewImg: /images/blog/spec_forge/logo.jpg
 ---
 
@@ -99,4 +99,4 @@ We would like to express our heartfelt gratitude to the following teams and coll
 
 We are especially grateful to Meituan for their strong support and contributions. And we would like to extend our sincere thanks to [Voltage Park](https://www.voltagepark.com/), our official infrastructure partner. As part of a formal collaboration with the SGLang team, Voltage Park provided critical GPU resources that empowered us to train and evaluate large-scale speculative decoding models efficiently and reliably. This partnership was instrumental in making SpecForge possible. We deeply appreciate Voltage Park’s mission to make cutting-edge AI infrastructure more accessible, and we look forward to continued collaboration as we push the boundaries of open-source LLM serving and optimization.
 
-“Our mission at Voltage Park is to be a catalyst for innovation by democratizing access to high-performance AI infrastructure. A thriving AI research ecosystem is one where the tools to innovate are shaped by many voices and not concentrated in the hands of a few," said Saurabh Giri, Chief Product and Technology Officer at Voltage Park. "This is why we are so proud to support the LMSYS team with the critical infrastructure to develop high-quality, open-source projects like SpecForge -- we believe that foundational open-source models and frameworks should be for public good and is essential for progress. We look forward to amazing applications from the community with these new capabilities.”
+“Our mission at Voltage Park is to be a catalyst for innovation by democratizing access to high-performance AI infrastructure. A thriving AI research ecosystem is one where the tools to innovate are shaped by many voices and not concentrated in the hands of a few," said Saurabh Giri, Chief Product and Technology Officer at Voltage Park. " This is why we are so proud to support the LMSYS team with the critical infrastructure to develop high-quality, open-source projects like SpecForge -- we believe that foundational open-source models and frameworks should be for public good and is essential for progress. We look forward to amazing applications from the community with these new capabilities.”
