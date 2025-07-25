@@ -33,17 +33,15 @@ This high performance is largely driven by Eagle's novel Training-Time Test (TTT
 
 ### Two Training Modes: Online and Offline
 
-SpecForge simplifies hidden state collection by offering two versatile modes for training: **Online** and **Offline**. This two modes design ensures flexibility across workflows, regardless of your model access rights or hardware limitations.
+SpecForge simplifies hidden state collection by offering two versatile modes for training: **Online** and **Offline**. This two-mode design ensures flexibility across workflows, regardless of your model access rights or hardware limitations.
 
 ![offline_vs_online.svg](/images/blog/spec_forge/offline_online.jpg)
 
   
-
-
-| Method  | Target Model                      | Disk Space Requirement                            | GPU Requirement                                              | One-liner rationale                                        |
-| ------- | --------------------------------- | ------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
-| Online  | Used during training              | Small                                             | More GPUs are needed if your target model is large           | Generating auxiliary hidden states on the fly              |
-| Offline | Only used during data preparation | Huge (e.g. ultrachat+sharegpt need 12TB storage ) | as low as 1 GPU, since only the draft model needs to be accommodated | Preparing auxiliary hidden states beforehand and only once |
+| Method  | Target Model Usage          | Disk Space Requirement                      | GPU Requirement                                            | One-liner Rationale                                      |
+|---------|-----------------------------|---------------------------------------------|------------------------------------------------------------|----------------------------------------------------------|
+| Online  | Used during training         | Low                                          | More GPUs if your target model is large                    | Generates hidden states on the fly                       |
+| Offline | Used only for data preparation | High (e.g., UltraChat + ShareGPT need ~12TB) | As low as 1 GPU (only the draft model needs to be loaded) | Precomputes hidden states once and reuses them efficiently |
 
 SpecForge allows you to tailor the training process to your specific needs. Choose Online Mode for agility and minimal disk usage—ideal for rapid iteration. Choose Offline Mode when reproducibility and data reuse are key priorities, provided sufficient storage is available.
 
@@ -59,14 +57,11 @@ Using SpecForge, we trained the Llama 4 Scout and Maverick models on a 320K-samp
 
 We evaluated various draft token lengths for Scout and Maverick. 
 
-In all the tests shown in the figure below, the x-axis represents steps, corresponding to speculative-num-steps in SGLang. Meanwhile, we fixed SGLang's speculative-eagle-topk to 8 and speculative-num-draft-tokens to 10 to ensure that tree attention can be enabled.
+In all the tests shown in the figure below, the x-axis represents steps, corresponding to `speculative-num-steps` in SGLang. Meanwhile, we fixed SGLang's `speculative-eagle-topk` to 8 and `speculative-num-draft-tokens` to 10 to ensure that `tree attention` can be enabled.
 
 ![scout.svg](/images/blog/spec_forge/Llama4_Scout_performance_final.svg)
 
 ![maverick.svg](/images/blog/spec_forge/Llama4_Maverick_performance_final.svg)
-
-  
-
 
 ## Code and Model Availability
 
@@ -88,14 +83,12 @@ In the near future, we plan to extend SpecForge with the following support.
 
 We would like to express our heartfelt gratitude to the following teams and collaborators:
 
-**Voltage Park** — our official infrastructure partner, for providing critical GPU resources that enabled the development of SpecForge.
-
 **SGLang Team and Community** — Shenggui Li, Yikai Zhu, Fan Yin, Chao Wang, Shuai Shi, Yi Zhang, Yingyi Huang, Haoshuai Zheng, Yineng Zhang and many others.
 
 **SafeAILab Team** — Yuhui Li, Hongyang Zhang and members — for their pioneering work on the Eagle3 algorithm.
 
-We are especially grateful to Meituan for their strong support and contributions. And we would like to extend our sincere thanks to [Voltage Park](https://www.voltagepark.com/), our official infrastructure partner. As part of a formal collaboration with the SGLang team, Voltage Park provided critical GPU resources that empowered us to train and evaluate large-scale speculative decoding models efficiently and reliably. This partnership was instrumental in making SpecForge possible. We deeply appreciate Voltage Park’s mission to make cutting-edge AI infrastructure more accessible, and we look forward to continued collaboration as we push the boundaries of open-source LLM serving and optimization.
+We are especially grateful to Meituan for their early support and contributions to this project. We also extend our sincere thanks to [Voltage Park](https://www.voltagepark.com/), our official infrastructure partner, whose formal collaboration with the SGLang team provided the compute foundation behind SpecForge. Their support enabled us to train and evaluate large-scale speculative decoding models efficiently and reliably, and we deeply appreciate their commitment to democratizing cutting-edge AI infrastructure.
 
-“Our mission at Voltage Park is to be a catalyst for innovation by democratizing access to high-performance AI infrastructure. A thriving AI research ecosystem is one where the tools to innovate are shaped by many voices and not concentrated in the hands of a few," said Saurabh Giri, Chief Product and Technology Officer at Voltage Park." This is why we are so proud to support the LMSYS team with the critical infrastructure to develop high-quality, open-source projects like SpecForge -- we believe that foundational open-source models and frameworks should be for public good and is essential for progress. We look forward to amazing applications from the community with these new capabilities.”
+“Our mission at Voltage Park is to be a catalyst for innovation by democratizing access to high-performance AI infrastructure. A thriving AI research ecosystem is one where the tools to innovate are shaped by many voices and not concentrated in the hands of a few," said Saurabh Giri, Chief Product and Technology Officer at Voltage Park." This is why we are so proud to support the SGLang team with the critical infrastructure to develop high-quality, open-source projects like SpecForge -- we believe that foundational open-source models and frameworks should be for the public good and are essential for progress. We look forward to amazing applications from the community with these new capabilities.”
 
 We're excited to see what the community builds with SpecForge. Contributions, feedback, and collaborations are welcome—let's accelerate open-source LLM innovation together.
