@@ -57,7 +57,7 @@ Using SpecForge, we trained the Llama 4 Scout and Maverick models on a 320K-samp
 
 We evaluated various draft token lengths for Scout and Maverick. 
 
-In all the tests shown in the figure below, the x-axis represents steps, corresponding to `speculative-num-steps` in SGLang. Meanwhile, we fixed SGLang's `speculative-eagle-topk` to 8 and `speculative-num-draft-tokens` to 10 to ensure that `tree attention` can be enabled.
+In all the tests shown in the figure below, the x-axis represents steps, corresponding to `speculative-num-steps` in SGLang. Meanwhile, we fixed SGLang's `speculative-eagle-topk` to 8 and `speculative-num-draft-tokens` to 10 to ensure that `tree attention` can be enabled. To find the optimal speculative decoding parameters, we can use the `[bench_speculative](https://github.com/sgl-project/sglang/blob/main/scripts/playground/bench_speculative.py)` script in the SGLang repository. It runs throughput benchmarks across different configurations and helps us tune for the best performance on the hardware.
 
 ![scout.svg](/images/blog/spec_forge/Llama4_Scout_performance_final.svg)
 
@@ -75,7 +75,7 @@ Explore our source code on GitHub and try the pre-trained models on Hugging Face
 
 In the near future, we plan to extend SpecForge with the following support.
 
--   Support more model architectures, including the Kimi K2 and Qwen-3 MoE.
+-   Support more model architectures, including the Kimi K2 and Qwen-3 MoE. We’re actively collaborating with the LinkedIn Infrastructure team, who are training additional Qwen-3 MoE draft models that will be supported by SpecForge.
 -   Integrate Vision-Language Models (VLM) into SpecForge.
 -   Support more efficient training with better parallelism strategies and kernel optimization.
 
@@ -83,7 +83,7 @@ In the near future, we plan to extend SpecForge with the following support.
 
 We would like to express our heartfelt gratitude to the following teams and collaborators:
 
-**SGLang Team and Community** — Shenggui Li, Yikai Zhu, Fan Yin, Chao Wang, Shuai Shi, Yi Zhang, Yingyi Huang, Haoshuai Zheng, Yineng Zhang and many others.
+**SGLang Team and Community** — Shenggui Li, Yikai Zhu, Fan Yin, Chao Wang, Shuai Shi, Yi Zhang, Yingyi Huang, Haoshuai Zheng, Yubo Wang, Yineng Zhang and many others.
 
 **SafeAILab Team** — Yuhui Li, Hongyang Zhang and members — for their pioneering work on the Eagle3 algorithm.
 
