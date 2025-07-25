@@ -58,9 +58,11 @@ To scale effectively, SpecForge leverages PyTorch’s FSDP framework and has imp
 
 ## Experiments
 
-Using SpecForge, we trained the Llama 4 Scout and Maverick models on a 320K-sample dataset from ShareGPT and UltraChat. The models' strong performance on benchmarks like MT-Bench demonstrates their effectiveness and readiness for Eagle3 inference. Our draft model for Llama4 Maverick achieves 1.45 times speedup on the MT-Bench. Detailed results are summarized below.
+Using SpecForge, we trained the Llama 4 Scout and Maverick models on a 320K-sample dataset from ShareGPT and UltraChat. The models' strong performance on benchmarks like MT-Bench demonstrates their effectiveness and readiness for Eagle3 inference. Our draft model for Llama4 Maverick achieves 2.18x speedup on the MT-Bench, while Llama4 Scout demonstrates a 2x acceleration on the same benchmark. Detailed results are summarized below.
 
-We evaluated various draft token lengths for Scout and Maverick.
+We evaluated various draft token lengths for Scout and Maverick. 
+
+In all the tests shown in the figure below, the x-axis represents steps, corresponding to speculative-num-steps in SGLang. Meanwhile, we fixed SGLang's speculative-eagle-topk to 8 and speculative-num-draft-tokens to 10 to ensure that tree attention can be enabled.
 
 ![scout.svg](/images/blog/spec_forge/Llama4_Scout_performance_final.svg)
 
