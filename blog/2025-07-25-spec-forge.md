@@ -57,7 +57,7 @@ Using SpecForge, we trained the Llama 4 Scout and Maverick models on a 320K-samp
 
 We evaluated various draft token lengths for Scout and Maverick. 
 
-In all the tests shown in the figure below, the x-axis represents steps, corresponding to `speculative-num-steps` in SGLang. Meanwhile, we fixed SGLang's `speculative-eagle-topk` to 8 and `speculative-num-draft-tokens` to 10 to ensure that `tree attention` can be enabled. To find the optimal speculative decoding parameters, we can use the `[bench_speculative](https://github.com/sgl-project/sglang/blob/main/scripts/playground/bench_speculative.py)` script in the SGLang repository. It runs throughput benchmarks across different configurations and helps us tune for the best performance on the hardware.
+In all the tests shown in the figure below, the x-axis represents steps, corresponding to `speculative-num-steps` in SGLang. Meanwhile, we fixed SGLang's `speculative-eagle-topk` to 8 and `speculative-num-draft-tokens` to 10 to ensure that `tree attention` can be enabled. To find the optimal speculative decoding parameters, we can use the **[bench_speculative](https://github.com/sgl-project/sglang/blob/main/scripts/playground/bench_speculative.py)** script in the SGLang repository. It runs throughput benchmarks across different configurations and helps us tune for the best performance on the hardware.
 
 ![scout.svg](/images/blog/spec_forge/Llama4_Scout_performance_final.svg)
 
