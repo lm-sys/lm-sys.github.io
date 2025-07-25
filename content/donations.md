@@ -8,8 +8,8 @@ We welcome diverse forms of donations and sponsorships, including but not limite
 ## Sponsors
 LMSYS is supported by donations from the following institutions:
 
-[NVIDIA](https://www.nvidia.com/),
 [Voltage Park](https://www.voltagepark.com/),
+[NVIDIA](https://www.nvidia.com/),
 [Nebius](https://nebius.com/),
 [AtlasCloud](https://www.atlascloud.ai/),
 [a16z](https://a16z.com/),
