@@ -5,7 +5,7 @@ date: "July 25, 2025"
 previewImg: /images/blog/spec_forge/logo.jpg
 ---
 
-Speculative decoding is a powerful technique for accelerating Large Language Model (LLM) inference. In this blog post, we are excited to announce the open-sourcing of **SpecForge**, our new training framework for Eagle3-based speculative decoding. SpecForge is designed for ease of use and is tightly integrated with the **SGLang** inference engine, enabling a seamless transition from training to deployment.
+Speculative decoding is a powerful technique for accelerating Large Language Model (LLM) inference. In this blog post, we are excited to announce the open-sourcing of **[SpecForge](https://github.com/sgl-project/SpecForge)**, our new training framework for Eagle3-based speculative decoding. SpecForge is designed for ease of use and is tightly integrated with the **[SGLang](https://github.com/sgl-project/sglang)** inference engine, enabling a seamless transition from training to deployment.
 
 ## Why a New Speculative Decoding Training Framework
 
@@ -19,7 +19,7 @@ Key Capabilities of SpecForge:
 -   **Scalable Distributed Training**: Integrated with modern large-scale training strategies like Fully Sharded Data Parallel (FSDP) and Tensor Parallelism (TP), SpecForge allows efficient scaling across GPU clusters.
 -   **Memory-Efficient Training**: Optimized memory management techniques make it feasible to train draft models even for very large base models.
 
-## SpecForge Key Features
+## Key Features of SpecForge
 
 ### Eagle3 Integration
 
