@@ -29,18 +29,18 @@
     "name": "Systems",
     "entries": [
       {
-        "name": "FastChat",
-        "architecture": "",
-        "size": "",
-        "desc": "An open and scalable platform for training, finetuning, serving, and evaluating LLM-based chatbots.",
-        "link": "https://github.com/lm-sys/FastChat"
-      },
-      {
         "name": "SGLang",
         "architecture": "",
         "size": "",
         "desc": "A fast serving engine for LLMs and VLMs.",
         "link": "https://github.com/sgl-project/sglang"
+      },
+      {
+        "name": "FastChat",
+        "architecture": "",
+        "size": "",
+        "desc": "An open and scalable platform for training, finetuning, serving, and evaluating LLM-based chatbots.",
+        "link": "https://github.com/lm-sys/FastChat"
       },
       {
         "name": "S-LoRA",
