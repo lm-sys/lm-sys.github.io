@@ -42,7 +42,7 @@ export default function Nav() {
         <FaEnvelope />
         </a>
         <a
-          href="https://discord.gg/HSWAKCrnFx"
+          href="https://slack.sglang.ai"
           target="_blank"
           rel="noopener noreferrer"
         >
