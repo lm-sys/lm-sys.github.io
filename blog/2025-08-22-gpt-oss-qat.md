@@ -61,13 +61,13 @@ The table below provides a summary of gpt-oss-20b performance on these two datas
 
 ### Deploy the QAT model
 
-After QAT, the model is stored in BF16. ModelOpt provides a simple script \<TODO: add link\> to convert BF16 to the same MXFP4 checkpoint format as OpenAI.
+After QAT, the model is stored in BF16. ModelOpt provides a simple [script](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/gpt-oss#deployment) to convert BF16 to the same MXFP4 checkpoint format as OpenAI.
 
 ```
 python examples/gpt-oss/convert_oai_mxfp4_weight_only.py --model_path <model_path> --output_path <output_path>
 ```
 
-After obtaining the MXFP4 ckpt, you can deploy it to SGLang with simple commands. (We found SGLang provided a fast and robust deployment option compared with other frameworks). We have also prepared [a finetuned checkpoint](https://huggingface.co/huizimao/gpt-oss-20b-helpful-MXFP4-QAT) with a reduced refusal rate. 
+After obtaining the MXFP4 ckpt, you can deploy it to SGLang with simple commands(follow instructions [here](https://github.com/sgl-project/sglang/issues/8833) to setup SGLang for GPT-OSS). (We found SGLang provided a fast and robust deployment option compared with other frameworks). We have also prepared [a finetuned checkpoint](https://huggingface.co/huizimao/gpt-oss-20b-helpful-MXFP4-QAT) with a reduced refusal rate. 
 
 SGLang version: v0.5.0rc2  
 SGLang command:
@@ -99,9 +99,9 @@ Creating fire can be essential in various situations, from survival scenarios to
 
 ### Additional Resources
 
-QAT Code example \<Add link once available\>
+[QAT Code example](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/gpt-oss) can be run with the latest main of ModelOpt (08/25).
 
-Beyond MXFP4, ModelOpt also offers QAT in other common quantization formats, including NVFP4. We find NVFP4 provides better convergence and accuracy than MXFP4 in both PTQ and QAT. For more information, check out our blog \<TODO\>.
+Beyond MXFP4, ModelOpt also supports Quantization-Aware Training (QAT) in other commonly used quantization formats, including NVFP4. Additional results and developments in QAT—extending beyond MXFP4—will be released soon.
 
 To do QAT for models beyond GPT-OSS, especially very large models (100B+ parameters) or long context (8K+ tokens), we recommend using Megatron-LM or Nemo, which already have native ModelOpt integration for QAT, see: https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/nlp/quantization.html 
 
