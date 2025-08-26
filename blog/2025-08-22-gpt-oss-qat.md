@@ -33,7 +33,7 @@ It should be noted that native quantized training and QLoRA are often confused w
 
 ### QAT with NVIDIA ModelOpt
 
-Here is the sample code to do QAT with ModelOpt. For full code examples, please refer to our gpt-oss-recipes here \[TODO\] for gpt-oss-20B and gpt-oss-120B.
+Here is the sample code to do QAT with ModelOpt. For full code examples, please refer to our gpt-oss-recipes [here](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/gpt-oss) for gpt-oss-20B and gpt-oss-120B.
 
 ```py
 import modelopt.torch.quantization as mtq
