@@ -19,19 +19,17 @@ QAT is a training technique to recover model accuracy from quantization. We show
 ![qat.png](/images/blog/nvidia-gpt-oss-qat/qat.png)
 
 Below is a more detailed guide of QAT:  
-Step 1: Train/fine-tune the model in the original precision. This makes sure a good starting point before QAT.  
-Step 2: Insert quantizer nodes into the model graph. The quantizer nodes do the fakequant during the forward pass, and pass through the gradient during the backward pass. This step is handled by ModelOpt.  
-Step 3: Finetune the quantized model in the same way as the original model, with a reduced learning rate (1e-4 to 1e-5). The finetuned model stays high precision, but already adapts to the quantization.  
-Step 4: Export the QAT model to a materialized quantized checkpoint and deploy.
 
-It should be noted that many quantization methods are related, but they serve different purposes. A quick summary of some representative methods are listed below. 
+- Step 1 (Optional): Train/fine-tune the model in the original precision. This makes sure a good starting point before QAT.  
+- Step 2: Insert quantizer nodes into the model graph. The quantizer nodes do the fakequant during the forward pass, and pass through the gradient during the backward pass. This step is handled by ModelOpt.  
+- Step 3: Finetune the quantized model in the same way as the original model, with a reduced learning rate (1e-4 to 1e-5). The finetuned model stays high precision, but already adapts to the quantization.  
+- Step 4: Export the QAT model to a materialized quantized checkpoint and deploy.
 
-| Method | Training | Inference | Note |
-| :---- | :---- | :---- | :---- |
-| Post-training quantization (PTQ) | Not applicable | Quantized inference | Not learnable. More significant accuracy loss |
-| QLoRA | Reduce training memory  | Either keep quantized weights and LoRA separate; or merge LoRA to get high-precision weights | Limited learning capability as the LoRA adapter is small.  |
-| Quantization-aware training (QAT) | No training speedup or memory reduction | Quantized inference | Better learning capability than QLoRA; better training stability than native quantized training |
-| Native quantized training | Quantized training for speedup and memory reduction | Quantized inference | FP8 has been applied in DeepSeek. FP4 native quantized training is still under research. |
+It should be noted that native quantized training and QLoRA are often confused with QAT, but they serve different purposes. 
+
+- *QLoRA* reduces training memory for LoRA finetuning. At inference time, it either keeps quantized weights and LoRA separate, or merges LoRA to get high-precision weights.
+- *Native quantized training* enables efficient training and inference. Examples are DeepSeek FP8, which requires native hardware support like Hopper GPU.
+- *QAT* empowers quantized inference with better accuracy. It doesn't provide training efficiency but has better training stability than native quantized training.
 
 ### QAT with NVIDIA ModelOpt
 
