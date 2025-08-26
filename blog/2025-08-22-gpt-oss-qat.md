@@ -1,4 +1,10 @@
-## Finetune and deploy GPT-OSS in MXFP4: ModelOpt+SGLang
+---
+title: "Finetune and deploy GPT-OSS in MXFP4: ModelOpt+SGLang"
+author: "NVIDIA ModelOpt Team"
+date: "Aug 26, 2025"
+previewImg: /images/blog/nvidia-gpt-oss-qat/qat.png
+---
+
 
 GPT-OSS, the first open-source model family from OpenAI’s lab since GPT-2, demonstrates strong math, coding and general capabilities, even when compared with much larger models. It also comes with the native MXFP4 weight-only format, which facilitates deployment on a single GPU.
 
@@ -10,7 +16,7 @@ In this blog, we explain how to finetune an LLM model while preserving MXFP4 low
 ### What is Quantization-Aware Training (QAT)
 
 QAT is a training technique to recover model accuracy from quantization. We show above a simplified illustration of QAT. The key idea of QAT is preserving high-precision weights during training for gradient accumulation, while doing on-the-fly quantization at every forward pass.  
-![qat.png](../public/images/blog/nvidia-gpt-oss-qat/qat.png)
+![qat.png](/images/blog/nvidia-gpt-oss-qat/qat.png)
 
 Below is a more detailed guide of QAT:  
 Step 1: Train/fine-tune the model in the original precision. This makes sure a good starting point before QAT.  
