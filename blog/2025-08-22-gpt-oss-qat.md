@@ -6,11 +6,11 @@ previewImg: /images/blog/nvidia-gpt-oss-qat/preview-gpt-oss-qat.png
 ---
 
 
-GPT-OSS, the first open-source model family from OpenAI’s lab since GPT-2, demonstrates strong math, coding and general capabilities, even when compared with much larger models. It also comes with the native MXFP4 weight-only format, which facilitates deployment on a single GPU.
+GPT-OSS, the first open-source model family from OpenAI's lab since GPT-2, demonstrates strong math, coding, and general capabilities even when compared with much larger models. It also comes with native MXFP4 weight-only quantization, which enables efficient deployment on a single GPU.
 
-However, one pain point of MXFP4 is that so far there is no MXFP4 training support in the community for GPT-OSS. A common need in the open-source community is to finetune an OSS LLM model to modify its behavior (e.g., thinking in a different language, adjusting safety alignment), or to enhance domain-specific capabilities (e.g., function call, SQL scripting). Most public finetuning examples convert GPT-OSS back into bf16, which sacrifices the memory and speed advantages of MXFP4.
+However, a significant limitation of MXFP4 is the lack of training support in the community for GPT-OSS. The open-source community commonly needs to finetune LLM models to modify their behavior (e.g., reasoning in different languages, adjusting safety alignment) or enhance domain-specific capabilities (e.g., function calling, SQL scripting). Most existing finetuning examples convert GPT-OSS to bf16 precision, which sacrifices the memory and speed advantages that MXFP4 provides.
 
-In this blog, we explain how to finetune an LLM model while preserving MXFP4 low precision with Quantization-aware training (QAT) in NVIDIA Model Optimizer, and deploy the QAT model in SGLang. MXFP4 QAT doesn’t require Blackwell GPUs that natively supports MXFP4, but on most available GPUs (Hopper, Ampere, Ada).
+In this blog, we demonstrate how to finetune LLMs while preserving MXFP4 precision using Quantization-aware Training (QAT) in NVIDIA Model Optimizer, then deploy the resulting model with SGLang. Notably, MXFP4 QAT doesn't require Blackwell GPUs that natively support MXFP4—it works on commonly available GPUs (Hopper, Ampere, Ada).
 
 ### What is Quantization-Aware Training (QAT)
 
