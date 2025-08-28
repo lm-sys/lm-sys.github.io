@@ -105,7 +105,7 @@ Creating fire can be essential in various situations, from survival scenarios to
 In [QAT Code example](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/gpt-oss) (tested with the latest main of ModelOpt 26/08/25),
 ModelOpt also supports Quantization-Aware Training (QAT) in other formats, including NVFP4. Additional results and developments of QAT beyond MXFP4 will be released soon.
 
-For QAT beyond GPT-OSS, especially on very large models (100B+ parameters) or long context (8K+ tokens), we recommend using Megatron-LM or Nemo, which already have native ModelOpt integration for QAT, see: https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/nlp/quantization.html 
+For QAT beyond GPT-OSS, especially on very large models (100B+ parameters) or long context (8K+ tokens), we recommend using Megatron-LM or Nemo, which already have native ModelOpt integration for QAT, see: [nemotoolkit/nlp/quantization](https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/nlp/quantization.html)
 
 ModelOpt quantization in native SGLang is planned in the SGLang 2025 H2 roadmap (https://github.com/sgl-project/sglang/issues/7736).
 
