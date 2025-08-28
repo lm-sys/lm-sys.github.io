@@ -107,7 +107,7 @@ ModelOpt also supports Quantization-Aware Training (QAT) in other formats, inclu
 
 For QAT beyond GPT-OSS, especially on very large models (100B+ parameters) or long context (8K+ tokens), we recommend using Megatron-LM or Nemo, which already have native ModelOpt integration for QAT, see: [nemotoolkit/nlp/quantization](https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/nlp/quantization.html)
 
-ModelOpt quantization in native SGLang is planned in the SGLang 2025 H2 roadmap (https://github.com/sgl-project/sglang/issues/7736).
+ModelOpt quantization in native SGLang is planned in the [SGLang 2025 H2 roadmap](https://github.com/sgl-project/sglang/issues/7736).
 
 ModelOpt also provides [speculative decoding training support](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/speculative_decoding). Find our trained [GPT-OSS eagle3 checkpoint on HF](https://huggingface.co/nvidia/gpt-oss-120b-Eagle3).
 
