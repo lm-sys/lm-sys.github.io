@@ -1,7 +1,7 @@
 ---
 title: "Finetune and deploy GPT-OSS in MXFP4: ModelOpt+SGLang"
 author: "NVIDIA ModelOpt Team"
-date: "Aug 26, 2025"
+date: "Aug 28, 2025"
 previewImg: /images/blog/nvidia-gpt-oss-qat/preview-gpt-oss-qat.png
 ---
 
