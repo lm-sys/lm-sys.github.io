@@ -27,6 +27,14 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Hai Xiao](https://github.com/HaiShaw).
 More information see [SGLang GitHub](https://github.com/sgl-project/sglang).
 
+**SpecForge** major developers:
+[Shenggui Li](https://franklee.xyz/),
+[Yikai Zhu](https://zyksir.github.io/),
+[Chao Wang](https://github.com/sleepcoo),
+[Fan Yin](https://github.com/FlamingoPg),
+[Shuai Shi](https://github.com/shuaills),
+[Yubo Wang](https://github.com/yubofredwang).
+More information see [SpecForge GitHub](https://github.com/sgl-project/specforge).
 
 **FlashInfer**:
 [Zihao Ye](https://homes.cs.washington.edu/~zhye/).
