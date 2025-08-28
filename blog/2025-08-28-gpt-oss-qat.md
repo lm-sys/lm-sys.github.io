@@ -114,4 +114,4 @@ ModelOpt also provides [speculative decoding training support](https://github.co
 ### Acknowledgement
 
 ModelOpt team: Huizi Mao, Suguna Varshini Velury, Asma Beevi KT, Kinjal Patel  
-SGLang team: Qiaolin Yu, Xinyuan Tong
+SGLang team and community: Qiaolin Yu, Xinyuan Tong, Yikai Zhu
