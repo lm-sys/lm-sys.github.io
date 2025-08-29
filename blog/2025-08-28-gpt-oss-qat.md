@@ -1,6 +1,6 @@
 ---
-title: "Fine-tune and deploy gpt-oss MXFP4: TensorRT Model Optimizer + SGLang"
-author: "NVIDIA TensorRT Model Optimizer Team"
+title: "Fine-tune and deploy gpt-oss MXFP4: ModelOpt + SGLang"
+author: "NVIDIA ModelOpt Team"
 date: "Aug 28, 2025"
 previewImg: /images/blog/nvidia-gpt-oss-qat/preview-gpt-oss-qat.png
 ---
@@ -32,7 +32,7 @@ The steps to perform QAT fine tuning are quite straightforward and can be comple
 - **Step 3**: Fine tune the quantized model in the same way as the original model, with a reduced learning rate (1e-4 to 1e-5). The fine tuned model stays high precision but uses QAT in this step.
 - **Step 4**: Export the QAT quantized checkpoint and deploy.
 
-### Ready to get Hands-on?
+### QAT with NVIDIA Model Optimizer
 
 Here is the sample code to perform QAT with Model Optimizer. For full code examples, please refer to Model Optimizer's [gpt-oss QAT examples](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/gpt-oss)]. 
 
@@ -52,7 +52,7 @@ model = mtq.quantize(model, config, forward_loop=None)
 train(model, train_loader, optimizer, scheduler, ...)
 
 ```
-#### Explore the Downstream Task Performance of this Recipe
+#### Finetuning Downstream Task with MXFP4
 We demonstrate two sample fine tuning use cases for gpt-oss: enabling non-English reasoning with the [Multi-lingual dataset from OpenAI Cookbook](https://cookbook.openai.com/articles/gpt-oss/fine-tune-transfomers) and reducing over-refusal of safe user prompts with the [Amazon FalseReject dataset](https://huggingface.co/datasets/AmazonScience/FalseReject). Out of the box, gpt-oss shows room for improvement on these tasks.
 
 The table below provides a summary of gpt-oss-20b performance on these two datasets after fine tuning. SFT provides good accuracy but results in a high precision model. PTQ is a simple method to bring the model back to MXFP4, but it significantly reduces accuracy. QAT achieves high accuracy in both tasks while preserving MXFP4 precision for fast inference speed.
@@ -78,7 +78,7 @@ Using the resulting MXFP4 checkpoint, you can deploy with SGLang using these com
 
 ```
 # SGLang commands to deploy the MXFP4 ckpt for gpt-oss-20b and gpt-oss-120b
-python3 -m sglang.launch_server --model-path <checkpoint_path> ​​ --tp <tp_size>
+python3 -m sglang.launch_server --model-path <output_path> ​​ --tp <tp_size>
 
 ```
 As a simple test, we evaluate a sample prompt after fine tuning the model with the FalseRejection downstream task dataset. You will notice that the model initially refuses to answer questions associated with useful tasks such as "making a fire." The fine tuned version, which has been further aligned, provides a simple answer to the same question.
@@ -100,12 +100,11 @@ Creating fire can be essential in various situations, from survival scenarios to
 ```
 
 ### Additional Resources
-- In [QAT Code example](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/gpt-oss) (tested with the latest main of ModelOpt as of 08/26/2025), Model Optimizer also supports Quantization Aware Training (QAT) in other formats, including NVFP4. Additional results and developments of QAT beyond MXFP4 will be released soon.
 - For QAT beyond gpt-oss, especially on very large models (100B+ parameters) or long context (8K+ tokens), we recommend using Megatron-LM or Nemo, which already have native Model Optimizer integration for QAT. see: [nemotoolkit/nlp/quantization](https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/nlp/quantization.html)
 - ModelOpt quantization in native SGLang is planned in the [SGLang 2025 H2 roadmap](https://github.com/sgl-project/sglang/issues/7736).
 - Model Optimizer also provides [speculative decoding training support](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/speculative_decoding). Find our trained [GPT-OSS eagle3 checkpoint on HF](https://huggingface.co/nvidia/gpt-oss-120b-Eagle3).
 
 ### Acknowledgement
 
-TensorRT Model Optimizer team: Huizi Mao, Suguna Varshini Velury, Asma Beevi KT, Kinjal Patel 
+TensorRT Model Optimizer team: Huizi Mao, Suguna Varshini Velury, Asma Beevi KT, Kinjal Patel, Eduardo Alvarez
 SGLang team and community: Qiaolin Yu, Xinyuan Tong, Yikai Zhu
