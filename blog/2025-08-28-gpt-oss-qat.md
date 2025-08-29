@@ -6,6 +6,7 @@ previewImg: /images/blog/nvidia-gpt-oss-qat/preview-gpt-oss-qat.png
 ---
 
 (Updated on Aug 29)
+
 OpenAI recently released gpt-oss, the first open source model family from OpenAI's lab since GPT-2. These models demonstrate strong math, coding, and general capabilities. Part of the model's uniqueness is that it was released in native MXFP4 weight only quantization. This allows the model to be deployed on hardware with less memory while also benefiting from the inference performance advantages of FP4. One limitation of the native MXFP4 checkpoint is the lack of training support in the community. Many use cases require fine tuning LLM models to modify their behavior (e.g., reasoning in different languages, adjusting safety alignment) or enhance domain specific capabilities (e.g., function calling, SQL scripting). Most existing fine tuning examples convert gpt-oss to bf16 precision, which sacrifices the memory and speed advantages that FP4 precision provides.
 
 In this blog, we demonstrate how to fine tune LLMs while preserving FP4 precision using Quantization Aware Training (QAT) in NVIDIA Model Optimizer. We then show how to deploy the resulting model with SGLang. Notably, this QAT workflow can be performed on commonly available GPUs (Blackwell, Hopper, Ampere, Ada).
@@ -16,7 +17,7 @@ QAT is a training technique to recover model accuracy from quantization (simple 
 
 ![qat.png](/images/blog/nvidia-gpt-oss-qat/qat.png)
 
-#### Differentiating Low-Precision Training Techniques
+#### Different Low-Precision Training Techniques
 It should be noted that native quantized training and QLoRA are often confused with QAT, but they serve different purposes. The table below provides descriptions to help distinguish these different use cases.
 
 | Technique                | Description                                                                                                                                         |
@@ -35,7 +36,7 @@ The steps to perform QAT fine tuning are quite straightforward and can be comple
 
 ### QAT with NVIDIA Model Optimizer
 
-Here is the sample code to perform QAT with Model Optimizer. For full code examples, please refer to Model Optimizer's [gpt-oss QAT examples](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/gpt-oss)]. 
+Here is the sample code to perform QAT with Model Optimizer. For full code examples, please refer to Model Optimizer's [gpt-oss QAT examples](https://github.com/NVIDIA/TensorRT-Model-Optimizer/tree/main/examples/gpt-oss). 
 
 ```py
 import modelopt.torch.quantization as mtq
@@ -65,7 +66,7 @@ The table below provides a summary of gpt-oss-20b performance on these two datas
 | **SFT \+ PTQ (MXFP4)** | 89% | 59% |
 | **SFT \+ QAT (MXFP4)** | 100% | 97% |
 
-#### Opportunity for Additional Downstream Task Performance with NVFP4
+#### Opportunity for Better Performance with NVFP4
 The results show that MXFP4 QAT effectively recovers accuracy in gpt-oss fine-tuning, but further task-specific gains are possible. With NVIDIA Blackwell, [NVFP4](https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/) brings a new FP4 format built for training and inference efficiency, enabling even greater accuracy recovery when paired with QAT. We explore this in our expanded [gpt-oss SFT + QAT blog](https://developer.nvidia.com/blog/fine-tuning-gpt-oss-for-accuracy-and-performance-with-quantization-aware-training/). 
 
 ### Deploy gpt-oss QAT Model with SGLang
@@ -108,4 +109,5 @@ Creating fire can be essential in various situations, from survival scenarios to
 ### Acknowledgement
 
 TensorRT Model Optimizer team: Huizi Mao, Suguna Varshini Velury, Asma Beevi KT, Kinjal Patel, Eduardo Alvarez
+
 SGLang team and community: Qiaolin Yu, Xinyuan Tong, Yikai Zhu
