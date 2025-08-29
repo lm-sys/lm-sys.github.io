@@ -5,6 +5,7 @@ date: "Aug 28, 2025"
 previewImg: /images/blog/nvidia-gpt-oss-qat/preview-gpt-oss-qat.png
 ---
 
+(Updated on Aug 29)
 OpenAI recently released gpt-oss, the first open source model family from OpenAI's lab since GPT-2. These models demonstrate strong math, coding, and general capabilities. Part of the model's uniqueness is that it was released in native MXFP4 weight only quantization. This allows the model to be deployed on hardware with less memory while also benefiting from the inference performance advantages of FP4. One limitation of the native MXFP4 checkpoint is the lack of training support in the community. Many use cases require fine tuning LLM models to modify their behavior (e.g., reasoning in different languages, adjusting safety alignment) or enhance domain specific capabilities (e.g., function calling, SQL scripting). Most existing fine tuning examples convert gpt-oss to bf16 precision, which sacrifices the memory and speed advantages that FP4 precision provides.
 
 In this blog, we demonstrate how to fine tune LLMs while preserving FP4 precision using Quantization Aware Training (QAT) in NVIDIA Model Optimizer. We then show how to deploy the resulting model with SGLang. Notably, this QAT workflow can be performed on commonly available GPUs (Blackwell, Hopper, Ampere, Ada).
