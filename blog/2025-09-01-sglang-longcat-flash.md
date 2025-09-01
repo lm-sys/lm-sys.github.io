@@ -18,7 +18,7 @@ Based on multiple benchmark tests, LongCat-Flash, as a non-thinking foundational
 
 ![benchmark_overview.jpg](/images/blog/longcat_flash/benchmark_overview.jpg)
 
-For more details, please refer to the our tech report.[[LongCat-Flash-Technical-Report](https://github.com/meituan-longcat/LongCat-Flash-Chat/blob/main/tech_report.pdf)]
+For more details, please refer to the our tech report [LongCat-Flash-Technical-Report](https://github.com/meituan-longcat/LongCat-Flash-Chat/blob/main/tech_report.pdf).
 
 ### 2. Why model-system co-design matters?
 
