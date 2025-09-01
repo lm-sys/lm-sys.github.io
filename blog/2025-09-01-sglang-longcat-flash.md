@@ -84,7 +84,7 @@ We recommend deploying the LongCat-Flash using SGLang. Through close collaborati
 ```Shell
 pip install --upgrade pip
 pip install uv
-uv pip install "sglang[all]>=0.5.1.post3"
+uv pip install "sglang[all]>=0.5.2.rc0"
 ```
 #### **Single-Node Deployment（** 8xH20-141G)
 
