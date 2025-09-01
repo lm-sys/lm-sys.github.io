@@ -131,5 +131,5 @@ By leveraging capabilities such as SGLang, PD Disaggregation, Wide Expert Parall
 We would like to express our heartfelt gratitude to the following teams and collaborators:
 - **SGLang Team and community:** for their work on SGLang framework.
 - **Mooncake Team** for their earliest opensource work in the industry on PD Disaggregation architecture and TransferEngine.
-- **NVIDIA trt-llm:** for efficient kernels on Hopper GPUs.
+- **NVIDIA TensorRT-LLM:** for efficient kernels on Hopper GPUs.
 - **Meituan LongCat Team**: for our Model-System co-design.
