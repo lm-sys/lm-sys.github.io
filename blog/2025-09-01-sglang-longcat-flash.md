@@ -7,7 +7,7 @@ previewImg: /images/blog/longcat_flash/longcat_sglang.jpg
 
 ### 1. Introduction: Deploying Meituan's Agentic Open-Source MoE Model
 
-LongCat-Flash, Meituan's open-source Agentic Mixture-of-Experts (MoE) model is now available from huggingface[ref: [LongCat-Flash-Chat](https://huggingface.co/meituan-longcat/LongCat-Flash-Chat)]. Released by Meituan LongCat Team, it features:
+LongCat-Flash, Meituan's open-source Agentic Mixture-of-Experts (MoE) model is now available from huggingface [LongCat-Flash-Chat](https://huggingface.co/meituan-longcat/LongCat-Flash-Chat). Released by Meituan LongCat Team, it features:
 - 560B total params
 - 18.6B–31.3B (27B on average) per token activation
 - 512 FFN experts and 256 zero-computation experts
