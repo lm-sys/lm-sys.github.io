@@ -2,7 +2,7 @@
 title: "Donation"
 ---
 
-LMSYS is a non-profit organization that depends entirely on donations. These funds are mostly used to cover the computing expenses for our projects.
+Large Model Systems (LMSYS Corp.) is a 501(c)(3) non-profit organization that depends on donations. The donations will be mostly used to cover the computing expenses for our projects.
 We welcome diverse forms of donations and sponsorships, including but not limited to cash, computing devices (e.g., GPUs), and cloud credits. Please contact us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com) to learn more about sponsorships and benefits.
 
 ## Sponsors
