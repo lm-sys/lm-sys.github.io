@@ -34,12 +34,12 @@ As noted in our tech report, a typical ReACT-based agent system imposes extreme 
 
 To enable independent optimization of prefilling and decoding phases, PD-Disaggregated architecture is adopted. Based on SGLang's PD Disaggregation, we developed our solution featuring layer-wise transmission, which significantly reduces Time-To-First-Token (TTFT) under high QPS workloads.
 
-#### 3.2 SBO
+#### 3.2 Single Batch Overlap (SBO)
 
 SBO is a four-stage pipeline execution that uses module-level overlap to fully unleash LongCat-Flash’s potential. SBO differs from TBO by hiding communication overhead within a single batch. In SBO,
 
 - **Stage 1** requires separate execution because the MLA output serves as input for subsequent stages.
-- **Stage 2** is all-to-all dispatch overlapped with Dense FFN and Attn 0 (QKV Projection). This overlap iscrucial because communication overhead is excessive, prompting us to split the attention process.
+- **Stage 2** is all-to-all dispatch overlapped with Dense FFN and Attn 0 (QKV Projection). This overlap is crucial because communication overhead is excessive, prompting us to split the attention process.
 - **Stage 3** independently executes MoE GEMM. The latency of this stage will benefit from the wide EP deployment strategy.
 - **Stage 4** overlaps Attn 1 (Core Attention and Output Projection) and Dense FFN with the all-to-all combine.
 
