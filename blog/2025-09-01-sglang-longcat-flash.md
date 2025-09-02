@@ -124,7 +124,7 @@ To enable MTP with SGLang, you can add the following arguments to your launch co
 ```
 ### 6. Conclusion
 
-By leveraging capabilities such as SGLang, PD Disaggregation, Wide Expert Parallelism, and SBO, we have achieved extremely low cost and fast generation speed for LongCat-Flash. The efficient inference of LongCat-Flash also relies on works from the SGLang team, MoonCake team, NVIDIA TensorRT-LLM, and other open-source communities. Moving forward, we plan to collaborate with the SGLang team to gradually upstream our SGLang-based optimizations to further support the open-source ecosystem.
+By leveraging capabilities such as SGLang, PD Disaggregation, Wide Expert Parallelism, and SBO, we have achieved extremely low cost and fast generation speed for LongCat-Flash. The efficient inference of LongCat-Flash also relies on works from the SGLang team, Mooncake team, NVIDIA TensorRT-LLM, and other open-source communities. Moving forward, we plan to collaborate with the SGLang team to gradually upstream our SGLang-based optimizations to further support the open-source ecosystem.
 
 #### Acknowledgments
 
