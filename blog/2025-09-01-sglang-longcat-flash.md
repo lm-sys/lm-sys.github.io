@@ -66,7 +66,7 @@ For optimal inference performance, we employ a single dense layer rather than a 
 - **Latency-Optimized Scenarios**: SBO’s intra-batch optimization enables minimal latency.
 
 **Benchmarks:**
-- **Comparable throughput to DeepSeekV3**: Outperforms in generation speed.
+- **Comparable throughput to DeepSeek V3**: Outperforms in generation speed.
 - **Balanced throughput-latency**: Tested on the NVIDIA H800 platform, achieves **100 tps** with competitive cost.
 
 | Model | Attention | Context | GPU | TGS | TPS/u |
