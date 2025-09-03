@@ -43,6 +43,13 @@
         "link": "https://github.com/lm-sys/FastChat"
       },
       {
+        "name": "SpecForge",
+        "architecture": "",
+        "size": "",
+        "desc": "Train speculative decoding models effortlessly and port them smoothly to SGLang serving.",
+        "link": "https://github.com/sgl-project/SpecForge"
+      },
+      {
         "name": "S-LoRA",
         "architecture": "",
         "size": "",
