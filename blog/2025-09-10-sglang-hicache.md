@@ -85,7 +85,7 @@ python3 benchmark/hicache/bench_multiturn.py --model-path $MODEL_PATH --disable-
 --num-clients 80 --num-rounds 10 --max-parallel 4 --request-rate 16 \
 --ready-queue-policy random --disable-auto-run --enable-round-barrier
 ```
-We also want to highlight [NIXL](https://github.com/ai-dynamo/nixl) as a special backend, which is a communication library designed to bridge storage backends such as GPU-direct storage and cloud object storage. You can find more details [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/mem_cache/storage/nixl) and stay tuned for upcoming integration with the [Dynamo](https://github.com/ai-dynamo/dynamo) ecosystems.
+We also want to highlight [NIXL](https://github.com/ai-dynamo/nixl) as a special backend, which is a transfer library designed to bridge storage backends such as GPU-direct storage and cloud object storage. You can find more details [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/mem_cache/storage/nixl) and stay tuned for upcoming integration with the [Dynamo](https://github.com/ai-dynamo/dynamo) ecosystems.
 
 ## Acknowledgement:
 We would like to express our sincere gratitude for the tremendous support and feedback from the community.
@@ -93,4 +93,4 @@ We are grateful to Sicheng Pan, Zhangheng Huang, Yi Zhang, Jianxing Zhu, and Yif
 Tingwei Huang and Yongke Zhao from Ant Group; Teng Ma, Shangming Cai, and Xingyu Liu from Alibaba Cloud; Jinyang Su and Ke Yang from Approaching.AI; and Zuoyuan Zhang and Mingxing Zhang from the Mooncake community for their efforts on Mooncake integration; 
 Moein Khazraee, Vishwanath Venkatesan, and the Dynamo team from NVIDIA for enabling the NIXL integration.
 Special thanks go to Ziyi Xu from the SGLang team, Yuwei An from LMCache, Vikram Sharma Mailthody, Scott Mahlke, and Michael Garland from NVIDIA, as well as Mark Zhao and Christos Kozyrakis from Stanford for their contributions to the HiCache design and implementation.
-Finally, we appreciate the ongoing contributions from the LMCache, AIBrix, and ByteDance EIC teams in bringing their products into the ecosystem.
+Finally, we appreciate the ongoing contributions from the LMCache, AIBrix, PrisDB, and ByteDance EIC teams in bringing their products into the ecosystem.
