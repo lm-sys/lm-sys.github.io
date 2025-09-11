@@ -55,7 +55,7 @@ This design has already enabled us to integrate three performant backends—[Moo
 
 ## **Benchmark**
 
-Try experience the performance gain on your own! You can find various benchmark about HiCache [here](https://github.com/sgl-project/sglang/tree/main/benchmark/hicache). Following we highlight two benchmark results using the provided benchmark scripts and you can find the config instructions of backends [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/mem_cache/storage). If you have any questions about benchmarking or deployment, feel free to open an issue on GitHub or post in our [slack channel](https://sgl-fru7574.slack.com/archives/C095B2L7UEB).
+Try experience the performance gain on your own! You can find various benchmark about HiCache [here](https://github.com/sgl-project/sglang/tree/main/benchmark/hicache). Following we highlight two benchmark results using the provided benchmark scripts and you can find the config instructions of backends [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/mem_cache/storage). If you have any questions about benchmarking or deployment, feel free to open an issue on GitHub or post in our [slack channel](https://slack.sglang.ai/).
 
 ![3fs_benchmark.png](/images/blog/hicache/3fs_benchmark.png)
 
@@ -88,9 +88,9 @@ python3 benchmark/hicache/bench_multiturn.py --model-path $MODEL_PATH --disable-
 We also want to highlight [NIXL](https://github.com/ai-dynamo/nixl) as a special backend, which is a communication library designed to bridge storage backends such as GPU-direct storage and cloud object storage. You can find more details [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/mem_cache/storage/nixl) and stay tuned for upcoming integration with the [Dynamo](https://github.com/ai-dynamo/dynamo) ecosystems.
 
 ## Acknowledgement:
-
-We would like to express our sincere gratitude for the tremendous support and feedback from the community. In particular, we thank Moein Khazraee, Vishwanath Venkatesan and the Dynamo team from NVIDIA for the NIXL integration;
-Sicheng Pan, Zhangheng Huang, Yi Zhang, Jianxing Zhu and Yifei Kang from the AlibabaCloud TairKVCache Team for contributing the 3FS backend integration; 
-Tingwei Huang, Yongke Zhao from Ant Group, Teng Ma, Shangming Cai, Xingyu Liu from AlibabaCloud,
-Jinyang Su, Ke Yang from Approaching.AI, and Zuoyuan Zhang and Mingxing Zhang from the Mooncake community for the Mooncake integration.
-We also appreciate the ongoing efforts from the LMCache, AIBrix and ByteDance EIC teams to bring their products into the ecosystem.
+We would like to express our sincere gratitude for the tremendous support and feedback from the community.
+We are grateful to Sicheng Pan, Zhangheng Huang, Yi Zhang, Jianxing Zhu, and Yifei Kang from the Alibaba Cloud TairKVCache team for the 3FS backend integration; 
+Tingwei Huang and Yongke Zhao from Ant Group; Teng Ma, Shangming Cai, and Xingyu Liu from Alibaba Cloud; Jinyang Su and Ke Yang from Approaching.AI; and Zuoyuan Zhang and Mingxing Zhang from the Mooncake community for their efforts on Mooncake integration; 
+Moein Khazraee, Vishwanath Venkatesan, and the Dynamo team from NVIDIA for enabling the NIXL integration.
+Special thanks go to Ziyi Xu from the SGLang team, Yuwei An from LMCache, Vikram Sharma Mailthody, Scott Mahlke, and Michael Garland from NVIDIA, as well as Mark Zhao and Christos Kozyrakis from Stanford for their contributions to the HiCache design and implementation.
+Finally, we appreciate the ongoing contributions from the LMCache, AIBrix, and ByteDance EIC teams in bringing their products into the ecosystem.
