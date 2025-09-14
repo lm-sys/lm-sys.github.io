@@ -11,10 +11,12 @@ LMSYS is supported by donations from the following institutions:
 [Voltage Park](https://www.voltagepark.com/),
 [NVIDIA](https://www.nvidia.com/),
 [Nebius](https://nebius.com/),
+[Google Cloud](https://cloud.google.com/),
 [AtlasCloud](https://www.atlascloud.ai/),
 [a16z](https://a16z.com/),
 [AMD](https://www.amd.com/),
 [InnoMatrix](https://innomatrix.ai/),
+[Laude Institute](https://www.laude.org/),
 [Hyperbolic](https://hyperbolic.xyz),
 [NovitaAI](https://novita.ai/),
 [DataCrunch](https://datacrunch.io/),
@@ -25,3 +27,5 @@ LMSYS is supported by donations from the following institutions:
 [RunPod](https://www.runpod.io/),
 [Anyscale](https://www.anyscale.com/),
 [HuggingFace](https://huggingface.co/)
+
+
