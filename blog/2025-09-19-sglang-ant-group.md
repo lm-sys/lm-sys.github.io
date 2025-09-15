@@ -1,7 +1,7 @@
 ---
-title: "Together with SGLang: Best Practices for Serving DeepSeek-R1 on H20-96G (Online & Offline)"
+title: "Together with SGLang: Best Practices for Serving DeepSeek-R1 on H20-96G"
 author: "Tianyu Zhang, Peng Zhang, Yusong Gao, Yun Zhang, Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Fakang Wang, Jianhao Fu"
-date: "September 10, 2025"
+date: "September 19, 2025"
 previewImg: /images/blog/hicache/hicache_overview.png
 ---
 
@@ -12,7 +12,7 @@ previewImg: /images/blog/hicache/hicache_overview.png
 
 重点：我们在数万卡规模的H20集群下，针对不同用户的延迟要求，基于SGLang，构建出了业界吞吐最高、成本最低的SOTA方案。  
 
-# Challenge
+# Challenges With H20
 1. **H20 固有限制**：与H800相比，算力极差，但内存带宽高、NVlink带宽高、显存容量大，RDMA网卡带宽差  
 
 | 硬件参数       | H20-96G   | H800-80G   |
@@ -28,7 +28,7 @@ previewImg: /images/blog/hicache/hicache_overview.png
 
 **总结**：在低算力+无可参考方案的情况下，满足与高算力卡相同的SLA，同时尽可能降低成本。  
 
-# Solution
+# Our Solution: Make H20 Great for Inference in Real World
 
 ## Deployment
 我们采用业界通用的PD分离方案，但是由于H20卡的特性，我们的PD分离部署方式与DeepSeek团队和其他团队不同：  
@@ -69,7 +69,7 @@ DP16+EP16（小EP），原因：
 ## Observability
 - DeepEPXtrace：https://yuque.antfin.com/xccl/di0k02/lgcbgox2f7g1g5z5  
 
-# Practice
+# Performance
 
 ## Offline
 - DP32EP32: 4.5K/1.5K = 850 tokens/s/GPU  
@@ -80,7 +80,7 @@ DP16+EP16（小EP），原因：
 - Pro （1.5s，50ms）  
 - Max （1s，30ms）  
 
-# Future work
+# Furhter Works
 MTP  
 1. Cuda Graph  
 2. TP1  
