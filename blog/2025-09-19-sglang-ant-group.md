@@ -116,9 +116,98 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
   https://yuque.antfin.com/rrv1v3/kg7h1z/aoadkogyvba0qsi6?inner=Qzo0O ，最终效果可以达到和超过静态EPLB的效果（在不同的业务数据集上），同时均衡度可以始终维持在70%以上。  
 - EPLB优化（加入专家通信考量）的思路：在记录专家负载的基础上加入对每次激活的top-k专家组的记录，以此为基础计算专家间的亲和度矩阵（即共同激活的概率），在EPLB完成单卡的均衡后，针对卡内最热专家与其他卡内专家的亲和度，调整卡的位置以减少后续跨机通讯的发生，在EPLB的基础上还能提升5%左右的性能。  
 
-## Computation
-- FlashMLA-FP8  
-- DeepGEMM swapAB  
+### Computation
+
+#### FlashMLA-FP8
+
+##### Overview
+- Executes end-to-end FP8 attention on Hopper (`SM90`).
+- Uses **`TMA`** for global-to-shared transfers and **`WGMMA`** for matrix math.  
+- Two warpgroups cooperatively pipeline `QK^T` and `PV` across KV blocks.  
+- Minimizes shared-memory pressure and maximizes overlap between memory movement and compute.
+
+##### Improvements
+- **VS `bf16` FlashMLA**: ~70% performance improvement
+  - Use `WGMMA FP8`.
+  - Use `FP8` dtypes for `Q` and `KV`.
+  - Saved shared memory and reallocated it for `sP1`.
+  - Removed `retrieve_rP_for_SP(sQ(8))`.
+  - Removed RS `WGMMA` of `rQ(8) * sK`.
+
+- **VS previous FP8 implementation (#54)**: ~5% performance improvement
+  - Fine-grained optimization of pipeline between `TMA` copy and `WGMMA`.
+  - Rebuilt pipeline for transposed `V` using 4 named barriers to switch between 4 buffers (`V0L`, `V0R`, `V1L`, `V1R`).
+  - Added ping-pong shared memory buffers: `sP0`, `sP1`, `sVt0`, `sVt1`.
+  - Used 128-bit `STSM` and `LDSM` for mutual copying between `rP` and `sP`, resolving FP8 `WGMMA` layout mismatch.
+  - Fine-grained `Q@K` tiling (`576/64 = 9` tiles) enabled computing `ROPE` in `BF16`, fixing previous accuracy issues.
+  - Improved feature set and aligned with `SM90` programming style.
+
+##### Summary
+- Implements **end-to-end FP8 activations and weights** with `FP8 WGMMA`.  
+- Decouples and interleaves three challenging stages into `TMA` wait windows:
+  1. `V` transposition  
+  2. `rP–sP` round-trip  
+  3. Fine-grained (64-wide) `QK^T` tiling  
+- Uses **ping-pong shared memory** and **named barriers** to maximize compute-memory overlap.  
+- Closely follows the `SM90` asynchronous **`TMA + WGMMA`** model.  
+- Lays foundation for scaling parallelism and deploying mixed-precision policies.
+
+---
+
+#### DeepGEMM swapAB
+
+##### Overview
+- Designed to address PTX instruction constraints:  
+  - `N` must be a multiple of 8.  
+  - `M` is fixed at 64 in instruction  
+    ```
+    wgmma.mma_async.sync.aligned.m64n(8i)k32.f16.e4m3.e4m3
+    ```
+- The **`swapAB`** variant swaps `WGMMA` tile usage:  
+  - Maps problem’s `M` dimension onto `WGMMA`’s `N` dimension.  
+  - Enables smaller `BLOCK_M (32)`.  
+- Performance gain comes from **finer tiling granularity** and **better resource utilization**, not higher per-instruction throughput.
+
+##### Performance Improvement: 10% ~ 70%
+1. **Higher M-side boundary efficiency**
+   - Baseline: `BLOCK_M` must align to 64, causing inefficiency when `M` is not multiple of 64.  
+   - `swapAB`: Allows `BLOCK_M = 32` (or aligned to `8, 16, 24, 32`).  
+   - Example: `M = 96`  
+     - `BLOCK_M = 64` → last tile 50% efficient.  
+     - `BLOCK_M = 32` → no waste (3×32 = 96).  
+
+2. **Better load balance for small/irregular M**
+   - Useful in grouped GEMM (e.g., `MoE` with inter-group variation in `M`).  
+   - Smaller tiles → more uniform tasks.  
+   - Persistent scheduler fills `SM`s more effectively and reduces stragglers.
+
+3. **Improved occupancy and concurrency**
+   - A-side SMEM footprint ≈ `BLOCK_M × BLOCK_K × bytes`.  
+   - Reducing `BLOCK_M` from 64 → 32 halves A-side SMEM and register usage.  
+   - Enables more concurrent `CTA`s, better latency hiding.  
+
+4. **More efficient shared-memory access and write-back**
+   - Vectorized A’s scale loads as `float2`.  
+   - Uses `STSM_T` + new swizzle for `D` write-back.  
+   - Reduces SMEM bank conflicts and irregularity overhead.
+
+5. **Easier multicast/data reuse**
+   - Smaller tiles → more concurrent `CTA`s per K-slice.  
+   - Improves multicast opportunities and reduces `TMA` read traffic.
+
+##### Use Cases & Expectations
+- **Best suited for**:
+  - `M` not multiple of 64.
+  - Small `M` values.
+  - Large variation across groups.  
+  - Yields better boundary efficiency, concurrency, and load balance.
+
+- **Less advantage when**:
+  - `M` is large and well-aligned (e.g., square matrices).  
+
+- **Key point**:
+  - Instruction-level peak unchanged.  
+  - Gains come from **better tiling → higher effective utilization, concurrency, and memory efficiency**.
 
 ## Overlap: SBO（Single-batch-overlap）
 ### Motivation
