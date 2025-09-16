@@ -62,9 +62,36 @@ DP16+EP16（小EP），原因：
 - FlashMLA-FP8  
 - DeepGEMM swapAB  
 
-## Overlap
-- SBO（Single-batch-overlap）  
-  https://yuque.antfin.com/ctfsce/pgo8m2/egp66yv6uqcdhgdr?singleDoc#  
+## Overlap - SBO（Single-batch-overlap）
+### Motivation
+The optimization effect of Two-Batch Overlap (TBO) is suboptimal for the Decode phase on low-compute hardware (e.g., H20), primarily due to the following reasons:
+
+- Hopper Architecture Limitation: The block_m of WGMMA is fixed at 64 on the Hopper architecture. When TBO is enabled in small-batch decoding, the MLP GEMM suffers from redundant computations. A positive throughput gain is only observed at larger batch sizes (e.g., 64, 128).
+- SLA Constraints: At these large batch sizes, low-compute hardware like H20 fails to meet the SLA guarantees for TPOT/ITL.
+
+Therefore, a solution is needed to improve Decode throughput even with small batch sizes. Single Batch Overlap (SBO) presents itself as a viable solution.
+We implement SBO for DeepSeek v3/R1 by modifying DeepEP and DeepGEMM, including:
+
+- Overlapping Shared Expert with Dispatch Recv.
+- Overlapping Down GEMM with Combine Send.
+
+Detailed implementation is available in the following branches:
+
+DeepEP: deepseek-ai/DeepEP#390
+DeepGEMM: deepseek-ai/DeepGEMM#183
+
+### Designs
+SBO implements two overlaps for the MoE layers of DeepSeek V3/R1:
+
+- Overlapping Shared Expert with Dispatch Recv.
+- Overlapping Down GEMM with Combine Send.
+
+The interaction between Down GEMM and Combine Send is structured as a Producer-Consumer model synchronized by signals:
+
+- For each local expert, a signal unit is allocated for every block_m tokens.
+- The Down GEMM computes the results for these block_m tokens and atomically increments the signaling unit after completing a portion of the work.
+- The Combine Send polls this signaling unit. Once the value reaches a threshold, it sends the corresponding block_m tokens.
+
 
 ## Observability
 - DeepEPXtrace：https://yuque.antfin.com/xccl/di0k02/lgcbgox2f7g1g5z5  
