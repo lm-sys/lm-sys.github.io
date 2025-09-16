@@ -93,8 +93,35 @@ The interaction between Down GEMM and Combine Send is structured as a Producer-C
 - The Combine Send polls this signaling unit. Once the value reaches a threshold, it sends the corresponding block_m tokens.
 
 
-## Observability
-- DeepEPXtrace：https://yuque.antfin.com/xccl/di0k02/lgcbgox2f7g1g5z5  
+## Observability - Lightweight Anomaly Diagnosis for Distributed MoE Model Deployment
+
+<h1 style="display: flex; align-items: center;">
+    <img alt="DeepX" style="margin-right: 0.2em" src="images/blog/ant-group-prac/deepx.svg">
+</h1>
+
+In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Experts (MoE) models, increasing EP counts can lead to significant inference latency (TTFT & TPOT) due to communication overheads from operators like Dispatch and Combine. To address this, we designed a lightweight anomaly diagnosis workflow (see diagram above) that can pinpoint issues within minutes.
+
+### 1. Metrics Collection
+- Each node (Node 0 to Node N) periodically collects communication and computation metrics for its ranks.
+- Every 10 seconds, rank data is gathered to Rank 0 and logged as `diagnose_rank${rank}.log`.
+
+### 2. Anomaly Detection
+- Rank 0 constructs an `N×N` latency matrix `M`, where `Mij` represents the latency of `rank_i` waiting for `rank_j`.
+- Statistical analysis (z-score) identifies three types of anomalies:
+  - **Column Anomaly**: Destination rank (`dst`) is globally slow.
+  - **Row Anomaly**: Source rank (`src`) is globally slow.
+  - **Point Anomaly**: Specific (`src`, `dst`) link is abnormal.
+
+### 3. Root Cause Analysis
+- Diagnostic metrics are used to infer anomaly sources:
+  - **Comm Slow**: Communication link issues.
+  - **Comp Slow**: Accumulated computation delays.
+  - **Mixed Slow**: Uneven expert distribution or hotspot congestion.
+
+### 4. Visualization (Web UI)
+- Analysis results are displayed via a Web UI as a matrix heatmap, intuitively highlighting slow destination ranks, source ranks, or specific links.
+- Users can quickly identify issue types and root causes, enabling targeted optimization measures.
+  
 
 # Performance
 
