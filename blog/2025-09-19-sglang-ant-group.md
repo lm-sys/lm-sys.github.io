@@ -98,8 +98,7 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
      - Enables further optimization with FP8 quantized KVCache.  
    - **Higher NVLink bandwidth**:  
      - DeepEP supports NVLink.  
-     - H20’s NVLink bandwidth is **more than 2× higher than H800**,  
-       ensuring ~50% of MoE communication can fall on NVLink.  
+     - H20’s NVLink bandwidth is **more than 2× higher than H800**, ensuring ~50% of MoE communication can fall on NVLink.  
 
 2. **Fault Radius**  
    - Smaller EP configuration minimizes the **blast radius** of Decode or single-GPU failures.  
