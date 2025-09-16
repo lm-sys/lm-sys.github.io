@@ -6,45 +6,107 @@ previewImg: /images/blog/hicache/hicache_overview.png
 ---
 
 # Introduction
-必选关键字：  
-1. 规模：数万卡级别H20集群；  
-2. SLA：延迟、成本、稳定性（optional）、可观测（optional）。  
+我们在蚂蚁集团数万卡规模的H20集群下，基于SGLang，针对不同用户的延迟要求，构建出了一套能够满足不同用户的延迟要求，同时具备高吞吐、低成本的方案。
+我们将在本文中分享我们在H20上使用SGLang部署DeepSeek-R1的最佳
 
-重点：我们在数万卡规模的H20集群下，针对不同用户的延迟要求，基于SGLang，构建出了业界吞吐最高、成本最低的SOTA方案。  
+## Challenge with H20
 
-# Challenges With H20
-1. **H20 固有限制**：与H800相比，算力极差，但内存带宽高、NVlink带宽高、显存容量大，RDMA网卡带宽差  
+### Hardware Comparison
 
-| 硬件参数       | H20-96G   | H800-80G   |
-| -------------- | --------- | ---------- |
-| FP8算力        | 296 TFLOPS | 1979 TFLOPS |
-| FP16/BF16算力  | 148 TFLOPS | 989 TFLOPS  |
-| 显存容量       | 96 GB      | 80 GB       |
-| 内存带宽       | 4000 GB/s  | 3352 GB/s   |
-| NVlink带宽     | 900 GB/s   | 400 GB/s    |
-| RDMA网卡带宽   | 4*400 Gb/s | 8*400 Gb/s  |
+| Hardware Spec       | H20-96G     | H800-80G   |
+|---------------------|-------------|------------|
+| FP8 Compute         | 296 TFLOPS  | 1979 TFLOPS|
+| FP16/BF16 Compute   | 148 TFLOPS  | 989 TFLOPS |
+| Memory Capacity     | 96 GB       | 80 GB      |
+| Memory Bandwidth    | 4000 GB/s   | 3352 GB/s  |
+| NVLink Bandwidth    | 900 GB/s    | 400 GB/s   |
+| RDMA NIC Bandwidth  | 4 × 400 Gb/s| 8 × 400 Gb/s|
 
-2. **业界无可参考方案**：我们从5月份开始探索EP并行方案，DeepSeek社区和SGLang社区的开源方案均围绕高算力卡（H800），业界缺少H20这类低算力卡的EP并行方案；  
+---
 
-**总结**：在低算力+无可参考方案的情况下，满足与高算力卡相同的SLA，同时尽可能降低成本。  
+### 1. H20 vs. H800
+
+**Strengths**
+- Larger memory capacity (96 GB vs. 80 GB)  
+- Higher memory bandwidth (4000 GB/s vs. 3352 GB/s)  
+- Significantly higher NVLink bandwidth (900 GB/s vs. 400 GB/s)  
+
+**Limitations**
+- **Significantly weaker compute performance**:  
+  - FP8 throughput: 296 TFLOPS vs. 1979 TFLOPS  
+  - FP16/BF16 throughput: 148 TFLOPS vs. 989 TFLOPS  
+- **Limited RDMA NIC bandwidth**: 4 × 400 Gb/s vs. 8 × 400 Gb/s  
+
+---
+
+### 2. Lack of Industry References
+
+Since May 2025, we have been exploring **expert parallelism (EP) strategies** tailored for the H20.  
+However, both the DeepSeek and SGLang communities mainly focus on **high-performance GPUs (e.g., H800)**.  
+As a result, the industry lacks effective parallelization schemes for **low-compute GPUs like the H20**.  
+
+---
+
+### Summary
+
+Under the dual challenge of **weaker compute capability** and **no existing reference solutions**,  
+our objective is to achieve the **same SLA as high-end GPUs** while **minimizing cost**.  
 
 # Our Solution: Make H20 Great for Inference in Real World
 
-## Deployment
-我们采用业界通用的PD分离方案，但是由于H20卡的特性，我们的PD分离部署方式与DeepSeek团队和其他团队不同：  
+## Deployment Strategy
 
-### Prefill
-单机TP8，原因：  
-1. **SLA 约束**：Prefill阶段是计算密集的，腾讯、字节（其他厂商？）在H20上给出的方案均是跨机DP+EP，但是在我们的测试中，Prefill实例采用DP+EP部署会使得TTFT变得很长，无法满足用户的TTFT需求（比如TTFT < 1s）。  
-2. **动态扩缩容**：在考虑KVCache的情况下，我们希望线上Prefill具备动态扩缩容的能力，即在KVCache命中率高、Prefill压力小的情况下缩容，在KVCache命中率低、Prefill压力大的情况下动态扩容，如果使用多机DP+EP的方案部署，扩缩容策略会变得复杂。  
+### Prefill: TP8
 
-### Decode
-DP16+EP16（小EP），原因：  
-1. **故障半径**：Decode或者单卡故障的故障半径尽可能小，EP的高可用方案PR仍在draft中；  
-2. **H20特性**：  
-   1. 算力低：在线上服务的延迟约束下，batch-size无法打到很高；  
-   2. 显存大：基于（1），H20不存在显存bound的问题，同时显存可以基于KVCache FP8量化做进一步的优化；  
-   3. NVLink带宽高：DeepEP支持了NVLink，而H20的NVLink的带宽比H800要高一倍多，在MoE阶段，理论上会有50%的通信落在NVLink上。  
+Unlike the community’s multi-node **DP+EP** deployment scheme,  
+we adopt a **single-node TP** approach for Prefill, due to the following reasons:
+
+1. **TTFT Constraint**  
+   - The Prefill stage is **compute-intensive**.  
+   - Community practices (e.g., Tencent, ByteDance) on H20 typically use multi-node **DP+EP**,  
+     but in our tests, such deployment resulted in excessively long **TTFT**,  
+     failing to meet user requirements (e.g., TTFT < 1s).  
+
+   **Experiments (May 2025, 16× H20 with Attention-DP + MoE-EP):**
+   - **Single-node TP8 (8 GPUs):**  
+     - Peak per-GPU input throughput: **1500 tokens/s**  
+     - TTFT remains well-controlled.  
+   - **Dual-node DP+EP:**  
+     1. Attention-DP16 + MoE-EP16:  
+        - Peak per-GPU throughput: **1600 tokens/s**  
+        - TTFT exceeded **3s**, violating SLO requirements.  
+     2. Attention with TP > 1:  
+        - Significantly reduced TTFT,  
+        - but throughput still inferior to single-node TP8.  
+
+2. **Elastic Scaling**  
+   With KVCache in mind, we require Prefill to **scale elastically**:  
+   - **Scale in** when load is low (e.g., high KVCache hit rate).  
+   - **Scale out** when load is high (e.g., low KVCache hit rate, or long-sequence requests).  
+   Multi-node DP+EP makes scaling policies far more complex,  
+   whereas single-node TP provides a simpler and more flexible solution.  
+
+---
+
+### Decode: DP16 + EP16 (Small EP)
+
+Unlike community approaches that rely on **large-scale EP (EP ≥ 32)**,  
+we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:  
+
+1. **H20 Hardware Characteristics**  
+   - **Weaker compute performance**:  
+     - Under online latency constraints, batch size cannot be scaled up significantly.  
+   - **Larger memory capacity**:  
+     - No memory-bound issues despite weaker compute.  
+     - Enables further optimization with FP8 quantized KVCache.  
+   - **Higher NVLink bandwidth**:  
+     - DeepEP supports NVLink.  
+     - H20’s NVLink bandwidth is **more than 2× higher than H800**,  
+       ensuring ~50% of MoE communication can fall on NVLink.  
+
+2. **Fault Radius**  
+   - Smaller EP configuration minimizes the **blast radius** of Decode or single-GPU failures.  
+   - EP high-availability solutions are still in draft, making small EP safer in production.
 
 # Performance
 
@@ -130,6 +192,6 @@ In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Expe
 - DP16EP16: 4.5K/1.5K = 800 tokens/s/GPU  
 
 ## Online
-- Base （2s，70ms）  
+- Base （2s，70ms）
 - Pro （1.5s，50ms）  
 - Max （1s，30ms）
