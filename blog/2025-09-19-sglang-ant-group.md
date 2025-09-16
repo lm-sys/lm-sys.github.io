@@ -63,9 +63,7 @@ we adopt a **single-node TP** approach for Prefill, due to the following reasons
 
 1. **TTFT Constraint**  
    - The Prefill stage is **compute-intensive**.  
-   - Community practices (e.g., Tencent, ByteDance) on H20 typically use multi-node **DP+EP**,  
-     but in our tests, such deployment resulted in excessively long **TTFT**,  
-     failing to meet user requirements (e.g., TTFT < 1s).  
+   - Community practices (e.g., Tencent, ByteDance) on H20 typically use multi-node **DP+EP**, but in our tests, such deployment resulted in excessively long **TTFT**, failing to meet user requirements (e.g., TTFT < 1s).  
 
    **Experiments (May 2025, 16× H20 with Attention-DP + MoE-EP):**
    - **Single-node TP8 (8 GPUs):**  
@@ -83,8 +81,7 @@ we adopt a **single-node TP** approach for Prefill, due to the following reasons
    With KVCache in mind, we require Prefill to **scale elastically**:  
    - **Scale in** when load is low (e.g., high KVCache hit rate).  
    - **Scale out** when load is high (e.g., low KVCache hit rate, or long-sequence requests).  
-   Multi-node DP+EP makes scaling policies far more complex,  
-   whereas single-node TP provides a simpler and more flexible solution.  
+   Multi-node DP+EP makes scaling policies far more complex, whereas single-node TP provides a simpler and more flexible solution.  
 
 ---
 
