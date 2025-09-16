@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="225.67305"
+   height="50.68092"
+   viewBox="0 0 225.67306 50.680919"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="arch.svg"
+   inkscape:export-filename="arch.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs1" />
+  <style
+     id="style1">&#10;    .chart-text { font-family: -apple-system, sans-serif; font-size: 14px; fill: #374151; }&#10;    .small-text { font-family: -apple-system, sans-serif; font-size: 10px; fill: #374151; }&#10;    .label-text { font-family: -apple-system, sans-serif; font-size: 12px; fill: #6B7280; }&#10;    .white-text { font-family: -apple-system, sans-serif; font-size: 12px; fill: #ffffff; }&#10;    .diagram-border { fill: none; stroke: #4b5563; stroke-width: 0.2; stroke-opacity: 1; }&#10;    .diagram-border-dashed { fill: none; stroke: #4b5563; stroke-width: 0.2; stroke-dasharray: 1.6, 0.4; stroke-dashoffset: 0; stroke-opacity: 1; }&#10;    .arrow-fill { fill: #6b7280; }&#10;  </style>
+  <g
+     transform="translate(-136.64784,-389.60439)"
+     id="g78">
+    <!-- Store block -->
+    <rect
+       x="240.7655"
+       y="305.85291"
+       width="12.9772"
+       height="4.3993001"
+       fill="#b51600"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+       id="rect1" />
+    <text
+       transform="matrix(0.32,0,0,0.32,325.2388,407.04)"
+       class="white-text"
+       id="text1"
+       style="font-size:12.5px">Store</text>
+    <!-- Matrix representation with colored squares -->
+    <!-- Ellipsis -->
+    <g
+       id="g80">
+      <rect
+         x="136.84784"
+         y="-412.45499"
+         width="14.178129"
+         height="14.852674"
+         fill="#ffffff"
+         transform="scale(1,-1)"
+         id="rect62-7-6"
+         class="diagram-border-dashed" />
+      <rect
+         x="103.7333"
+         y="310.93329"
+         width="1.6"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect2" />
+      <rect
+         x="103.7333"
+         y="308.53329"
+         width="1.6"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect3" />
+      <rect
+         x="103.7333"
+         y="306.1333"
+         width="1.6"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect4" />
+      <rect
+         x="103.7333"
+         y="303.73331"
+         width="1.6"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect5" />
+      <rect
+         x="103.7333"
+         y="297.33331"
+         width="1.6"
+         height="1.6001"
+         fill="#cb2a7a"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect6" />
+      <rect
+         x="106"
+         y="310.93329"
+         width="1.6"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect7" />
+      <rect
+         x="106"
+         y="308.53329"
+         width="1.6"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect8" />
+      <rect
+         x="106"
+         y="306.1333"
+         width="1.6"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect9" />
+      <rect
+         x="106"
+         y="303.73331"
+         width="1.6"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect10" />
+      <rect
+         x="108.2666"
+         y="310.93329"
+         width="1.6001"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect11" />
+      <rect
+         x="108.2666"
+         y="308.53329"
+         width="1.6001"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect12" />
+      <rect
+         x="108.2666"
+         y="306.1333"
+         width="1.6001"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect13" />
+      <rect
+         x="108.2666"
+         y="303.73331"
+         width="1.6001"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect14" />
+      <rect
+         x="110.5333"
+         y="310.93329"
+         width="1.6001"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect15" />
+      <rect
+         x="110.5333"
+         y="308.53329"
+         width="1.6001"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect16" />
+      <rect
+         x="110.5333"
+         y="306.1333"
+         width="1.6001"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect17" />
+      <rect
+         x="110.5333"
+         y="303.73331"
+         width="1.6001"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect18" />
+      <rect
+         x="118.8"
+         y="310.93329"
+         width="1.6"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect19" />
+      <rect
+         x="118.8"
+         y="308.53329"
+         width="1.6"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect20" />
+      <rect
+         x="118.8"
+         y="306.1333"
+         width="1.6"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect21" />
+      <rect
+         x="118.8"
+         y="303.73331"
+         width="1.6"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect22" />
+      <rect
+         x="118.8"
+         y="297.33331"
+         width="1.6"
+         height="1.6001"
+         fill="#cb2a7a"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect23" />
+      <text
+         transform="matrix(0.32,0,0,0.32,152.3556,400)"
+         class="small-text"
+         id="text23">…</text>
+      <text
+         transform="matrix(0.32,0,0,0.32,152.3556,402.56)"
+         class="small-text"
+         id="text24">…</text>
+      <text
+         transform="matrix(0.32,0,0,0.32,152.3556,405.76)"
+         class="small-text"
+         id="text25">…</text>
+      <text
+         transform="matrix(0.32,0,0,0.32,152.3556,408.96)"
+         class="small-text"
+         id="text26">…</text>
+      <text
+         transform="matrix(0,-0.32,0.32,0,139.03907,415.68)"
+         class="small-text"
+         id="text27">…</text>
+      <text
+         transform="matrix(0,-0.32,0.32,0,159.128,415.68)"
+         class="small-text"
+         id="text28">…</text>
+      <text
+         transform="matrix(0.32,0,0,0.32,147.82227,418.24)"
+         class="small-text"
+         id="text29">…</text>
+      <text
+         transform="matrix(0.22627413,0.22627413,-0.22627413,0.22627413,151.20483,412.48011)"
+         class="small-text"
+         id="text30">…</text>
+    </g>
+    <!-- Matrix squares (middle section) -->
+    <g
+       id="g81"
+       style="stroke-width:0.4;stroke-dasharray:none"
+       transform="translate(-0.7573357,-8.2225019)">
+      <rect
+         x="183.71346"
+         y="-420.79947"
+         width="25.35006"
+         height="7.9895229"
+         fill="#ffffff"
+         transform="scale(1,-1)"
+         id="rect62-7-6-9"
+         class="diagram-border" />
+      <rect
+         x="138.68021"
+         y="299.9425"
+         width="1.6"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect30"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="138.68021"
+         y="297.54251"
+         width="1.6"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect31"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="140.9469"
+         y="299.9425"
+         width="1.6"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect32"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="140.9469"
+         y="297.54251"
+         width="1.6"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect33"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="143.2135"
+         y="299.9425"
+         width="1.6001"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect34"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="143.2135"
+         y="297.54251"
+         width="1.6001"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect35"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="145.48019"
+         y="299.9425"
+         width="1.6"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect36"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="145.48019"
+         y="297.54251"
+         width="1.6"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect37"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="147.7469"
+         y="299.9425"
+         width="1.6"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect38"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="147.7469"
+         y="297.54251"
+         width="1.6"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect39"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="150.0135"
+         y="299.9425"
+         width="1.6001"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect40"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="150.0135"
+         y="297.54251"
+         width="1.6001"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect41"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="152.2802"
+         y="299.9425"
+         width="1.6"
+         height="1.6001"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect42"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="152.2802"
+         y="297.54251"
+         width="1.6"
+         height="1.6001"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect43"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="154.54691"
+         y="299.9425"
+         width="1.6"
+         height="1.6001"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect44"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+      <rect
+         x="154.54691"
+         y="297.54251"
+         width="1.6"
+         height="1.6001"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect45"
+         style="stroke-width:0.3;stroke-dasharray:none" />
+    </g>
+    <!-- Matrix squares (right section) -->
+    <!-- White background boxes -->
+    <!-- Text labels -->
+    <text
+       class="chart-text"
+       id="text64"
+       x="181.08852"
+       y="429.99359"
+       style="font-size:4px;stroke-width:0.32">tiling &amp; shuffling</text>
+    <text
+       class="chart-text"
+       id="text65"
+       x="175.62186"
+       y="434.15359"
+       style="font-size:4px;stroke-width:0.32">(Offline preprocessing)</text>
+    <text
+       class="chart-text"
+       id="text66"
+       x="240.32359"
+       y="435.01068"
+       style="font-size:4px;stroke-width:0.32">Topo-aware partition</text>
+    <text
+       class="chart-text"
+       id="text67"
+       x="241.1236"
+       y="439.17068"
+       style="font-size:4px;stroke-width:0.32">Conflict-free layouts</text>
+    <g
+       id="g79">
+      <rect
+         x="240.43739"
+         y="-420.46475"
+         width="34.363865"
+         height="28.967192"
+         fill="#ffffff"
+         transform="scale(1,-1)"
+         id="rect62-7"
+         class="diagram-border" />
+      <rect
+         x="243.1028"
+         y="-422.89398"
+         width="34.363865"
+         height="28.967192"
+         fill="#ffffff"
+         transform="scale(1,-1)"
+         id="rect62"
+         class="diagram-border"
+         style="fill:#ffffff;fill-opacity:1" />
+      <rect
+         x="188.1333"
+         y="310.19031"
+         width="1.6001"
+         height="1.6"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect46" />
+      <rect
+         x="188.1333"
+         y="305.39029"
+         width="1.6001"
+         height="1.6"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect47" />
+      <rect
+         x="188.1333"
+         y="307.79031"
+         width="1.6001"
+         height="1.6"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect48" />
+      <rect
+         x="188.1333"
+         y="302.9903"
+         width="1.6001"
+         height="1.6"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect49" />
+      <rect
+         x="190.39999"
+         y="310.19031"
+         width="1.6"
+         height="1.6"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect50" />
+      <rect
+         x="190.39999"
+         y="305.39029"
+         width="1.6"
+         height="1.6"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect51" />
+      <rect
+         x="190.39999"
+         y="307.79031"
+         width="1.6"
+         height="1.6"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect52" />
+      <rect
+         x="190.39999"
+         y="302.9903"
+         width="1.6"
+         height="1.6"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect53" />
+      <rect
+         x="192.6666"
+         y="310.19031"
+         width="1.6001"
+         height="1.6"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect54" />
+      <rect
+         x="192.6666"
+         y="305.39029"
+         width="1.6001"
+         height="1.6"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect55" />
+      <rect
+         x="192.6666"
+         y="307.79031"
+         width="1.6001"
+         height="1.6"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect56" />
+      <rect
+         x="192.6666"
+         y="302.9903"
+         width="1.6001"
+         height="1.6"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect57" />
+      <rect
+         x="194.9333"
+         y="310.19031"
+         width="1.6"
+         height="1.6"
+         fill="#1eb001"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect58" />
+      <rect
+         x="194.9333"
+         y="305.39029"
+         width="1.6"
+         height="1.6"
+         fill="#0076ba"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect59" />
+      <rect
+         x="194.9333"
+         y="307.79031"
+         width="1.6"
+         height="1.6"
+         fill="#f7ba01"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect60" />
+      <rect
+         x="194.9333"
+         y="302.9903"
+         width="1.6"
+         height="1.6"
+         fill="#ee230c"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+         id="rect61" />
+      <rect
+         x="248.47282"
+         y="-417.50058"
+         width="18.560848"
+         height="18.87826"
+         fill="#ffffff"
+         transform="scale(1,-1)"
+         id="rect62-2"
+         class="diagram-border-dashed" />
+      <text
+         transform="matrix(0.32,0,0,0.32,268.13333,421.44)"
+         fill="#000000"
+         font-family="Arial"
+         font-size="12.5px"
+         id="text62">XCD</text>
+      <text
+         class="small-text"
+         font-size="4px"
+         id="text68"
+         x="258.48337"
+         y="416.58075"
+         style="font-size:4px;stroke-width:0.32">LDS</text>
+    </g>
+    <text
+       transform="matrix(0.32,0,0,0.32,143.21107,429.76)"
+       class="chart-text"
+       id="text69"
+       style="font-size:12.5px">Matrix</text>
+    <!-- Process blocks -->
+    <rect
+       x="235.3197"
+       y="314.99661"
+       width="12.9772"
+       height="4.8000998"
+       fill="#004d80"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+       id="rect69" />
+    <text
+       transform="matrix(0.32,0,0,0.32,318.27773,394.56)"
+       class="white-text"
+       id="text70"
+       style="font-size:12.5px">Load</text>
+    <rect
+       x="237.9942"
+       y="310.24939"
+       width="12.9771"
+       height="4.8000002"
+       fill="#fe9301"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+       id="rect70" />
+    <text
+       transform="matrix(0.32,0,0,0.32,319.64373,400.96)"
+       class="white-text"
+       id="text71"
+       style="font-size:12.5px">Matmul</text>
+    <rect
+       x="244.25929"
+       y="292.2034"
+       width="12.9771"
+       height="4.3993001"
+       fill="#b51600"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+       id="rect71" />
+    <text
+       transform="matrix(0.32,0,0,0.32,329.8972,425.28)"
+       class="white-text"
+       id="text72"
+       style="font-size:12.5px">Store</text>
+    <rect
+       x="238.26089"
+       y="301.25259"
+       width="12.9771"
+       height="4.8000002"
+       fill="#004d80"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+       id="rect72" />
+    <text
+       transform="matrix(0.32,0,0,0.32,322.1992,412.8)"
+       class="white-text"
+       id="text73"
+       style="font-size:12.5px">Load</text>
+    <rect
+       x="241.1385"
+       y="296.45261"
+       width="12.9771"
+       height="4.8000002"
+       fill="#fe9301"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+       id="rect73" />
+    <text
+       transform="matrix(0.32,0,0,0.32,323.836,419.2)"
+       class="white-text"
+       id="text74"
+       style="font-size:12.5px">Matmul</text>
+    <text
+       transform="matrix(0.32,0,0,0.32,310.96933,435.2)"
+       class="chart-text"
+       id="text75"
+       style="font-size:12.5px">Pipelining &amp; instruction</text>
+    <text
+       transform="matrix(0.32,0,0,0.32,321.20133,439.36)"
+       class="chart-text"
+       id="text76"
+       style="font-size:12.5px">scheduling</text>
+    <!-- Arrows and connecting lines -->
+    <path
+       d="m 112.6983,313.873 3.0743,0.6 3.0436,0.3017 3.0082,0.002 2.9727,-0.297 2.9367,-0.5963 2.9006,-0.8955 2.8642,-1.1946 1.0554,-0.5574 -0.0934,-0.1768 -1.0514,0.5553 0.008,-0.004 -2.8556,1.191 0.009,-0.003 -2.8912,0.8927 0.01,-0.002 -2.927,0.5943 0.01,-0.002 -2.9627,0.2959 0.0101,-5e-4 -2.9984,-0.002 0.01,5e-4 -3.034,-0.3007 0.009,10e-4 -3.0697,-0.5991 -0.0383,0.1963 z m 22.0157,-1.4771 1.5618,-2.182 -2.6826,0.0598 z"
+       class="arrow-fill"
+       id="path76"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)" />
+    <path
+       d="m 157.2412,305.4042 19.6256,-0.0454 -5e-4,-0.2 -19.6255,0.0454 z m 19.2281,1.0555 2.3972,-1.2055 -2.4027,-1.1945 0.006,2.4 z"
+       class="arrow-fill"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+       id="path77" />
+    <path
+       d="m 212.2847,305.4042 19.6256,-0.0454 -5e-4,-0.2 -19.6256,0.0454 z m 19.2281,1.0555 2.3972,-1.2055 -2.4028,-1.1945 0.006,2.4 z"
+       class="arrow-fill"
+       transform="matrix(1.3333333,0,0,-1.3333333,0,816)"
+       id="path78" />
+  </g>
+</svg>
