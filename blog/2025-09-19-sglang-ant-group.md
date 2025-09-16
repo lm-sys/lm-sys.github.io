@@ -62,7 +62,7 @@ DP16+EP16（小EP），原因：
 - FlashMLA-FP8  
 - DeepGEMM swapAB  
 
-## Overlap - SBO（Single-batch-overlap）
+## Overlap: SBO（Single-batch-overlap）
 ### Motivation
 The optimization effect of Two-Batch Overlap (TBO) is suboptimal for the Decode phase on low-compute hardware (e.g., H20), primarily due to the following reasons:
 
@@ -93,7 +93,7 @@ The interaction between Down GEMM and Combine Send is structured as a Producer-C
 - The Combine Send polls this signaling unit. Once the value reaches a threshold, it sends the corresponding block_m tokens.
 
 
-## Observability - Lightweight Anomaly Diagnosis for Distributed MoE Model Deployment
+## Observability: Lightweight Anomaly Diagnosis for Distributed MoE Model Deployment
 
 <h1 style="display: flex; align-items: center;">
     <img alt="DeepX" style="margin-right: 0.2em" src="images/blog/ant-group-prac/deepx.svg">
@@ -132,11 +132,4 @@ In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Expe
 ## Online
 - Base （2s，70ms）  
 - Pro （1.5s，50ms）  
-- Max （1s，30ms）  
-
-# Furhter Works
-MTP  
-1. Cuda Graph  
-2. TP1  
-
-Ultra (0.5 s, 10 ms)  
+- Max （1s，30ms）
