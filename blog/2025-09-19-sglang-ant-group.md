@@ -81,7 +81,7 @@ we adopt a **single-node TP** approach for Prefill, due to the following reasons
    With KVCache in mind, we require Prefill to **scale elastically**:  
    - **Scale in** when load is low (e.g., high KVCache hit rate).  
    - **Scale out** when load is high (e.g., low KVCache hit rate, or long-sequence requests).  
-   Multi-node DP+EP makes scaling policies far more complex, whereas single-node TP provides a simpler and more flexible solution.  
+   Multi-node DP+EP makes scaling policies far more complex, whereas single-node TP provides a simpler and more flexible solution.
 
 ---
 
