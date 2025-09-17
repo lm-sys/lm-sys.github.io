@@ -66,7 +66,6 @@ While the DeepSeek and SGLang communities mainly target **high-performance GPUs 
 @苏墨  
 
 ### Decode
-@tianyu too much details, refine plz 
 #### EPLB
 ##### Expert Affinity EPLB
 
@@ -115,16 +114,18 @@ While the DeepSeek and SGLang communities mainly target **high-performance GPUs 
 - **Aligned / predictable M**: SwapAB improves boundary efficiency and throughput (up to ~70%), fully utilizing tiles and enabling higher concurrency.  
 - **Irregular / varying M**: SwapAB improves load balance and occupancy, giving consistent gains across groups, especially for small or uneven `M`.
 
-advantages when compared with TBO?
 ### Overlap: SBO（Single-batch-overlap）
-#### Motivation
-The optimization effect of Two-Batch Overlap (TBO) is suboptimal for the Decode phase on low-compute hardware (e.g., H20), primarily due to the following reasons:
 
-- Hopper Architecture Limitation: The block_m of WGMMA is fixed at 64 on the Hopper architecture. When TBO is enabled in small-batch decoding, the MLP GEMM suffers from redundant computations. A positive throughput gain is only observed at larger batch sizes (e.g., 64, 128).
-- SLA Constraints: At these large batch sizes, low-compute hardware like H20 fails to meet the SLA guarantees for TPOT/ITL.
+#### Why not TBO (Two-batch-overlap)
 
-Therefore, a solution is needed to improve Decode throughput even with small batch sizes. Single Batch Overlap (SBO) presents itself as a viable solution.
-We implement SBO for DeepSeek v3/R1 by modifying DeepEP and DeepGEMM, including:
+![tbo_vs_normal_perf.png]()
+
+The performance benefit of Two-Batch Overlap (TBO) in the Decode phase is limited on low-compute hardware (e.g., H20):
+
+- **Hopper architecture constraint**: WGMMA’s `block_m` is fixed at 64. With small-batch decoding, TBO introduces redundant MLP GEMM computations. Positive throughput gains appear only at large batch sizes (e.g., 64 or 128).  
+- **SLA limitations on H20**: At these large batch sizes, low-compute hardware cannot meet SLA targets for TPOT, making TBO impractical in online serving.
+
+To improve Decode throughput without violating SLA, **Single Batch Overlap (SBO)** is adopted in DeepSeek v3/R1 by modifying DeepEP and DeepGEMM:  
 
 - Overlapping Shared Expert with Dispatch Recv.
 - Overlapping Down GEMM with Combine Send.
@@ -135,10 +136,15 @@ DeepEP: deepseek-ai/DeepEP#390
 DeepGEMM: deepseek-ai/DeepGEMM#183
 
 #### Designs
+
+![SBO.png]()
+
 SBO implements two overlaps for the MoE layers of DeepSeek V3/R1:
 
 - Overlapping Shared Expert with Dispatch Recv.
 - Overlapping Down GEMM with Combine Send.
+
+![SBO-producer-consumer.png]()
 
 The interaction between Down GEMM and Combine Send is structured as a Producer-Consumer model synchronized by signals:
 
@@ -149,9 +155,7 @@ The interaction between Down GEMM and Combine Send is structured as a Producer-C
 
 ## Observability: Lightweight Anomaly Diagnosis for Distributed MoE Model Deployment
 
-<h1 style="display: flex; align-items: center;">
-    <img alt="DeepX" style="margin-right: 0.2em" src="images/blog/ant-group-prac/deepx.svg">
-</h1>
+![deepx.png]()
 
 In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Experts (MoE) models, increasing EP counts can lead to significant inference latency (TTFT & TPOT) due to communication overheads from operators like Dispatch and Combine. To address this, we designed a lightweight anomaly diagnosis workflow (see diagram above) that can pinpoint issues within minutes.
 
