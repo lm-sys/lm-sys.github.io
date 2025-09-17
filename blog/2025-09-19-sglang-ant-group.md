@@ -111,10 +111,35 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
 
 ## Decode
 ### EPLB
-### Async
-- 动态EPLB的异步优化有个设计图在这里  
-  https://yuque.antfin.com/rrv1v3/kg7h1z/aoadkogyvba0qsi6?inner=Qzo0O ，最终效果可以达到和超过静态EPLB的效果（在不同的业务数据集上），同时均衡度可以始终维持在70%以上。  
-- EPLB优化（加入专家通信考量）的思路：在记录专家负载的基础上加入对每次激活的top-k专家组的记录，以此为基础计算专家间的亲和度矩阵（即共同激活的概率），在EPLB完成单卡的均衡后，针对卡内最热专家与其他卡内专家的亲和度，调整卡的位置以减少后续跨机通讯的发生，在EPLB的基础上还能提升5%左右的性能。  
+#### Expert Affinity EPLB
+- **Core Idea**:  
+  Building upon expert load tracking, we additionally record the **top-k expert groups** activated in each iteration to compute an **expert affinity matrix** (i.e., probability of co-activation).  
+
+- **Method**:  
+  After intra-card load balancing via **EPLB**, we adjust **card placement** based on the affinity between:  
+  - The expert with the highest load on one GPU, and  
+  - Other experts across different GPUs.  
+
+- **Impact**:  
+  - Reduces **cross-node communication**.  
+  - Achieves an additional **~5% performance improvement** over standard EPLB.  
+  - However, balancing time increases from **2–3s → ~5s**, leading to more noticeable service latency.  
+
+- **Next Step**:  
+  To mitigate this, we introduce an **asynchronous dynamic load adjustment** method.  
+
+---
+
+#### Asynchronous Dynamic Load Adjustment
+- **Key Design**:  
+  Decouples **load balancing computation** from **model inference**, allowing both to proceed in parallel without blocking service.  
+
+- **Execution Phase**:  
+  During expert migration/transfer (post-calculation), a **hierarchical transfer strategy** is used to minimize inference impact, achieving seamless load balancing from the user’s perspective.  
+
+- **Results**:  
+  - Matches or surpasses the performance of static/original EPLB across datasets.  
+  - Maintains **load balance ratio > 70%** consistently.
 
 ### Computation
 
