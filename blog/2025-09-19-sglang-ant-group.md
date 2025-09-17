@@ -104,14 +104,14 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
    - Smaller EP configuration minimizes the **blast radius** of Decode or single-GPU failures.  
    - EP high-availability solutions are still in draft, making small EP safer in production.
 
-# Performance
+## Optimizations
 
-## Prefill
+### Prefill
 @苏墨  
 
-## Decode
-### EPLB
-#### Expert Affinity EPLB
+### Decode
+#### EPLB
+##### Expert Affinity EPLB
 - **Core Idea**:  
   Building upon expert load tracking, we additionally record the **top-k expert groups** activated in each iteration to compute an **expert affinity matrix** (i.e., probability of co-activation).  
 
@@ -130,7 +130,7 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
 
 ---
 
-#### Asynchronous Dynamic Load Adjustment
+##### Asynchronous Dynamic Load Adjustment
 - **Key Design**:  
   Decouples **load balancing computation** from **model inference**, allowing both to proceed in parallel without blocking service.  
 
@@ -141,17 +141,17 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
   - Matches or surpasses the performance of static/original EPLB across datasets.  
   - Maintains **load balance ratio > 70%** consistently.
 
-### Computation
+#### Computation
 
-#### FlashMLA-FP8
+##### FlashMLA-FP8
 
-##### Overview
+###### Overview
 - Executes end-to-end FP8 attention on Hopper (`SM90`).
 - Uses **`TMA`** for global-to-shared transfers and **`WGMMA`** for matrix math.  
 - Two warpgroups cooperatively pipeline `QK^T` and `PV` across KV blocks.  
 - Minimizes shared-memory pressure and maximizes overlap between memory movement and compute.
 
-##### Improvements
+###### Improvements
 - **VS `bf16` FlashMLA**: ~70% performance improvement
   - Use `WGMMA FP8`.
   - Use `FP8` dtypes for `Q` and `KV`.
@@ -167,7 +167,7 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
   - Fine-grained `Q@K` tiling (`576/64 = 9` tiles) enabled computing `ROPE` in `BF16`, fixing previous accuracy issues.
   - Improved feature set and aligned with `SM90` programming style.
 
-##### Summary
+###### Summary
 - Implements **end-to-end FP8 activations and weights** with `FP8 WGMMA`.  
 - Decouples and interleaves three challenging stages into `TMA` wait windows:
   1. `V` transposition  
@@ -179,9 +179,9 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
 
 ---
 
-#### DeepGEMM swapAB
+##### DeepGEMM swapAB
 
-##### Overview
+###### Overview
 - Designed to address PTX instruction constraints:  
   - `N` must be a multiple of 8.  
   - `M` is fixed at 64 in instruction  
@@ -193,7 +193,7 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
   - Enables smaller `BLOCK_M (32)`.  
 - Performance gain comes from **finer tiling granularity** and **better resource utilization**, not higher per-instruction throughput.
 
-##### Performance Improvement: 10% ~ 70%
+###### Performance Improvement: 10% ~ 70%
 1. **Higher M-side boundary efficiency**
    - Baseline: `BLOCK_M` must align to 64, causing inefficiency when `M` is not multiple of 64.  
    - `swapAB`: Allows `BLOCK_M = 32` (or aligned to `8, 16, 24, 32`).  
@@ -220,7 +220,7 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
    - Smaller tiles → more concurrent `CTA`s per K-slice.  
    - Improves multicast opportunities and reduces `TMA` read traffic.
 
-##### Use Cases & Expectations
+###### Use Cases & Expectations
 - **Best suited for**:
   - `M` not multiple of 64.
   - Small `M` values.
@@ -234,8 +234,8 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
   - Instruction-level peak unchanged.  
   - Gains come from **better tiling → higher effective utilization, concurrency, and memory efficiency**.
 
-## Overlap: SBO（Single-batch-overlap）
-### Motivation
+### Overlap: SBO（Single-batch-overlap）
+#### Motivation
 The optimization effect of Two-Batch Overlap (TBO) is suboptimal for the Decode phase on low-compute hardware (e.g., H20), primarily due to the following reasons:
 
 - Hopper Architecture Limitation: The block_m of WGMMA is fixed at 64 on the Hopper architecture. When TBO is enabled in small-batch decoding, the MLP GEMM suffers from redundant computations. A positive throughput gain is only observed at larger batch sizes (e.g., 64, 128).
@@ -252,7 +252,7 @@ Detailed implementation is available in the following branches:
 DeepEP: deepseek-ai/DeepEP#390
 DeepGEMM: deepseek-ai/DeepGEMM#183
 
-### Designs
+#### Designs
 SBO implements two overlaps for the MoE layers of DeepSeek V3/R1:
 
 - Overlapping Shared Expert with Dispatch Recv.
