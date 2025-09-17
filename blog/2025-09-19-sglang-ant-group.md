@@ -192,11 +192,32 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 
 # Performance
 
-## Offline
+## Prefill
+![prefill-pref.png]()
+
+## Decode
+![decode-pref.png]()
+
+# Online Serving
+
+## InferX Base (TTFT < 2s, TPOT < 70ms)
+
+### Config
+
+### End-to-End validation
+
+## InferX Pro (TTFT < 1.5s, TPOT < 70ms)
+
+### Config
+
+### End-to-End validation
+
+## InferX Max (TTFT < 1s, TPOT < 30ms)
+
+### Config
+
+### End-to-End validation
+
+# Offline Serving
 - DP32EP32: 4.5K/1.5K = 850 tokens/s/GPU  
 - DP16EP16: 4.5K/1.5K = 800 tokens/s/GPU  
-
-## Online
-- Base （2s，70ms）
-- Pro （1.5s，50ms）  
-- Max （1s，30ms）
