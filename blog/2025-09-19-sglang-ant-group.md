@@ -1,6 +1,6 @@
 ---
 title: "Together with SGLang: Best Practices for Serving DeepSeek-R1 on H20-96G"
-author: "Tianyu Zhang, Peng Zhang, Yusong Gao, Yun Zhang, Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Fakang Wang, Jianhao Fu"
+author: "Tianyu Zhang*, Peng Zhang*, Yusong Gao, Yun Zhang, Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Fakang Wang, Jianhao Fu"
 date: "September 19, 2025"
 previewImg: /images/blog/hicache/hicache_overview.png
 ---
@@ -14,6 +14,15 @@ This report details our best practices for achieving this goal. We present a nov
 - A lightweight observability framework: A purpose-built diagnostic system for rapidly identifying and resolving performance bottlenecks in a distributed MoE environment.
 
 # Challenges and Opportunities with H20
+
+## Why H20 Matters
+- **Resource availability**  
+  H20 is much easier to acquire in many area, allowing user to rapidly scale up to a **tens-of-thousands-card H20 cluster**.  
+
+- **Cost efficiency**  
+  The average cloud rental cost for **H20-96GB** is about **¥5/hour/GPU** (annual subscription).  
+  At 10000 GPUs scale, a **10% throughput improvement** yields **hundreds of thousands of RMB in daily savings** on compute costs.  
+
 
 ## Hardware Comparison: H20 vs. H800
 
@@ -41,24 +50,13 @@ This report details our best practices for achieving this goal. We present a nov
 Although H20 lags far behind H800 in raw compute, inference workloads—especially **Decode**—are typically **memory-bound rather than compute-bound**.  
 This makes H20’s **high memory bandwidth and larger memory capacity** particularly well-suited for large-scale inference optimization.  
 
-## Why H20 Matters at Ant Group
-
-Ant Group has committed to optimizing inference on H20, driven by both **practical availability** and **economic efficiency**:  
-
-- **Resource availability**  
-  H20 is much easier to acquire than H800, allowing Ant Group to rapidly scale up to a **tens-of-thousands-card H20 cluster**.  
-
-- **Cost efficiency**  
-  The average cloud rental cost for **H20-96GB** is about **¥5/hour/GPU** (annual subscription).  
-  At Ant’s scale, a **10% throughput improvement** yields **hundreds of thousands of RMB in daily savings** on compute costs.  
-
 ## Challenges and Opportunities Ahead
 
-Since May 2025, we have been exploring **expert parallelism (EP) strategies** designed for H20.  
+~~Since May 2025, we have been exploring **expert parallelism (EP) strategies** designed for H20.  
 While the DeepSeek and SGLang communities mainly target **high-performance GPUs (e.g., H800)**, this divergence creates a landscape of both **challenges and opportunities**:  
 
 - **Challenge**: The industry lacks mature parallelization schemes for **low-compute GPUs like H20**.  
-- **Opportunity**: This gap allows us to pioneer new optimizations and unlock the full potential of large-scale H20 clusters.  
+- **Opportunity**: This gap allows us to pioneer new optimizations and unlock the full potential of large-scale H20 clusters. ~~
 
 # Our Solution: Make H20 Great for Inference in Real World
 
@@ -119,6 +117,7 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
 @苏墨  
 
 ### Decode
+@tianyu too much details, refine plz 
 #### EPLB
 ##### Expert Affinity EPLB
 - **Core Idea**:  
@@ -160,6 +159,7 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
 - Two warpgroups cooperatively pipeline `QK^T` and `PV` across KV blocks.  
 - Minimizes shared-memory pressure and maximizes overlap between memory movement and compute.
 
+@tianyu too much details, refine plz 
 ###### Improvements
 - **VS `bf16` FlashMLA**: ~70% performance improvement
   - Use `WGMMA FP8`.
