@@ -63,7 +63,39 @@ While the DeepSeek and SGLang communities mainly target **high-performance GPUs 
 ## Optimizations
 
 ### Prefill
-@苏墨  
+
+![prefill_perf]()
+
+#### 1. MHA vs MLA Strategy Selection
+**Overview:**  
+- MLA is costlier than MHA for long sequences.  
+- Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
+
+**Improvement:**  
+- Dynamic selection improved Prefill throughput by **23.6%** on 500 samples of 4000-length input.
+
+#### 2. Upsampled Fused Triton MOE (Second MOE)
+**Overview:**  
+- Second MOE latency was unexpectedly high despite lower computation.  
+- Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
+
+**Improvement:**  
+- Utilization ↑ 45.2% → 81.1%  
+- Latency ↓ 2.430 ms → 1.435 ms (8K tokens, 100 samples)
+
+#### 3. fused_qkv_a_proj_with_mqa
+**Overview:**
+
+![fused_qkv_a_proj_with_mqa]()
+
+- Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`  
+- Optimized: `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
+
+**Improvement:**  
+- Measured effects (input length 4000):  
+  - DeepGEMM latency ↓ 498.63 ms → 319.75 ms  
+  - Communication latency ↓ 267.1 ms → 249.63 ms  
+  - RMSNorm latency ↓ 82.303 ms → 43.398 ms
 
 ### Decode
 #### EPLB
