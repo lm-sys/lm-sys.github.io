@@ -132,8 +132,6 @@ The absence of mature parallelization schemes for **low-compute GPUs** creates a
 
 #### Why not TBO (Two-batch-overlap)
 
-![tbo_vs_normal_perf.png]()
-
 The performance benefit of Two-Batch Overlap (TBO) in the Decode phase is limited on low-compute hardware (e.g., H20):
 
 - **Hopper architecture constraint**: WGMMA’s `block_m` is fixed at 64. With small-batch decoding, TBO introduces redundant MLP GEMM computations. Positive throughput gains appear only at large batch sizes (e.g., 64 or 128).  
@@ -167,33 +165,20 @@ The interaction between Down GEMM and Combine Send is structured as a Producer-C
 - The Combine Send polls this signaling unit. Once the value reaches a threshold, it sends the corresponding block_m tokens.
 
 
-## Observability: Lightweight Anomaly Diagnosis for Distributed MoE Model Deployment
+## Observability: DeepXTrace
 
 ![deepx.png]()
 
-In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Experts (MoE) models, increasing EP counts can lead to significant inference latency (TTFT & TPOT) due to communication overheads from operators like Dispatch and Combine. 
-To address this, we designed a lightweight anomaly diagnosis workflow (see diagram above) based on [DeepXTrace](https://github.com/antgroup/DeepXTrace) that can pinpoint issues within minutes.
+To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, 
+we developed a lightweight workflow based on [DeepXTrace](https://github.com/antgroup/DeepXTrace):  
 
-### 1. Metrics Collection
-- Each node (Node 0 to Node N) periodically collects communication and computation metrics for its ranks.
-- Every 10 seconds, rank data is gathered to Rank 0 and logged as `diagnose_rank${rank}.log`.
+- **Metrics Collection:** Each node periodically records communication and computation metrics, which are aggregated to Rank 0 every 10 seconds for centralized logging.  
 
-### 2. Anomaly Detection
-- Rank 0 constructs an `N×N` latency matrix `M`, where `Mij` represents the latency of `rank_i` waiting for `rank_j`.
-- Statistical analysis (z-score) identifies three types of anomalies:
-  - **Column Anomaly**: Destination rank (`dst`) is globally slow.
-  - **Row Anomaly**: Source rank (`src`) is globally slow.
-  - **Point Anomaly**: Specific (`src`, `dst`) link is abnormal.
+- **Anomaly Detection:** Rank 0 constructs an `N×N` latency matrix and applies z-score analysis to detect anomalies across rows, columns, and individual points.  
 
-### 3. Root Cause Analysis
-- Diagnostic metrics are used to infer anomaly sources:
-  - **Comp Slow**: Accumulated computation delays.
-  - **Mixed Slow**: Uneven expert distribution or hotspot congestion.
-  - **Comm Slow**: Communication link issues.
+- **Root Cause Analysis:** Anomalies are categorized into computation delays, imbalanced expert distribution, or communication bottlenecks.  
 
-### 4. Visualization (Web UI)
-- Analysis results are displayed via a Web UI as a matrix heatmap, intuitively highlighting slow destination ranks, source ranks, or specific links.
-- Users can quickly identify issue types and root causes, enabling targeted optimization measures.
+- **Visualization (Web UI):** Results are visualized as a heatmap, making it easy to quickly spot slow ranks or links and guide targeted optimization.  
 
 # Performance
 
