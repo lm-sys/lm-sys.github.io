@@ -6,8 +6,12 @@ previewImg: /images/blog/hicache/hicache_overview.png
 ---
 
 # Introduction
-我们在蚂蚁集团数万卡规模的H20集群下，基于SGLang，针对不同用户的延迟要求，构建出了一套能够满足不同用户的延迟要求，同时具备高吞吐、低成本的方案。
-我们将在本文中分享我们在H20上使用SGLang部署DeepSeek-R1的最佳
+The operationalization of large Mixture-of-Experts (MoE) models like DeepSeek-R1 demands a delicate balance between latency, throughput, and cost. This challenge is uniquely amplified on hardware with an asymmetric performance profile, such as the H20 GPU, which offers high memory bandwidth but comparatively low compute throughput. Faced with this hardware reality and a lack of established industry practices for such platforms, our objective was to architect a serving solution that could match the stringent SLA requirements of high-end GPUs while capitalizing on the H20's cost-effectiveness.
+This report details our best practices for achieving this goal. We present a novel, hardware-aware deployment strategy that deviates from community norms, alongside a suite of deep system and kernel-level optimizations. Our key contributions include:
+- A tailored parallelization strategy: Hardware-aware parallelization strategy using single-node TP8 for prefill and small-scale EP16 for decode to meet latency targets and reduce fault domains.
+- Advanced kernel-level optimizations: Including FlashMLA-FP8 and DeepGEMM swapAB, to maximize computational throughput on the H20 architecture.
+- Innovative scheduling and load-balancing techniques: Implementation of Single-Batch Overlap (SBO) to enhance throughput in small-batch scenarios and asynchronous Expert Affinity Load Balancer to minimize cross-node communication。
+- A lightweight observability framework: A purpose-built diagnostic system for rapidly identifying and resolving performance bottlenecks in a distributed MoE environment.
 
 ## Challenge with H20
 
