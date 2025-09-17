@@ -60,57 +60,6 @@ While the DeepSeek and SGLang communities mainly target **high-performance GPUs 
 
 # Our Solution: Make H20 Great for Inference in Real World
 
-@tianyu palce Deployment Strategy in chapter 4
-## Deployment Strategy
-
-### Prefill: TP8
-
-Unlike the community’s multi-node **DP+EP** deployment scheme,  
-we adopt a **single-node TP** approach for Prefill, due to the following reasons:
-
-1. **TTFT Constraint**  
-   - The Prefill stage is **compute-intensive**.  
-   - Community practices (e.g., Tencent, ByteDance) on H20 typically use multi-node **DP+EP**, but in our tests, such deployment resulted in excessively long **TTFT**, failing to meet user requirements (e.g., TTFT < 1s).  
-
-   **Experiments (May 2025, 16× H20 with Attention-DP + MoE-EP):**
-   - **Single-node TP8 (8 GPUs):**  
-     - Peak per-GPU input throughput: **1500 tokens/s**  
-     - TTFT remains well-controlled.  
-   - **Dual-node DP+EP:**  
-     1. Attention-DP16 + MoE-EP16:  
-        - Peak per-GPU throughput: **1600 tokens/s**  
-        - TTFT exceeded **3s**, violating SLO requirements.  
-     2. Attention with TP > 1:  
-        - Significantly reduced TTFT,  
-        - but throughput still inferior to single-node TP8.  
-
-2. **Elastic Scaling**  
-   With KVCache in mind, we require Prefill to **scale elastically**:  
-   - **Scale in** when load is low (e.g., high KVCache hit rate).  
-   - **Scale out** when load is high (e.g., low KVCache hit rate, or long-sequence requests).  
-   Multi-node DP+EP makes scaling policies far more complex, whereas single-node TP provides a simpler and more flexible solution.
-
----
-
-### Decode: DP16 + EP16 (Small EP)
-
-Unlike community approaches that rely on **large-scale EP (EP ≥ 32)**,  
-we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:  
-
-1. **H20 Hardware Characteristics**  
-   - **Weaker compute performance**:  
-     - Under online latency constraints, batch size cannot be scaled up significantly.  
-   - **Larger memory capacity**:  
-     - No memory-bound issues despite weaker compute.  
-     - Enables further optimization with FP8 quantized KVCache.  
-   - **Higher NVLink bandwidth**:  
-     - DeepEP supports NVLink.  
-     - H20’s NVLink bandwidth is **more than 2× higher than H800**, ensuring ~50% of MoE communication can fall on NVLink.  
-
-2. **Fault Radius**  
-   - Smaller EP configuration minimizes the **blast radius** of Decode or single-GPU failures.  
-   - EP high-availability solutions are still in draft, making small EP safer in production.
-
 ## Optimizations
 
 ### Prefill
@@ -120,128 +69,51 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
 @tianyu too much details, refine plz 
 #### EPLB
 ##### Expert Affinity EPLB
-- **Core Idea**:  
-  Building upon expert load tracking, we additionally record the **top-k expert groups** activated in each iteration to compute an **expert affinity matrix** (i.e., probability of co-activation).  
 
-- **Method**:  
-  After intra-card load balancing via **EPLB**, we adjust **card placement** based on the affinity between:  
-  - The expert with the highest load on one GPU, and  
-  - Other experts across different GPUs.  
+![eplb.png]()
 
-- **Impact**:  
-  - Reduces **cross-node communication**.  
-  - Achieves an additional **~5% performance improvement** over standard EPLB.  
-  - However, balancing time increases from **2–3s → ~5s**, leading to more noticeable service latency.  
-
-- **Next Step**:  
-  To mitigate this, we introduce an **asynchronous dynamic load adjustment** method.  
-
----
+- **Core Idea**: Extend standard EPLB by recording **top-k expert co-activations**, building an **affinity matrix**.
+- **Method**: After intra-GPU balancing, adjust expert placement so **highly co-activated experts** are kept within the same node.
+- **Impact**: Minimizes **cross-node communication** and delivers an extra **~5% performance gain** compared to vanilla EPLB.
 
 ##### Asynchronous Dynamic Load Adjustment
-- **Key Design**:  
-  Decouples **load balancing computation** from **model inference**, allowing both to proceed in parallel without blocking service.  
 
-- **Execution Phase**:  
-  During expert migration/transfer (post-calculation), a **hierarchical transfer strategy** is used to minimize inference impact, achieving seamless load balancing from the user’s perspective.  
+![async-load.png]()
 
-- **Results**:  
-  - Matches or surpasses the performance of static/original EPLB across datasets.  
-  - Maintains **load balance ratio > 70%** consistently.
+- **Design**: Separates **load balancing** from **inference**, enabling parallel execution without blocking.  
+- **Execution**: Uses a **hierarchical transfer strategy** to reduce migration impact, keeping inference seamless.  
+- **Results**: Matches or exceeds static EPLB and maintains **>70% load balance ratio**.
 
 #### Computation
 
 ##### FlashMLA-FP8
 
-###### Overview
-- Executes end-to-end FP8 attention on Hopper (`SM90`).
-- Uses **`TMA`** for global-to-shared transfers and **`WGMMA`** for matrix math.  
-- Two warpgroups cooperatively pipeline `QK^T` and `PV` across KV blocks.  
-- Minimizes shared-memory pressure and maximizes overlap between memory movement and compute.
+**Overview**
 
-@tianyu too much details, refine plz 
-###### Improvements
-- **VS `bf16` FlashMLA**: ~70% performance improvement
-  - Use `WGMMA FP8`.
-  - Use `FP8` dtypes for `Q` and `KV`.
-  - Saved shared memory and reallocated it for `sP1`.
-  - Removed `retrieve_rP_for_SP(sQ(8))`.
-  - Removed RS `WGMMA` of `rQ(8) * sK`.
+- End-to-end FP8 attention on Hopper (`SM90`) using `TMA` for memory transfers and `WGMMA` for computation.  
+- Two warpgroups pipeline `QK^T` and `PV`, minimizing shared-memory pressure and overlapping memory with compute.  
 
-- **VS previous FP8 implementation (#54)**: ~5% performance improvement
-  - Fine-grained optimization of pipeline between `TMA` copy and `WGMMA`.
-  - Rebuilt pipeline for transposed `V` using 4 named barriers to switch between 4 buffers (`V0L`, `V0R`, `V1L`, `V1R`).
-  - Added ping-pong shared memory buffers: `sP0`, `sP1`, `sVt0`, `sVt1`.
-  - Used 128-bit `STSM` and `LDSM` for mutual copying between `rP` and `sP`, resolving FP8 `WGMMA` layout mismatch.
-  - Fine-grained `Q@K` tiling (`576/64 = 9` tiles) enabled computing `ROPE` in `BF16`, fixing previous accuracy issues.
-  - Improved feature set and aligned with `SM90` programming style.
+**Improvements**
 
-###### Summary
-- Implements **end-to-end FP8 activations and weights** with `FP8 WGMMA`.  
-- Decouples and interleaves three challenging stages into `TMA` wait windows:
-  1. `V` transposition  
-  2. `rP–sP` round-trip  
-  3. Fine-grained (64-wide) `QK^T` tiling  
-- Uses **ping-pong shared memory** and **named barriers** to maximize compute-memory overlap.  
-- Closely follows the `SM90` asynchronous **`TMA + WGMMA`** model.  
-- Lays foundation for scaling parallelism and deploying mixed-precision policies.
-
----
+- **vs BF16 FlashMLA**: ~70% faster  
+  - FP8 `Q`/`KV`, `WGMMA FP8`, shared memory reallocation, removed redundant operations.  
+- **vs previous FP8 (#54)**: ~5% faster  
+  - Optimized `TMA`–`WGMMA` pipeline, ping-pong buffers (`sP0/sP1`, `sVt0/sVt1`), 128-bit `STSM/LDSM` for FP8 layout, fine-grained `Q@K` tiling with BF16 ROPE, aligned with `SM90` style.
 
 ##### DeepGEMM swapAB
 
-###### Overview
-- Designed to address PTX instruction constraints:  
-  - `N` must be a multiple of 8.  
-  - `M` is fixed at 64 in instruction  
-    ```
-    wgmma.mma_async.sync.aligned.m64n(8i)k32.f16.e4m3.e4m3
-    ```
-- The **`swapAB`** variant swaps `WGMMA` tile usage:  
-  - Maps problem’s `M` dimension onto `WGMMA`’s `N` dimension.  
-  - Enables smaller `BLOCK_M (32)`.  
-- Performance gain comes from **finer tiling granularity** and **better resource utilization**, not higher per-instruction throughput.
+**Overview**
 
-###### Performance Improvement: 10% ~ 70%
-1. **Higher M-side boundary efficiency**
-   - Baseline: `BLOCK_M` must align to 64, causing inefficiency when `M` is not multiple of 64.  
-   - `swapAB`: Allows `BLOCK_M = 32` (or aligned to `8, 16, 24, 32`).  
-   - Example: `M = 96`  
-     - `BLOCK_M = 64` → last tile 50% efficient.  
-     - `BLOCK_M = 32` → no waste (3×32 = 96).  
+![swapAB.png]()
 
-2. **Better load balance for small/irregular M**
-   - Useful in grouped GEMM (e.g., `MoE` with inter-group variation in `M`).  
-   - Smaller tiles → more uniform tasks.  
-   - Persistent scheduler fills `SM`s more effectively and reduces stragglers.
+- Addresses PTX constraints: `N` multiple of 8, `M` fixed at 64.  
+- **swapAB** swaps WGMMA tile usage (maps problem `M` → WGMMA `N`) to enable smaller `BLOCK_M (32)` for finer tiling and better resource utilization.  
+- Best for small, irregular, or non-multiple-of-64 `M`; less advantage for large, well-aligned `M`.  
 
-3. **Improved occupancy and concurrency**
-   - A-side SMEM footprint ≈ `BLOCK_M × BLOCK_K × bytes`.  
-   - Reducing `BLOCK_M` from 64 → 32 halves A-side SMEM and register usage.  
-   - Enables more concurrent `CTA`s, better latency hiding.  
+**Improvements**
 
-4. **More efficient shared-memory access and write-back**
-   - Vectorized A’s scale loads as `float2`.  
-   - Uses `STSM_T` + new swizzle for `D` write-back.  
-   - Reduces SMEM bank conflicts and irregularity overhead.
-
-5. **Easier multicast/data reuse**
-   - Smaller tiles → more concurrent `CTA`s per K-slice.  
-   - Improves multicast opportunities and reduces `TMA` read traffic.
-
-###### Use Cases & Expectations
-- **Best suited for**:
-  - `M` not multiple of 64.
-  - Small `M` values.
-  - Large variation across groups.  
-  - Yields better boundary efficiency, concurrency, and load balance.
-
-- **Less advantage when**:
-  - `M` is large and well-aligned (e.g., square matrices).  
-
-- **Key point**:
-  - Instruction-level peak unchanged.  
-  - Gains come from **better tiling → higher effective utilization, concurrency, and memory efficiency**.
+- **Aligned / predictable M**: SwapAB improves boundary efficiency and throughput (up to ~70%), fully utilizing tiles and enabling higher concurrency.  
+- **Irregular / varying M**: SwapAB improves load balance and occupancy, giving consistent gains across groups, especially for small or uneven `M`.
 
 advantages when compared with TBO?
 ### Overlap: SBO（Single-batch-overlap）
@@ -306,6 +178,54 @@ In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Expe
   
 
 # Performance
+
+## Deployment Strategy
+
+### Prefill: TP8
+
+Unlike the community’s multi-node **DP+EP** deployment scheme,  
+we adopt a **single-node TP** approach for Prefill, due to the following reasons:
+
+1. **TTFT Constraint**  
+   - The Prefill stage is **compute-intensive**.  
+   - Community practices (e.g., Tencent, ByteDance) on H20 typically use multi-node **DP+EP**, but in our tests, such deployment resulted in excessively long **TTFT**, failing to meet user requirements (e.g., TTFT < 1s).  
+
+   **Experiments (May 2025, 16× H20 with Attention-DP + MoE-EP):**
+   - **Single-node TP8 (8 GPUs):**  
+     - Peak per-GPU input throughput: **1500 tokens/s**  
+     - TTFT remains well-controlled.  
+   - **Two-node DP+EP:**  
+     1. Attention-DP16 + MoE-EP16:  
+        - Peak per-GPU throughput: **1600 tokens/s**  
+        - TTFT exceeded **3s**, violating SLO requirements.  
+     2. Attention with TP > 1:  
+        - Significantly reduced TTFT,  
+        - but throughput still inferior to single-node TP8.  
+
+2. **Elastic Scaling**  
+   With KVCache in mind, we require Prefill to **scale elastically**:  
+   - **Scale in** when load is low (e.g., high KVCache hit rate).  
+   - **Scale out** when load is high (e.g., low KVCache hit rate, or long-sequence requests).  
+   Multi-node DP+EP makes scaling policies far more complex, whereas single-node TP provides a simpler and more flexible solution.
+
+### Decode: DP16 + EP16 (Small EP)
+
+Unlike community approaches that rely on **large-scale EP (EP ≥ 32)**,  
+we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:  
+
+1. **H20 Hardware Characteristics**  
+   - **Weaker compute performance**:  
+     - Under online latency constraints, batch size cannot be scaled up significantly.  
+   - **Larger memory capacity**:  
+     - No memory-bound issues despite weaker compute.  
+     - Enables further optimization with FP8 quantized KVCache.  
+   - **Higher NVLink bandwidth**:  
+     - DeepEP supports NVLink.  
+     - H20’s NVLink bandwidth is **more than 2× higher than H800**, ensuring ~50% of MoE communication can fall on NVLink.  
+
+2. **Fault Radius**  
+   - Smaller EP configuration minimizes the **blast radius** of Decode or single-GPU failures.  
+   - EP high-availability solutions are still in draft, making small EP safer in production.
 
 ## Offline
 - DP32EP32: 4.5K/1.5K = 850 tokens/s/GPU  
