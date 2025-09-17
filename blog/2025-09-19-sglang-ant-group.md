@@ -6,7 +6,7 @@ previewImg: /images/blog/hicache/hicache_overview.png
 ---
 
 # Introduction
-The operationalization of large Mixture-of-Experts (MoE) models like DeepSeek-R1 demands a delicate balance between latency, throughput, and cost. This challenge is uniquely amplified on hardware with an asymmetric performance profile, such as the H20 GPU, which offers high memory bandwidth but comparatively low compute throughput. Faced with this hardware reality and a lack of established industry practices for such platforms, our objective was to architect a serving solution that could match the stringent SLA requirements of high-end GPUs while capitalizing on the H20's cost-effectiveness.
+The operationalization of large Mixture-of-Experts (MoE) models like DeepSeek-R1 demands a delicate balance between latency, throughput, and cost. This challenge is uniquely amplified on hardware with an asymmetric performance profile, such as the H20 GPU, which offers high memory bandwidth but comparatively low compute throughput. Our objective was to architect a serving solution that could match the stringent SLA requirements of high-end GPUs while capitalizing on the H20's cost-effectiveness.
 This report details our best practices for achieving this goal. We present a novel, hardware-aware deployment strategy that deviates from community norms, alongside a suite of deep system and kernel-level optimizations. Our key contributions include:
 - A tailored parallelization strategy: Hardware-aware parallelization strategy using single-node TP8 for prefill and small-scale EP16 for decode to meet latency targets and reduce fault domains.
 - Advanced kernel-level optimizations: Including FlashMLA-FP8 and DeepGEMM swapAB, to maximize computational throughput on the H20 architecture.
@@ -30,6 +30,8 @@ This report details our best practices for achieving this goal. We present a nov
 
 ### 1. H20 vs. H800
 
+@tianyu why h20 inference matters? or why using h20
+
 **Strengths**
 - Larger memory capacity (96 GB vs. 80 GB)  
 - Higher memory bandwidth (4000 GB/s vs. 3352 GB/s)  
@@ -43,6 +45,7 @@ This report details our best practices for achieving this goal. We present a nov
 
 ---
 
+@tianyu I consider this as opportunity instead of challenge
 ### 2. Lack of Industry References
 
 Since May 2025, we have been exploring **expert parallelism (EP) strategies** tailored for the H20.  
@@ -58,6 +61,7 @@ our objective is to achieve the **same SLA as high-end GPUs** while **minimizing
 
 # Our Solution: Make H20 Great for Inference in Real World
 
+@tianyu palce Deployment Strategy in chapter 4
 ## Deployment Strategy
 
 ### Prefill: TP8
@@ -238,6 +242,7 @@ we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:
   - Instruction-level peak unchanged.  
   - Gains come from **better tiling → higher effective utilization, concurrency, and memory efficiency**.
 
+advantages when compared with TBO?
 ### Overlap: SBO（Single-batch-overlap）
 #### Motivation
 The optimization effect of Two-Batch Overlap (TBO) is suboptimal for the Decode phase on low-compute hardware (e.g., H20), primarily due to the following reasons:
