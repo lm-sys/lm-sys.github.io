@@ -42,6 +42,16 @@ The absence of mature parallelization schemes for **low-compute GPUs** creates a
 
 # Our Solution: Make H20 Great for Inference in Real World
 
+## Deployment Strategy
+
+**Prefill**  
+- **SLA:** Prefill is a compute-intensive stage, and multi-node DP+EP deployments can lead to excessive TTFT that fails to meet service requirements. A single-node TP setup keeps TTFT well within acceptable limits.  
+- **Elastic Scaling:** Prefill must scale in and out efficiently with KVCache. Single-node TP provides simpler and more flexible scaling, whereas multi-node DP+EP complicates resource management.  
+
+**Decode**  
+- **Hardware Characteristics:** H20 has lower compute capability but larger memory and higher NVLink bandwidth. This allows efficient KVCache utilization and ensures MoE communication leverages the high-bandwidth NVLink.  
+- **Fault Radius:** Smaller EP configurations limit the impact of decode or GPU failures. With EP high-availability solutions still in development, smaller EP offers safer and more reliable production deployment.
+
 ## Optimizations
 
 ### Prefill
@@ -181,54 +191,6 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 - **Visualization (Web UI):** Results are visualized as a heatmap, making it easy to quickly spot slow ranks or links and guide targeted optimization.  
 
 # Performance
-
-## Deployment Strategy
-
-### Prefill: TP8
-
-Unlike the community’s multi-node **DP+EP** deployment scheme,  
-we adopt a **single-node TP** approach for Prefill, due to the following reasons:
-
-1. **TTFT Constraint**  
-   - The Prefill stage is **compute-intensive**.  
-   - Community practices (e.g., Tencent, ByteDance) on H20 typically use multi-node **DP+EP**, but in our tests, such deployment resulted in excessively long **TTFT**, failing to meet user requirements (e.g., TTFT < 1s).  
-
-   **Experiments (May 2025, 16× H20 with Attention-DP + MoE-EP):**
-   - **Single-node TP8 (8 GPUs):**  
-     - Peak per-GPU input throughput: **1500 tokens/s**  
-     - TTFT remains well-controlled.  
-   - **Two-node DP+EP:**  
-     1. Attention-DP16 + MoE-EP16:  
-        - Peak per-GPU throughput: **1600 tokens/s**  
-        - TTFT exceeded **3s**, violating SLO requirements.  
-     2. Attention with TP > 1:  
-        - Significantly reduced TTFT,  
-        - but throughput still inferior to single-node TP8.  
-
-2. **Elastic Scaling**  
-   With KVCache in mind, we require Prefill to **scale elastically**:  
-   - **Scale in** when load is low (e.g., high KVCache hit rate).  
-   - **Scale out** when load is high (e.g., low KVCache hit rate, or long-sequence requests).  
-   Multi-node DP+EP makes scaling policies far more complex, whereas single-node TP provides a simpler and more flexible solution.
-
-### Decode: DP16 + EP16 (Small EP)
-
-Unlike community approaches that rely on **large-scale EP (EP ≥ 32)**,  
-we adopt a **smaller EP configuration (DP16 + EP16)** for Decode, motivated by:  
-
-1. **H20 Hardware Characteristics**  
-   - **Weaker compute performance**:  
-     - Under online latency constraints, batch size cannot be scaled up significantly.  
-   - **Larger memory capacity**:  
-     - No memory-bound issues despite weaker compute.  
-     - Enables further optimization with FP8 quantized KVCache.  
-   - **Higher NVLink bandwidth**:  
-     - DeepEP supports NVLink.  
-     - H20’s NVLink bandwidth is **more than 2× higher than H800**, ensuring ~50% of MoE communication can fall on NVLink.  
-
-2. **Fault Radius**  
-   - Smaller EP configuration minimizes the **blast radius** of Decode or single-GPU failures.  
-   - EP high-availability solutions are still in draft, making small EP safer in production.
 
 ## Offline
 - DP32EP32: 4.5K/1.5K = 850 tokens/s/GPU  
