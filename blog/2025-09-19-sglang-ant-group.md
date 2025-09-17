@@ -13,20 +13,15 @@ This report details our best practices for achieving this goal. We present a nov
 - Innovative scheduling and load-balancing techniques: Implementation of Single-Batch Overlap (SBO) to enhance throughput in small-batch scenarios and asynchronous Expert Affinity Load Balancer to minimize cross-node communication。
 - A lightweight observability framework: A purpose-built diagnostic system for rapidly identifying and resolving performance bottlenecks in a distributed MoE environment.
 
-# Challenges and Opportunities with H20
+# Challenges with H20
 
 ## Why H20 Matters
-- **Resource availability**  
-  H20 is much easier to acquire in many area, allowing user to rapidly scale up to a **tens-of-thousands-card H20 cluster**.  
-
-- **Cost efficiency**  
-  The average cloud rental cost for **H20-96GB** is about **¥5/hour/GPU** (annual subscription).  
-  At 10000 GPUs scale, a **10% throughput improvement** yields **hundreds of thousands of RMB in daily savings** on compute costs.  
-
+H20 is widely available in the market, enabling Ant Group to operate clusters at the scale of tens of thousands of units.  
+At this scale, even a **10% throughput improvement** can translate into **millions of RMB in daily cost savings**.
 
 ## Hardware Comparison: H20 vs. H800
 
-| Hardware Spec       | H20-96G     | H800-80G   |
+| Spec                | H20-96G     | H800-80G   |
 |---------------------|-------------|------------|
 | FP8 Compute         | 296 TFLOPS  | 1979 TFLOPS|
 | FP16/BF16 Compute   | 148 TFLOPS  | 989 TFLOPS |
@@ -35,28 +30,15 @@ This report details our best practices for achieving this goal. We present a nov
 | NVLink Bandwidth    | 900 GB/s    | 400 GB/s   |
 | RDMA NIC Bandwidth  | 4 × 400 Gb/s| 8 × 400 Gb/s|
 
-**Strengths**  
-- Larger memory capacity (96 GB vs. 80 GB)  
-- Higher memory bandwidth (4000 GB/s vs. 3352 GB/s)  
-- More than 2× NVLink bandwidth (900 GB/s vs. 400 GB/s)  
+H20 provides **larger memory (96 GB)**, **higher memory bandwidth (4000 GB/s)**, and **over 2× NVLink bandwidth (900 GB/s)** compared to H800.  
+However, it comes with **much weaker compute performance** and **lower RDMA NIC bandwidth**.  
 
-**Limitations**  
-- Significantly weaker compute performance  
-  - FP8 throughput: 296 TFLOPS vs. 1979 TFLOPS  
-  - FP16/BF16 throughput: 148 TFLOPS vs. 989 TFLOPS  
-- Lower RDMA NIC bandwidth (4 × 400 Gb/s vs. 8 × 400 Gb/s)  
+Crucially, inference—especially **Decode**—is often **memory-bound rather than compute-bound**, making H20’s **high memory bandwidth and capacity** particularly advantageous.  
+Building on these strengths, we designed a series of optimizations to **maximize inference throughput**.
 
-**Insight**  
-Although H20 lags far behind H800 in raw compute, inference workloads—especially **Decode**—are typically **memory-bound rather than compute-bound**.  
-This makes H20’s **high memory bandwidth and larger memory capacity** particularly well-suited for large-scale inference optimization.  
-
-## Challenges and Opportunities Ahead
-
-~~Since May 2025, we have been exploring **expert parallelism (EP) strategies** designed for H20.  
-While the DeepSeek and SGLang communities mainly target **high-performance GPUs (e.g., H800)**, this divergence creates a landscape of both **challenges and opportunities**:  
-
-- **Challenge**: The industry lacks mature parallelization schemes for **low-compute GPUs like H20**.  
-- **Opportunity**: This gap allows us to pioneer new optimizations and unlock the full potential of large-scale H20 clusters. ~~
+## Opportunities Ahead
+Since May 2025, we have been developing **expert parallelism (EP) strategies** tailored for H20.  
+The absence of mature parallelization schemes for **low-compute GPUs** creates a unique opportunity to **pioneer new optimizations** and unlock the full potential of large-scale H20 clusters.
 
 # Our Solution: Make H20 Great for Inference in Real World
 
