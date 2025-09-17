@@ -157,7 +157,8 @@ The interaction between Down GEMM and Combine Send is structured as a Producer-C
 
 ![deepx.png]()
 
-In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Experts (MoE) models, increasing EP counts can lead to significant inference latency (TTFT & TPOT) due to communication overheads from operators like Dispatch and Combine. To address this, we designed a lightweight anomaly diagnosis workflow (see diagram above) that can pinpoint issues within minutes.
+In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Experts (MoE) models, increasing EP counts can lead to significant inference latency (TTFT & TPOT) due to communication overheads from operators like Dispatch and Combine. 
+To address this, we designed a lightweight anomaly diagnosis workflow (see diagram above) based on [DeepXTrace](https://github.com/antgroup/DeepXTrace) that can pinpoint issues within minutes.
 
 ### 1. Metrics Collection
 - Each node (Node 0 to Node N) periodically collects communication and computation metrics for its ranks.
@@ -172,14 +173,13 @@ In large-scale distributed Expert Parallelism (EP) deployment of Mixture of Expe
 
 ### 3. Root Cause Analysis
 - Diagnostic metrics are used to infer anomaly sources:
-  - **Comm Slow**: Communication link issues.
   - **Comp Slow**: Accumulated computation delays.
   - **Mixed Slow**: Uneven expert distribution or hotspot congestion.
+  - **Comm Slow**: Communication link issues.
 
 ### 4. Visualization (Web UI)
 - Analysis results are displayed via a Web UI as a matrix heatmap, intuitively highlighting slow destination ranks, source ranks, or specific links.
 - Users can quickly identify issue types and root causes, enabling targeted optimization measures.
-  
 
 # Performance
 
