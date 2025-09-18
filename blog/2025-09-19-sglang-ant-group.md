@@ -50,7 +50,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ### Prefill
 
-![prefill_perf]()
+![prefill_overview]()
 
 #### Observation:
 - MLA is costlier than MHA for long sequences.
@@ -172,7 +172,7 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 **Note**: To ensure clarity and consistency, all performance data below is reported using an input length of 4096 and an output length of 1536.
 
 ## Prefill
-![prefill_pref.png]()
+![prefill_pref]()
 
 ## Decode
 ### Performance improvements 
