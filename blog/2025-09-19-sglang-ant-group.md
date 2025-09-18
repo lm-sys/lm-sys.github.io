@@ -19,7 +19,7 @@ This report outlines the practices we used to reach that goal. We introduce a ha
 H20 GPUs are widely available, enabling Ant Group to operate clusters with tens of thousands of GPUs.
 At this scale, even a **10% throughput improvement** can translate into **millions of RMB in daily cost savings**.
 
-## Hardware Comparison: H20 vs. H800
+## Comparison: H20 vs. H800
 
 | Spec                | H20-96G     | H800-80G   |
 |---------------------|-------------|------------|
@@ -34,7 +34,7 @@ H20 offers **larger memory (96 GB)**, **higher memory bandwidth (4000 GB/s)**, a
 
 Crucially, inference—especially **decode phase**—is often **memory-bound**, making H20’s **high memory bandwidth and capacity** particularly advantageous. Building on these strengths, we designed a series of optimizations to **maximize inference throughput**.
 
-# Our Solution: Make H20 Great for Inference in Real World
+# Solution: Optimizations and Strategies on H20
 
 ## Deployment Strategy
 
@@ -167,7 +167,7 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 
 - **Visualization (Web UI):** Results are visualized as a heatmap, making it easy to quickly spot slow ranks or links and guide targeted optimization.  
 
-# Performance
+# Performance: Make H20 Great in Real World Inference
 
 ## Prefill
 ![prefill-pref.png]()
