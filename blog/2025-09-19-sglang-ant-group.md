@@ -6,17 +6,17 @@ previewImg: /images/blog/hicache/hicache_overview.png
 ---
 
 # Introduction
-The operationalization of large Mixture-of-Experts (MoE) models like DeepSeek-R1 demands a delicate balance between latency, throughput, and cost. This challenge is uniquely amplified on hardware with an asymmetric performance profile, such as the H20 GPU, which offers high memory bandwidth but comparatively low compute throughput. Our objective was to architect a serving solution that could match the stringent SLA requirements of high-end GPUs while capitalizing on the H20's cost-effectiveness.
-This report details our best practices for achieving this goal. We present a novel, hardware-aware deployment strategy that deviates from community norms, alongside a suite of deep system and kernel-level optimizations. Our key contributions include:
-- A tailored parallelization strategy: Hardware-aware parallelization strategy using single-node TP8 for prefill and small-scale EP16 for decode to meet latency targets and reduce fault domains.
-- Advanced kernel-level optimizations: Including FlashMLA-FP8 and DeepGEMM swapAB, to maximize computational throughput on the H20 architecture.
-- Innovative scheduling and load-balancing techniques: Implementation of Single-Batch Overlap (SBO) to enhance throughput in small-batch scenarios and asynchronous Expert Affinity Load Balancer to minimize cross-node communication。
-- A lightweight observability framework: A purpose-built diagnostic system for rapidly identifying and resolving performance bottlenecks in a distributed MoE environment.
+Operationalizing large Mixture-of-Experts (MoE) models such as DeepSeek-R1 requires a careful balance of latency, throughput, and cost. The challenge is especially acute on hardware with asymmetric performance profiles—for example, the H20 GPU, which offers high memory bandwidth but comparatively low compute throughput. Our goal was to design a serving stack that meets the stringent SLAs typically achieved on high-end GPUs while leveraging the H20’s cost advantages.
+This report outlines the practices we used to reach that goal. We introduce a hardware-aware deployment strategy that departs from common practice, together with a set of systems and kernel-level optimizations:
+- Hardware-aware parallelization: single-node TP-8 for prefill and small-scale EP-16 for decode, meeting latency targets and reducing fault domains.
+- Kernel-level optimizations: FlashMLA-FP8 and DeepGEMM swapAB to maximize compute throughput on H20.
+- Scheduling and load balancing: Single-Batch Overlap (SBO) to boost small-batch throughput, plus an asynchronous Expert Affinity Load Balancer to minimize cross-node communication.
+- Lightweight observability: a purpose-built diagnostics stack to quickly identify and resolve bottlenecks in distributed MoE serving.
 
 # Challenges with H20
 
 ## Why H20 Matters
-H20 is widely available in the market, enabling Ant Group to operate clusters at the scale of tens of thousands of units.  
+H20 GPUs are widely available, enabling Ant Group to operate clusters with tens of thousands of GPUs.
 At this scale, even a **10% throughput improvement** can translate into **millions of RMB in daily cost savings**.
 
 ## Hardware Comparison: H20 vs. H800
@@ -30,27 +30,22 @@ At this scale, even a **10% throughput improvement** can translate into **millio
 | NVLink Bandwidth    | 900 GB/s    | 400 GB/s   |
 | RDMA NIC Bandwidth  | 4 × 400 Gb/s| 8 × 400 Gb/s|
 
-H20 provides **larger memory (96 GB)**, **higher memory bandwidth (4000 GB/s)**, and **over 2× NVLink bandwidth (900 GB/s)** compared to H800.  
+H20 offers **larger memory (96 GB)**, **higher memory bandwidth (4000 GB/s)**, and **over 2× NVLink bandwidth (900 GB/s)** compared to H800.  
 However, it comes with **much weaker compute performance** and **lower RDMA NIC bandwidth**.  
 
-Crucially, inference—especially **Decode**—is often **memory-bound rather than compute-bound**, making H20’s **high memory bandwidth and capacity** particularly advantageous.  
-Building on these strengths, we designed a series of optimizations to **maximize inference throughput**.
-
-## Opportunities Ahead
-Since May 2025, we have been developing **expert parallelism (EP) strategies** tailored for H20.  
-The absence of mature parallelization schemes for **low-compute GPUs** creates a unique opportunity to **pioneer new optimizations** and unlock the full potential of large-scale H20 clusters.
+Crucially, inference—especially **decode phase**—is often **memory-bound**, making H20’s **high memory bandwidth and capacity** particularly advantageous. Building on these strengths, we designed a series of optimizations to **maximize inference throughput**.
 
 # Our Solution: Make H20 Great for Inference in Real World
 
 ## Deployment Strategy
 
 **Prefill**  
-- **SLA:** Prefill is a compute-intensive stage, and multi-node DP+EP deployments can lead to excessive TTFT that fails to meet service requirements. A single-node TP setup keeps TTFT well within acceptable limits.  
-- **Elastic Scaling:** Prefill must scale in and out efficiently with KVCache. Single-node TP provides simpler and more flexible scaling, whereas multi-node DP+EP complicates resource management.  
+- **SLA:** Prefill is compute-intensive, and multi-node DP+EP can inflate time-to-first-token (TTFT), often violating SLAs. A single-node TP setup keeps TTFT within target.
+- **Elastic Scaling:** Prefill must scale in and out with the KV cache. Single-node TP makes scaling straightforward, while multi-node DP+EP complicates resource and cache management.
 
 **Decode**  
-- **Hardware Characteristics:** H20 has lower compute capability but larger memory and higher NVLink bandwidth. This allows efficient KVCache utilization and ensures MoE communication leverages the high-bandwidth NVLink.  
-- **Fault Radius:** Smaller EP configurations limit the impact of decode or GPU failures. With EP high-availability solutions still in development, smaller EP offers safer and more reliable production deployment.
+- **Hardware Characteristics:** H20 trades compute for larger memory and higher NVLink bandwidth(compared with H800), enabling efficient KV-cache use and keeping MoE communication on high-bandwidth NVLink. 
+- **Fault Radius:** Smaller EP configurations limit the impact of decoding or GPU failures. With EP high-availability (HA) still maturing, smaller EP is safer and more reliable in production.
 
 ## Optimizations
 
@@ -58,36 +53,20 @@ The absence of mature parallelization schemes for **low-compute GPUs** creates a
 
 ![prefill_perf]()
 
-#### 1. MHA vs MLA Strategy Selection
-**Overview:**  
+#### 1. Dynamic MHA/MLA Strategy
+**Observation:**  
 - MLA is costlier than MHA for long sequences.  
+**Solution:**  
 - Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
 
-**Improvement:**  
-- Dynamic selection improved Prefill throughput by **23.6%** on 500 samples of 4000-length input.
-
-#### 2. Upsampled Fused Triton MOE (Second MOE)
-**Overview:**  
-- Second MOE latency was unexpectedly high despite lower computation.  
-- Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
-
-**Improvement:**  
-- Utilization ↑ 45.2% → 81.1%  
-- Latency ↓ 2.430 ms → 1.435 ms (8K tokens, 100 samples)
-
-#### 3. fused_qkv_a_proj_with_mqa
-**Overview:**
-
+#### 2. Better Fused Kernels
 ![fused_qkv_a_proj_with_mqa]()
-
+**Observation:**  
+- MOE latency was unexpectedly high despite lower computation
 - Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`  
-- Optimized: `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
-
-**Improvement:**  
-- Measured effects (input length 4000):  
-  - DeepGEMM latency ↓ 498.63 ms → 319.75 ms  
-  - Communication latency ↓ 267.1 ms → 249.63 ms  
-  - RMSNorm latency ↓ 82.303 ms → 43.398 ms
+**Solution:**  
+- Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
+- Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
 ### Decode
 #### EPLB
@@ -95,7 +74,7 @@ The absence of mature parallelization schemes for **low-compute GPUs** creates a
 
 ![eplb.png]()
 
-- **Core Idea**: Extend standard EPLB by recording **top-k expert co-activations**, building an **affinity matrix**.
+- **Idea**: Extend standard EPLB by recording **top-k expert co-activations**, building an **affinity matrix**.
 - **Method**: After intra-GPU balancing, adjust expert placement so **highly co-activated experts** are kept within the same node.
 - **Impact**: Minimizes **cross-node communication** and delivers an extra **~5% performance gain** compared to vanilla EPLB.
 
@@ -222,4 +201,8 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 
 # Offline Serving
 - DP32EP32: 4.5K/1.5K = 850 tokens/s/GPU  
-- DP16EP16: 4.5K/1.5K = 800 tokens/s/GPU  
+- DP16EP16: 4.5K/1.5K = 800 tokens/s/GPU 
+
+
+# Acknowledgements
+
