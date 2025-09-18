@@ -161,19 +161,21 @@ DeepGEMM: deepseek-ai/DeepGEMM#183
 
 ![SBO.png]()
 
-SBO implements two overlaps for the MoE layers of DeepSeek V3/R1:
-
+SBO implements two overlap for the MoE layers of DeepSeek V3/R1:
 - Overlapping Shared Expert with Dispatch Recv.
 - Overlapping Down GEMM with Combine Send.
 
-![SBO-producer-consumer.png]()
+The design principle of the above overlaps is driven by the alignment granularity between communication and computation. 
+We observe that in the communication-computation overlap, token packets often arrive out of order at the receiver. 
+This is due to a combination of factors, including sender-side behaviors like NIC multi-QP scheduling, as well as network-wide dynamics such as network congestion and multi-path routing. 
+The unordered arrival of tokens prevents effective alignment with the wave-based granularity of GEMM computation, thereby reducing overlap efficiency. Consequently, we overlap Dispatch Recv with the data-independent Shared Expert computation to maximize resource utilization.
 
-The interaction between Down GEMM and Combine Send is structured as a Producer-Consumer model synchronized by signals:
-
-- For each local expert, a signal unit is allocated for every block_m tokens.
-- The Down GEMM computes the results for these block_m tokens and atomically increments the signaling unit after completing a portion of the work.
-- The Combine Send polls this signaling unit. Once the value reaches a threshold, it sends the corresponding block_m tokens.
-
+Conversely, the conditions for computation-communication overlap are more favorable.
+The Down GEMM computation produces results sequentially at a wave-level granularity, creating a predictable and ordered data stream for Combine Send.
+Leveraging this, we structure the interaction between Down GEMM and Combine Send as a Producer-Consumer model synchronized by signals:
+- For each local expert, a signal unit is allocated for every `block_m` tokens.
+- The Down GEMM computes the results for these `block_m` tokens and atomically increments the signaling unit after completing a portion of the work.
+- The Combine Send polls this signaling unit. Once the value reaches a threshold, it sends the corresponding `block_m` tokens.
 
 ## Observability: DeepXTrace
 
