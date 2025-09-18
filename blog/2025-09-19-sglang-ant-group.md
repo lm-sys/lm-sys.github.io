@@ -62,6 +62,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 #### 2. Better Fused Kernels
 ![fused_qkv_a_proj_with_mqa]()
+
 **Observation:**  
 - MOE latency was unexpectedly high despite lower computation
 - Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
