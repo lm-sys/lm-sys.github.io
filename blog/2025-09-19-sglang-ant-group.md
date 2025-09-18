@@ -65,7 +65,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 - Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
 ### Decode
-#### EPLB
+#### Load Balance
 ##### Expert Affinity EPLB
 
 ![eplb.png]()
@@ -84,7 +84,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 #### Computation
 
-##### FlashMLA-FP8
+##### FP8 MLA
 
 **Overview**
 
@@ -98,7 +98,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 - **vs previous FP8 (#54)**: ~5% faster  
   - Optimized `TMA`–`WGMMA` pipeline, ping-pong buffers (`sP0/sP1`, `sVt0/sVt1`), 128-bit `STSM/LDSM` for FP8 layout, fine-grained `Q@K` tiling with BF16 ROPE, aligned with `SM90` style.
 
-##### DeepGEMM swapAB
+##### DeepGEMM Optimization
 
 **Overview**
 
@@ -113,9 +113,9 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 - **Aligned / predictable M**: SwapAB improves boundary efficiency and throughput (up to ~70%), fully utilizing tiles and enabling higher concurrency.  
 - **Irregular / varying M**: SwapAB improves load balance and occupancy, giving consistent gains across groups, especially for small or uneven `M`.
 
-### Overlap: SBO（Single-batch-overlap）
+#### SBO（Single-batch-overlap）
 
-#### Why not TBO (Two-batch-overlap)
+##### Why not TBO (Two-batch-overlap)
 
 The performance benefit of Two-Batch Overlap (TBO) in the Decode phase is limited on low-compute hardware (e.g., H20):
 
@@ -132,7 +132,7 @@ Detailed implementation is available in the following branches:
 DeepEP: deepseek-ai/DeepEP#390
 DeepGEMM: deepseek-ai/DeepGEMM#183
 
-#### Designs
+##### Designs
 
 ![SBO.png]()
 
@@ -152,7 +152,7 @@ Leveraging this, we structure the interaction between Down GEMM and Combine Send
 - The Down GEMM computes the results for these `block_m` tokens and atomically increments the signaling unit after completing a portion of the work.
 - The Combine Send polls this signaling unit. Once the value reaches a threshold, it sends the corresponding `block_m` tokens.
 
-## Observability: DeepXTrace
+## Observability
 
 ![deepx.png]()
 
