@@ -55,7 +55,8 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 #### 1. Dynamic MHA/MLA Strategy
 **Observation:**  
-- MLA is costlier than MHA for long sequences.  
+- MLA is costlier than MHA for long sequences.
+
 **Solution:**  
 - Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
 
@@ -63,7 +64,8 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 ![fused_qkv_a_proj_with_mqa]()
 **Observation:**  
 - MOE latency was unexpectedly high despite lower computation
-- Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`  
+- Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
+
 **Solution:**  
 - Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
 - Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
