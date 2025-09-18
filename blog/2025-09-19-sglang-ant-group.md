@@ -134,7 +134,7 @@ DeepGEMM: deepseek-ai/DeepGEMM#183
 
 ##### Designs
 
-![SBO.png]()
+![sbo.png]()
 
 SBO implements two overlap for the MoE layers of DeepSeek V3/R1:
 - Overlapping Shared Expert with Dispatch Recv.
@@ -154,7 +154,7 @@ Leveraging this, we structure the interaction between Down GEMM and Combine Send
 
 ## Observability
 
-![deepx.png]()
+![deepx.svg]()
 
 To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, 
 we developed a lightweight workflow based on [DeepXTrace](https://github.com/antgroup/DeepXTrace):  
@@ -172,7 +172,7 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 **Note**: To ensure clarity and consistency, all performance data below is reported using an input length of 4096 and an output length of 1536.
 
 ## Prefill
-![prefill-pref.png]()
+![prefill_pref.png]()
 
 ## Decode
 ### Performance improvements 
@@ -196,7 +196,7 @@ For smaller batches, **EP32 outperforms EP16**. A larger EP size reduces the num
 For larger batches, **EP16 pulls ahead of EP32**. Computation becomes the primary bottleneck, leaving little room for memory-side optimizations, while a larger EP size adds substantial cross-GPU communication overhead. With DeepEP, about 50% of MoE traffic stays on NVLink at EP16, but this falls to ~25% at EP32, forcing more traffic across nodes and increasing latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
 
 ### Config for MTP
-![mtp_throughput]()
+![mtp_perf]()
 
 **Draft vs. Accept Length**  
 - **MTP=1 1 2** → Accept length ≈ 1.8–1.9  
