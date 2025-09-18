@@ -30,8 +30,7 @@ At this scale, even a **10% throughput improvement** can translate into **millio
 | NVLink Bandwidth    | 900 GB/s    | 400 GB/s   |
 | RDMA NIC Bandwidth  | 4 × 400 Gb/s| 8 × 400 Gb/s|
 
-H20 offers **larger memory (96 GB)**, **higher memory bandwidth (4000 GB/s)**, and **over 2× NVLink bandwidth (900 GB/s)** compared to H800.  
-However, it comes with **much weaker compute performance** and **lower RDMA NIC bandwidth**.  
+H20 offers **larger memory (96 GB)**, **higher memory bandwidth (4000 GB/s)**, and **over 2× NVLink bandwidth (900 GB/s)** compared to H800. However, it comes with **much weaker compute performance** and **lower RDMA NIC bandwidth**.  
 
 Crucially, inference—especially **decode phase**—is often **memory-bound**, making H20’s **high memory bandwidth and capacity** particularly advantageous. Building on these strengths, we designed a series of optimizations to **maximize inference throughput**.
 
@@ -53,21 +52,15 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ![prefill_perf]()
 
-#### 1. Dynamic MHA/MLA Strategy
-**Observation:**  
+#### Observation:
 - MLA is costlier than MHA for long sequences.
-
-**Solution:**  
-- Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
-
-#### 2. Better Fused Kernels
-![fused_qkv_a_proj_with_mqa]()
-
-**Observation:**  
 - MOE latency was unexpectedly high despite lower computation
 - Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
 
-**Solution:**  
+![fused_qkv_a_proj_with_mqa]()
+
+#### Solution:
+- Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
 - Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
 - Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
