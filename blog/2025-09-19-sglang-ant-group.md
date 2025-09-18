@@ -169,36 +169,73 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 
 # Performance: Make H20 Great in Real World Inference
 
+**Note**: To ensure clarity and consistency, all performance data below is reported using an input length of 4096 and an output length of 1536.
+
 ## Prefill
 ![prefill-pref.png]()
 
 ## Decode
-![decode-pref.png]()
+### Performance improvements 
+![decode_perf]()
 
-# Online Serving
+**Batch-size**  
+As the batch size increases, per-GPU throughput rises steadily. However, at larger batch sizes the gains taper off as both computation and communication begin to saturate.
 
-## InferX Base (TTFT < 2s, TPOT < 70ms)
+**Optimizations**  
+- **FlashMLA-FP8**: Cuts down Attention compute cost. With small batches, Attention makes up only a minor portion of latency, so the benefit is limited; with larger batches, Attention becomes the dominant factor, and FP8 delivers much stronger improvements — e.g., at BS=56 throughput improves by **+16.9%** over Base.
+- **SBO**: Boosts resource utilization by overlapping computation with communication. For small batches, the amount of work on both sides is too small to hide much latency; as the batch grows, overlap becomes more effective, delivering **+8%–10%** improvement in the BS=20–56 range.
+- **SwapAB**: Applies finer-grained tiling to improve boundary efficiency and concurrency. With small or medium batches, where M is often misaligned or unevenly distributed, SwapAB provides clear benefits — e.g., **+8.1% at BS=2** and **+7.7% at BS=4**; with larger batches, M is usually well-aligned and already efficient, so the additional benefit drops to around **~2%**.
 
-### Config
+### Investigation for EP size
+![ep_size]()
 
-### End-to-End validation
+**Batch-size < 16**  
+For smaller batches, **EP32 outperforms EP16**. A larger EP size reduces the number of experts per GPU, which significantly cuts memory access overhead. While sparser expert placement slightly increases communication cost, the memory savings dominate, resulting in higher throughput (e.g., at BS=8, EP32 delivers 293 token/s vs. 278 token/s for EP16).
 
-## InferX Pro (TTFT < 1.5s, TPOT < 70ms)
+**Batch-size ≥ 16**  
+For larger batches, **EP16 pulls ahead of EP32**. Computation becomes the primary bottleneck, leaving little room for memory-side optimizations, while a larger EP size adds substantial cross-GPU communication overhead. With DeepEP, about 50% of MoE traffic stays on NVLink at EP16, but this falls to ~25% at EP32, forcing more traffic across nodes and increasing latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
 
-### Config
+### Config for MTP
+![mtp_throughput]()
 
-### End-to-End validation
+**Draft vs. Accept Length**  
+- **MTP=1 1 2** → Accept length ≈ 1.8–1.9  
+- **MTP=2 1 3** → Accept length ≈ 2.4–2.7  
+- **MTP=3 1 4** → Accept length ≈ 2.9–3.3  
 
-## InferX Max (TTFT < 1s, TPOT < 30ms)
+**Performance by Batch Size**  
+- **Small batches:** On low-compute GPUs like the H20, resources are not fully utilized. Even though a higher draft token count reduces the accept length, it still boosts throughput. For example, at BS=1, throughput increases from **43 token/s (MTP=1 1 2)** to **52 token/s (MTP=3 1 4)**, a **~21% gain**.  
+- **Large batches:** With larger batches, the GPU becomes compute-bound. The shorter accept length from higher draft token settings leads to wasted compute and lower performance. At BS=32, throughput drops from **675 token/s (MTP=1 1 2)** to **554 token/s (MTP=3 1 4)**, a **~18% loss**.  
 
-### Config
+# Tiered Online Inference Serving
 
-### End-to-End validation
+Our team powers all inference workloads at Ant Group.  
+To balance **user experience** with **cost efficiency**, we offer **tiered SLA-based services**:
 
-# Offline Serving
-- DP32EP32: 4.5K/1.5K = 850 tokens/s/GPU  
-- DP16EP16: 4.5K/1.5K = 800 tokens/s/GPU 
+- **InferX Base:** TTFT < 2s, TPOT < 70 ms  
+- **InferX Pro:** TTFT < 1.5s, TPOT < 50 ms  
+- **InferX Max:** TTFT < 1s, TPOT < 30 ms  
 
+## Decode Deployment
+
+![mtp_latency]()
+
+All Decode instances are deployed with a **dual-node setup**:  
+**Attention-DP16 + MoE-EP16**.  
+
+To meet different SLA targets, we tune configurations along the **latency–throughput curve**, primarily adjusting **batch size per GPU** and **MTP settings**.
+
+| Service Level   | Batch/GPU | Num-steps | Eagle-topk | Draft-tokens |
+|-----------------|-----------|-----------|------------|--------------|
+| **InferX Base** | 48        | 1         | 1          | 2            |
+| **InferX Pro**  | 32        | 1         | 1          | 2            |
+| **InferX Max**  | 12        | 2         | 1          | 3            |
+
+## Prefill Deployment
+
+As noted earlier, our Prefill instances are deployed with single-node TP8. 
+To prevent TTFT violations caused by queueing delays, we run two Prefill instances for each model instance. 
+Looking ahead, we plan to support dynamic scaling of Prefill instances to better adapt to workload fluctuations.
 
 # Acknowledgements
 
