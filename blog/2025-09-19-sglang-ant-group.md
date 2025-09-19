@@ -87,9 +87,9 @@ This approach achieves performance that matches or exceeds static EPLB while con
 #### Computation
 
 ##### FP8 MLA
- 
+
 BF16 FlashMLA achieves good performance but leaves optimization headroom, as memory transfers and compute are not fully overlapped and shared-memory usage remains heavy. Previous FP8 implementations (#54) improved throughput but still suffered from pipeline inefficiencies, layout mismatches, and coarse-grained tiling that limited performance and accuracy.  
-  
+
 We implement **end-to-end FP8 attention** on Hopper (`SM90`), leveraging `TMA` for memory transfers and `WGMMA` for computation. 
 Two warp groups pipeline `QK^T` and `PV` to minimize shared-memory pressure and overlap compute with memory. 
 Compared to BF16 FlashMLA, this yields **~70% speedup** by introducing FP8 `Q/KV`, `WGMMA FP8`, shared-memory reallocation, and removing redundant operations. 
@@ -109,11 +109,11 @@ This enables smaller `BLOCK_M (32)` tiling for finer granularity and better reso
 With small or irregular `M`, swapAB significantly improves boundary efficiency, load balance, and concurrency—boosting throughput by up to **~70%**.
 For large, well-aligned `M`, the natural efficiency of the baseline reduces swapAB’s advantage, though modest gains (~2–5%) are still observed.
 
-#### SBO（Single-batch-overlap）
+#### SBO (Single-batch-overlap)
 
 ##### Why not TBO
 
-The performance benefit of TBO(Two-batch-overlap) in the Decode phase is limited on H20:
+The performance benefit of TBO (Two-batch-overlap) in the Decode phase is limited on H20:
 
 - **Hopper architecture constraint**: WGMMA’s `block_m` is fixed at 64. With small-batch decoding, TBO introduces redundant MLP GEMM computations. Positive throughput gains appear only at large batch sizes (e.g., 64 or 128).  
 - **SLA limitations on H20**: At these large batch sizes, low-compute hardware cannot meet SLA targets for TPOT, making TBO impractical in online serving.
@@ -123,21 +123,19 @@ The performance benefit of TBO(Two-batch-overlap) in the Decode phase is limited
 
 ![sbo.png]()
 
-To improve Decode throughput without violating SLA, **Single Batch Overlap (SBO)** is adopted in DeepSeek v3/R1 by modifying [DeepEP](https://github.com/deepseek-ai/DeepEP/pull/390) and [DeepGEMM](https://github.com/deepseek-ai/DeepGEMM/pull/183):  
-- Overlapping **Shared Expert** with **Dispatch Recv**.
-- Overlapping **Down GEMM** with **Combine Send**.
+To improve Decode throughput without violating SLA, **Single Batch Overlap (SBO)** is adopted in DeepSeek v3/R1 by modifying [DeepEP](https://github.com/deepseek-ai/DeepEP/pull/390) and [DeepGEMM](https://github.com/deepseek-ai/DeepGEMM/pull/183). 
+The design of these overlaps is driven by the alignment granularity between communication and computation.
 
-The design principle is driven by the alignment granularity between communication and computation. 
-We observe that in the communication-computation overlap, token packets often arrive out of order at the receiver. 
-This is due to a combination of factors, including sender-side behaviors like NIC multi-QP scheduling, as well as network-wide dynamics such as network congestion and multi-path routing. 
-The unordered arrival of tokens prevents effective alignment with the wave-based granularity of GEMM computation, thereby reducing overlap efficiency. Consequently, we overlap Dispatch Recv with the data-independent Shared Expert computation to maximize resource utilization.
+We observe that in the communication-computation overlap, token packets often arrive out of order at the receiver due to factors like NIC multi-QP scheduling, network congestion and multi-path routing. 
+This disorder disrupts the alignment with the wave-based granularity of GEMM computation, reducing overlap efficiency.
+Consequently, we overlap **Dispatch Recv** with the data-independent **Shared Expert** computation to maximize resource utilization.
 
-Conversely, the conditions for computation-communication overlap are more favorable.
-The Down GEMM computation produces results sequentially at a wave-level granularity, creating a predictable and ordered data stream for Combine Send.
-Leveraging this, we structure the interaction between Down GEMM and Combine Send as a Producer-Consumer model synchronized by signals:
+Conversely, the computation-communication overlap is more straightforward. 
+The **Down GEMM** sequentially generates a predictable, ordered data stream for the **Combine Send**. 
+Leveraging this, we structure their interaction as a signal-synchronized Producer-Consumer model:
 - For each local expert, a signal unit is allocated for every `block_m` tokens.
-- The Down GEMM computes the results for these `block_m` tokens and atomically increments the signaling unit after completing a portion of the work.
-- The Combine Send polls this signaling unit. Once the value reaches a threshold, it sends the corresponding `block_m` tokens.
+- The Down GEMM atomically increments the signal's value after completing parts of the computation.
+- The Combine Send polls this signal unit and sends the corresponding `block_m` tokens once the value reaches a threshold.
 
 ## Observability
 
