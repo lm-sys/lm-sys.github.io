@@ -57,8 +57,6 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 - MOE latency was unexpectedly high despite lower computation
 - Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
 
-![fused_qkv_a_proj_with_mqa]()
-
 #### Solution:
 - Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
 - Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
