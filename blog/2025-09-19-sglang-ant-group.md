@@ -141,8 +141,7 @@ Leveraging this, we structure their interaction as a signal-synchronized Produce
 
 ![deepx.svg]()
 
-To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, 
-we developed a lightweight workflow based on [DeepXTrace](https://github.com/antgroup/DeepXTrace):  
+To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, we developed a lightweight workflow named **DeepXTrace**:  
 
 - **Metrics Collection:** Each node periodically records communication and computation metrics, which are aggregated to Rank 0 every 10 seconds for centralized logging.  
 
@@ -277,6 +276,23 @@ To meet different SLA targets, we tune configurations along the **latency–thro
 As noted earlier, our Prefill instances are deployed with single-node TP8. 
 To prevent TTFT violations caused by queueing delays, we run two Prefill instances for each model instance. 
 Looking ahead, we plan to support dynamic scaling of Prefill instances to better adapt to workload fluctuations.
+
+# Open Source
+## Reproducibility
+Our experiments rely on multiple repositories (SGLang, DeepEP, DeepGEMM, FlashMLA), with several PRs still under review.
+For reproducibility, we will consolidate these into a dedicated test branch and provide a prebuilt image. 
+Both will be made available in the [**antgroup-infra-sglang**](https://github.com/antgroup-infra/sglang/pulls) repository.
+
+## Related PR
+- **MHA**: [MHA chunk prefix: tune and use configs for fa3 and flashinfer](https://github.com/sgl-project/sglang/pull/9551)
+- **MoE-TMA**: [Fused triton moe opt: add tma for fused moe up kernel](https://github.com/sgl-project/sglang/pull/10567)
+- **fused_qkv_a_proj_with_mqa**: [Opt fused_qkv_a_proj_with_mqa: tp attn support tp reduce scattered input](https://github.com/sgl-project/sglang/pull/10568)
+- **Expert Affinity EPLB**: []()
+- **Asynchronous Dynamic Load Adjustment**: [feat: introduce async rebalance mode for expert load balancer](https://github.com/sgl-project/sglang/pull/8529)
+- **FP8 MLA**: [update fp8 support](https://github.com/deepseek-ai/FlashMLA/pull/82)
+- **SwapAB GEMM**: [support swapAB for m_grouped_fp8_gemm_nt_masked](https://github.com/deepseek-ai/DeepGEMM/pull/192)
+- **SBO (Single-batch-overlap)**: [Single Batch Overlap for MoE Models](https://github.com/sgl-project/sglang/pull/9660)
+- **DeepXTrace**: [DeepXTrace](https://github.com/antgroup/DeepXTrace)
 
 # Acknowledgements
 
