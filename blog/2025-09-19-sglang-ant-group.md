@@ -169,12 +169,34 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 
 # Performance: Make H20 Great in Real World Inference
 
-**Note**: To ensure clarity and consistency, all performance data below is reported using an input length of 4096 and an output length of 1536.
-
 ## Prefill
 ![prefill_pref]()
 
 ## Decode
+### Environment
+**SGLang version**: `v0.5.2`
+**Deployment strategy**: The Decode instance is deployed on a 2-node setup (16× H20 GPUs). The following configuration serves as the Base (BF16 + MTP):
+```shell
+--tp-size 16
+--dp-size 16
+--enable-dp-attention
+--speculative-algorithm NEXTN 
+--speculative-num-steps 1
+--speculative-eagle-topk 1
+--speculative-num-draft-tokens 2
+--deepep-mode low_latency
+```
+**Benchmarking**: Performance is benchmarked using `sglang.bench_serving` with the following base configuration:
+```shell
+--backend sglang
+--dataset-path /path/to/ShareGPT.json
+--random-input 4096
+--random-output 1536
+--dataset-name random
+--random-range-ratio 1
+```
+**Metrics**: During stress testing, batch size is increased step by step. Therefore, raw results from `sglang.bench_serving` do not accurately reflect throughput at a given batch size. Instead, we parse the logs for `Decode batch` entries and compute the median throughput from 100 samples at the same batch size, which we report as the representative value.
+
 ### Performance improvements 
 ![decode_perf]()
 
