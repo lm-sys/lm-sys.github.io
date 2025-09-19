@@ -163,8 +163,6 @@ To identify and diagnose communication slowdowns in MoE models under expert-para
 ```shell
 --tp-size 8
 --Attention-backend fa3
---page-size 64 
---chunked-prefill-size 16384
 ```
 **Benchmarking**: Performance is benchmarked using `sglang.bench_serving` with the following base configuration:
 ```shell
@@ -186,7 +184,7 @@ Throughput generally rises from 1K to 2K as overhead is amortized, then decrease
 
 **Optimizations**  
 - **MHA**: Provides modest gains at longer sequence lengths (2K, 4K), but shows no measurable benefit at 1K.  
-- **MoE**: Yields consistent improvements across all sequence lengths, with particularly strong gains at 1K and 4K compared to Base and MHA.  
+- **MoE**: Yields consistent improvements across all sequence lengths.  
 - **QKV**: Delivers additional throughput improvements, especially at longer sequence lengths, and helps narrow the performance gap between short and long sequences.  
 - **Fa3-FP8**: By introducing FP8 quantization in the attention module, throughput is further boosted, most notably at 2K and 4K sequence lengths.  
 
