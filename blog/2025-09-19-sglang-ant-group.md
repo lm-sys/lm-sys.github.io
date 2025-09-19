@@ -70,48 +70,51 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ![eplb.png]()
 
-- **Idea**: Extend standard EPLB by recording **top-k expert co-activations**, building an **affinity matrix**.
-- **Method**: After intra-GPU balancing, adjust expert placement so **highly co-activated experts** are kept within the same node.
-- **Impact**: Minimizes **cross-node communication** and delivers an extra **~5% performance gain** compared to vanilla EPLB.
+#### Observation  
+Standard EPLB balances intra-GPU loads but overlooks correlations between experts, which often scatters frequently co-activated experts across nodes and increases cross-node communication overhead.  
+
+#### Solution  
+We extend EPLB by tracking **top-k expert co-activations** to build an **expert affinity matrix**. 
+After intra-GPU load balancing, we adjust placement so that **highly co-activated experts** are kept within the same node, thereby reducing cross-node communication and delivering an additional **~5% performance gain** over vanilla EPLB.  
 
 ##### Asynchronous Dynamic Load Adjustment
 
 ![async-load.png]()
 
-- **Design**: Separates **load balancing** from **inference**, enabling parallel execution without blocking.  
-- **Execution**: Uses a **hierarchical transfer strategy** to reduce migration impact, keeping inference seamless.  
-- **Results**: Matches or exceeds static EPLB and maintains **>70% load balance ratio**.
+#### Observation  
+Static EPLB tightly couples load balancing with inference. This coupling means that migration decisions block ongoing inference, leading to noticeable latency when expert placement changes are required.  
+
+#### Solution  
+We decouple **load balancing** from **inference**, allowing both to run in parallel without blocking. To minimize the impact of expert migration, we adopt a **hierarchical transfer strategy**, which ensures inference remains seamless during transfers. This approach achieves performance that matches or exceeds static EPLB while consistently maintaining a **>70% load balance ratio**.  
 
 #### Computation
 
 ##### FP8 MLA
 
-**Overview**
+#### Observation  
+BF16 FlashMLA achieves good performance but leaves optimization headroom, as memory transfers and compute are not fully overlapped and shared-memory usage remains heavy. Previous FP8 implementations (#54) improved throughput but still suffered from pipeline inefficiencies, layout mismatches, and coarse-grained tiling that limited performance and accuracy.  
 
-- End-to-end FP8 attention on Hopper (`SM90`) using `TMA` for memory transfers and `WGMMA` for computation.  
-- Two warpgroups pipeline `QK^T` and `PV`, minimizing shared-memory pressure and overlapping memory with compute.  
-
-**Improvements**
-
-- **vs BF16 FlashMLA**: ~70% faster  
-  - FP8 `Q`/`KV`, `WGMMA FP8`, shared memory reallocation, removed redundant operations.  
-- **vs previous FP8 (#54)**: ~5% faster  
-  - Optimized `TMA`–`WGMMA` pipeline, ping-pong buffers (`sP0/sP1`, `sVt0/sVt1`), 128-bit `STSM/LDSM` for FP8 layout, fine-grained `Q@K` tiling with BF16 ROPE, aligned with `SM90` style.
+#### Solution  
+We implement **end-to-end FP8 attention** on Hopper (`SM90`), leveraging `TMA` for memory transfers and `WGMMA` for computation. 
+Two warp groups pipeline `QK^T` and `PV` to minimize shared-memory pressure and overlap compute with memory. 
+Compared to BF16 FlashMLA, this yields **~70% speedup** by introducing FP8 `Q/KV`, `WGMMA FP8`, shared-memory reallocation, and removing redundant operations. 
+Over previous FP8 (#54), it delivers an additional **~5% gain** through a refined `TMA–WGMMA` pipeline, ping-pong buffers (`sP0/sP1`, `sVt0/sVt1`), 128-bit `STSM/LDSM` for layout fixes, and fine-grained `Q@K` tiling with BF16 ROPE, fully aligned with the `SM90` programming model.  
 
 ##### DeepGEMM Optimization
 
-**Overview**
+#### Observation  
 
 ![swapAB.png]()
 
-- Addresses PTX constraints: `N` multiple of 8, `M` fixed at 64.  
-- **swapAB** swaps WGMMA tile usage (maps problem `M` → WGMMA `N`) to enable smaller `BLOCK_M (32)` for finer tiling and better resource utilization.  
-- Best for small, irregular, or non-multiple-of-64 `M`; less advantage for large, well-aligned `M`.  
+On Hopper, PTX instructions impose constraints: `N` must be a multiple of 8 and `M` is fixed at 64.
+This forces coarse tiling and can waste compute when `M` is small, irregular, or not aligned to 64.
+As a result, boundary inefficiency, load imbalance, and high shared-memory pressure limit overall throughput, especially in MoE workloads with variable `M`.
 
-**Improvements**
-
-- **Aligned / predictable M**: SwapAB improves boundary efficiency and throughput (up to ~70%), fully utilizing tiles and enabling higher concurrency.  
-- **Irregular / varying M**: SwapAB improves load balance and occupancy, giving consistent gains across groups, especially for small or uneven `M`.
+#### Solution  
+We introduce **swapAB**, which remaps the problem’s `M` dimension onto WGMMA’s `N` dimension.
+This enables smaller `BLOCK_M (32)` tiling for finer granularity and better resource utilization.
+With small or irregular `M`, swapAB significantly improves boundary efficiency, load balance, and concurrency—boosting throughput by up to **~70%**.
+For large, well-aligned `M`, the natural efficiency of the baseline reduces swapAB’s advantage, though modest gains (~2–5%) are still observed.
 
 #### SBO（Single-batch-overlap）
 
