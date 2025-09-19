@@ -101,13 +101,13 @@ Two warp groups pipeline `QK^T` and `PV` to minimize shared-memory pressure and 
 Compared to BF16 FlashMLA, this yields **~70% speedup** by introducing FP8 `Q/KV`, `WGMMA FP8`, shared-memory reallocation, and removing redundant operations. 
 Over previous FP8 (#54), it delivers an additional **~5% gain** through a refined `TMA–WGMMA` pipeline, ping-pong buffers (`sP0/sP1`, `sVt0/sVt1`), 128-bit `STSM/LDSM` for layout fixes, and fine-grained `Q@K` tiling with BF16 ROPE, fully aligned with the `SM90` programming model.  
 
-##### DeepGEMM Optimization
+##### SwapAB GEMM
 
 #### Observation  
 
 ![swapAB.png]()
 
-On Hopper, PTX instructions impose constraints: `N` must be a multiple of 8 and `M` is fixed at 64.
+On Hopper, WGMMA PTX impose constraints: `N` must be a multiple of 8 and `M` is fixed at 64.
 This forces coarse tiling and can waste compute when `M` is small, irregular, or not aligned to 64.
 As a result, boundary inefficiency, load imbalance, and high shared-memory pressure limit overall throughput, especially in MoE workloads with variable `M`.
 
@@ -121,30 +121,21 @@ For large, well-aligned `M`, the natural efficiency of the baseline reduces swap
 
 ##### Why not TBO (Two-batch-overlap)
 
-The performance benefit of Two-Batch Overlap (TBO) in the Decode phase is limited on low-compute hardware (e.g., H20):
+The performance benefit of Two-Batch Overlap (TBO) in the Decode phase is limited on H20:
 
 - **Hopper architecture constraint**: WGMMA’s `block_m` is fixed at 64. With small-batch decoding, TBO introduces redundant MLP GEMM computations. Positive throughput gains appear only at large batch sizes (e.g., 64 or 128).  
 - **SLA limitations on H20**: At these large batch sizes, low-compute hardware cannot meet SLA targets for TPOT, making TBO impractical in online serving.
 
-To improve Decode throughput without violating SLA, **Single Batch Overlap (SBO)** is adopted in DeepSeek v3/R1 by modifying DeepEP and DeepGEMM:  
-
-- Overlapping Shared Expert with Dispatch Recv.
-- Overlapping Down GEMM with Combine Send.
-
-Detailed implementation is available in the following branches:
-
-DeepEP: deepseek-ai/DeepEP#390
-DeepGEMM: deepseek-ai/DeepGEMM#183
 
 ##### Designs
 
 ![sbo.png]()
 
-SBO implements two overlap for the MoE layers of DeepSeek V3/R1:
-- Overlapping Shared Expert with Dispatch Recv.
-- Overlapping Down GEMM with Combine Send.
+To improve Decode throughput without violating SLA, **Single Batch Overlap (SBO)** is adopted in DeepSeek v3/R1 by modifying [DeepEP](https://github.com/deepseek-ai/DeepEP/pull/390) and [DeepGEMM](https://github.com/deepseek-ai/DeepGEMM/pull/183):  
+- Overlapping **Shared Expert** with **Dispatch Recv**.
+- Overlapping **Down GEMM** with **Combine Send**.
 
-The design principle of the above overlaps is driven by the alignment granularity between communication and computation. 
+The design principle is driven by the alignment granularity between communication and computation. 
 We observe that in the communication-computation overlap, token packets often arrive out of order at the receiver. 
 This is due to a combination of factors, including sender-side behaviors like NIC multi-QP scheduling, as well as network-wide dynamics such as network congestion and multi-path routing. 
 The unordered arrival of tokens prevents effective alignment with the wave-based granularity of GEMM computation, thereby reducing overlap efficiency. Consequently, we overlap Dispatch Recv with the data-independent Shared Expert computation to maximize resource utilization.
@@ -209,18 +200,18 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 As the batch size increases, per-GPU throughput rises steadily. However, at larger batch sizes the gains taper off as both computation and communication begin to saturate.
 
 **Optimizations**  
-- **FlashMLA-FP8**: Cuts down Attention compute cost. With small batches, Attention makes up only a minor portion of latency, so the benefit is limited; with larger batches, Attention becomes the dominant factor, and FP8 delivers much stronger improvements — e.g., at BS=56 throughput improves by **+16.9%** over Base.
-- **SBO**: Boosts resource utilization by overlapping computation with communication. For small batches, the amount of work on both sides is too small to hide much latency; as the batch grows, overlap becomes more effective, delivering **+8%–10%** improvement in the BS=20–56 range.
-- **SwapAB**: Applies finer-grained tiling to improve boundary efficiency and concurrency. With small or medium batches, where M is often misaligned or unevenly distributed, SwapAB provides clear benefits — e.g., **+8.1% at BS=2** and **+7.7% at BS=4**; with larger batches, M is usually well-aligned and already efficient, so the additional benefit drops to around **~2%**.
+- **FP8 MLA**: Reduces attention compute cost. Benefits are limited at small batch sizes; at larger batch sizes—where attention dominates—throughput improves by 16.9% at BS=56 over the baseline.
+- **SwapAB Gemm**: Enables finer-grained tiling to improve boundary efficiency and concurrency. Clear gains at small/medium batches—+8.1% at BS=2 and +7.7% at BS=4—with incremental benefits of ≈2% at larger batches.
+- **SBO**: Boosts resource utilization by overlapping computation with communication. As the batch grows, overlap becomes more effective, delivering **+8%–10%** improvement in the BS=20–56 range.
 
 ### Investigation for EP size
 ![ep_size]()
 
 **Batch-size < 16**  
-For smaller batches, **EP32 outperforms EP16**. A larger EP size reduces the number of experts per GPU, which significantly cuts memory access overhead. While sparser expert placement slightly increases communication cost, the memory savings dominate, resulting in higher throughput (e.g., at BS=8, EP32 delivers 293 token/s vs. 278 token/s for EP16).
+**EP32 outperforms EP16**. A larger EP size reduces the number of experts per GPU, which significantly cuts memory access overhead. While sparser expert placement slightly increases communication cost, the memory savings dominate, resulting in higher throughput (e.g., at BS=8, EP32 delivers 293 token/s vs. 278 token/s for EP16).
 
 **Batch-size ≥ 16**  
-For larger batches, **EP16 pulls ahead of EP32**. Computation becomes the primary bottleneck, leaving little room for memory-side optimizations, while a larger EP size adds substantial cross-GPU communication overhead. With DeepEP, about 50% of MoE traffic stays on NVLink at EP16, but this falls to ~25% at EP32, forcing more traffic across nodes and increasing latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
+**EP16 pulls ahead of EP32**. At larger EP sizes, cross-GPU communication dominates. With DeepEP, ~50% of MoE traffic stays on NVLink at EP16 but only ~25% at EP32, forcing more inter-node transfers and raising latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
 
 ### Config for MTP
 ![mtp_perf]()
