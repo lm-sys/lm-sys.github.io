@@ -38,11 +38,11 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ## Deployment Strategy
 
-**Prefill**  
+### Prefill
 - **SLA:** Prefill is compute-intensive, and multi-node DP+EP can inflate time-to-first-token (TTFT), often violating SLAs. A single-node TP setup keeps TTFT within target.
 - **Elastic Scaling:** Prefill must scale in and out with the KV cache. Single-node TP makes scaling straightforward, while multi-node DP+EP complicates resource and cache management.
 
-**Decode**  
+### Decode
 - **Hardware Characteristics:** H20 trades compute for larger memory and higher NVLink bandwidth(compared with H800), enabling efficient KV-cache use and keeping MoE communication on high-bandwidth NVLink. 
 - **Fault Radius:** Smaller EP configurations limit the impact of decoding or GPU failures. With EP high-availability (HA) still maturing, smaller EP is safer and more reliable in production.
 
@@ -111,15 +111,15 @@ For large, well-aligned `M`, the natural efficiency of the baseline reduces swap
 
 #### SBO（Single-batch-overlap）
 
-##### Why not TBO (Two-batch-overlap)
+##### Why not TBO
 
-The performance benefit of Two-Batch Overlap (TBO) in the Decode phase is limited on H20:
+The performance benefit of TBO(Two-batch-overlap) in the Decode phase is limited on H20:
 
 - **Hopper architecture constraint**: WGMMA’s `block_m` is fixed at 64. With small-batch decoding, TBO introduces redundant MLP GEMM computations. Positive throughput gains appear only at large batch sizes (e.g., 64 or 128).  
 - **SLA limitations on H20**: At these large batch sizes, low-compute hardware cannot meet SLA targets for TPOT, making TBO impractical in online serving.
 
 
-##### Designs
+##### How SBO works
 
 ![sbo.png]()
 
