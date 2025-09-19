@@ -180,11 +180,12 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 --tp-size 16
 --dp-size 16
 --enable-dp-attention
+--enable-deepep-moe
+--deepep-mode low_latency
 --speculative-algorithm NEXTN 
 --speculative-num-steps 1
 --speculative-eagle-topk 1
 --speculative-num-draft-tokens 2
---deepep-mode low_latency
 ```
 **Benchmarking**: Performance is benchmarked using `sglang.bench_serving` with the following base configuration:
 ```shell
