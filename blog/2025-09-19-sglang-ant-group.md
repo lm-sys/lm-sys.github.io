@@ -82,10 +82,13 @@ After intra-GPU load balancing, we adjust placement so that **highly co-activate
 ![async-load.png]()
 
 #### Observation  
-Static EPLB tightly couples load balancing with inference. This coupling means that migration decisions block ongoing inference, leading to noticeable latency when expert placement changes are required.  
+Static EPLB tightly couples load balancing with inference. 
+This coupling means that migration decisions block ongoing inference, leading to noticeable latency when expert placement changes are required.  
 
 #### Solution  
-We decouple **load balancing** from **inference**, allowing both to run in parallel without blocking. To minimize the impact of expert migration, we adopt a **hierarchical transfer strategy**, which ensures inference remains seamless during transfers. This approach achieves performance that matches or exceeds static EPLB while consistently maintaining a **>70% load balance ratio**.  
+We decouple **load balancing** from **inference**, allowing both to run in parallel without blocking. 
+To minimize the impact of expert migration, we adopt a **hierarchical transfer strategy**, which ensures inference remains seamless during transfers. 
+This approach achieves performance that matches or exceeds static EPLB while consistently maintaining a **>70% load balance ratio**.
 
 #### Computation
 
