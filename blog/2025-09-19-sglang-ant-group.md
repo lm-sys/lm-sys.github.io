@@ -1,6 +1,6 @@
 ---
 title: "Together with SGLang: Best Practices for Serving DeepSeek-R1 on H20-96G"
-author: "Tianyu Zhang*, Peng Zhang*, Yusong Gao, Yun Zhang"
+author: "Tianyu Zhang, Peng Zhang, Yusong Gao, Yun Zhang"
 date: "September 19, 2025"
 previewImg: /images/blog/hicache/hicache_overview.png
 ---
