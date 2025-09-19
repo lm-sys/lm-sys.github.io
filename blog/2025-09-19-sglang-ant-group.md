@@ -1,6 +1,6 @@
 ---
 title: "Together with SGLang: Best Practices for Serving DeepSeek-R1 on H20-96G"
-author: "Tianyu Zhang*, Peng Zhang*, Yusong Gao, Yun Zhang, Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Fakang Wang, Jianhao Fu"
+author: "Tianyu Zhang*, Peng Zhang*, Yusong Gao, Yun Zhang"
 date: "September 19, 2025"
 previewImg: /images/blog/hicache/hicache_overview.png
 ---
@@ -282,3 +282,7 @@ Looking ahead, we plan to support dynamic scaling of Prefill instances to better
 
 # Acknowledgements
 
+We would like to extend our sincere gratitude to the following teams and collaborators for their invaluable support and contributions:
+
+- **SGLang Team and Community** — for their outstanding work on the SGLang framework.  
+- **AntGroup Inference Team** — Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Peipeng Cheng, Fakang Wang, Jianhao Fu.  
