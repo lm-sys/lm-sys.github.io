@@ -154,12 +154,45 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 
 # Performance: Make H20 Great in Real World Inference
 
+**SGLang version**: `v0.5.2`
+
 ## Prefill
-![prefill_pref]()
+
+### Environment
+
+**Deployment strategy**: The Prefill instance is deployed on a 1-node setup (8× H20 GPUs). The following configuration serves as the Base (BF16 + MTP):
+```shell
+--tp-size 8
+--Attention-backend fa3
+--page-size 64 
+--chunked-prefill-size 16384
+```
+**Benchmarking**: Performance is benchmarked using `sglang.bench_serving` with the following base configuration:
+```shell
+--backend sglang
+--dataset-path /path/to/ShareGPT.json
+--num-prompt 512
+--random-input 4096
+--random-output 1
+--dataset-name random
+--random-range-ratio 1
+```
+**Metrics**: We obtain the `Input token throughput directly` from the return results of `sglang.bench_serving`, and normalize the results to a per-GPU basis.
+
+### Performance improvements 
+![prefill_perf]()
+
+**Sequence Length**  
+Throughput generally rises from 1K to 2K as overhead is amortized, then decreases at 4K as memory pressure dominate.
+
+**Optimizations**  
+- **MHA**: Provides modest gains at longer sequence lengths (2K, 4K), but shows no measurable benefit at 1K.  
+- **MoE**: Yields consistent improvements across all sequence lengths, with particularly strong gains at 1K and 4K compared to Base and MHA.  
+- **QKV**: Delivers additional throughput improvements, especially at longer sequence lengths, and helps narrow the performance gap between short and long sequences.  
+- **Fa3-FP8**: By introducing FP8 quantization in the attention module, throughput is further boosted, most notably at 2K and 4K sequence lengths.  
 
 ## Decode
 ### Environment
-**SGLang version**: `v0.5.2`
 **Deployment strategy**: The Decode instance is deployed on a 2-node setup (16× H20 GPUs). The following configuration serves as the Base (BF16 + MTP):
 ```shell
 --tp-size 16
