@@ -52,12 +52,12 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ![prefill_overview]()
 
-#### Observation:
+#### Observation
 - MLA is costlier than MHA for long sequences.
 - MOE latency was unexpectedly high despite lower computation
 - Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
 
-#### Solution:
+#### Solution
 - Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
 - Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
 - Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
@@ -68,10 +68,8 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ![eplb.png]()
 
-#### Observation  
-Standard EPLB balances intra-GPU loads but overlooks correlations between experts, which often scatters frequently co-activated experts across nodes and increases cross-node communication overhead.  
+Standard EPLB balances intra-GPU loads but overlooks correlations between experts, which often scatters frequently co-activated experts across nodes and increases cross-node communication overhead.    
 
-#### Solution  
 We extend EPLB by tracking **top-k expert co-activations** to build an **expert affinity matrix**. 
 After intra-GPU load balancing, we adjust placement so that **highly co-activated experts** are kept within the same node, thereby reducing cross-node communication and delivering an additional **~5% performance gain** over vanilla EPLB.  
 
@@ -79,11 +77,9 @@ After intra-GPU load balancing, we adjust placement so that **highly co-activate
 
 ![async-load.png]()
 
-#### Observation  
 Static EPLB tightly couples load balancing with inference. 
 This coupling means that migration decisions block ongoing inference, leading to noticeable latency when expert placement changes are required.  
 
-#### Solution  
 We decouple **load balancing** from **inference**, allowing both to run in parallel without blocking. 
 To minimize the impact of expert migration, we adopt a **hierarchical transfer strategy**, which ensures inference remains seamless during transfers. 
 This approach achieves performance that matches or exceeds static EPLB while consistently maintaining a **>70% load balance ratio**.
@@ -91,11 +87,9 @@ This approach achieves performance that matches or exceeds static EPLB while con
 #### Computation
 
 ##### FP8 MLA
-
-#### Observation  
+ 
 BF16 FlashMLA achieves good performance but leaves optimization headroom, as memory transfers and compute are not fully overlapped and shared-memory usage remains heavy. Previous FP8 implementations (#54) improved throughput but still suffered from pipeline inefficiencies, layout mismatches, and coarse-grained tiling that limited performance and accuracy.  
-
-#### Solution  
+  
 We implement **end-to-end FP8 attention** on Hopper (`SM90`), leveraging `TMA` for memory transfers and `WGMMA` for computation. 
 Two warp groups pipeline `QK^T` and `PV` to minimize shared-memory pressure and overlap compute with memory. 
 Compared to BF16 FlashMLA, this yields **~70% speedup** by introducing FP8 `Q/KV`, `WGMMA FP8`, shared-memory reallocation, and removing redundant operations. 
@@ -103,7 +97,6 @@ Over previous FP8 (#54), it delivers an additional **~5% gain** through a refine
 
 ##### SwapAB GEMM
 
-#### Observation  
 
 ![swapAB.png]()
 
@@ -111,7 +104,6 @@ On Hopper, WGMMA PTX impose constraints: `N` must be a multiple of 8 and `M` is 
 This forces coarse tiling and can waste compute when `M` is small, irregular, or not aligned to 64.
 As a result, boundary inefficiency, load imbalance, and high shared-memory pressure limit overall throughput, especially in MoE workloads with variable `M`.
 
-#### Solution  
 We introduce **swapAB**, which remaps the problem’s `M` dimension onto WGMMA’s `N` dimension.
 This enables smaller `BLOCK_M (32)` tiling for finer granularity and better resource utilization.
 With small or irregular `M`, swapAB significantly improves boundary efficiency, load balance, and concurrency—boosting throughput by up to **~70%**.
