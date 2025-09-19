@@ -159,7 +159,6 @@ we developed a lightweight workflow based on [DeepXTrace](https://github.com/ant
 **SGLang version**: `v0.5.2`
 
 ## Prefill
-![prefill_pref]()
 
 ### Environment
 
