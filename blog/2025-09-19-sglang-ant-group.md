@@ -285,7 +285,7 @@ Both will be made available in the [**antgroup-infra-sglang**](https://github.co
 - **MHA**: [MHA chunk prefix: tune and use configs for fa3 and flashinfer](https://github.com/sgl-project/sglang/pull/9551)
 - **MoE-TMA**: [Fused triton moe opt: add tma for fused moe up kernel](https://github.com/sgl-project/sglang/pull/10567)
 - **fused_qkv_a_proj_with_mqa**: [Opt fused_qkv_a_proj_with_mqa: tp attn support tp reduce scattered input](https://github.com/sgl-project/sglang/pull/10568)
-- **Expert Affinity EPLB**: []()
+- **Expert Affinity EPLB**: [feat: Add Expert Affinity Aware EPLB algorithm](https://github.com/antgroup-infra/sglang/pull/2)
 - **Asynchronous Dynamic Load Adjustment**: [feat: introduce async rebalance mode for expert load balancer](https://github.com/sgl-project/sglang/pull/8529)
 - **FP8 MLA**: [update fp8 support](https://github.com/deepseek-ai/FlashMLA/pull/82)
 - **SwapAB GEMM**: [support swapAB for m_grouped_fp8_gemm_nt_masked](https://github.com/deepseek-ai/DeepGEMM/pull/192)
