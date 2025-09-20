@@ -106,8 +106,6 @@ As a result, boundary inefficiency, load imbalance, and high shared-memory press
 
 We introduce **swapAB**, which remaps the problem’s `M` dimension onto WGMMA’s `N` dimension.
 This enables smaller `BLOCK_M (32)` tiling for finer granularity and better resource utilization.
-With small or irregular `M`, swapAB significantly improves boundary efficiency, load balance, and concurrency—boosting throughput by up to **~70%**.
-For large, well-aligned `M`, the natural efficiency of the baseline reduces swapAB’s advantage, though modest gains (~2–5%) are still observed.
 
 #### SBO (Single-batch-overlap)
 
@@ -174,7 +172,7 @@ To identify and diagnose communication slowdowns in MoE models under expert-para
 --dataset-name random
 --random-range-ratio 1
 ```
-**Metrics**: We obtain the `Input token throughput directly` from the return results of `sglang.bench_serving`, and normalize the results to a per-GPU basis.
+**Metrics**: We obtain the `Input token throughput` directly from the return results of `sglang.bench_serving`, and normalize the results to a per-GPU basis.
 
 ### Performance improvements 
 ![prefill_perf]()
