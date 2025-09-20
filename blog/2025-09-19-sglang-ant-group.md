@@ -50,7 +50,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ### Prefill
 
-![prefill_overview]()
+![prefill_overview.svg](/images/blog/ant-group-prac/prefill_overview.svg)
 
 #### Observation
 - MLA is costlier than MHA for long sequences.
@@ -66,7 +66,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 #### Load Balance
 ##### [Expert Affinity EPLB](https://github.com/antgroup-infra/sglang/pull/2)
 
-![eplb.png]()
+![eplb.png](/images/blog/ant-group-prac/eplb.svg)
 
 Standard EPLB balances intra-GPU loads but overlooks correlations between experts, which often scatters frequently co-activated experts across nodes and increases cross-node communication overhead.    
 
@@ -75,7 +75,7 @@ After intra-GPU load balancing, we adjust placement so that **highly co-activate
 
 ##### [Asynchronous Dynamic Load Adjustment](https://github.com/sgl-project/sglang/pull/8529)
 
-![async-load.png]()
+![async_eplb.svg](/images/blog/ant-group-prac/async_eplb.svg)
 
 Static EPLB tightly couples load balancing with inference. 
 This coupling means that migration decisions block ongoing inference, leading to noticeable latency when expert placement changes are required.  
@@ -98,7 +98,7 @@ Over previous FP8 (#54), it delivers an additional **~5% gain** through a refine
 ##### [SwapAB GEMM](https://github.com/deepseek-ai/DeepGEMM/pull/192)
 
 
-![swapAB.png]()
+![swapAB.png](/images/blog/ant-group-prac/swapAB.svg)
 
 On Hopper, WGMMA PTX impose constraints: `N` must be a multiple of 8 and `M` is fixed at 64.
 This forces coarse tiling and can waste compute when `M` is small, irregular, or not aligned to 64.
@@ -119,7 +119,7 @@ The performance benefit of TBO (Two-batch-overlap) in the Decode phase is limite
 
 ##### How SBO works
 
-![sbo.png]()
+![sbo.png](/images/blog/ant-group-prac/sbo.svg)
 
 To improve Decode throughput without violating SLA, [**Single Batch Overlap (SBO)**](https://github.com/sgl-project/sglang/pull/9660) is adopted in DeepSeek v3/R1 by modifying [DeepEP](https://github.com/deepseek-ai/DeepEP/pull/390) and [DeepGEMM](https://github.com/deepseek-ai/DeepGEMM/pull/183). 
 The design of these overlaps is driven by the alignment granularity between communication and computation.
@@ -137,7 +137,7 @@ Leveraging this, we structure their interaction as a signal-synchronized Produce
 
 ## Observability
 
-![deepx.svg]()
+![deepx.svg](/images/blog/ant-group-prac/deepX.svg)
 
 To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, we developed a lightweight workflow named [**DeepXTrace**](https://github.com/antgroup/DeepXTrace):  
 
@@ -175,7 +175,7 @@ To identify and diagnose communication slowdowns in MoE models under expert-para
 **Metrics**: We obtain the `Input token throughput` directly from the return results of `sglang.bench_serving`, and normalize the results to a per-GPU basis.
 
 ### Performance improvements 
-![prefill_perf]()
+![prefill_perf.png](/images/blog/ant-group-prac/prefill_perf.png)
 
 **Sequence Length**  
 Throughput generally rises from 1K to 2K as overhead is amortized, then decreases at 4K as memory pressure dominate.
@@ -212,7 +212,7 @@ Throughput generally rises from 1K to 2K as overhead is amortized, then decrease
 **Metrics**: During stress testing, batch size is increased step by step. Therefore, raw results from `sglang.bench_serving` do not accurately reflect throughput at a given batch size. Instead, we parse the logs for `Decode batch` entries and compute the median throughput from 100 samples at the same batch size, which we report as the representative value.
 
 ### Performance improvements 
-![decode_perf]()
+![decode_perf.png](/images/blog/ant-group-prac/decode_perf.png)
 
 **Batch-size**  
 As the batch size increases, per-GPU throughput rises steadily. However, at larger batch sizes the gains taper off as both computation and communication begin to saturate.
@@ -223,7 +223,7 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 - **SBO**: Boosts resource utilization by overlapping computation with communication. As the batch grows, overlap becomes more effective, delivering **+8%–10%** improvement in the BS=20–56 range.
 
 ### Investigation for EP size
-![ep_size]()
+![ep_size.png](/images/blog/ant-group-prac/ep_size.png)
 
 **Batch-size < 16**  
 **EP32 outperforms EP16**. A larger EP size reduces the number of experts per GPU, which significantly cuts memory access overhead. While sparser expert placement slightly increases communication cost, the memory savings dominate, resulting in higher throughput (e.g., at BS=8, EP32 delivers 293 token/s vs. 278 token/s for EP16).
@@ -232,7 +232,7 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 **EP16 pulls ahead of EP32**. At larger EP sizes, cross-GPU communication dominates. With DeepEP, ~50% of MoE traffic stays on NVLink at EP16 but only ~25% at EP32, forcing more inter-node transfers and raising latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
 
 ### Config for MTP
-![mtp_perf]()
+![mtp_perf.png](/images/blog/ant-group-prac/mtp_perf.png)
 
 **Draft vs. Accept Length**  
 - **MTP=1 1 2** → Accept length ≈ 1.8–1.9  
@@ -254,7 +254,7 @@ To balance **user experience** with **cost efficiency**, we offer **tiered SLA-b
 
 ## Decode Deployment
 
-![mtp_latency]()
+![mtp_latency.png](/images/blog/ant-group-prac/mtp_latency.png)
 
 All Decode instances are deployed with a **dual-node setup**:  
 **Attention-DP16 + MoE-EP16**.  
