@@ -58,13 +58,13 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 - Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
 
 #### Solution
-- Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
-- Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
-- Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
+- [MHA/MLA](https://github.com/sgl-project/sglang/pull/9551): Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
+- [MOE](https://github.com/sgl-project/sglang/pull/10567): Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
+- [fused_qkv_a_proj_with_mqa](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
 ### Decode
 #### Load Balance
-##### Expert Affinity EPLB
+##### [Expert Affinity EPLB](https://github.com/antgroup-infra/sglang/pull/2)
 
 ![eplb.png]()
 
@@ -73,7 +73,7 @@ Standard EPLB balances intra-GPU loads but overlooks correlations between expert
 We extend EPLB by tracking **top-k expert co-activations** to build an **expert affinity matrix**. 
 After intra-GPU load balancing, we adjust placement so that **highly co-activated experts** are kept within the same node, thereby reducing cross-node communication and delivering an additional **~5% performance gain** over vanilla EPLB.  
 
-##### Asynchronous Dynamic Load Adjustment
+##### [Asynchronous Dynamic Load Adjustment](https://github.com/sgl-project/sglang/pull/8529)
 
 ![async-load.png]()
 
@@ -86,7 +86,7 @@ This approach achieves performance that matches or exceeds static EPLB while con
 
 #### Computation
 
-##### FP8 MLA
+##### [FP8 MLA](https://github.com/deepseek-ai/FlashMLA/pull/82)
 
 BF16 FlashMLA achieves good performance but leaves optimization headroom, as memory transfers and compute are not fully overlapped and shared-memory usage remains heavy. Previous FP8 implementations (#54) improved throughput but still suffered from pipeline inefficiencies, layout mismatches, and coarse-grained tiling that limited performance and accuracy.  
 
@@ -95,7 +95,7 @@ Two warp groups pipeline `QK^T` and `PV` to minimize shared-memory pressure and 
 Compared to BF16 FlashMLA, this yields **~70% speedup** by introducing FP8 `Q/KV`, `WGMMA FP8`, shared-memory reallocation, and removing redundant operations. 
 Over previous FP8 (#54), it delivers an additional **~5% gain** through a refined `TMA–WGMMA` pipeline, ping-pong buffers (`sP0/sP1`, `sVt0/sVt1`), 128-bit `STSM/LDSM` for layout fixes, and fine-grained `Q@K` tiling with BF16 ROPE, fully aligned with the Hopper programming model.  
 
-##### SwapAB GEMM
+##### [SwapAB GEMM](https://github.com/deepseek-ai/DeepGEMM/pull/192)
 
 
 ![swapAB.png]()
@@ -121,7 +121,7 @@ The performance benefit of TBO (Two-batch-overlap) in the Decode phase is limite
 
 ![sbo.png]()
 
-To improve Decode throughput without violating SLA, **Single Batch Overlap (SBO)** is adopted in DeepSeek v3/R1 by modifying [DeepEP](https://github.com/deepseek-ai/DeepEP/pull/390) and [DeepGEMM](https://github.com/deepseek-ai/DeepGEMM/pull/183). 
+To improve Decode throughput without violating SLA, [**Single Batch Overlap (SBO)**](https://github.com/sgl-project/sglang/pull/9660) is adopted in DeepSeek v3/R1 by modifying [DeepEP](https://github.com/deepseek-ai/DeepEP/pull/390) and [DeepGEMM](https://github.com/deepseek-ai/DeepGEMM/pull/183). 
 The design of these overlaps is driven by the alignment granularity between communication and computation.
 
 We observe that in the communication-computation overlap, token packets often arrive out of order at the receiver due to factors like NIC multi-QP scheduling, network congestion and multi-path routing. 
@@ -139,7 +139,7 @@ Leveraging this, we structure their interaction as a signal-synchronized Produce
 
 ![deepx.svg]()
 
-To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, we developed a lightweight workflow named **DeepXTrace**:  
+To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, we developed a lightweight workflow named [**DeepXTrace**](https://github.com/antgroup/DeepXTrace):  
 
 - **Metrics Collection:** Each node periodically records communication and computation metrics, which are aggregated to Rank 0 every 10 seconds for centralized logging.  
 
@@ -273,22 +273,10 @@ As noted earlier, our Prefill instances are deployed with single-node TP8.
 To prevent TTFT violations caused by queueing delays, we run two Prefill instances for each model instance. 
 Looking ahead, we plan to support dynamic scaling of Prefill instances to better adapt to workload fluctuations.
 
-# Open Source
-## Reproducibility
+# Reproducibility
 Our experiments rely on multiple repositories (SGLang, DeepEP, DeepGEMM, FlashMLA), with several PRs still under review.
 For reproducibility, we will consolidate these into a dedicated test branch and provide a prebuilt image. 
 Both will be made available in the [**antgroup-infra-sglang**](https://github.com/antgroup-infra/sglang/pulls) repository.
-
-## Related PR
-- **MHA**: [MHA chunk prefix: tune and use configs for fa3 and flashinfer](https://github.com/sgl-project/sglang/pull/9551)
-- **MoE-TMA**: [Fused triton moe opt: add tma for fused moe up kernel](https://github.com/sgl-project/sglang/pull/10567)
-- **fused_qkv_a_proj_with_mqa**: [Opt fused_qkv_a_proj_with_mqa: tp attn support tp reduce scattered input](https://github.com/sgl-project/sglang/pull/10568)
-- **Expert Affinity EPLB**: [feat: Add Expert Affinity Aware EPLB algorithm](https://github.com/antgroup-infra/sglang/pull/2)
-- **Asynchronous Dynamic Load Adjustment**: [feat: introduce async rebalance mode for expert load balancer](https://github.com/sgl-project/sglang/pull/8529)
-- **FP8 MLA**: [update fp8 support](https://github.com/deepseek-ai/FlashMLA/pull/82)
-- **SwapAB GEMM**: [support swapAB for m_grouped_fp8_gemm_nt_masked](https://github.com/deepseek-ai/DeepGEMM/pull/192)
-- **SBO (Single-batch-overlap)**: [Single Batch Overlap for MoE Models](https://github.com/sgl-project/sglang/pull/9660)
-- **DeepXTrace**: [DeepXTrace](https://github.com/antgroup/DeepXTrace)
 
 # Acknowledgements
 
