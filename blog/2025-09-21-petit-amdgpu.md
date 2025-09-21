@@ -1,11 +1,11 @@
 ---
 title: "Optimizing FP4 Mixed-Precision Inference on AMD GPUs"
 author: "Haohui Mai, Lei Zhang"
-date: "September 16, 2025"
+date: "September 21, 2025"
 previewImg: /images/blog/petit/petit-facade.png
 ---
 
-Haohui Mai (CausalFlow.ai). Lei Zhang (AMD)
+Haohui Mai (CausalFlow.ai), Lei Zhang (AMD)
 
 ## Introduction
 
@@ -35,7 +35,7 @@ Modern GPUs achieve massive computational throughput by stacking simple yet comp
 
 <figure>
 <img src="/images/blog/petit/arch.svg" alt="Overview of optimizations in Petit" style="width:95%">
-<figcaption>Figure 1: Overview of optimizations in Petit.</figcaption>
+<figcaption style="text-align: center">Figure 1: Overview of optimizations in Petit.</figcaption>
 </figure>
 
 ### Efficient Dequantizations via pre-processing 
@@ -70,10 +70,16 @@ We evaluated Petit's real-world effectiveness by comparing end-to-end inference 
 
 <figure>
 <img src="/images/blog/petit/petit-perf.svg" alt="Throughputs of input and output tokens for the offline generation benchmarks in SGLang" style="max-width:600px">
-<figcaption>Figure 2: Throughputs of input and output tokens for the offline generation benchmarks in SGLang.</figcaption>
+<figcaption style="text-align: center">Figure 2: Throughputs of input and output tokens for the offline generation benchmarks in SGLang.</figcaption>
 </figure>
 
-Figure 2 presents the results of the offline generation benchmark. The offline generation benchmark uses real-world ShareGPT traces as inputs which reflects the production performances. Overall Petit serving the Llama 3.3 70B FP4 model is 1.74x and 1.60x faster than SGLang serving the original BF16 model. In production scenarios with small batch sizes where performance is memory bandwidth-bound, Petit's efficient utilization of the 3.5x smaller FP4 models translates directly to superior throughput.
+Figure 2 presents the results of the offline generation benchmark. The offline generation benchmark uses real-world ShareGPT traces as inputs which reflects the production performances. Overall Petit serving the Llama 3.3 70B FP4 model is 1.74x and 1.60x faster than SGLang serving the original BF16 model. In production scenarios with small batch sizes where performance is memory bandwidth-bound, Petit's efficient utilization of the 3.5x smaller FP4 models translates directly to superior throughput. You can reproduce the results of the benchmark using the following commands:
+
+```
+ python -m sglang.bench_offline_throughput --model-path nvidia/Llama-3.3-70B-Instruct-FP4 --num-prompts 10
+ python -m sglang.bench_offline_throughput --model-path nvidia/Llama-3.3-70B-Instruct-FP4 --num-prompts 64
+```
+
 
 ## Detailed Performance Analysis
 
@@ -81,16 +87,16 @@ We then compared Petit's performance against both HipBLASLt. HipBLASLt is AMD's 
 
 Note that these libraries target slightly different workloads:
 
-- Petit. Multiplies a BF16 matrix with an NVFP4 matrix (16 elements share an FP8 scale)  
+- Petit. Multiplies a BF16 matrix with an NVFP4 matrix (16 elements share 1 FP8 scale)
 - HipBLASLt. Multiplies two BF16 matrices.
 
-Though the workloads are not identical, the results present some quantitative ideas of how well Petit performs. We examined actual weight matrix sizes when serving Llama 3 70B, measuring performance with m=16 (decode workloads) and m=256 (prefill workloads), averaging 100 runs after 50 warmup iterations. All three libraries were tuned for optimal configurations.
+Though the workloads are not identical, the results present some quantitative ideas of how well Petit performs. We examined actual weight matrix sizes when serving Llama 3 70B, measuring performance with m=16 (decode workloads) and m=256 (prefill workloads), averaging 100 runs after 50 warmup iterations. Both libraries were tuned for optimal configurations.
 
 <figure>
 <img src="/images/blog/petit/fig3a.svg" alt="GEMM performance for m=16" style="max-width: 60%;">
 <br>
 <img src="/images/blog/petit/fig3b.svg" alt="GEMM performance for m=256" style="max-width: 60%;">
-<figcaption>Figure 3: GEMM performance for m=16(decode workloads) and m=256 (prefill workloads).</figcaption>
+<figcaption style="text-align: center">Figure 3: GEMM performance for m=16(decode workloads) and m=256 (prefill workloads).</figcaption>
 </figure>
 
 Figure 3a and Figure 3b presents the GEMM performances of Petit and HipBlasLt. Petit is efficient: For m=16 (decode-heavy workloads), Petit is up to 3.7x faster than HipBlasLt, with an average improvement of 2.56x. For m=256 (prefill workloads), Petit is up to 1.09x faster than HipBlasLt with comparable average performance
@@ -101,7 +107,7 @@ We studied individual optimization contributions by implementing each technique 
 
 <figure>
 <img src="/images/blog/petit/fig4.svg" alt="Impacts of individual optimizations of Petit" style="max-width: 600px">
-<figcaption>Figure 4: Impacts of individual optimizations of Petit.</figcaption>
+<figcaption style="text-align: center">Figure 4: Impacts of individual optimizations of Petit.</figcaption>
 </figure>
 
 We found that efficient dequantization and LDS optimization provide the largest gains: it generates 70-117% performance improvement. Topology-aware scheduling shows greater impacts for larger m. Interestingly, the results of optimizing instruction scheduling vary and do not always improve performance. Petit provides compiler hints via the `amdgcn_sched_group_barrier()` intrinsics. It is nontrivial to control the greedy scheduling algorithm inside LLVM to generate the desired sequences, while we fail to use the exponential solver as it takes too long to run.
