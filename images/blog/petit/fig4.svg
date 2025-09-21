@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="857" height="569" viewBox="0 0 857 569">
+<style>
+.bar-base{fill:#f7844e}
+.bar-dequant{fill:#4a6b8a}
+.bar-xor{fill:#2e7c8c}
+.bar-wgm{fill:#b8a06b}
+.bar-inst{fill:#3a3a42}
+.chart-text{font-family:-apple-system,sans-serif;font-size:14px;fill:#374151}
+.axis-title{font-family:-apple-system,sans-serif;font-size:16px;font-weight:300;fill:#374151}
+.x-label{font-family:-apple-system,sans-serif;font-size:12px;fill:#6B7280}
+</style>
+
+<!-- Background -->
+<rect width="857" height="569" fill="#fff"/>
+
+<!-- Chart area -->
+<rect x="60" y="13" width="790" height="467" fill="#fff"/>
+
+<!-- Grid lines -->
+<g stroke="#e0e0e0">
+<line x1="60" y1="480" x2="850" y2="480"/>
+<line x1="60" y1="402" x2="850" y2="402"/>
+<line x1="60" y1="324" x2="850" y2="324"/>
+<line x1="60" y1="246" x2="850" y2="246"/>
+<line x1="60" y1="168" x2="850" y2="168"/>
+<line x1="60" y1="90" x2="850" y2="90"/>
+<line x1="60" y1="13" x2="850" y2="13"/>
+</g>
+
+<!-- Bars -->
+<g>
+<!-- 16x8192x8192 -->
+<rect x="96" y="413" width="57" height="67" class="bar-base"/>
+<rect x="96" y="390" width="57" height="23" class="bar-dequant"/>
+<rect x="96" y="362" width="57" height="28" class="bar-xor"/>
+<rect x="96" y="359" width="57" height="3" class="bar-wgm"/>
+<rect x="96" y="359" width="57" height="-4" class="bar-inst"/>
+
+<!-- 16x8192x28672 -->
+<rect x="191" y="409" width="57" height="71" class="bar-base"/>
+<rect x="191" y="377" width="57" height="32" class="bar-dequant"/>
+<rect x="191" y="336" width="57" height="41" class="bar-xor"/>
+<rect x="191" y="332" width="57" height="4" class="bar-wgm"/>
+<rect x="191" y="332" width="57" height="-12" class="bar-inst"/>
+
+<!-- 16x10240x8192 -->
+<rect x="285" y="425" width="57" height="55" class="bar-base"/>
+<rect x="285" y="398" width="57" height="27" class="bar-dequant"/>
+<rect x="285" y="361" width="57" height="37" class="bar-xor"/>
+<rect x="285" y="361" width="57" height="0" class="bar-wgm"/>
+<rect x="285" y="359" width="57" height="2" class="bar-inst"/>
+
+<!-- 16x57344x8192 -->
+<rect x="379" y="372" width="57" height="108" class="bar-base"/>
+<rect x="379" y="305" width="57" height="67" class="bar-dequant"/>
+<rect x="379" y="282" width="57" height="23" class="bar-xor"/>
+<rect x="379" y="279" width="57" height="3" class="bar-wgm"/>
+<rect x="379" y="280" width="57" height="-1" class="bar-inst"/>
+
+<!-- 256x8192x8192 -->
+<rect x="474" y="312" width="57" height="168" class="bar-base"/>
+<rect x="474" y="230" width="57" height="82" class="bar-dequant"/>
+<rect x="474" y="163" width="57" height="67" class="bar-xor"/>
+<rect x="474" y="145" width="57" height="18" class="bar-wgm"/>
+<rect x="474" y="125" width="57" height="20" class="bar-inst"/>
+
+<!-- 256x8192x28672 -->
+<rect x="568" y="304" width="57" height="176" class="bar-base"/>
+<rect x="568" y="232" width="57" height="72" class="bar-dequant"/>
+<rect x="568" y="178" width="57" height="54" class="bar-xor"/>
+<rect x="568" y="171" width="57" height="7" class="bar-wgm"/>
+<rect x="568" y="149" width="57" height="22" class="bar-inst"/>
+
+<!-- 256x10240x8192 -->
+<rect x="663" y="334" width="57" height="146" class="bar-base"/>
+<rect x="663" y="258" width="57" height="76" class="bar-dequant"/>
+<rect x="663" y="217" width="57" height="41" class="bar-xor"/>
+<rect x="663" y="208" width="57" height="9" class="bar-wgm"/>
+<rect x="663" y="185" width="57" height="23" class="bar-inst"/>
+
+<!-- 256x57344x8192 -->
+<rect x="757" y="249" width="57" height="231" class="bar-base"/>
+<rect x="757" y="131" width="57" height="118" class="bar-dequant"/>
+<rect x="757" y="88" width="57" height="43" class="bar-xor"/>
+<rect x="757" y="79" width="57" height="9" class="bar-wgm"/>
+<rect x="757" y="59" width="57" height="20" class="bar-inst"/>
+</g>
+
+<!-- Chart border -->
+<rect x="60" y="13" width="790" height="467" fill="none" stroke="#777"/>
+
+<!-- Y-axis labels -->
+<g class="chart-text" text-anchor="end">
+<text x="55" y="485">0</text>
+<text x="55" y="407">100</text>
+<text x="55" y="329">200</text>
+<text x="55" y="252">300</text>
+<text x="55" y="174">400</text>
+<text x="55" y="96">500</text>
+<text x="55" y="18">600</text>
+</g>
+
+<!-- X-axis labels -->
+<g class="chart-text" text-anchor="middle">
+<text x="125" y="520" transform="rotate(-20 125 520)">16x8192x8192</text>
+<text x="219" y="520" transform="rotate(-20 219 520)">16x8192x28672</text>
+<text x="313" y="520" transform="rotate(-20 313 520)">16x10240x8192</text>
+<text x="408" y="520" transform="rotate(-20 408 520)">16x57344x8192</text>
+<text x="502" y="520" transform="rotate(-20 502 520)">256x8192x8192</text>
+<text x="597" y="520" transform="rotate(-20 597 520)">256x8192x28672</text>
+<text x="691" y="520" transform="rotate(-20 691 520)">256x10240x8192</text>
+<text x="785" y="520" transform="rotate(-20 785 520)">256x57344x8192</text>
+</g>
+
+<!-- Y-axis title -->
+<text x="-246" y="19" text-anchor="middle" class="axis-title" transform="rotate(-90)">Performance (TFLOPS)</text>
+
+<!-- Legend -->
+<rect x="176" y="35" width="18" height="18" class="bar-base"/>
+<text x="201" y="48" class="chart-text">Base</text>
+<rect x="277" y="35" width="18" height="18" class="bar-dequant"/>
+<text x="302" y="48" class="chart-text">Dequant</text>
+<rect x="404" y="35" width="18" height="18" class="bar-xor"/>
+<text x="429" y="48" class="chart-text">XOR</text>
+<rect x="501" y="35" width="18" height="18" class="bar-wgm"/>
+<text x="526" y="48" class="chart-text">WGM</text>
+<rect x="605" y="35" width="18" height="18" class="bar-inst"/>
+<text x="630" y="48" class="chart-text">InstSchedule</text>
+</svg>
