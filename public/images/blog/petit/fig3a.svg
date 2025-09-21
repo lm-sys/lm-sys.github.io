@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="710" height="425" viewBox="0 0 710 425">
+  <defs>
+    <style>
+      .grid { stroke: #e5e7eb; stroke-width: 1; }
+      .axis { stroke: #374151; stroke-width: 1.5; fill: none; }
+      .tick { stroke: #374151; stroke-width: 1; }
+      .petit-line { stroke: #ff6b35; stroke-width: 3; fill: none; }
+      .petit-marker { fill: #ff6b35; stroke: #ff6b35; }
+      .hipblas-line { stroke: #999; stroke-width: 3; fill: none; }
+      .hipblas-marker { fill: #999; stroke: #999; }
+      .label { font-family: system-ui, -apple-system, sans-serif; font-size: 16px; fill: #6b7280; }
+      .title { font-family: system-ui, -apple-system, sans-serif; font-size: 18px; fill: #374151; font-weight: 300; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="710" height="425" fill="#fff"/>
+  
+  <!-- Plot area -->
+  <rect x="60" y="13" width="627" height="364" fill="#fff"/>
+  
+  <!-- Grid lines -->
+  <g class="grid">
+    <line x1="89" y1="377" x2="89" y2="13"/>
+    <line x1="279" y1="377" x2="279" y2="13"/>
+    <line x1="468" y1="377" x2="468" y2="13"/>
+    <line x1="658" y1="377" x2="658" y2="13"/>
+    <line x1="60" y1="377" x2="687" y2="377"/>
+    <line x1="60" y1="317" x2="687" y2="317"/>
+    <line x1="60" y1="256" x2="687" y2="256"/>
+    <line x1="60" y1="195" x2="687" y2="195"/>
+    <line x1="60" y1="134" x2="687" y2="134"/>
+    <line x1="60" y1="73" x2="687" y2="73"/>
+    <line x1="60" y1="13" x2="687" y2="13"/>
+  </g>
+  
+  <!-- Axes -->
+  <g class="axis">
+    <rect x="60" y="13" width="627" height="364"/>
+  </g>
+  
+  <!-- X-axis ticks and labels -->
+  <g class="tick">
+    <line x1="89" y1="377" x2="89" y2="380"/>
+    <line x1="279" y1="377" x2="279" y2="380"/>
+    <line x1="468" y1="377" x2="468" y2="380"/>
+    <line x1="658" y1="377" x2="658" y2="380"/>
+  </g>
+  
+  <!-- Y-axis ticks -->
+  <g class="tick">
+    <line x1="57" y1="377" x2="60" y2="377"/>
+    <line x1="57" y1="317" x2="60" y2="317"/>
+    <line x1="57" y1="256" x2="60" y2="256"/>
+    <line x1="57" y1="195" x2="60" y2="195"/>
+    <line x1="57" y1="134" x2="60" y2="134"/>
+    <line x1="57" y1="73" x2="60" y2="73"/>
+    <line x1="57" y1="13" x2="60" y2="13"/>
+  </g>
+  
+  <!-- Data lines -->
+  <path class="petit-line" d="M 89 195 L 279 166 L 468 188 L 658 65"/>
+  <path class="hipblas-line" d="M 89 290 L 279 288 L 468 287 L 658 293"/>
+  
+  <!-- Data markers -->
+  <g class="petit-marker">
+    <polygon points="89,192 86,198 92,198"/>
+    <polygon points="279,163 276,169 282,169"/>
+    <polygon points="468,185 465,191 471,191"/>
+    <polygon points="658,62 655,68 661,68"/>
+  </g>
+  <g class="hipblas-marker">
+    <rect x="86" y="287" width="6" height="6"/>
+    <rect x="276" y="285" width="6" height="6"/>
+    <rect x="465" y="284" width="6" height="6"/>
+    <rect x="655" y="290" width="6" height="6"/>
+  </g>
+  
+  <!-- Labels -->
+  <text class="label" x="89" y="395" text-anchor="middle">8192x8192</text>
+  <text class="label" x="279" y="395" text-anchor="middle">8192x28672</text>
+  <text class="label" x="468" y="395" text-anchor="middle">10240x8192</text>
+  <text class="label" x="658" y="395" text-anchor="middle">57344x8192</text>
+  
+  <text class="label" x="45" y="382">0</text>
+  <text class="label" x="36" y="322">50</text>
+  <text class="label" x="27" y="261">100</text>
+  <text class="label" x="27" y="200">150</text>
+  <text class="label" x="27" y="139">200</text>
+  <text class="label" x="27" y="79">250</text>
+  <text class="label" x="27" y="18">300</text>
+  
+  <!-- Axis titles -->
+  <text class="title" x="373" y="414" text-anchor="middle">Matrix Size (m=16)</text>
+  <text class="title" x="19" y="195" text-anchor="middle" transform="rotate(-90, 19, 195)">Performance (TFLOPS)</text>
+  
+  <!-- Legend -->
+  <g>
+    <line class="petit-line" x1="272" y1="38" x2="300" y2="38"/>
+    <polygon class="petit-marker" points="286,35 283,41 289,41"/>
+    <text class="label" x="311" y="43">Petit</text>
+    
+    <line class="hipblas-line" x1="370" y1="38" x2="398" y2="38"/>
+    <rect class="hipblas-marker" x="381" y="35" width="6" height="6"/>
+    <text class="label" x="409" y="43">HipBlasLt</text>
+  </g>
+</svg>
