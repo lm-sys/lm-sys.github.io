@@ -15,8 +15,8 @@ In pursuit of deterministic LLM inference, the Thinking Machines Lab published a
 
 To explain more, different batch sizes will influence the reduction splitting process of kernels. This leads to  varying order and size for each reduction block, which can cause nondeterministic outputs due to the non-associativity of floating-point arithmetic. To fix this, they replaced reduction kernels (RMSNorm, matrix multiplication, attention, etc…) with a batch-invariant implementation. These kernels were also released as [a companion library](https://github.com/thinking-machines-lab/batch_invariant_ops) for external integration. 
 
-![figure1](/images/blog/deterministic/deterministic_intro.png)*He, Horace and Thinking Machines Lab, "Defeating Nondeterminism in LLM Inference", 
-Thinking Machines Lab: Connectionism, Sep 2025.*
+![figure1](/images/blog/deterministic/deterministic_intro.png)<small><center>*He, Horace and Thinking Machines Lab, "Defeating Nondeterminism in LLM Inference", 
+Thinking Machines Lab: Connectionism, Sep 2025.*</center></small>
 
 
 Building on the work of Thinking Machines Lab, SGLang delivers a robust, high-throughput solution for deterministic LLM inference, combining batch-invariant kernels, CUDA graphs, radix cache, and chunked prefill with efficient performance. Determinism has been extensively validated through comprehensive tests and RL training experiments.
@@ -69,7 +69,9 @@ Deterministic inference is generally usable, with most slowdowns ranging from 25
 | FA3 | Deterministic | 44.14 (+27.2%) | 494.56 (+30.2%) | 1952.92 (+35.7%) |
 | Triton | Normal | 36.91 | 400.59 | 1586.05  |
 | Triton | Deterministic | 57.25 (+55.1%) | 579.43 (+44.64%) | 2296.60 (+44.80%) |
+---
 <small>*Setup: QWen3-8B, TP1, H200 140GB. </small>
+
 <small>*We disabled radix cache for all performance benchmarks since FlashInfer and Triton Radix Cache support is still in progress. </small>
 
 We acknowledge that deterministic inference is significantly slower than normal mode. We recommend using it primarily for debugging and reproducibility. Future work will focus on accelerating deterministic inference, with the goal of reducing the performance gap to under 20%, or ideally achieving parity with normal mode.
@@ -109,7 +111,7 @@ SGLang's chunked prefill technique is designed to manage requests with long cont
 As illustrated in the figure, consider two input sequences, `seq_a` and `seq_b`, each with a context length of 6,000. The maximum chunk size for chunk prefill is 8192, while the required split-KV size for deterministic attention is 2,048. Each sequence can be partitioned into three smaller units (`a1` to `a3` and `b1` to `b3`), with lengths of 2,048, 2,048, and 1,904, respectively. If these smaller units remain intact during chunk prefilling, then they can be processed by the same streaming multiprocessor (SM) of the attention kernel and lead to deterministic behavior.
 
 
-<img src="/images/blog/deterministic/chunked_prefill.png" style="width: 40vw; min-width: 300px;" />
+<img src="/images/blog/deterministic/chunked_prefill.png" style="width: 30vw; min-width: 200px;" />
 
 
 The standard chunking strategy operates on a "best-effort" principle.  For instance, this strategy might generate a `chunk_1` of 8,192 tokens, and in doing so, it may split the `b2` unit of `seq_b`. When this happens, the tokens of `b2` are not processed by the same SM. To address this, we adapted the chunking logic to **align the truncation point with an integer multiple of the split_kv_size**. This adjustment ensures that the processing of `b2` is deferred to a subsequent chunk, allowing it to be computed as a complete unit by the attention kernel. 
