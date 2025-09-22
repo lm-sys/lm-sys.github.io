@@ -166,7 +166,8 @@ Our future efforts will focus on enhancing deterministic inference by addressing
 - **True On-Policy RL**: We plan to further integrate deterministic inference into reinforcement learning frameworks (e.g., [slime](https://github.com/THUDM/slime)) to enable reproducible sampling, with the ultimate goal of achieving true on-policy training.
 - **Enhancing Radix Cache Functionality**: We will improve the radix tree to enable compatibility with a wider variety of attention kernels, moving beyond current limitation to the FlashAttention 3 backend.
 - **Tensor Parallelism**: TP1 and TP2 are deterministic due to consistent floating-point addition order; larger TP setups require modifications to reduce kernels for determinism.
-- A roadmap for deterministic inference features can be found in [this issue](https://github.com/sgl-project/sglang/issues/10278). 
+- **FlexAttention Integration**: Besides currently supported attention backends, we plan to extend our support of deterministic inference to FlexAttention in the future.
+- A **roadmap** for deterministic inference features can be found in [this issue](https://github.com/sgl-project/sglang/issues/10278). 
 
 ## Acknowledgement
 We would like to extend our heartfelt gratitude to the following teams and collaborators:
