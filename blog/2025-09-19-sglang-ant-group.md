@@ -16,8 +16,7 @@ This report outlines the practices we used to reach that goal. We introduce a ha
 # Challenges with H20
 
 ## Why H20 Matters
-H20 GPUs are widely available, enabling Ant Group to operate clusters with tens of thousands of GPUs.
-At this scale, even a **10% throughput improvement** can translate into **millions of RMB in daily cost savings**.
+H20 GPUs are widely available, enabling Ant Group to operate clusters at very large scale. At this level, even a modest throughput improvement can translate into significant daily cost savings.
 
 ## Comparison: H20 vs. H800
 
@@ -54,12 +53,12 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 #### Observation
 - MLA is costlier than MHA for long sequences.
-- MOE latency was unexpectedly high despite lower computation
+- MoE latency was unexpectedly high despite lower computation
 - Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
 
 #### Solution
 - [MHA/MLA](https://github.com/sgl-project/sglang/pull/9551): Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
-- [MOE](https://github.com/sgl-project/sglang/pull/10567): Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
+- [MoE](https://github.com/sgl-project/sglang/pull/10567): Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
 - [fused_qkv_a_proj_with_mqa](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
 ### Decode
