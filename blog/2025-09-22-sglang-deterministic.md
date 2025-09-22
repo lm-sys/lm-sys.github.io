@@ -77,7 +77,7 @@ CUDA graphs can accelerate the inference process by consolidating multiple kerne
 
 We measured end-to-end latency for both non-deterministic and deterministic modes using three common RL rollout workloads (256 requests with varying input/output lengths).
 
-Deterministic inference is generally usable, with most slowdowns ranging from 25% to 45%, and average slowdown of FlashInfer and FlashAttention 3 backends being only 34.35%.  The majority of this overhead comes from unoptimized batch-invariant kernels (matrix multiplication and attention), indicating significant room for performance improvements.
+Deterministic inference is generally usable, with most slowdowns ranging from 25% to 45%, and average slowdown of FlashInfer and FlashAttention 3 backends being 34.35%. The majority of this overhead comes from unoptimized batch-invariant kernels (matrix multiplication and attention), indicating significant room for performance improvements.
 
 | Attention Backend | Mode | Input 1024 Output 1024| Input 4096 Output 4096 | Input 8192 Output 8192 | 
 | --- | --- | --- | --- | --- |
