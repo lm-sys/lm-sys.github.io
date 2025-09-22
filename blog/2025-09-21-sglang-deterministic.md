@@ -26,7 +26,7 @@ Key enhancements include:
 - **Implementation of batch-invariant attention kernels** with fixed split-KV size. Multiple backends are supported, including FlashInfer, FlashAttention 3, and Triton.
 - **Full compatibility with common inference features**, such as chunked prefill, CUDA graph, radix cache, all of which remain supported when deterministic inference is enabled.
 - **Expose a per-request seed** in sampling arguments, allowing users to enable deterministic inference even when temperature > 0.
-- **Better performance**: Compared with the slowdown (61.5%) in TML’s blog, we can reduce our slowdown to 27.2% in best case and 55.1% in worst case. 
+- **Better performance**: By leveraging the power of CUDA graphs, the throughput of deterministic inference can be boosted by 2.79x. Compared with the slowdown (61.5%) in TML’s blog, we can reduce our slowdown to 27.2% in best case and 55.1% in worst case. 
 
 
 ## Results
@@ -44,12 +44,12 @@ Here are the results from 50 sampling trials. The numbers indicate the count of 
 
 | Attention Backend | Mode | Single Test | Mixed Test (P1/P2/Long) | Prefix Test (prefix_len=1/511/2048/4097) | 
 | --- | --- | --- | --- | --- |
-| FlashInfer | Normal | 4| 3/3/2 | 5/8/18/2 |
-| FlashInfer | Deterministic | 1 | 1/1/1 | 1/1/1/1 |
-| FA3 | Normal | 3 | 3/2/2 | 4/4/10/1 |
-| FA3 | Deterministic | 1 | 1/1/1 | 1/1/1/1 |
-| Triton | Normal | 3 | 2/3/1 | 5/4/13/2 |
-| Triton | Deterministic | 1 | 1/1/1 | 1/1/1/1 |
+| FlashInfer | Normal | 4| 3 / 3 / 2 | 5 / 8 / 18 / 2 |
+| FlashInfer | Deterministic | 1 | 1 / 1 / 1 | 1 / 1 / 1 / 1 |
+| FA3 | Normal | 3 | 3 / 2 / 2 | 4 / 4 / 10 / 1 |
+| FA3 | Deterministic | 1 | 1 / 1 / 1 | 1 / 1 / 1 / 1 |
+| Triton | Normal | 3 | 2 / 3 / 1 | 5 / 4 / 13 / 2 |
+| Triton | Deterministic | 1 | 1 / 1 / 1 | 1 / 1 / 1 / 1 |
 ---
 <small>*Tested on QWen3-8B</small>
 
@@ -57,6 +57,27 @@ Here are the results from 50 sampling trials. The numbers indicate the count of 
 
 
 ### Measuring Performance 
+
+
+#### CUDA Graphs Acceleration
+
+CUDA graphs can accelerate the inference process by consolidating multiple kernel launches into a single launch. Our evaluation compared the total throughput of deterministic inference with and without CUDA graphs enabled. The test workload consisted of 16 requests, each with an input length of 1024 and an output length of 1024. The results show an at least 2.79x speedup across all attention kernels when CUDA graphs is utilized.
+
+| Attention Backend | CUDA Graph | Throughput (tokens/s) |
+| --- | --- | --- |
+| FlashInfer | Disabled | 441.73 |
+| FlashInfer | Enabled | 1245.51 (2.82x) |
+| FA3 | Disabled | 447.64 |
+| FA3 | Enabled | 1247.64 (2.79x) |
+| Triton | Disabled | 419.64 |
+| Triton | Enabled | 1228.36 (2.93x) |
+---
+<small>*Setup: QWen3-8B, TP1, H100 80GB  </small>
+
+<small>*We disabled radix cache for all performance benchmarks since FlashInfer and Triton Radix Cache support is still in progress. </small>
+
+
+#### RL Workload
 
 We measured end-to-end latency for both non-deterministic and deterministic modes using three common RL rollout workloads (256 requests with varying input/output lengths).
 
