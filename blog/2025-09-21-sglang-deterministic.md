@@ -5,7 +5,7 @@ date: "September 23, 2025"
 previewImg: /images/blog/deterministic/chunked_prefill.png
 ---
 
-This post highlights our initial efforts to achieve deterministic inference in SGLang. By integrating batch invariant kernels released by Thinking Machines Lab, as well as attention kernels and sampling operators, we have **enabled deterministic inference** while maintaining compatibility with crucial features, including **chunked prefill**, **CUDA graphs**, **radix cache**, and **non-greedy sampling**. 
+This post highlights our initial efforts to achieve deterministic inference in SGLang. By integrating batch invariant kernels released by Thinking Machines Lab, as well as customized attention kernels and sampling operators, we have **enabled deterministic inference** while maintaining compatibility with crucial features, including **chunked prefill**, **CUDA graphs**, **radix cache**, and **non-greedy sampling**. 
 
 ## Why Deterministic Inference Matters
 
@@ -56,10 +56,7 @@ Here are the results from 50 sampling trials. The numbers indicate the count of 
 <small>* Cuda graph, chunked prefill are enabled. Radix cache is disabled for Flashinfer and Triton since their support is still in progress. </small>
 
 
-### Measuring Performance 
-
-
-#### CUDA Graphs Acceleration
+### CUDA Graph Acceleration 
 
 CUDA graphs can accelerate the inference process by consolidating multiple kernel launches into a single launch. Our evaluation compared the total throughput of deterministic inference with and without CUDA graphs enabled. The test workload consisted of 16 requests, each with an input length of 1024 and an output length of 1024. The results show an at least 2.79x speedup across all attention kernels when CUDA graphs is utilized.
 
@@ -76,8 +73,7 @@ CUDA graphs can accelerate the inference process by consolidating multiple kerne
 
 <small>*We disabled radix cache for all performance benchmarks since FlashInfer and Triton Radix Cache support is still in progress. </small>
 
-
-#### RL Workload
+### Measuring RL Performance
 
 We measured end-to-end latency for both non-deterministic and deterministic modes using three common RL rollout workloads (256 requests with varying input/output lengths).
 
@@ -102,7 +98,8 @@ We acknowledge that deterministic inference is significantly slower than normal 
 
 ## Usage
 
-Environment Setup
+### Environment Setup
+
 To set up the environment, install SGLang from source:
 ```bash
 # Use the latest main branch
@@ -113,7 +110,8 @@ cd sglang
 pip install --upgrade pip
 pip install -e "python[all]"
 ```
-Launching the Server
+### Launching the Server
+
 SGLang supports deterministic inference on multiple models. In the example below, we demonstrate using Qwen3-8B, but the same command works with other supported models by adjusting the --model-path argument. 
 
 ```bash
