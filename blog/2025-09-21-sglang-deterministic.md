@@ -26,13 +26,13 @@ Key enhancements include:
 - **Implementation of batch-invariant attention kernels** with fixed split-KV size. Multiple backends are supported, including FlashInfer, FlashAttention 3, and Triton.
 - **Full compatibility with common inference features**, such as chunked prefill, CUDA graph, radix cache, all of which remain supported when deterministic inference is enabled.
 - **Expose a per-request seed** in sampling arguments, allowing users to enable deterministic inference even when temperature > 0.
-
+- **Better performance**: Compared with the slowdown (61.5%) in TML’s blog, we can reduce our slowdown to 27.2% in best case and 55.1% in worst case. 
 
 
 ## Results
 
 
-### I: Verifying Deterministic Behavior
+### Verifying Deterministic Behavior
 
 We introduce [a deterministic test suite](https://github.com/sgl-project/sglang/blob/f1d789231896da438749b395f7bf007a5b0819c0/python/sglang/test/test_deterministic.py) to verify whether inference results remain consistent under different batching conditions. The test covers three subtests, progressing from simple to more challenging:
 
@@ -53,9 +53,10 @@ Here are the results from 50 sampling trials. The numbers indicate the count of 
 ---
 <small>*Tested on QWen3-8B</small>
 
+<small>* Cuda graph, chunked prefill are enabled. Radix cache is disabled for Flashinfer and Triton since their support is still in progress. </small>
 
 
-### II: Measuring Performance 
+### Measuring Performance 
 
 We measured end-to-end latency for both non-deterministic and deterministic modes using three common RL rollout workloads (256 requests with varying input/output lengths).
 
@@ -108,17 +109,17 @@ python3 -m sglang.launch_server \
 
 SGLang's chunked prefill technique is designed to manage requests with long contexts. However, its default chunking strategy violates the determinism requirement for attention kernels.  
 
-As illustrated in the figure, consider two input sequences, `seq_a` and `seq_b`, each with a context length of 6,000. The maximum chunk size for chunk prefill is 8192, while the required split-KV size for deterministic attention is 2,048. Each sequence can be partitioned into three smaller units (`a1` to `a3` and `b1` to `b3`), with lengths of 2,048, 2,048, and 1,904, respectively. If these smaller units remain intact during chunk prefilling, then they can be processed by the same streaming multiprocessor (SM) of the attention kernel and lead to deterministic behavior.
+As illustrated in the figure, consider two input sequences, `seq_a` and `seq_b`, each with a context length of 6,000. The maximum chunk size for chunk prefill is 8192, while the required split-KV size for deterministic attention is 2,048. Each sequence can be partitioned into three smaller units (`a1` to `a3` and `b1` to `b3`), with lengths of 2,048, 2,048, and 1,904, respectively. If these smaller units remain intact during chunk prefilling, then they can be processed by the same attention kernel and lead to deterministic reduction behavior.
 
 
 <img src="/images/blog/deterministic/chunked_prefill.png" style="width: 30vw; min-width: 200px;" />
 
 
-The standard chunking strategy operates on a "best-effort" principle.  For instance, this strategy might generate a `chunk_1` of 8,192 tokens, and in doing so, it may split the `b2` unit of `seq_b`. When this happens, the tokens of `b2` are not processed by the same SM. To address this, we adapted the chunking logic to **align the truncation point with an integer multiple of the split_kv_size**. This adjustment ensures that the processing of `b2` is deferred to a subsequent chunk, allowing it to be computed as a complete unit by the attention kernel. 
+The standard chunking strategy operates on a "best-effort" principle. In this example, this strategy tries to generate a `chunk_1` of 8,192 tokens by splitting the `b2` unit of `seq_b` into two smaller parts. This can cause inconsistent truncation points since the length of `b2` after splitting depends on the length of `seq_a`. To address this, we adapted the chunking logic to **align the truncation point with an integer multiple of the split_kv_size**. This adjustment ensures that the processing of `b2` is deferred to a subsequent chunk, allowing it to be computed as a complete unit by the attention kernel. 
 
 
 ### Reproducible Non-Greedy Sampling
-To extend determinism beyond greedy decoding, we introduce a new sampling function: multinomial_with_seed.
+To extend determinism beyond greedy decoding, we introduce a new sampling function: `multinomial_with_seed`.
 
 Instead of relying on `torch.multinomial`, which is inherently nondeterministic under batching, this operator perturbs logits with Gumbel noise generated from a **seeded hash function**. As a result, the same `(inputs, seed)` pair always yields the same sample, even when temperature > 0.
 
@@ -143,8 +144,7 @@ Our future efforts will focus on enhancing deterministic inference by addressing
 
 ## Acknowledgement
 We would like to extend our heartfelt gratitude to the following teams and collaborators:
-- **SGLang team and community**: Baizhou Zhang, Biao He, Qiaolin Yu, Xinyuan Tong, Ke Bao, Yineng Zhang, Ying Sheng, Lianmin Zheng and many others
+- **SGLang team and community**: Baizhou Zhang, Biao He, Qiaolin Yu, Xinyuan Tong, Ke Bao, Yineng Zhang, Chi Zhang, Ying Sheng, Lianmin Zheng and many others
 - **Flashinfer team and community**:  Wenxuan Tan, Yilong Zhao, Zihao Ye
 - **Slime team and community**: Yusheng Su, Zilin Zhu
 - **Thinking Machines Lab**: for their awesome blog and batch_invariant_ops library
-##
