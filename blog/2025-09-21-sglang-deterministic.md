@@ -1,7 +1,7 @@
 ---
 title: "Enabling Deterministic Inference for SGLang"
 author: "The SGLang Team"
-date: "September 21, 2025"
+date: "September 23, 2025"
 previewImg: /images/blog/deterministic/chunked_prefill.png
 ---
 
