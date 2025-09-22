@@ -139,9 +139,9 @@ The standard chunking strategy operates on a "best-effort" principle. In this ex
 ### Attention Backends
 
 Attention kernel is an important part of determinism. For different attention backends, we modified them in different ways to satisfy their usage requirements.
-- For Flashinfer backend, we utilize the `fixed_split_size` and `disable_kv_split` arguments from [batch invariant FA2 kernels](https://github.com/flashinfer-ai/flashinfer/pull/1675) to fix split sizes during kernel planning. ([PR link](https://github.com/sgl-project/sglang/pull/10645))
+- For Flashinfer backend, we utilize the `fixed_split_size` and `disable_kv_split` arguments from [batch invariant FA2 kernels](https://github.com/flashinfer-ai/flashinfer/pull/1675) to fix split sizes during kernel planning. Truncation of chunked prefill is aligned to the prefill split size. ([PR link](https://github.com/sgl-project/sglang/pull/10645))
 - For FlashAttention-3 backend, num-splits of flash attention kernel are fixed to 1 to ensure determinism. ([PR link](https://github.com/sgl-project/sglang/pull/10651))
-- For Triton backend, we fix the split size of decoding, and align the truncation of chunked prefill as mentioned in last section. ([PR link](https://github.com/sgl-project/sglang/pull/10694))
+- For Triton backend, we fix the split size of decoding, and manually set the alignment size of chunked prefill. ([PR link](https://github.com/sgl-project/sglang/pull/10694))
 
 
 ### Reproducible Non-Greedy Sampling
