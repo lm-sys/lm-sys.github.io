@@ -166,4 +166,4 @@ We would like to extend our heartfelt gratitude to the following teams and colla
 - **SGLang team and community**: Baizhou Zhang, Biao He, Qiaolin Yu, Xinyuan Tong, Ke Bao, Yineng Zhang, Chi Zhang, Ying Sheng, Lianmin Zheng and many others
 - **Flashinfer team and community**:  Wenxuan Tan, Yilong Zhao, Zihao Ye
 - **Slime team and community**: Yusheng Su, Zilin Zhu
-- **Thinking Machines Lab**: for their awesome blog and batch_invariant_ops library
+- **Thinking Machines Lab**: for their awesome [blog](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) and [batch_invariant_ops library](https://github.com/thinking-machines-lab/batch_invariant_ops)
