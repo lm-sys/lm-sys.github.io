@@ -26,7 +26,7 @@ Key enhancements include:
 - **Implementation of batch-invariant attention kernels** with fixed split-KV size. Multiple backends are supported, including FlashInfer, FlashAttention 3, and Triton.
 - **Full compatibility with common inference features**, such as chunked prefill, CUDA graph, radix cache, all of which remain supported when deterministic inference is enabled.
 - **Expose a per-request seed** in sampling arguments, allowing users to enable deterministic inference even when temperature > 0.
-- **Better performance**: By leveraging the power of CUDA graphs, the throughput of deterministic inference can be boosted by 2.79x. Compared with the slowdown (61.5%) in TML’s blog, we can reduce our slowdown to 27.2% in best case and 55.1% in worst case. 
+- **Better performance**: Compared to the **61.5%** slowdown reported in TML’s blog, SGLang achieves an average slowdown of only **34.35%** with the FlashInfer and FlashAttention 3 backends.
 
 
 ## Results
