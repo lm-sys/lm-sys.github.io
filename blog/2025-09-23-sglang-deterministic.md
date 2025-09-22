@@ -146,7 +146,7 @@ Instead of relying on `torch.multinomial`, which is inherently nondeterministic 
 This modification enables **deterministic multinomial sampling** while preserving the stochasticity required by reinforcement learning rollouts.
 
 
-### RL Framework Integration (Slime)
+### RL Framework Integration (slime)
 
 We [integrated](https://github.com/THUDM/slime/pull/361) deterministic inference with temperature > 0 into slime’s GRPO training recipe. In preliminary experiments, repeated RL training runs produced **identical rollouts response and loss value for the first iterations**, confirming that the rollout process itself is deterministic. This establishes a strong foundation for **true on-policy RL training**, where reproducibility of rollouts is critical for debugging and fair comparison of algorithms.
 
@@ -165,5 +165,5 @@ Our future efforts will focus on enhancing deterministic inference by addressing
 We would like to extend our heartfelt gratitude to the following teams and collaborators:
 - **SGLang team and community**: Baizhou Zhang, Biao He, Qiaolin Yu, Xinyuan Tong, Ke Bao, Yineng Zhang, Chi Zhang, Ying Sheng, Lianmin Zheng and many others
 - **Flashinfer team and community**:  Wenxuan Tan, Yilong Zhao, Zihao Ye
-- **Slime team and community**: Yusheng Su, Zilin Zhu
+- **slime team and community**: Yusheng Su, Zilin Zhu
 - **Thinking Machines Lab**: for their awesome [blog](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) and [batch_invariant_ops library](https://github.com/thinking-machines-lab/batch_invariant_ops)
