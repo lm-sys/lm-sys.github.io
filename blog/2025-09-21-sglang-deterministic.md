@@ -112,7 +112,7 @@ pip install -e "python[all]"
 ```
 ### Launching the Server
 
-SGLang supports deterministic inference on multiple models. In the example below, we demonstrate using Qwen3-8B, but the same command works with other supported models by adjusting the --model-path argument. 
+SGLang supports deterministic inference across multiple models. For example, with Qwen3-8B you only need to add the `--enable-deterministic-inference` flag when launching the server:
 
 ```bash
 python3 -m sglang.launch_server \
