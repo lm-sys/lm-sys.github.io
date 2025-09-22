@@ -26,7 +26,7 @@ Key enhancements include:
 - **Implementation of batch-invariant attention kernels** with fixed split-KV size. Multiple backends are supported, including FlashInfer, FlashAttention 3, and Triton.
 - **Full compatibility with common inference features**, such as chunked prefill, CUDA graph, radix cache, all of which remain supported when deterministic inference is enabled.
 - **Expose a per-request seed** in sampling arguments, allowing users to enable deterministic inference even when temperature > 0.
-- **Better performance**: Compared to the **61.5%** slowdown reported in TML’s blog, SGLang achieves an average slowdown of only **34.35%** with the FlashInfer and FlashAttention 3 backends.
+- **Better performance**: Compared to the **61.5%** slowdown reported in TML’s blog, SGLang achieves an average slowdown of only **34.35%** with the FlashInfer and FlashAttention 3 backends. With CUDA graphs, 2.8x speedup can be achieved compared to the minimal integration.
 
 
 ## Results
@@ -135,6 +135,13 @@ As illustrated in the figure, consider two input sequences, `seq_a` and `seq_b`,
 
 
 The standard chunking strategy operates on a "best-effort" principle. In this example, this strategy tries to generate a `chunk_1` of 8,192 tokens by splitting the `b2` unit of `seq_b` into two smaller parts. This can cause inconsistent truncation points since the length of `b2` after splitting depends on the length of `seq_a`. To address this, we adapted the chunking logic to **align the truncation point with an integer multiple of the split_kv_size**. This adjustment ensures that the processing of `b2` is deferred to a subsequent chunk, allowing it to be computed as a complete unit by the attention kernel. 
+
+### Attention Backends
+
+Attention kernel is an important part of determinism. For different attention backends, we modified them in different ways to satisfy their usage requirements.
+- For Flashinfer backend, we utilize the `fixed_split_size` and `disable_kv_split` arguments from [batch invariant FA2 kernels](https://github.com/flashinfer-ai/flashinfer/pull/1675) to fix split sizes during kernel planning. ([PR link](https://github.com/sgl-project/sglang/pull/10645))
+- For FlashAttention-3 backend, num-splits of flash attention kernel are fixed to 1 to ensure determinism. ([PR link](https://github.com/sgl-project/sglang/pull/10651))
+- For Triton backend, we fix the split size of decoding, and align the truncation of chunked prefill as mentioned in last section. ([PR link](https://github.com/sgl-project/sglang/pull/10694))
 
 
 ### Reproducible Non-Greedy Sampling
