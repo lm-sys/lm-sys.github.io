@@ -4,9 +4,6 @@ author: "Haohui Mai, Lei Zhang"
 date: "September 21, 2025"
 previewImg: /images/blog/petit/petit-facade.png
 ---
-
-Haohui Mai (CausalFlow.ai), Lei Zhang (AMD)
-
 ## Introduction
 
 As frontier large language models (LLMs) continue scaling to unprecedented sizes, they demand increasingly more compute power and memory bandwidth from GPUs. Both GPU manufacturers and model developers are shifting toward low-precision floating-point formats. FP4 (4-bit floating point) quantization has emerged as a particularly compelling solution—for instance, FP4-quantized [Llama 3.3 70B](https://huggingface.co/nvidia/Llama-3.3-70B-Instruct-FP4) models achieve a 3.5x reduction in model size while maintaining minimal quality degradation on benchmarks like [MMLU](https://arxiv.org/abs/2009.03300).
