@@ -143,13 +143,10 @@ Leveraging this, we structure their interaction as a signal-synchronized Produce
 
 To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, we developed a lightweight workflow named [**DeepXTrace**](https://github.com/antgroup/DeepXTrace):  
 
-- **Metrics Collection:** Each node periodically records communication and computation metrics, which are aggregated to Rank 0 every 10 seconds for centralized logging.  
-
-- **Anomaly Detection:** Rank 0 constructs an `N×N` latency matrix and applies z-score analysis to detect anomalies across rows, columns, and individual points.  
-
-- **Root Cause Analysis:** Anomalies are categorized into computation delays, imbalanced expert distribution, or communication bottlenecks.  
-
-- **Visualization (Web UI):** Results are visualized as a heatmap, making it easy to quickly spot slow ranks or links and guide targeted optimization.  
+- **Metrics Collection**: Each node periodically records communication and computation metrics, which are aggregated to Rank 0 every 10 seconds for centralized logging.  
+- **Anomaly Detection**: Rank 0 constructs an `N×N` latency matrix and applies z-score analysis to detect anomalies across rows, columns, and individual points.  
+- **Root Cause Analysis**: Anomalies are categorized into computation delays, imbalanced expert distribution, or communication bottlenecks.  
+- **Visualization (Web UI)**: Results are visualized as a heatmap, making it easy to quickly spot slow ranks or links and guide targeted optimization.  
 
 ## Performance: Make H20 Great in Real World Inference
 
