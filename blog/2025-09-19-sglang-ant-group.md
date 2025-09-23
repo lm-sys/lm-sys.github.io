@@ -5,7 +5,7 @@ date: "September 19, 2025"
 previewImg: /images/blog/ant-group-prac/logo.svg
 ---
 
-# Introduction
+## Introduction
 Operationalizing scaled Mixture-of-Experts (MoE) models such as DeepSeek-R1 requires a careful balance of latency, throughput, and cost. The challenge is especially acute on hardware with asymmetric performance profiles—for example, the H20 GPU, which offers high memory bandwidth but comparatively low compute throughput. Our goal was to design a serving stack that meets the stringent SLAs typically achieved on high-end GPUs while leveraging the H20’s cost advantages.
 This report outlines the practices we used to reach that goal. We introduce a hardware-aware deployment strategy that departs from common practice, together with a set of systems and kernel-level optimizations:
 - Hardware-aware parallelization: single-node TP-8 for prefill and small-scale EP-16 for decode, meeting latency targets and reducing fault domains.
@@ -13,12 +13,12 @@ This report outlines the practices we used to reach that goal. We introduce a ha
 - Scheduling and load balancing: Single-Batch Overlap (SBO) to boost small-batch throughput, plus an asynchronous Expert Affinity Load Balancer to minimize cross-node communication.
 - Lightweight observability: a purpose-built diagnostics stack to quickly identify and resolve bottlenecks in distributed MoE serving.
 
-# Challenges with H20
+## Challenges with H20
 
-## Why H20 Matters
+### Why H20 Matters
 H20 GPUs are widely available, enabling Ant Group to operate clusters at very large scale. At this level, even a modest throughput improvement can translate into significant daily cost savings.
 
-## Comparison: H20 vs. H800
+### Comparison: H20 vs. H800
 
 | Spec                | H20-96G     | H800-80G   |
 |---------------------|-------------|------------|
@@ -33,39 +33,39 @@ H20 offers **larger memory (96 GB)**, **higher memory bandwidth (4000 GB/s)**, a
 
 Crucially, inference—especially **decode phase**—is often **memory-bound**, making H20’s **high memory bandwidth and capacity** particularly advantageous. Building on these strengths, we designed a series of optimizations to **maximize inference throughput**.
 
-# Solution: Optimizations and Strategies on H20
+## Solution: Optimizations and Strategies on H20
 
-## Deployment Strategy
+### Deployment Strategy
 
 ![deploy.svg](/images/blog/ant-group-prac/deploy.svg)
 
-### Prefill
+#### Prefill
 - **SLA:** Prefill is compute-intensive, and multi-node DP+EP can inflate time-to-first-token (TTFT), often violating SLAs. A single-node TP setup keeps TTFT within target.
 - **Elastic Scaling:** Prefill must scale in and out with the KV cache. Single-node TP makes scaling straightforward, while multi-node DP+EP complicates resource and cache management.
 
-### Decode
+#### Decode
 - **Hardware Characteristics:** H20 trades compute for larger memory and higher NVLink bandwidth(compared with H800), enabling efficient KV-cache use and keeping MoE communication on high-bandwidth NVLink. 
 - **Fault Radius:** Smaller EP configurations limit the impact of decoding or GPU failures. With EP high-availability (HA) still maturing, smaller EP is safer and more reliable in production.
 
-## Optimizations
+### Optimizations
 
-### Prefill
+#### Prefill
 
 ![prefill_overview.svg](/images/blog/ant-group-prac/prefill_overview.svg)
 
-#### Observation
+##### Observation
 - MLA is costlier than MHA for long sequences.
 - MoE latency was unexpectedly high despite lower computation
 - Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
 
-#### Solution
+##### Solution
 - [MHA/MLA](https://github.com/sgl-project/sglang/pull/9551): Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
 - [MoE](https://github.com/sgl-project/sglang/pull/10567): Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
 - [fused_qkv_a_proj_with_mqa](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
-### Decode
-#### Load Balance
-##### [Expert Affinity EPLB](https://github.com/antgroup-infra/sglang/pull/2)
+#### Decode
+##### Load Balance
+###### [Expert Affinity EPLB](https://github.com/antgroup-infra/sglang/pull/2)
 
 ![eplb.png](/images/blog/ant-group-prac/eplb.svg)
 
@@ -74,7 +74,7 @@ Standard EPLB balances intra-GPU loads but overlooks correlations between expert
 We extend EPLB by tracking **top-k expert co-activations** to build an **expert affinity matrix**. 
 After intra-GPU load balancing, we adjust placement so that **highly co-activated experts** are kept within the same node, thereby reducing cross-node communication and delivering an additional **~5% performance gain** over vanilla EPLB.  
 
-##### [Asynchronous Dynamic Load Adjustment](https://github.com/sgl-project/sglang/pull/8529)
+###### [Asynchronous Dynamic Load Adjustment](https://github.com/sgl-project/sglang/pull/8529)
 
 ![async_eplb.svg](/images/blog/ant-group-prac/async_eplb.svg)
 
@@ -85,9 +85,9 @@ We decouple **load balancing** from **inference**, allowing both to run in paral
 To minimize the impact of expert migration, we adopt a **hierarchical transfer strategy**, which ensures inference remains seamless during transfers. 
 This approach achieves performance that matches or exceeds static EPLB while consistently maintaining a **>70% load balance ratio**.
 
-#### Computation
+##### Computation
 
-##### [FP8 MLA](https://github.com/deepseek-ai/FlashMLA/pull/82)
+###### [FP8 MLA](https://github.com/deepseek-ai/FlashMLA/pull/82)
 
 BF16 FlashMLA achieves good performance but leaves optimization headroom, as memory transfers and compute are not fully overlapped and shared-memory usage remains heavy. Previous FP8 implementations (#54) improved throughput but still suffered from pipeline inefficiencies, layout mismatches, and coarse-grained tiling that limited performance and accuracy.  
 
@@ -96,7 +96,7 @@ Two warp groups pipeline `QK^T` and `PV` to minimize shared-memory pressure and 
 Compared to BF16 FlashMLA, this yields **~70% speedup** by introducing FP8 `Q/KV`, `WGMMA FP8`, shared-memory reallocation, and removing redundant operations. 
 Over previous FP8 (#54), it delivers an additional **~5% gain** through a refined `TMA–WGMMA` pipeline, ping-pong buffers (`sP0/sP1`, `sVt0/sVt1`), 128-bit `STSM/LDSM` for layout fixes, and fine-grained `Q@K` tiling with BF16 ROPE, fully aligned with the Hopper programming model.  
 
-##### [SwapAB GEMM](https://github.com/deepseek-ai/DeepGEMM/pull/192)
+###### [SwapAB GEMM](https://github.com/deepseek-ai/DeepGEMM/pull/192)
 
 
 ![swapAB.png](/images/blog/ant-group-prac/swapAB.svg)
@@ -108,9 +108,9 @@ As a result, boundary inefficiency, load imbalance, and high shared-memory press
 We introduce **swapAB**, which remaps the problem’s `M` dimension onto WGMMA’s `N` dimension.
 This enables smaller `BLOCK_M (32)` tiling for finer granularity and better resource utilization.
 
-#### SBO (Single-batch-overlap)
+##### SBO (Single-batch-overlap)
 
-##### Why not TBO
+###### Why not TBO
 
 The performance benefit of TBO (Two-batch-overlap) in the Decode phase is limited on H20:
 
@@ -118,7 +118,7 @@ The performance benefit of TBO (Two-batch-overlap) in the Decode phase is limite
 - **SLA limitations on H20**: At these large batch sizes, low-compute hardware cannot meet SLA targets for TPOT, making TBO impractical in online serving.
 
 
-##### How SBO works
+###### How SBO works
 
 ![sbo.png](/images/blog/ant-group-prac/sbo.svg)
 
@@ -136,7 +136,7 @@ Leveraging this, we structure their interaction as a signal-synchronized Produce
 - The Down GEMM atomically increments the signal's value after completing parts of the computation.
 - The Combine Send polls this signal unit and sends the corresponding `block_m` tokens once the value reaches a threshold.
 
-## Observability
+### Observability
 
 ![deepx.svg](/images/blog/ant-group-prac/deepX.svg)
 
@@ -150,13 +150,13 @@ To identify and diagnose communication slowdowns in MoE models under expert-para
 
 - **Visualization (Web UI):** Results are visualized as a heatmap, making it easy to quickly spot slow ranks or links and guide targeted optimization.  
 
-# Performance: Make H20 Great in Real World Inference
+## Performance: Make H20 Great in Real World Inference
 
 **SGLang version**: `v0.5.2`
 
-## Prefill
+### Prefill
 
-### Environment
+#### Environment
 
 **Deployment strategy**: The Prefill instance is deployed on a 1-node setup (8× H20 GPUs). The following configuration serves as the Base (BF16 + MTP):
 ```shell
@@ -175,7 +175,7 @@ To identify and diagnose communication slowdowns in MoE models under expert-para
 ```
 **Metrics**: We obtain the `Input token throughput` directly from the return results of `sglang.bench_serving`, and normalize the results to a per-GPU basis.
 
-### Performance improvements 
+#### Performance improvements 
 ![prefill_perf.png](/images/blog/ant-group-prac/prefill_perf.png)
 
 **Sequence Length**  
@@ -187,8 +187,8 @@ Throughput generally rises from 1K to 2K as overhead is amortized, then decrease
 - **QKV**: Delivers additional throughput improvements, especially at longer sequence lengths, and helps narrow the performance gap between short and long sequences.  
 - **Fa3-FP8**: By introducing FP8 quantization in the attention module, throughput is further boosted, most notably at 2K and 4K sequence lengths.  
 
-## Decode
-### Environment
+### Decode
+#### Environment
 **Deployment strategy**: The Decode instance is deployed on a 2-node setup (16× H20 GPUs). The following configuration serves as the Base (BF16 + MTP):
 ```shell
 --tp-size 16
@@ -212,7 +212,7 @@ Throughput generally rises from 1K to 2K as overhead is amortized, then decrease
 ```
 **Metrics**: During stress testing, batch size is increased step by step. Therefore, raw results from `sglang.bench_serving` do not accurately reflect throughput at a given batch size. Instead, we parse the logs for `Decode batch` entries and compute the median throughput from 100 samples at the same batch size, which we report as the representative value.
 
-### Performance improvements 
+#### Performance improvements 
 ![decode_perf.png](/images/blog/ant-group-prac/decode_perf.png)
 
 **Batch-size**  
@@ -223,7 +223,7 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 - **SwapAB Gemm**: Enables finer-grained tiling to improve boundary efficiency and concurrency. Clear gains at small/medium batches—+8.1% at BS=2 and +7.7% at BS=4—with incremental benefits of ≈2% at larger batches.
 - **SBO**: Boosts resource utilization by overlapping computation with communication. As the batch grows, overlap becomes more effective, delivering **+8%–10%** improvement in the BS=20–56 range.
 
-### Investigation for EP size
+#### Investigation for EP size
 ![ep_size.png](/images/blog/ant-group-prac/ep_size.png)
 
 **Batch-size < 16**  
@@ -232,7 +232,7 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 **Batch-size ≥ 16**  
 **EP16 pulls ahead of EP32**. At larger EP sizes, cross-GPU communication dominates. With DeepEP, ~50% of MoE traffic stays on NVLink at EP16 but only ~25% at EP32, forcing more inter-node transfers and raising latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
 
-### Config for MTP
+#### Config for MTP
 ![mtp_perf.png](/images/blog/ant-group-prac/mtp_perf.png)
 
 **Draft vs. Accept Length**  
@@ -244,7 +244,7 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 - **Small batches:** On low-compute GPUs like the H20, resources are not fully utilized. Even though a higher draft token count reduces the accept length, it still boosts throughput. For example, at BS=1, throughput increases from **43 token/s (MTP=1 1 2)** to **52 token/s (MTP=3 1 4)**, a **~21% gain**.  
 - **Large batches:** With larger batches, the GPU becomes compute-bound. The shorter accept length from higher draft token settings leads to wasted compute and lower performance. At BS=32, throughput drops from **675 token/s (MTP=1 1 2)** to **554 token/s (MTP=3 1 4)**, a **~18% loss**.  
 
-# Tiered Online Inference Serving
+## Tiered Online Inference Serving
 
 Our team powers all inference workloads at Ant Group.  
 To balance **user experience** with **cost efficiency**, we offer **tiered SLA-based services**:
@@ -253,7 +253,7 @@ To balance **user experience** with **cost efficiency**, we offer **tiered SLA-b
 - **InferX Pro:** TTFT < 1.5s, TPOT < 50 ms  
 - **InferX Max:** TTFT < 1s, TPOT < 30 ms  
 
-## Decode Deployment
+### Decode Deployment
 
 ![mtp_latency.png](/images/blog/ant-group-prac/mtp_latency.png)
 
