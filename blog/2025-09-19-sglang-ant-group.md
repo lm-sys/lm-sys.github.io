@@ -37,6 +37,8 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ## Deployment Strategy
 
+![deploy.svg](/images/blog/ant-group-prac/deploy.svg)
+
 ### Prefill
 - **SLA:** Prefill is compute-intensive, and multi-node DP+EP can inflate time-to-first-token (TTFT), often violating SLAs. A single-node TP setup keeps TTFT within target.
 - **Elastic Scaling:** Prefill must scale in and out with the KV cache. Single-node TP makes scaling straightforward, while multi-node DP+EP complicates resource and cache management.
