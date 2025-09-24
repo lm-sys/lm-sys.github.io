@@ -37,7 +37,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ### Deployment Strategy
 
-<img src="/images/blog/ant-group-prac/deploy.svg" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 50%; image-orientation: none;"></img>
+<img src="/images/blog/ant-group-prac/deploy.svg" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 90%; image-orientation: none;"></img>
 
 
 #### Prefill
