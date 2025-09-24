@@ -227,11 +227,8 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 
 <img src="/images/blog/ant-group-prac/ep_size.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 80%; image-orientation: none;"></img>
 
-**Batch-size < 16**  
-**EP32 outperforms EP16**. A larger EP size reduces the number of experts per GPU, which significantly cuts memory access overhead. While sparser expert placement slightly increases communication cost, the memory savings dominate, resulting in higher throughput (e.g., at BS=8, EP32 delivers 293 token/s vs. 278 token/s for EP16).
-
-**Batch-size ≥ 16**  
-**EP16 pulls ahead of EP32**. At larger EP sizes, cross-GPU communication dominates. With DeepEP, ~50% of MoE traffic stays on NVLink at EP16 but only ~25% at EP32, forcing more inter-node transfers and raising latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
+- **Batch-size < 16**: **EP32 outperforms EP16**. A larger EP size reduces the number of experts per GPU, which significantly cuts memory access overhead. While sparser expert placement slightly increases communication cost, the memory savings dominate, resulting in higher throughput (e.g., at BS=8, EP32 delivers 293 token/s vs. 278 token/s for EP16).
+- **Batch-size ≥ 16**: **EP16 pulls ahead of EP32**. At larger EP sizes, cross-GPU communication dominates. With DeepEP, ~50% of MoE traffic stays on NVLink at EP16 but only ~25% at EP32, forcing more inter-node transfers and raising latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
 
 #### Config for MTP
 
@@ -259,8 +256,7 @@ To balance **user experience** with **cost efficiency**, we offer **tiered SLA-b
 
 <img src="/images/blog/ant-group-prac/mtp_latency.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 80%; image-orientation: none;"></img>
 
-All Decode instances are deployed with a **dual-node setup**:  
-**Attention-DP16 + MoE-EP16**.  
+All Decode instances are deployed with a **dual-node setup**: **Attention-DP16 + MoE-EP16**.  
 
 To meet different SLA targets, we tune configurations along the **latency–throughput curve**, primarily adjusting **batch size per GPU** and **MTP settings**.
 
@@ -276,12 +272,12 @@ As noted earlier, our Prefill instances are deployed with single-node TP8.
 To prevent TTFT violations caused by queueing delays, we run two Prefill instances for each model instance. 
 Looking ahead, we plan to support dynamic scaling of Prefill instances to better adapt to workload fluctuations.
 
-# Reproducibility
+## Reproducibility
 Our experiments rely on multiple repositories (SGLang, DeepEP, DeepGEMM, FlashMLA), with several PRs still under review.
 For reproducibility, we will consolidate these into a dedicated test branch and provide a prebuilt image. 
 Both will be made available in the [**antgroup-infra-sglang**](https://github.com/antgroup-infra/sglang/pulls) repository.
 
-# Acknowledgements
+## Acknowledgements
 
 We would like to extend our sincere gratitude to the following teams and collaborators for their invaluable support and contributions:
 
