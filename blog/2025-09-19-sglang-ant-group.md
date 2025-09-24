@@ -260,11 +260,11 @@ All Decode instances are deployed with a **dual-node setup**: **Attention-DP16 +
 
 To meet different SLA targets, we tune configurations along the **latency–throughput curve**, primarily adjusting **batch size per GPU** and **MTP settings**.
 
-| Service Level   | Batch/GPU | Num-steps | Eagle-topk | Draft-tokens |
-|-----------------|-----------|-----------|------------|--------------|
-| **InferX Base** | 48        | 1         | 1          | 2            |
-| **InferX Pro**  | 32        | 1         | 1          | 2            |
-| **InferX Max**  | 12        | 2         | 1          | 3            |
+| Service Level   | Batch-size/GPU | Steps | Eagle-topk | Draft-tokens | Throughput/GPU (tokens/s) |
+|-----------------|----------------|-------|------------|--------------|---------------------------|
+| **InferX Base** | 48             | 1     | 1          | 2            | 714                       |
+| **InferX Pro**  | 32             | 1     | 1          | 2            | 675                       |
+| **InferX Max**  | 12             | 2     | 1          | 3            | 423                       |
 
 ## Prefill Deployment
 
