@@ -282,4 +282,4 @@ Both will be made available in the [**antgroup/sglang**](https://github.com/antg
 We would like to extend our sincere gratitude to the following teams and collaborators for their invaluable support and contributions:
 
 - **SGLang Team and Community** — for their outstanding work on the SGLang framework.  
-- **AntGroup Inference Team** — Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Peipeng Cheng, Fakang Wang, Jianhao Fu.  
+- **AntGroup SCT and Inference Team** — Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Peipeng Cheng, Fakang Wang, Jianhao Fu.  
