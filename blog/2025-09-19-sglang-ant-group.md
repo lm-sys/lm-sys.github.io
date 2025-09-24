@@ -275,7 +275,7 @@ Looking ahead, we plan to support dynamic scaling of Prefill instances to better
 ## Reproducibility
 Our experiments rely on multiple repositories (SGLang, DeepEP, DeepGEMM, FlashMLA), with several PRs still under review.
 For reproducibility, we will consolidate these into a dedicated test branch and provide a prebuilt image. 
-Both will be made available in the [**antgroup-infra-sglang**](https://github.com/antgroup-infra/sglang/pulls) repository.
+Both will be made available in the [**antgroup/sglang**](https://github.com/antgroup/sglang.git) repository.
 
 ## Acknowledgements
 
