@@ -68,7 +68,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 ##### Load Balance
 ###### [Expert Affinity EPLB](https://github.com/antgroup-infra/sglang/pull/2)
 
-<img src="/images/blog/ant-group-prac/eplb.svg" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 50%; image-orientation: none;"></img>
+<img src="/images/blog/ant-group-prac/eplb.svg" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 90%; image-orientation: none;"></img>
 
 Standard EPLB balances intra-GPU loads but overlooks correlations between experts, which often scatters frequently co-activated experts across nodes and increases cross-node communication overhead.    
 
@@ -139,7 +139,7 @@ Leveraging this, we structure their interaction as a signal-synchronized Produce
 
 ### Observability
 
-<img src="/images/blog/ant-group-prac/deepX.svg" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 50%; image-orientation: none;"></img>
+<img src="/images/blog/ant-group-prac/deepX.svg" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 90%; image-orientation: none;"></img>
 
 To identify and diagnose communication slowdowns in MoE models under expert-parallel (EP) deployment, we developed a lightweight workflow named [**DeepXTrace**](https://github.com/antgroup/DeepXTrace):  
 
