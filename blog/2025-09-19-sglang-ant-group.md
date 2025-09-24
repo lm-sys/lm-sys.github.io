@@ -1,6 +1,6 @@
 ---
 title: "Together with SGLang: Best Practices for Serving DeepSeek-R1 on H20-96G"
-author: "Tianyu Zhang, Peng Zhang, Yusong Gao, Yun Zhang"
+author: "Tianyu Zhang*, Peng Zhang*, Yusong Gao, Yun Zhang"
 date: "September 19, 2025"
 previewImg: /images/blog/ant-group-prac/logo.svg
 ---
@@ -61,8 +61,8 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 
 ##### Solution
 - [MHA/MLA](https://github.com/sgl-project/sglang/pull/9551): Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
-- [MoE](https://github.com/sgl-project/sglang/pull/10567): Optimized `b_scale` calculation, refactored input access with TMA, and tuned configurations based on real expert distributions.
-- [fused_qkv_a_proj_with_mqa](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
+- [MoE](https://github.com/sgl-project/sglang/pull/10567): Optimized `b_scale` calculation, refactored input access of `down proj` with TMA, and tuned configurations based on real expert distributions.
+- [qkv](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
 #### Decode
 ##### Load Balance
@@ -235,13 +235,13 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 <img src="/images/blog/ant-group-prac/mtp_perf.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 80%; image-orientation: none;"></img>
 
 **Draft vs. Accept Length**  
-- **MTP=1 1 2** → Accept length ≈ 1.8–1.9  
-- **MTP=2 1 3** → Accept length ≈ 2.4–2.7  
-- **MTP=3 1 4** → Accept length ≈ 2.9–3.3  
+- **(steps=1, topK=1, draft-tokens=2)** → Accept length ≈ 1.8–1.9  
+- **(steps=2, topK=1, draft-tokens=3)** → Accept length ≈ 2.4–2.7  
+- **(steps=3, topK=1, draft-tokens=4)** → Accept length ≈ 2.9–3.3  
 
 **Performance by Batch Size**  
-- **Small batches:** On low-compute GPUs like the H20, resources are not fully utilized. Even though a higher draft token count reduces the accept length, it still boosts throughput. For example, at BS=1, throughput increases from **43 token/s (MTP=1 1 2)** to **52 token/s (MTP=3 1 4)**, a **~21% gain**.  
-- **Large batches:** With larger batches, the GPU becomes compute-bound. The shorter accept length from higher draft token settings leads to wasted compute and lower performance. At BS=32, throughput drops from **675 token/s (MTP=1 1 2)** to **554 token/s (MTP=3 1 4)**, a **~18% loss**.  
+- **Small batches:** On low-compute GPUs like the H20, resources are not fully utilized. Even though a higher draft token count reduces the accept length, it still boosts throughput. For example, at BS=1, throughput increases from **43 token/s (steps=1, topK=1, draft-tokens=2)** to **52 token/s (steps=1, topK=1, draft-tokens=2)**, a **~21% gain**.  
+- **Large batches:** With larger batches, the GPU becomes compute-bound. The shorter accept length from higher draft token settings leads to wasted compute and lower performance. At BS=32, throughput drops from **675 token/s (steps=1, topK=1, draft-tokens=2)** to **554 token/s (steps=1, topK=1, draft-tokens=2)**, a **~18% loss**.  
 
 ## Tiered Online Inference Serving
 
