@@ -1,15 +1,14 @@
 ---
 title: "Towards Deterministic Inference in SGLang and Reproducible RL Training"
 author: "The SGLang Team"
-date: "September 22, 2025"
+date: "September 22, 2025 (Updated on September 24)"
 previewImg: /images/blog/deterministic/logo.png
 ---
 
-**Published**: September 22, 2025  ｜ **Last Updated**: September 24, 2025
-
-<br />
 
 **TL;DR**: This post shares our efforts to enable deterministic inference in SGLang and our collaboration with [slime](https://github.com/THUDM/slime) to work towards reproducible RL training.
+
+<br />
 
 
 Recently, the Thinking Machines Lab published a [blog](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) detailing their findings. Since this blog was published, the industry has responded enthusiastically, eagerly awaiting open-source inference engines to implement stable and usable deterministic inference, or even further, to achieve fully reproducible RL training. Now, SGLang and slime together provide the answer.
