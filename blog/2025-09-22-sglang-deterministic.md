@@ -160,7 +160,7 @@ Attention kernel is an important part of determinism. For different attention ba
 
 
 ### Reproducible Non-Greedy Sampling
-To extend determinism beyond greedy decoding, we introduce a new sampling function: [multinomial_with_seed](https://github.com/sgl-project/sglang/blob/fb1e8acd2954b6267c73a199427976d89887ff0e/python/sglang/srt/layers/sampler.py#L263).
+To extend determinism beyond greedy decoding, we introduce a new sampling function: [multinomial_with_seed](https://github.com/sgl-project/sglang/blob/main/python/sglang/srt/layers/sampler.py#L268).
 
 Instead of relying on `torch.multinomial`, which is inherently nondeterministic under batching, this operator perturbs logits with Gumbel noise generated from a **seeded hash function**. As a result, the same `(inputs, seed)` pair always yields the same sample, even when temperature > 0.
 
