@@ -289,4 +289,4 @@ Leveraging SGLang, we have achieved state-of-the-art serving performance for Dee
 We would like to extend our sincere gratitude to the following teams and collaborators for their invaluable support and contributions:
 
 - **SGLang Team and Community** — for their outstanding work on the SGLang framework.  
-- **AntGroup SCT and Inference Team** — Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Peipeng Cheng, Fakang Wang, Jianhao Fu.  
+- **AntGroup SCT and Inference Team** — Yongfei Xu, Zhe Wang, Qianyu Zhang, Chun Huang, Xi Chen, Peipeng Cheng, Fakang Wang, Jianhao Fu and many others. 
