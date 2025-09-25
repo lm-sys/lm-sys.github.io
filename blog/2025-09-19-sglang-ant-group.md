@@ -13,6 +13,10 @@ This report outlines the practices we used to reach that goal. We introduce a ha
 - Scheduling and load balancing: Single-Batch Overlap (SBO) to boost small-batch throughput, plus an asynchronous Expert Affinity Load Balancer to minimize cross-node communication.
 - Lightweight observability: a purpose-built diagnostics stack to quickly identify and resolve bottlenecks in distributed MoE serving.
 
+Our experiments demonstrate that, under our deployment strategy, we achieve a speed of **16.5k input tokens per second and 5.7k output tokens per second per node** on 4096-token input sequences. 
+To the best of our knowledge, this work establishes the **state-of-the-art(SOTA)** performance on H20.
+Moreover, it constitutes the **first comprehensive study** on H20 that covers deployment, optimization, and industrial-scale practice.
+
 ## Challenges with H20
 
 ### Why H20 Matters
@@ -266,7 +270,7 @@ To meet different SLA targets, we tune configurations along the **latency–thro
 | **InferX Pro**  | 32             | 1     | 1          | 2            | 675                       |
 | **InferX Max**  | 12             | 2     | 1          | 3            | 423                       |
 
-## Prefill Deployment
+### Prefill Deployment
 
 As noted earlier, our Prefill instances are deployed with single-node TP8. 
 To prevent TTFT violations caused by queueing delays, we run two Prefill instances for each model instance. 
@@ -276,6 +280,11 @@ Looking ahead, we plan to support dynamic scaling of Prefill instances to better
 Our experiments rely on multiple repositories (SGLang, DeepEP, DeepGEMM, FlashMLA), with several PRs still under review.
 For reproducibility, we will consolidate these into a dedicated test branch and provide a prebuilt image. 
 Both will be made available in the [**antgroup/sglang**](https://github.com/antgroup/sglang.git) repository.
+
+## Conclusion
+Based on SGLang, we achieve state-of-the-art performance in serving DeepSeek-R1 on H20.
+Furthermore, by balancing throughput and latency, we present optimal serving strategies tailored to diverse SLA requirements.
+Moving forward, we will continue to align with the pace of the community and contribute our practical optimizations back to the ecosystem.
 
 ## Acknowledgements
 
