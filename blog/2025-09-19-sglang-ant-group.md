@@ -61,12 +61,12 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 ##### Observation
 - MLA is costlier than MHA for long sequences.
 - MoE latency was unexpectedly high despite lower computation
-- Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
+- `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa` introduces redundant communication and computation in TP
 
 ##### Solution
 - [MHA/MLA](https://github.com/sgl-project/sglang/pull/9551): Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
 - [MoE](https://github.com/sgl-project/sglang/pull/10567): Optimized `b_scale` calculation, refactored input access of `down proj` with TMA, and tuned configurations based on real expert distributions.
-- [qkv](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
+- [TP Optimization](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
 #### Decode
 ##### Load Balance
