@@ -1,17 +1,31 @@
 ---
-title: "Enabling Deterministic Inference for SGLang"
+title: "SGLang's Deterministic Inference and 100% Reproducible RL Training in slime"
 author: "The SGLang Team"
-date: "September 22, 2025"
-previewImg: /images/blog/deterministic/chunked_prefill.png
+date: "September 24, 2025"
+previewImg: /images/blog/deterministic/logo.png
 ---
 
-This post highlights our initial efforts to achieve deterministic inference in SGLang. By integrating batch invariant kernels released by Thinking Machines Lab, as well as customized attention kernels and sampling operators, we have **enabled deterministic inference** while maintaining compatibility with crucial features, including **chunked prefill**, **CUDA graphs**, **radix cache**, and **non-greedy sampling**. 
+**TL;DR**: This post introduces SGLang's breakthrough work in deterministic inference and how we achieve 100% reproducible RL training through integration with [slime](https://github.com/THUDM/slime).
+
+
+Recently, the Thinking Machines Lab published a [blog](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) detailing their findings. Since this blog was published, the industry has responded enthusiastically, eagerly awaiting open-source inference engines to implement stable and usable deterministic inference, or even further, to achieve fully reproducible RL training. Now, SGLang and slime together provide the answer.
+
+Building on Thinking Machines Lab's batch-invariant operators, SGLang achieves fully deterministic inference while maintaining compatibility with **chunked prefill**, **CUDA graphs**, **radix cache**, and **non-greedy sampling**. With CUDA graphs, SGLang delivers **2.8x acceleration** and reduces performance overhead to just **34.35%** (vs. TML's **61.5%**).
+ 
+Taking this deterministic inference capability further, SGLang collaborated with the slime team to unlock **100% reproducible RL training** - a breakthrough achieved with minimal code changes. Our validation experiments on Qwen3-8B demonstrate perfect reproducibility: **two independent training runs produce identical curves**, providing the reliability needed for rigorous scientific experimentation.
+
+![slime](/images/blog/deterministic/slime.png)<small><center>[*Reproducible Guide*](https://thudm.github.io/slime/_examples_synced/reproducibility/README.html#reproducibility)</center></small>
+
+
+<br />
+
+Now let's dive into the some technical details.
 
 ## Why Deterministic Inference Matters
 
 The ability to achieve consistent outputs from large language models (LLMs) inference is increasingly important. For example, the indeterminism of inference results can implicitly transform on-policy reinforcement learning (RL) into off-policy RL as [researchers pointed out](https://fengyao.notion.site/off-policy-rl). However, even if we turn the temperature down to 0 in SGLang, the sampling is still not deterministic due to the use of dynamic batching and radix cache (past discussions [here](https://docs.sglang.ai/references/faq.html#the-results-are-not-deterministic-even-with-a-temperature-of-0)) .
 
-In pursuit of deterministic LLM inference, the Thinking Machines Lab published a [blog](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) detailing their findings. The largest source of nondeterminism is the varying batch sizes: Even when a user repeatedly submits the same prompt, the output can vary across runs, since the request may be batched together with other users’ requests, and differences in batch size can lead to nondeterministic inference results.
+As mentioned in the [blog](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/), the largest source of nondeterminism is the varying batch sizes: Even when a user repeatedly submits the same prompt, the output can vary across runs, since the request may be batched together with other users' requests, and differences in batch size can lead to nondeterministic inference results.
 
 To explain more, different batch sizes will influence the reduction splitting process of kernels. This leads to  varying order and size for each reduction block, which can cause nondeterministic outputs due to the non-associativity of floating-point arithmetic. To fix this, they replaced reduction kernels (RMSNorm, matrix multiplication, attention, etc…) with a batch-invariant implementation. These kernels were also released as [a companion library](https://github.com/thinking-machines-lab/batch_invariant_ops) for external integration. 
 
@@ -26,7 +40,7 @@ Key enhancements include:
 - **Implementation of batch-invariant attention kernels** with fixed split-KV size. Multiple backends are supported, including FlashInfer, FlashAttention 3, and Triton.
 - **Full compatibility with common inference features**, such as chunked prefill, CUDA graph, radix cache, all of which remain supported when deterministic inference is enabled.
 - **Expose a per-request seed** in sampling arguments, allowing users to enable deterministic inference even when temperature > 0.
-- **Better performance**: Compared to the **61.5%** slowdown reported in TML’s blog, SGLang achieves an average slowdown of only **34.35%** with the FlashInfer and FlashAttention 3 backends. With CUDA graphs, 2.8x speedup can be achieved compared to the minimal integration.
+- **Better performance**: Compared to the **61.5%** slowdown reported in TML's blog, SGLang achieves an average slowdown of only **34.35%** with the FlashInfer and FlashAttention 3 backends, representing a significant improvement. With CUDA graphs, 2.8x speedup can be achieved compared to the minimal integration.
 
 
 ## Results
@@ -73,7 +87,7 @@ CUDA graphs can accelerate the inference process by consolidating multiple kerne
 
 <small>*We disabled radix cache for all performance benchmarks since FlashInfer and Triton Radix Cache support is still in progress. </small>
 
-### Measuring RL Performance
+### Measuring Offline Inference Performance
 
 We measured end-to-end latency for both non-deterministic and deterministic modes using three common RL rollout workloads (256 requests with varying input/output lengths).
 
@@ -93,8 +107,6 @@ Deterministic inference is generally usable, with most slowdowns ranging from 25
 <small>*We disabled radix cache for all performance benchmarks since FlashInfer and Triton Radix Cache support is still in progress. </small>
 
 We acknowledge that deterministic inference is significantly slower than normal mode. We recommend using it primarily for debugging and reproducibility. Future work will focus on accelerating deterministic inference, with the goal of reducing the performance gap to under 20%, or ideally achieving parity with normal mode.
-
-
 
 ## Usage
 
@@ -155,9 +167,20 @@ This modification enables **deterministic multinomial sampling** while preservin
 
 ### RL Framework Integration (slime)
 
-We [integrated](https://github.com/THUDM/slime/pull/361) deterministic inference with temperature > 0 into slime’s GRPO training recipe. In preliminary experiments, repeated RL training runs produced **identical rollouts response and loss value for the first iterations**, confirming that the rollout process itself is deterministic. This establishes a strong foundation for **true on-policy RL training**, where reproducibility of rollouts is critical for debugging and fair comparison of algorithms.
+We [integrated](https://github.com/THUDM/slime/pull/361) deterministic inference with temperature > 0 into slime's GRPO training recipe. In preliminary experiments, repeated RL training runs produced **identical rollout responses and loss values for the first iterations**, confirming that the rollout process itself is deterministic. 
 
-**Note**: Further work is needed on the training side (e.g., Megatron, FSDP) to fully support true on-policy RL training.
+In a follow-up [PR](https://github.com/THUDM/slime/pull/370), we further enabled full training reproducibility by implementing the following key configurations:
+
+- **Flash Attention**: Use Flash Attention v2 instead of v3 to enable deterministic backward passes
+- **Megatron**: Set `--deterministic-mode` flag for deterministic training
+- **Environment Variables**: Configure critical settings:
+  - `NCCL_ALGO=Ring`
+  - `NVTE_ALLOW_NONDETERMINISTIC_ALGO=0`
+  - `CUBLAS_WORKSPACE_CONFIG=:4096:8`
+- **PyTorch**: Enable `torch.use_deterministic_algorithms(True, warn_only=False)`
+
+With these comprehensive changes, we successfully achieved full training reproducibility for GRPO in slime, enabling truly deterministic end-to-end RL training pipelines.
+
 
 ## Future Work
 Our future efforts will focus on enhancing deterministic inference by addressing the following key areas:
@@ -167,7 +190,9 @@ Our future efforts will focus on enhancing deterministic inference by addressing
 - **Enhancing Radix Cache Functionality**: We will improve the radix tree to enable compatibility with a wider variety of attention kernels, moving beyond current limitation to the FlashAttention 3 backend.
 - **Tensor Parallelism**: TP1 and TP2 are deterministic due to consistent floating-point addition order; larger TP setups require modifications to reduce kernels for determinism.
 - **FlexAttention Integration**: Besides currently supported attention backends, we plan to extend our support of deterministic inference to FlexAttention in the future.
-- A **roadmap** for deterministic inference features can be found in [this issue](https://github.com/sgl-project/sglang/issues/10278). 
+- A **roadmap** for deterministic inference features can be found in [this issue](https://github.com/sgl-project/sglang/issues/10278).
+
+SGLang's deterministic inference and slime's reproducible training capabilities are currently under active development and improvement. We sincerely welcome users and developers to actively try out these features and provide us with valuable feedback. Your experience and suggestions will help us further optimize these important capabilities and advance the development of deterministic inference technology. 
 
 ## Acknowledgement
 We would like to extend our heartfelt gratitude to the following teams and collaborators:
