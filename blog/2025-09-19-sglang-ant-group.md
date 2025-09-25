@@ -13,9 +13,9 @@ This report outlines the practices we used to reach that goal. We introduce a ha
 - Scheduling and load balancing: Single-Batch Overlap (SBO) to boost small-batch throughput, plus an asynchronous Expert Affinity Load Balancer to minimize cross-node communication.
 - Lightweight observability: a purpose-built diagnostics stack to quickly identify and resolve bottlenecks in distributed MoE serving.
 
-Our experiments demonstrate that, under our deployment strategy, we achieve a speed of **16.5k input tokens per second and 5.7k output tokens per second per node** on 4096-token input sequences. 
-To the best of our knowledge, this work establishes the **state-of-the-art(SOTA)** performance on H20.
-Moreover, it constitutes the **first comprehensive study** on H20 that covers deployment, optimization, and industrial-scale practice.
+Our experiments demonstrate that, with our deployment strategy, each node achieves **16.5k input tokens per second and 5.7k output tokens per second** on 4096-token input sequences. 
+To the best of our knowledge, this represents the **state-of-the-art(SOTA)** performance on H20.
+Furthermore, our work constitutes the **first comprehensive study** on H20, encompassing deployment, optimization, and large-scale industrial practice.
 
 ## Challenges with H20
 
@@ -61,12 +61,12 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 ##### Observation
 - MLA is costlier than MHA for long sequences.
 - MoE latency was unexpectedly high despite lower computation
-- Original: `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa`
+- `embed/mlp all reduce + RMSNorm + fused_qkv_a_proj_with_mqa` introduces redundant communication and computation in TP
 
 ##### Solution
 - [MHA/MLA](https://github.com/sgl-project/sglang/pull/9551): Introduced tunable parameter `se = extend × (extend + prefix)` to select MHA or MLA based on batch size and sequence lengths.
 - [MoE](https://github.com/sgl-project/sglang/pull/10567): Optimized `b_scale` calculation, refactored input access of `down proj` with TMA, and tuned configurations based on real expert distributions.
-- [qkv](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
+- [TP Optimization](https://github.com/sgl-project/sglang/pull/10568): Optimized `embed/mlp reduce scatter + RMSNorm + fused_qkv_a_proj_with_mqa + all gather` to reduce computation and communication.
 
 #### Decode
 ##### Load Balance
@@ -282,9 +282,7 @@ For reproducibility, we will consolidate these into a dedicated test branch and 
 Both will be made available in the [**antgroup/sglang**](https://github.com/antgroup/sglang.git) repository.
 
 ## Conclusion
-Based on SGLang, we achieve state-of-the-art performance in serving DeepSeek-R1 on H20.
-Furthermore, by balancing throughput and latency, we present optimal serving strategies tailored to diverse SLA requirements.
-Moving forward, we will continue to align with the pace of the community and contribute our practical optimizations back to the ecosystem.
+Leveraging SGLang, we have achieved state-of-the-art serving performance for DeepSeek-R1 on H20 GPUs. By balancing throughput and latency, we provide deployment strategies optimized for diverse SLA requirements. Moving forward, we remain committed to aligning with community progress and contributing our practical optimizations back to the ecosystem.
 
 ## Acknowledgements
 
