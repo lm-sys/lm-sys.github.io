@@ -160,7 +160,7 @@ To identify and diagnose communication slowdowns in MoE models under expert-para
 
 #### Environment
 
-**Deployment strategy**: The Prefill instance is deployed on a 1-node setup (8× H20 GPUs). The following configuration serves as the Base (BF16 + MTP):
+**Deployment strategy**: The Prefill instance is deployed on a 1-node setup (8× H20 GPUs). The following configuration serves as the Base (BF16 + fa3):
 ```shell
 --tp-size 8
 --Attention-backend fa3
