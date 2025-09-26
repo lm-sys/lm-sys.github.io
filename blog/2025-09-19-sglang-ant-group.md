@@ -13,9 +13,9 @@ This report outlines the practices we used to reach that goal. We introduce a ha
 - Scheduling and load balancing: Single-Batch Overlap (SBO) to boost small-batch throughput, plus an asynchronous Expert Affinity Load Balancer to minimize cross-node communication.
 - Lightweight observability: a purpose-built diagnostics stack to quickly identify and resolve bottlenecks in distributed MoE serving.
 
-Our experiments demonstrate that, with our deployment strategy, each node achieves **16.5k input tokens per second and 5.7k output tokens per second** on 4096-token input sequences. 
+Our experiments demonstrate that, with our deployment strategy, **each node** achieves **16.5k input tokens per second and 5.7k output tokens per second** on 4096-token input sequences. 
 To the best of our knowledge, this represents the **state-of-the-art(SOTA)** performance on H20.
-Furthermore, our work constitutes the **first comprehensive study** on H20, encompassing deployment, optimization, and large-scale industrial practice.
+Furthermore, our work constitutes the **first comprehensive study** of H20, encompassing deployment, optimization, and large-scale industrial practice.
 
 ## Challenges with H20
 
@@ -77,7 +77,7 @@ Crucially, inference—especially **decode phase**—is often **memory-bound**, 
 Standard EPLB balances intra-GPU loads but overlooks correlations between experts, which often scatters frequently co-activated experts across nodes and increases cross-node communication overhead.    
 
 We extend EPLB by tracking **top-k expert co-activations** to build an **expert affinity matrix**. 
-After intra-GPU load balancing, we adjust placement so that **highly co-activated experts** are kept within the same node, thereby reducing cross-node communication and delivering an additional **~5% performance gain** over vanilla EPLB.  
+After intra-GPU load balancing, we adjust placement so that **highly co-activated experts** are kept within the same node, thereby reducing cross-node communication, delivering an additional **~5% performance gain** over vanilla EPLB.  
 
 ###### [Asynchronous Dynamic Load Adjustment](https://github.com/sgl-project/sglang/pull/8529)
 
@@ -182,7 +182,7 @@ To identify and diagnose communication slowdowns in MoE models under expert-para
 <img src="/images/blog/ant-group-prac/prefill_perf.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 60%; image-orientation: none;"></img>
 
 **Sequence Length**  
-Throughput generally rises from 1K to 2K as overhead is amortized, then decreases at 4K as memory pressure dominate.
+Throughput generally rises from 1K to 2K as overhead is amortized, then decreases at 4K as memory pressure dominates.
 
 **Optimizations**  
 - **MHA**: Provides modest gains at longer sequence lengths (2K, 4K), but shows no measurable benefit at 1K.  
@@ -231,8 +231,8 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 
 <img src="/images/blog/ant-group-prac/ep_size.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto; width: 80%; image-orientation: none;"></img>
 
-- **Batch-size < 16**: **EP32 outperforms EP16**. A larger EP size reduces the number of experts per GPU, which significantly cuts memory access overhead. While sparser expert placement slightly increases communication cost, the memory savings dominate, resulting in higher throughput (e.g., at BS=8, EP32 delivers 293 token/s vs. 278 token/s for EP16).
-- **Batch-size ≥ 16**: **EP16 pulls ahead of EP32**. At larger EP sizes, cross-GPU communication dominates. With DeepEP, ~50% of MoE traffic stays on NVLink at EP16 but only ~25% at EP32, forcing more inter-node transfers and raising latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 token/s vs. 585 token/s for EP32).
+- **Batch-size < 16**: **EP32 outperforms EP16**. A larger EP size reduces the number of experts per GPU, which significantly cuts memory access overhead. While sparser expert placement slightly increases communication cost, the memory savings dominate, resulting in higher throughput (e.g., at BS=8, EP32 delivers 293 tokens/s vs. 278 tokens/s for EP16).
+- **Batch-size ≥ 16**: **EP16 pulls ahead of EP32**. At larger EP sizes, cross-GPU communication dominates. With DeepEP, ~50% of MoE traffic stays on NVLink at EP16 but only ~25% at EP32, forcing more inter-node transfers and raising latency. As a result, throughput drops (e.g., at BS=32, EP16 achieves 675 tokens/s vs. 585 tokens/s for EP32).
 
 #### Config for MTP
 
@@ -244,8 +244,8 @@ As the batch size increases, per-GPU throughput rises steadily. However, at larg
 - **(steps=3, topK=1, draft-tokens=4)** → Accept length ≈ 2.9–3.3  
 
 **Performance by Batch Size**  
-- **Small batches:** On low-compute GPUs like the H20, resources are not fully utilized. Even though a higher draft token count reduces the accept length, it still boosts throughput. For example, at BS=1, throughput increases from **43 token/s (steps=1, topK=1, draft-tokens=2)** to **52 token/s (steps=1, topK=1, draft-tokens=2)**, a **~21% gain**.  
-- **Large batches:** With larger batches, the GPU becomes compute-bound. The shorter accept length from higher draft token settings leads to wasted compute and lower performance. At BS=32, throughput drops from **675 token/s (steps=1, topK=1, draft-tokens=2)** to **554 token/s (steps=1, topK=1, draft-tokens=2)**, a **~18% loss**.  
+- **Small batches:** On low-compute GPUs like the H20, resources are not fully utilized. Even though a higher draft token count reduces the accept length, it still boosts throughput. For example, at BS=1, throughput increases from **43 tokens/s (steps=1, topK=1, draft-tokens=2)** to **52 tokens/s (steps=3, topK=1, draft-tokens=4)**, a **~21% gain**.
+- **Large batches:** With larger batches, the GPU becomes compute-bound. The shorter accept length from higher draft token settings leads to wasted compute and lower performance. At BS=32, throughput drops from **675 tokens/s (steps=1, topK=1, draft-tokens=2)** to **554 tokens/s (steps=1, topK=1, draft-tokens=2)**, a **~18% loss**.  
 
 ## Tiered Online Inference Serving
 
