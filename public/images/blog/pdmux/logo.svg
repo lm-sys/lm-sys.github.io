@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="832 396 346 207" width="346" height="207">
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="628 318 873 362" width="873" height="362">
   <defs>
-    <filter id="Shadow" filterUnits="userSpaceOnUse" x="797.4" y="375.3">
+    <filter id="Shadow" filterUnits="userSpaceOnUse" x="540.7" y="281.8">
       <feGaussianBlur in="SourceAlpha" result="blur" stdDeviation="1.308"/>
       <feOffset in="blur" result="offset" dx="0" dy="2"/>
       <feFlood flood-color="black" flood-opacity=".5" result="flood"/>
@@ -18,7 +18,7 @@
         <path d="M 2.4 0 L 0 -.9 L 0 .9 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
       </g>
     </marker>
-    <filter id="Shadow_2" filterUnits="userSpaceOnUse" x="797.4" y="375.3">
+    <filter id="Shadow_2" filterUnits="userSpaceOnUse" x="540.7" y="281.8">
       <feGaussianBlur in="SourceAlpha" result="blur" stdDeviation=".872"/>
       <feOffset in="blur" result="offset" dx="1" dy="1"/>
       <feFlood flood-color="black" flood-opacity=".5" result="flood"/>
@@ -34,9 +34,9 @@
       </g>
     </marker>
   </defs>
-  <g id="logo" stroke="none" stroke-dasharray="none" fill="none" stroke-opacity="1" fill-opacity="1">
+  <g id="logo" fill-opacity="1" stroke-dasharray="none" fill="none" stroke-opacity="1" stroke="none">
     <title>logo</title>
-    <rect fill="white" x="832" y="396" width="346" height="207"/>
+    <rect fill="white" x="628" y="318" width="873" height="362"/>
     <g id="logo_Layer_1">
       <title>Layer 1</title>
       <g id="Line_152_shadow" filter="url(#Shadow)">
@@ -63,9 +63,7 @@
       <g id="Line_200_shadow" filter="url(#Shadow)">
         <path d="M 1020.5997 476.62916 C 1020.5997 476.62916 1022.3417 478.35 1022.0167 480.07046 C 1021.6918 481.79094 1019.5798 480.1913 1019.4526 482.70204 C 1019.4167 483.4121 1019.5702 484.2189 1019.809 485.0109" marker-end="url(#FilledArrow_Marker_2)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
       </g>
-      <g id="Graphic_202">
-        <rect x="832.9815" y="396.64194" width="344.59114" height="206" fill="white"/>
-      </g>
+      <g id="Graphic_202"/>
       <g id="Graphic_129">
         <rect x="885.6687" y="467" width="233.84496" height="102.68524" fill="white"/>
         <rect x="885.6687" y="467" width="233.84496" height="102.68524" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
@@ -231,6 +229,57 @@
       <g id="Graphic_201">
         <text transform="translate(885.6687 434.8525)" fill="#5e5e5e">
           <tspan font-family="Gill Sans" font-style="italic" font-weight="bold" font-size="24" fill="#5e5e5e" x="0" y="22" xml:space="preserve">PD-Multiplexing</tspan>
+        </text>
+      </g>
+      <g id="Group_203">
+        <g id="Group_204">
+          <g id="Group_210">
+            <g id="Group_211">
+              <g id="Group_212">
+                <g id="Graphic_217">
+                  <path d="M 1228.8696 490.28584 C 1228.8696 500.4948 1216.8178 510.7038 1204.7658 510.7038" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.4489502"/>
+                </g>
+                <g id="Graphic_216">
+                  <path d="M 1195.3198 504.39645 C 1203.171 504.39645 1211.0224 516.122 1211.0224 527.8475" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.4489502"/>
+                </g>
+                <g id="Graphic_215">
+                  <path d="M 1176.0781 504.33815 C 1176.0781 499.02474 1180.3855 494.71727 1185.699 494.71727 C 1191.0124 494.71727 1195.3198 499.02474 1195.3198 504.33815 C 1195.3198 509.65167 1191.0124 513.959 1185.699 513.959 C 1180.3855 513.959 1176.0781 509.65167 1176.0781 504.33815 Z" fill="#faddcd"/>
+                  <path d="M 1176.0781 504.33815 C 1176.0781 499.02474 1180.3855 494.71727 1185.699 494.71727 C 1191.0124 494.71727 1195.3198 499.02474 1195.3198 504.33815 C 1195.3198 509.65167 1191.0124 513.959 1185.699 513.959 C 1180.3855 513.959 1176.0781 509.65167 1176.0781 504.33815 Z" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.4489502"/>
+                </g>
+                <g id="Graphic_214">
+                  <path d="M 1219.2263 480.66496 C 1219.2263 475.3515 1223.5337 471.0441 1228.8471 471.0441 C 1234.1607 471.0441 1238.468 475.3515 1238.468 480.66496 C 1238.468 485.97837 1234.1607 490.28584 1228.8471 490.28584 C 1223.5337 490.28584 1219.2263 485.97837 1219.2263 480.66496 Z" fill="#faddcd"/>
+                  <path d="M 1219.2263 480.66496 C 1219.2263 475.3515 1223.5337 471.0441 1228.8471 471.0441 C 1234.1607 471.0441 1238.468 475.3515 1238.468 480.66496 C 1238.468 485.97837 1234.1607 490.28584 1228.8471 490.28584 C 1223.5337 490.28584 1219.2263 485.97837 1219.2263 480.66496 Z" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.4489502"/>
+                </g>
+                <g id="Graphic_213">
+                  <path d="M 1200.2177 530.3826 C 1200.2177 528.97633 1201.3577 527.8364 1202.764 527.8364 L 1219.2457 527.8364 C 1220.6519 527.8364 1221.7918 528.97633 1221.7918 530.3826 L 1221.7918 540.567 C 1221.7918 541.97326 1220.6519 543.1132 1219.2457 543.1132 L 1202.764 543.1132 C 1201.3577 543.1132 1200.2177 541.97326 1200.2177 540.567 Z" fill="#faddcd"/>
+                  <path d="M 1200.2177 530.3826 C 1200.2177 528.97633 1201.3577 527.8364 1202.764 527.8364 L 1219.2457 527.8364 C 1220.6519 527.8364 1221.7918 528.97633 1221.7918 530.3826 L 1221.7918 540.567 C 1221.7918 541.97326 1220.6519 543.1132 1219.2457 543.1132 L 1202.764 543.1132 C 1201.3577 543.1132 1200.2177 541.97326 1200.2177 540.567 Z" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.4489502"/>
+                </g>
+              </g>
+            </g>
+          </g>
+          <g id="Graphic_209">
+            <path d="M 1227.2658 490.28584 C 1227.2658 500.49446 1215.2146 510.70425 1203.1623 510.70425" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.405219"/>
+          </g>
+          <g id="Graphic_208">
+            <path d="M 1193.7164 504.39645 C 1201.5682 504.39645 1209.4188 516.12226 1209.4188 527.84807" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.405219"/>
+          </g>
+          <g id="Graphic_207">
+            <path d="M 1174.4746 504.33815 C 1174.4746 499.0251 1178.782 494.71727 1184.0955 494.71727 C 1189.4089 494.71727 1193.7164 499.0251 1193.7164 504.33815 C 1193.7164 509.6512 1189.4089 513.959 1184.0955 513.959 C 1178.782 513.959 1174.4746 509.6512 1174.4746 504.33815 Z" fill="#faddcd"/>
+            <path d="M 1174.4746 504.33815 C 1174.4746 499.0251 1178.782 494.71727 1184.0955 494.71727 C 1189.4089 494.71727 1193.7164 499.0251 1193.7164 504.33815 C 1193.7164 509.6512 1189.4089 513.959 1184.0955 513.959 C 1178.782 513.959 1174.4746 509.6512 1174.4746 504.33815 Z" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.405219"/>
+          </g>
+          <g id="Graphic_206">
+            <path d="M 1217.6228 480.66496 C 1217.6228 475.35155 1221.9306 471.0441 1227.2437 471.0441 C 1232.5567 471.0441 1236.8645 475.35155 1236.8645 480.66496 C 1236.8645 485.978 1232.5567 490.28584 1227.2437 490.28584 C 1221.9306 490.28584 1217.6228 485.978 1217.6228 480.66496 Z" fill="#faddcd"/>
+            <path d="M 1217.6228 480.66496 C 1217.6228 475.35155 1221.9306 471.0441 1227.2437 471.0441 C 1232.5567 471.0441 1236.8645 475.35155 1236.8645 480.66496 C 1236.8645 485.978 1232.5567 490.28584 1227.2437 490.28584 C 1221.9306 490.28584 1217.6228 485.978 1217.6228 480.66496 Z" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.405219"/>
+          </g>
+          <g id="Graphic_205">
+            <path d="M 1198.6143 530.38215 C 1198.6143 528.9769 1199.7542 527.8364 1201.16 527.8364 L 1217.6426 527.8364 C 1219.0478 527.8364 1220.1883 528.9769 1220.1883 530.38215 L 1220.1883 540.56745 C 1220.1883 541.9727 1219.0478 543.1132 1217.6426 543.1132 L 1201.16 543.1132 C 1199.7542 543.1132 1198.6143 541.9727 1198.6143 540.56745 Z" fill="#faddcd"/>
+            <path d="M 1198.6143 530.38215 C 1198.6143 528.9769 1199.7542 527.8364 1201.16 527.8364 L 1217.6426 527.8364 C 1219.0478 527.8364 1220.1883 528.9769 1220.1883 530.38215 L 1220.1883 540.56745 C 1220.1883 541.9727 1219.0478 543.1132 1217.6426 543.1132 L 1201.16 543.1132 C 1199.7542 543.1132 1198.6143 541.9727 1198.6143 540.56745 Z" stroke="#a5300f" stroke-linecap="butt" stroke-linejoin="round" stroke-width="2.405219"/>
+          </g>
+        </g>
+      </g>
+      <g id="Graphic_219">
+        <text transform="translate(1136.3222 487.596)" fill="#a5300f">
+          <tspan font-family="Gill Sans" font-weight="bold" font-size="32" fill="#a5300f" x="0" y="30" xml:space="preserve">+</tspan>
         </text>
       </g>
     </g>
