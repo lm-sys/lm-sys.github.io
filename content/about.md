@@ -80,7 +80,7 @@ LMSYS is supported by donations from the following institutions:
 We also thank the following companies for providing API credits to serve their models on Chatbot Arena (graduated):
 [Alibaba](https://www.alibabacloud.com/en/solutions/generative-ai/qwen), [Anthropic](https://www.anthropic.com/api), [Cohere](https://cohere.com/), [Databricks](https://www.databricks.com/), [Google](https://ai.google.dev/), [Mistral](https://mistral.ai/), [OpenAI](https://www.openai.com/), [Reka](https://www.reka.ai/), [01ai](https://www.01.ai/)
 
-We welcome diverse forms of donations and sponsorships, including but not limited to cash, computing devices (e.g., GPUs), and cloud credits. Please contact us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com) to learn more about sponsorships and benefits.
+We welcome diverse forms of donations and sponsorships, including but not limited to cash, computing devices (e.g., GPUs), and cloud credits. Please refer to to https://lmsys.org/donations/.
 
 ## History
 LMSYS originated from a multi-university collaboration involving UC Berkeley, Stanford, UCSD, CMU, and MBZUAI in 2023.
@@ -95,6 +95,6 @@ It became well-known for its impactful flagship projects, including:
 These projects feature open models with millions of downloads, crowdsourced platforms with millions of users, and efficient systems that are orders of magnitude faster.
 
 ## Contact us
-- Email us at [lmsys.org@gmail.com](mailto:lmsysorg@gmail.com).
+- Email us at [lmsys.org@gmail.com](mailto:lmsys.org@gmail.com).
 - Join us on [Slack](https://slack.sglang.ai).
 - Follow us on [X](https://twitter.com/lmsysorg).
