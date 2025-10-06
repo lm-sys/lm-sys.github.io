@@ -115,15 +115,9 @@ We acknowledge that deterministic inference is significantly slower than normal 
 
 ### Environment Setup
 
-To set up the environment, install SGLang from source:
+To set up the environment, install SGLang with version >=0.5.3
 ```bash
-# Use the latest main branch
-git clone https://github.com/sgl-project/sglang.git
-cd sglang
-
-# Install the python packages
-pip install --upgrade pip
-pip install -e "python[all]"
+pip install "sglang[all]>=0.5.3"
 ```
 ### Launching the Server
 
