@@ -24,6 +24,7 @@ Our mission is to make large AI models accessible to everyone by co-developing o
 [Yi Zhang](https://github.com/yizhang2077),
 [Jiexin Liang](https://github.com/Alcanderian),
 [Chang Su](https://github.com/CatherineSue),
+[Simo Lin](https://github.com/slin1237),
 [Hai Xiao](https://github.com/HaiShaw).
 More information see [SGLang GitHub](https://github.com/sgl-project/sglang).
 
