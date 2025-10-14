@@ -62,8 +62,8 @@ We also plan to work more closely with the SemiAnalysis team to make the Inferen
 
 We would like to thank everyone in the community that helped make this effort possible.
 
-**NVIDIA team:** Trevor Morris, Kaixi Hou, Elfie Guo, Nicolas Castet, Faraz Khoubsirat, Ishan Dhanan, Shu Wang, Pavani Majety, Zihao Ye, Yingyi Huang, Alex Zhurkevich, Kushan Ahmadian, Pen Li, Juan Yu
+**NVIDIA team:** Trevor Morris, Kaixi Hou, Elfie Guo, Nicolas Castet, Faraz Khoubsirat, Ishan Dhanan, Shu Wang, Pavani Majety, Zihao Ye, Yingyi Huang, Alex Zhurkevich, Kushan Ahmadian, Pen Li, Juan Yu, Kedar Potar
 
 **SGLang team:** Jingyi Chen, Baizhou Zhang, Jiexin Liang, Qiaolin Yu, Yineng Zhang, Ke Bao, Liangsheng Yin, Jianan Ji, Ying Sheng
 
-**SemiAnalysis team:** Dylan Patel, Oren, Kimbo Chen
+**SemiAnalysis team:** Dylan Patel, Kimbo Chen, Cam, and others
