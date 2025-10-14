@@ -30,4 +30,5 @@ Add a markdown file to `/blog` for it to be added in the blog feed. Make sure yo
 Some content is not sourced through Javascript, such as the about page, impressum, FAQ, and team list. For those, you can find their respective markdown and json files in `/content`
 
 # Acknowledgement
+
 The website is modified from the [laion.ai](https://github.com/LAION-AI/laion.ai.git), fully respecting [their license](https://github.com/LAION-AI/laion.ai/blob/main/LICENSE).
