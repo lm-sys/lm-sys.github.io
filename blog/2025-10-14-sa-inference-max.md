@@ -1,5 +1,5 @@
 ---
-title: "NVIDIA and SGLang Accelerating SemiAnalysis InferenceMAX and GB200 Together"
+title: "SGLang and NVIDIA Accelerating SemiAnalysis InferenceMAX and GB200 Together"
 author: "NVIDIA and community SGLang developers"
 date: "Oct 14, 2025"
 previewImg: /images/blog/sa_inference_max/nvidia_gb200_nvl72.jpeg
