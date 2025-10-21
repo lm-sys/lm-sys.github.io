@@ -88,7 +88,7 @@ We would like to thank everyone in the community that helped make this effort po
 
 **Approaching AI**: Jiahao Wang, Ziwei Yuan, Yaochen Han,  Jiaqi Liao, Xianglin Chen, Zhiyuan Ai, Yongsen Hu, Zhuo Wang, Daocheng Ye, Yanlong Wu, Yufeng Tian, Heng Guo, Hao Wu, Zirui Li, Yingqi Tian, Yue Qin, Xin Qu, Baijin Hao, Donghui Liu.
 
-**SGLang team and community:** Jingyi Chen, Shangming Cai, Lianmin Zeng, Yineng Zhang and many others for their insightful review comments on this PR and for their work on SGLang framework.
+**SGLang team and community:** Jingyi Chen, Shangming Cai, Lianmin Zheng, Yineng Zhang and many others for their insightful review comments on this PR and for their work on SGLang framework.
 
 ## Related resources
 
