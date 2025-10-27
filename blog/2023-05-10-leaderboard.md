@@ -58,7 +58,7 @@ td {text-align: left}
 
 &shy;
 
-If you want to see more models, please help us [add them](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsysorg@gmail.com) by giving us API access.
+If you want to see more models, please help us [add them](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsys.org@gmail.com) by giving us API access.
 
 ## Overview
 Thanks to the community's help, we have gathered 13k anonymous votes. Looking at the rankings and data collected from this leaderboard update, we have a few interesting findings.

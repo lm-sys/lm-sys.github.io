@@ -151,4 +151,4 @@ We plan to ship real-time leaderboard update, diving deeper into user prompt ana
 - Bradley-Terry model [lecture note](https://web.stanford.edu/class/archive/stats/stats200/stats200.1172/Lecture24.pdf), [paper](https://www.jstor.org/stable/2334029)
 - [Elo Uncovered: Robustness and Best Practices in Language Model Evaluation](https://arxiv.org/abs/2311.17295)
 
-If you wish to see more models on Arena leaderboard, we invite you to [contribute to FastChat](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsysorg@gmail.com) to provide us with API access.
+If you wish to see more models on Arena leaderboard, we invite you to [contribute to FastChat](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsys.org@gmail.com) to provide us with API access.
