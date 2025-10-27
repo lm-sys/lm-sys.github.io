@@ -349,4 +349,4 @@ Below are readily available tools and code to run MT-bench and other metrics use
 - The [Arena Elo calculator](https://colab.research.google.com/drive/1RAWb22-PFNI-X1gPVzc927SGUdfr6nsR?usp=sharing).
 - The MMLU is based on [InstructEval](https://github.com/declare-lab/instruct-eval/blob/main/mmlu.py) and [Chain-of-Thought Hub](https://github.com/FranxYao/chain-of-thought-hub/tree/main/MMLU).
 
-If you wish to see more models on leaderboard, we invite you to [contribute to FastChat](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsysorg@gmail.com) to provide us with API access.
+If you wish to see more models on leaderboard, we invite you to [contribute to FastChat](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsys.org@gmail.com) to provide us with API access.

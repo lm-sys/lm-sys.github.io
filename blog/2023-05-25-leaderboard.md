@@ -72,7 +72,7 @@ The win fraction matrix of all model pairs is shown in Figure 1.
 <img src="/images/blog/leaderboard_week4/win_fraction_matrix.png" style="display:block; margin-top: auto; margin-left: auto; margin-right: auto; margin-bottom: auto;"></img>
 <p style="color:gray; text-align: center;">Figure 1: Fraction of Model A Wins for All Non-tied A vs. B Battles.</p>
 
-If you want to see more models, please help us [add them](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsysorg@gmail.com) by giving us API access.
+If you want to see more models, please help us [add them](https://github.com/lm-sys/FastChat/blob/main/docs/arena.md#how-to-add-a-new-model) or [contact us](mailto:lmsys.org@gmail.com) by giving us API access.
 
 ## Overview
 
