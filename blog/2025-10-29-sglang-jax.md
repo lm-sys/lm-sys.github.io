@@ -1,7 +1,7 @@
 ---
 title: "SGLang-Jax: An Open-Source Solution for Native TPU Inference"
 author: "The SGLang-Jax Team"
-date: "October 28, 2025"
+date: "October 29, 2025"
 previewImg: /images/blog/sglang_jax/cover.jpg
 ---
 
