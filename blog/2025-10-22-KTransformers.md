@@ -158,13 +158,13 @@ We further evaluate the multi-GPU + CPU hybrid inference capability enabled by i
 
 The table above presents the total throughput (tokens/s) under different levels of concurrency and varying numbers of GPUs. As shown, under single-concurrency conditions, the 8-GPU configuration provides only a limited improvement over the 1-GPU setup (an increase of merely 26%). However, under 8-way concurrency, the same 8-GPU configuration achieves a **264% throughput** gain compared to 1 GPU, demonstrating excellent usability—each request achieves nearly 20 tokens per second on average. The improvement mainly comes from placing more experts on GPUs, which reduces CPU memory accesses under bandwidth bottlenecks.
 
-#### ShareGPT Benchmark on RTX 4090 × 8 Setup
+#### ShareGPT Benchmark on NVIDIA L20 × 8 Setup
 
-We further evaluated the SGLang + KTransformers integration on a consumer-grade GPU setup using **8× RTX 4090 GPUs** with an **Intel Xeon Platinum 8488C CPU**. The benchmark was conducted on **DeepSeek-R1-0528**, a large-scale MoE model from the DeepSeek-R1 series, using the ShareGPT dataset with 1000 conversation requests (301K input tokens, 188K output tokens).
+We further evaluated the SGLang + KTransformers integration on a GPU setup using **8× NVIDIA L20 GPUs** with an **Intel(R) Xeon(R) Gold 6454S CPU**. The benchmark was conducted on **DeepSeek-R1-0528**, a large-scale MoE model from the DeepSeek-R1 series, using the ShareGPT dataset with 1000 conversation requests (301K input tokens, 188K output tokens).
 
 **System Configuration:**
-- GPUs: 8× NVIDIA RTX 4090
-- CPU: Intel Xeon Platinum 8488C
+- GPUs: 8× NVIDIA L20
+- CPU: Intel(R) Xeon(R) Gold 6454S
 - Model: DeepSeek-R1-0528 (FP8 quantized MoE model)
 - Dataset: ShareGPT (1000 requests)
 
@@ -179,7 +179,7 @@ python -m sglang.launch_server \
   --port 30000 \
   --model models/DeepSeek-R1-0528-GPU-weight \
   --kt-amx-weight-path models/DeepSeek-R1-0528-CPU-weight \
-  --kt-cpuinfer 80 \
+  --kt-cpuinfer 60 \
   --kt-threadpool-count 2 \
   --kt-num-gpu-experts 200 \
   --kt-amx-method AMXINT4 \
@@ -187,8 +187,8 @@ python -m sglang.launch_server \
   --trust-remote-code \
   --mem-fraction-static 0.98 \
   --chunked-prefill-size 4096 \
-  --max-running-requests 37 \
-  --max-total-tokens 37000 \
+  --max-running-requests 40 \
+  --max-total-tokens 40000 \
   --served-model-name DeepSeek-R1-0528-FP8 \
   --enable-mixed-chunk \
   --tensor-parallel-size 8 \
@@ -211,14 +211,14 @@ python -m sglang.bench_serving \
 
 | Metric | Value |
 |--------|-------|
-| Total Token Throughput | 302.71 tok/s |
-| Output Token Throughput | 116.36 tok/s |
-| Request Throughput | 0.62 req/s |
-| Mean Inter-Token Latency (ITL) | 300.80 ms |
-| Median Inter-Token Latency | 208.43 ms |
-| P99 Inter-Token Latency | 1364.97 ms |
+| Total Token Throughput | 227.85 tok/s |
+| Output Token Throughput | 87.58 tok/s |
+| Request Throughput | 0.46 req/s |
+| Mean Inter-Token Latency (ITL) | 431.61 ms |
+| Median Inter-Token Latency | 299.18 ms |
+| P99 Inter-Token Latency | 1935.13 ms |
 
-This setup demonstrates that SGLang + KTransformers can effectively leverage consumer-grade GPUs for hybrid inference, achieving **over 300 tokens/s total throughput** on trillion-parameter MoE models. The relatively low inter-token latency (median 208ms) ensures smooth streaming generation for interactive applications.
+This setup demonstrates that SGLang + KTransformers can effectively leverage consumer-grade GPUs for hybrid inference, achieving **over 220 tokens/s total throughput** on trillion-parameter MoE models. The relatively low inter-token latency (median 299ms) ensures smooth streaming generation for interactive applications.
 
 ## Acknowledgements
 
