@@ -41,14 +41,6 @@ We integrated Ragged Paged Attention V3 ([RPA v3](https://github.com/vllm-projec
 - We tuned kernel grid block configurations based on different scenarios to achieve better performance.
 - We made it compatible with RadixCache.
 
-### Speculative Decoding
-SGLang-jax implements EAGLE-based speculative decoding, which is also known as Multi-Token Prediction (MTP).
-This advanced speculative decoding technique accelerates generation by using a lightweight draft head to predict multiple tokens, which are then verified in parallel with a single pass through the full model.
-To implement tree-based MTP-Verify, SGLang-jax adds non-causal mask support on top of Ragged Paged Attention V3, enabling parallel decoding of tree-based, non-causal draft tokens during the verification phase.
-We currently support Eagle2 and Eagle3, and plan to continue optimizing the kernel implementation and add support for different attention backends at various MTP stages.
-
-**TODO: performance numbers**
-
 ### Reducing Scheduling Overhead
 Sequential operations on CPU and TPU during the forward pass can hurt performance. However, operations on different devices can be decoupled—for example, launching calculations on the TPU and immediately preparing the next batch to run. To improve performance, our scheduler overlaps CPU processing with TPU computation.
 
@@ -60,7 +52,6 @@ In the overlap event loop, the scheduler uses a result queue and threading event
 <img src="/images/blog/sglang_jax/profile_no_overlap.jpg" style="display:block; margin: auto; width: 85%;"></img>
 <p style="color:gray; text-align: center;">Profile without overlap scheduler. Note the large gaps (CPU overhead) between batches.</p>
 
-
 ### MoE Kernel Optimization
 The MoE layer currently supports two implementation strategies: EPMoE and FusedMoE.
 In EPMoE, we integrated the **Megablox GMM** operator, replacing the previous jax `ragged_dot`-based implementation.
@@ -68,6 +59,11 @@ Megablox GMM is specifically designed for MoE workloads and efficiently handles 
 Combined with efficient token permutation (permute/unpermute), expert-parallel communication via ragged_all_to_all, and adaptive tiling strategies, EPMoE significantly boosts overall throughput and works well in scenarios requiring cross-device parallelism with many experts.
 In contrast, FusedMoE fuses all expert computations using dense einsum operations without inter-device communication overhead. It's better suited for cases with large individual experts but few total experts (e.g., < 64 experts). It also serves as a lightweight fallback for easier debugging and correctness validation.
 
+### Speculative Decoding
+SGLang-jax implements EAGLE-based speculative decoding, which is also known as Multi-Token Prediction (MTP).
+This advanced speculative decoding technique accelerates generation by using a lightweight draft head to predict multiple tokens, which are then verified in parallel with a single pass through the full model.
+To implement tree-based MTP-Verify, SGLang-jax adds non-causal mask support on top of Ragged Paged Attention V3, enabling parallel decoding of tree-based, non-causal draft tokens during the verification phase.
+We currently support Eagle2 and Eagle3, and plan to continue optimizing the kernel implementation and add support for different attention backends at various MTP stages.
 
 ## TPU Performance
 After all the optimizations, SGLang-Jax can match or outperform other TPU inference solutions.
