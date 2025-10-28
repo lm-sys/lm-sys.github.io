@@ -73,10 +73,10 @@ We benchmarked SGLang-Jax against vLLM-TPU. Full instructions are available [her
 We used `Qwen/Qwen3-32B`, TPU v6e-4, SGLang-jax (version: main-af32f095880ff676ed23eec19bc79584b5e20717), and vLLM-tpu (vllm-tpu==0.11.1).
 
 ### Results
+<img src="/images/blog/sglang_jax/performance_results.png" style="display:block; margin: auto; width: 85%;"></img>
+<p style="color:gray; text-align: center;">match vllm-tpu on prefill because of similar kernel optimizations. outperform vllm-tpu on decode thanks to overlap scheduler. </p>
 
 Todo:
-- only show one group of results 4k input, 1k output 
-   - message: match vllm-tpu on prefill because of similar kernel optimizations. outperform vllm-tpu on decode thanks to overlap scheduler.  
 - (optional) show some TPUs vs. GPUs.
 
 ## Usage
