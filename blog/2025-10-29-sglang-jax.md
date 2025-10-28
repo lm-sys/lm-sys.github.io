@@ -44,7 +44,7 @@ We integrated Ragged Paged Attention V3 ([RPA v3](https://github.com/vllm-projec
 ### Reducing Scheduling Overhead
 Sequential operations on CPU and TPU during the forward pass can hurt performance. However, operations on different devices can be decoupled—for example, launching calculations on the TPU and immediately preparing the next batch to run. To improve performance, our scheduler overlaps CPU processing with TPU computation.
 
-In the overlap event loop, the scheduler uses a result queue and threading events to pipeline CPU and TPU work. While the TPU processes batch N, the CPU prepares batch N+1. To maximize overlap between CPU and TPU, SGLang-jax carefully sequences operations based on profiling results. For Qwen/Qwen3-32B, we reduced the time gap between prefilling and decoding from approximately 12ms to 38us, and from approximately 7ms to 24us.
+In the overlap event loop, the scheduler uses a result queue and threading events to pipeline CPU and TPU work. While the TPU processes batch N, the CPU prepares batch N+1. To maximize overlap between CPU and TPU, SGLang-jax carefully sequences operations based on profiling results. For Qwen/Qwen3-32B, we reduced the time gap between prefilling and decoding from approximately 12ms to 38us, and from approximately 7ms to 24us. More details can be found in our previous [blog](https://lmsys.org/blog/2024-12-04-sglang-v0-4/).
 
 <img src="/images/blog/sglang_jax/profile_overlap.jpg" style="display:block; margin: auto; width: 85%;"></img>
 <p style="color:gray; text-align: center;">Profile with overlap scheduler. The gaps between batches are minimal.</p>
@@ -55,7 +55,7 @@ In the overlap event loop, the scheduler uses a result queue and threading event
 ### MoE Kernel Optimization
 The MoE layer currently supports two implementation strategies: EPMoE and FusedMoE.
 In EPMoE, we integrated the **Megablox GMM** operator, replacing the previous jax `ragged_dot`-based implementation.
-Megablox GMM is specifically designed for MoE workloads and efficiently handles variable-sized expert groups described by group_sizes, eliminating unnecessary computation and non-contiguous memory accesses. In typical configurations, this operator delivers a 3–4× end-to-end (e2e) ITL speedup compared to jax's native ragged_dot implementation.
+Megablox GMM is specifically designed for MoE workloads and efficiently handles variable-sized expert groups described by group_sizes, eliminating unnecessary computation and non-contiguous memory accesses. In typical configurations, this operator delivers a **3–4× end-to-end (e2e) ITL speedup** compared to jax's native ragged_dot implementation.
 Combined with efficient token permutation (permute/unpermute), expert-parallel communication via ragged_all_to_all, and adaptive tiling strategies, EPMoE significantly boosts overall throughput and works well in scenarios requiring cross-device parallelism with many experts.
 In contrast, FusedMoE fuses all expert computations using dense einsum operations without inter-device communication overhead. It's better suited for cases with large individual experts but few total experts (e.g., < 64 experts). It also serves as a lightweight fallback for easier debugging and correctness validation.
 
@@ -74,6 +74,10 @@ We used `Qwen/Qwen3-32B`, TPU v6e-4, SGLang-jax (version: main-af32f095880ff676e
 
 ### Results
 
+Todo:
+- only show one group of results 4k input, 1k output 
+   - message: match vllm-tpu on prefill because of similar kernel optimizations. outperform vllm-tpu on decode thanks to overlap scheduler.  
+- (optional) show some TPUs vs. GPUs.
 
 ## Usage
 
@@ -152,7 +156,7 @@ The community is working with Google Cloud team and multiple partners on the fol
    - Multi-LoRA batching
 
 ## Acknowledgments
-**SGLang-jax team**: sii-xinglong, jimoosciuc, Prayer, aolemila, JamesBrianD, zkkython, neo, leos, pathfinder-pf, Ying Sheng, Hongzhen Chen, Jiacheng Yang
+**SGLang-jax team**: sii-xinglong, jimoosciuc, Prayer, aolemila, JamesBrianD, zkkython, neo, leos, pathfinder-pf, Ying Sheng, Hongzhen Chen, Jiacheng Yang, Ke Bao
 
 **Google**: Google Cloud Team
 
