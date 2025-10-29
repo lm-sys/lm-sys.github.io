@@ -66,18 +66,24 @@ To implement tree-based MTP-Verify, SGLang-jax adds non-causal mask support on t
 We currently support Eagle2 and Eagle3, and plan to continue optimizing the kernel implementation and add support for different attention backends at various MTP stages.
 
 ## TPU Performance
-After all the optimizations, SGLang-Jax can match or outperform other TPU inference solutions.
+After all the optimizations, SGLang-Jax matches or outperforms other TPU inference solutions.
 
 ### Setup
-We benchmarked SGLang-Jax against vLLM-TPU. Full instructions are available [here](https://github.com/sgl-project/sglang-jax/issues/270).
-We used `Qwen/Qwen3-32B`, TPU v6e-4, SGLang-jax (version: main-af32f095880ff676ed23eec19bc79584b5e20717), and vLLM-tpu (vllm-tpu==0.11.1).
+To highlight SGLang-Jax’s efficiency on TPUs, we benchmarked it against vLLM-TPU using the `Qwen/Qwen3-32B` model on a TPU v6e-4 host. We tested SGLang-Jax (commit: `main-af32f095880ff676ed23eec19bc79584b5e20717`) and vLLM-TPU (version `vllm-tpu==0.11.1`).
+Key metrics include: time-to-first-token latency (TTFT), input throughput, inter-token latency (ITL), and output throughput.
+We also compared TPU v6e-4 against H100 GPUs using SGLang on both.
+Full benchmark instructions are available [here](https://github.com/sgl-project/sglang-jax/issues/270).
 
 ### Results
+On Qwen3-32B, SGLang-Jax and vLLM-TPU deliver nearly identical prefill performance, but SGLang-Jax pulls ahead slightly during decoding. Both use similar kernels, resulting in comparable input throughput. However, SGLang-Jax supports an overlap scheduler, which reduces ITL and boosts output throughput.
+
 <img src="/images/blog/sglang_jax/tpu_performance.png" style="display:block; margin: auto; width: 85%;"></img>
-<p style="color:gray; text-align: center;">match vllm-tpu on prefill because of similar kernel optimizations. outperform vllm-tpu on decode thanks to overlap scheduler. </p>
+<p style="color:gray; text-align: center;">SGLang-Jax vs. vLLM-TPU on TPU v6e</p>
+
+We also compared TPUs to GPUs by pitting four v6e chips against two H100s—a configuration that roughly aligns in price, HBM capacity, and peak bf16 TFLOPS. The TPU consistently achieves higher input throughput and outperforms on output throughput in several scenarios.
 
 <img src="/images/blog/sglang_jax/gpu_performance.jpg" style="display:block; margin: auto; width: 85%;"></img>
-<p style="color:gray; text-align: center;">the TPU setup achieves lower latency (TTFT and ITL) and higher input throughput across various batch sizes</p>
+<p style="color:gray; text-align: center;">SGLang-Jax on TPU vs. SGLang on GPU</p>
 
 ## Usage
 
