@@ -76,7 +76,7 @@ We used `Qwen/Qwen3-32B`, TPU v6e-4, SGLang-jax (version: main-af32f095880ff676e
 <img src="/images/blog/sglang_jax/tpu_performance.png" style="display:block; margin: auto; width: 85%;"></img>
 <p style="color:gray; text-align: center;">match vllm-tpu on prefill because of similar kernel optimizations. outperform vllm-tpu on decode thanks to overlap scheduler. </p>
 
-<img src="/images/blog/sglang_jax/gpu_performance.png" style="display:block; margin: auto; width: 85%;"></img>
+<img src="/images/blog/sglang_jax/gpu_performance.jpg" style="display:block; margin: auto; width: 85%;"></img>
 <p style="color:gray; text-align: center;">the TPU setup achieves lower latency (TTFT and ITL) and higher input throughput across various batch sizes</p>
 
 ## Usage
