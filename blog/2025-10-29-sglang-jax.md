@@ -133,10 +133,10 @@ We recommend using [SkyPilot](https://github.com/skypilot-org/skypilot) for dail
 You can quickly set up SkyPilot and find scripts for launching development machines and running tests in the sglang-jax repository.
 
 Install SkyPilot for GCP: https://docs.skypilot.co/en/latest/getting-started/installation.html#gcp
-Then launch [sgl-jax.yaml](https://github.com/sgl-project/sglang-jax/blob/cdd6600a70ecb396382a510da9ea59c91a9ea2c0/scripts/tpu_resource.yaml#L1):
+Then launch [sgl-jax.sky.yaml](https://github.com/sgl-project/sglang-jax/blob/master/scripts/tpu_resource.sky.yaml):
 
 ```bash
-sky launch sgl-jax.yaml --cluster=sgl-jax-skypilot-v6e-4 --infra=gcp -i 30 --down -y --use-spot
+sky launch sgl-jax.sky.yaml --cluster=sgl-jax-skypilot-v6e-4 --infra=gcp -i 30 --down -y --use-spot
 ```
 
 This command will find the lowest-cost TPU spot instance across regions and automatically shut down the instance after 30 minutes of idle time. It will also install the sglang-jax environment for you.
