@@ -67,23 +67,9 @@ We currently support Eagle2 and Eagle3, and plan to continue optimizing the kern
 
 ## TPU Performance
 After all the optimizations, SGLang-Jax matches or outperforms other TPU inference solutions.
+SGLang-Jax on TPU is also competitive when compared to GPU solutions.
 
-### Setup
-To highlight SGLang-Jax’s efficiency on TPUs, we benchmarked it against vLLM-TPU using the `Qwen/Qwen3-32B` model on a TPU v6e-4 host. We tested SGLang-Jax (commit: `main-af32f095880ff676ed23eec19bc79584b5e20717`) and vLLM-TPU (version `vllm-tpu==0.11.1`).
-Key metrics include: time-to-first-token latency (TTFT), input throughput, inter-token latency (ITL), and output throughput.
-We also compared TPU v6e-4 against H100 GPUs using SGLang on both.
-Full benchmark instructions are available [here](https://github.com/sgl-project/sglang-jax/issues/270).
-
-### Results
-On Qwen3-32B, SGLang-Jax and vLLM-TPU deliver nearly identical prefill performance, but SGLang-Jax pulls ahead slightly during decoding. Both use similar kernels, resulting in comparable input throughput. However, SGLang-Jax supports an overlap scheduler, which reduces ITL and boosts output throughput.
-
-<img src="/images/blog/sglang_jax/tpu_performance.png" style="display:block; margin: auto; width: 85%;"></img>
-<p style="color:gray; text-align: center;">SGLang-Jax vs. vLLM-TPU on TPU v6e</p>
-
-We also compared TPUs to GPUs by pitting four v6e chips against two H100s—a configuration that roughly aligns in price, HBM capacity, and peak bf16 TFLOPS. The TPU consistently achieves higher input throughput and outperforms on output throughput in several scenarios.
-
-<img src="/images/blog/sglang_jax/gpu_performance.jpg" style="display:block; margin: auto; width: 85%;"></img>
-<p style="color:gray; text-align: center;">SGLang-Jax on TPU vs. SGLang on GPU</p>
+You can find the full benchmark results and instructions at https://github.com/sgl-project/sglang-jax/issues/297.
 
 ## Usage
 
@@ -164,7 +150,7 @@ The community is working with Google Cloud team and multiple partners on the fol
 ## Acknowledgments
 **SGLang-jax team**: sii-xinglong, jimoosciuc, Prayer, aolemila, JamesBrianD, zkkython, neo, leos, pathfinder-pf, Ying Sheng, Hongzhen Chen, Jiacheng Yang, Ke Bao, Qinghan Chen
 
-**Google**: Google Cloud Team
+**Google**: Chengji Yao, Gang Ji, Chris Yang, Shun Wang, Michael Zhang, Xiang Li, Xueqi Liu
 
 **InclusionAI**: Junping Zhao, Guowei Wang, Yuhong Guo, Zhenxuan Pan
 
