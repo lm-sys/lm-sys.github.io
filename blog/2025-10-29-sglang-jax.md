@@ -148,9 +148,9 @@ The community is working with Google Cloud team and multiple partners on the fol
    - Multi-LoRA batching
 
 ## Acknowledgments
-**SGLang-jax team**: sii-xinglong, jimoosciuc, Prayer, aolemila, JamesBrianD, zkkython, neo, leos, pathfinder-pf, Ying Sheng, Hongzhen Chen, Jiacheng Yang, Ke Bao, Qinghan Chen
+**SGLang-jax team**: sii-xinglong, jimoosciuc, Prayer, aolemila, JamesBrianD, zkkython, neo, leos, pathfinder-pf, Jiacheng Yang, Hongzhen Chen, Ying Sheng, Ke Bao, Qinghan Chen
 
-**Google**: Chengji Yao, Gang Ji, Chris Yang, Shun Wang, Michael Zhang, Xiang Li, Xueqi Liu
+**Google**: Gang Ji, Chris Yang, Shun Wang, Michael Zhang, Xiang Li, Xueqi Liu
 
 **InclusionAI**: Junping Zhao, Guowei Wang, Yuhong Guo, Zhenxuan Pan
 
