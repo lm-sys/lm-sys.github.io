@@ -128,11 +128,11 @@ Once the TPU server is created, you can log in using the External IP and public 
 See also: https://docs.cloud.google.com/tpu/docs/setup-gcp-account
 <img src="/images/blog/sglang_jax/gcp_usage_1.png" style="display:block; margin: auto; width: 85%;"></img>
 
-### Using TPU via Skypilot
-We recommend using Skypilot for daily development.
-You can quickly set up Skypilot and find scripts for launching development machines and running tests in the sglang-jax repository.
+### Using TPU via SkyPilot
+We recommend using [SkyPilot](https://github.com/skypilot-org/skypilot) for daily development.
+You can quickly set up SkyPilot and find scripts for launching development machines and running tests in the sglang-jax repository.
 
-Install Skypilot for GCP: https://docs.skypilot.co/en/latest/getting-started/installation.html#gcp
+Install SkyPilot for GCP: https://docs.skypilot.co/en/latest/getting-started/installation.html#gcp
 Then launch [sgl-jax.yaml](https://github.com/sgl-project/sglang-jax/blob/cdd6600a70ecb396382a510da9ea59c91a9ea2c0/scripts/tpu_resource.yaml#L1):
 
 ```bash
