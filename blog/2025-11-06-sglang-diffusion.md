@@ -13,10 +13,13 @@ Source code available [here](https://github.com/sgl-project/sglang/tree/main/pyt
 
 ## Why Diffusion in SGLang?
 
+
 With diffusion models becoming the backbone for state-of-the-art image and video generation, we have heard strong community demand for bringing SGLang's signature performance and seamless user experience to these new modalities. 
 
-SGLang Diffusion is built to meet this need, providing a unified api for both language and diffusion tasks. The future of generation lies in combining modalities, as seen in pioneering models like ByteDance's [Bagel](https://github.com/ByteDance-Seed/Bagel) that fuse autoregressive and diffusion architectures. 
 
+We built SGLang Diffusion to answer this call, providing a unified, high-performance engine for both language and diffusion tasks. This unified approach is crucial, as the future of generation lies in combining architectures. 
+
+Pioneering models are already fusing the strengths of autoregressive (AR) and diffusion-based approaches—from models like ByteDance's [Bagel](https://github.com/ByteDance-Seed/Bagel) and Meta's [Transfusion](https://arxiv.org/abs/2408.11039) that use a single transformer for both tasks, to NVIDIA's [Fast-dLLM v2](https://nvlabs.github.io/Fast-dLLM/v2/) which adapts AR models for parallel generation.
 
 SGLang Diffusion is designed to be a future-proof, high-performance solution ready to power these innovative systems.
 
@@ -163,7 +166,7 @@ The SGLang Diffusion team is centered on continuous innovation in performance an
 - Model support and optimizations
   - Optimize Wan, FastWan, Hunyuan, Qwen-Image series, FLUX
   - Support LongCat-Video
-- Kernel support and Fusions
+- Kernel support and fusions
   - Quantization kernels
   - Rotary embedding kernels
   - Flash Attention 4 integration in sgl-kernel for blackwell
