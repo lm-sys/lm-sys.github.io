@@ -1,0 +1,130 @@
+---
+title: "SGLang Diffusion: Diffusion Generation in SGLang"
+author: "The SGLang Team"
+date: "November 6, 2025"
+previewImg: /images/blog/sglang/cover.jpg
+---
+
+## Intro
+
+We are excited to release **SGLang Diffusion**, accelerating image and video generation ...
+
+
+
+
+Source code available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen)
+
+## Why Diffusion in SGLang?
+
+With diffusion models becoming the backbone for state-of-the-art image and video generation, we have heard strong community demand for bringing SGLang's signature performance and seamless user experience to these new modalities. 
+
+SGLang Diffusion is built to meet this need, providing a unified api for both language and diffusion tasks. The future of generation lies in combining modalities, as seen in pioneering models like ByteDance's [Bagel](https://github.com/ByteDance-Seed/Bagel) that fuse autoregressive and diffusion architectures. 
+
+
+SGLang Diffusion is designed to be a future-proof, high-performance solution ready to power these innovative systems.
+
+
+
+
+## Architecture
+
+- Follow SGLang scheduler architecture
+- Reuse layer and sgl-kernel
+- Focus on easy of use: CLI, Python engine API, OpenAI-compatible API
+- Built on a fork from FastVideo with additional enhancement. Collaborating with the FastVideo team.
+
+## Model Support
+
+We support various popular open-source video & image generation models, including:
+    - Video models: Wan-series, FastWan, Hunyuan
+    - Image models: Qwen-Image, Qwen-Image-Edit, Flux
+
+## Usage
+
+### Install
+
+SGL diffusion can be installed via:
+
+
+Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) for more info
+
+
+
+### Demo
+
+#### Text to Video: Wan-AI/Wan2.1
+
+```bash
+sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
+    --prompt "A curious raccoon" \
+    --save-output
+```
+
+
+#### Image to Video: Wan-AI/Wan2.1-I2V
+
+```bash
+sglang generate --prompt="Summer beach vacation style, a white cat wearing sunglasses sits on a surfboard. The fluffy-furred feline gazes directly at the camera with a relaxed expression. Blurred beach scenery forms the background featuring crystal-clear waters, distant green hills, and a blue sky dotted with white clouds. The cat assumes a naturally relaxed posture, as if savoring the sea breeze and warm sunlight. A close-up shot highlights the feline's intricate details and the refreshing atmosphere of the seaside. "\
+
+    --image-path=https://github.com/Wan-Video/Wan2.2/blob/990af50de458c19590c245151197326e208d7191/examples/i2v_input.JPG?raw=true 
+    --save-output --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers --num-gpus 2 --enable-cfg-parallel 
+```
+
+#### Text to Image: FLUX
+
+```bash
+sglang generate --model-path black-forest-labs/FLUX.1-dev \
+          --prompt "A Logo With Bold Large Text: SGL Diffusion" \
+          --save-output
+```
+
+#### Text to Image: Qwen-Image
+
+```bash
+sglang generate \
+    --prompt='A curious raccoon' --save-output \
+    --width=720 --height=720 --model-path=Qwen/Qwen-Image
+```
+
+#### Image to Image: Qwen-Image-Edit
+
+
+
+```bash
+sglang generate --prompt='keep the original style, but change the text to: \"SGL Diffusion\"' 
+    --save-output --image-path=https://raw.githubusercontent.com/sgl-project/sgl-test-files/refs/heads/main/images/sgl_logo.png \ 
+    --model-path=Qwen/Qwen-Image-Edit
+```
+
+
+## Performance Benchmark
+
+Todo: convert this to a bar chart (with Google sheet or PPT)
+
+| Model            | Baseline (s) (diffusers) | SGLang Diffusion (s) |
+|------------------|-------------------------:|---------------------:|
+| Flux             |                     38.7 |                 6.50 |
+| Wan 2.1 T2V 1.3B |                    102.7 |                78.83 |
+| Qwen-Image       |                    13.30 |                10.99 |
+| Qwen-Image-Edit  |                     52.5 |                 34.4 |
+
+## Roadmap and Diffusion Ecosystem
+
+- Call for contribution
+- Performance optimization
+- Blackwell optimizations (Flash Attention 4 integration)
+- Model coverage
+
+## Acknowledgment
+
+SGLang Diffusion Team: Mick..
+
+FastVideo Team: …
+
+## Learn more
+
+- Roadmap: TBD
+- Slack channel: [slack.sglang.ai](https://slack.sglang.ai) (`#diffusion`)
+
+
+
