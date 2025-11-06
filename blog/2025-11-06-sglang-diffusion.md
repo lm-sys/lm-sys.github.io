@@ -65,8 +65,7 @@ sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
 
 ```bash
 sglang generate --prompt="Summer beach vacation style, a white cat wearing sunglasses sits on a surfboard. The fluffy-furred feline gazes directly at the camera with a relaxed expression. Blurred beach scenery forms the background featuring crystal-clear waters, distant green hills, and a blue sky dotted with white clouds. The cat assumes a naturally relaxed posture, as if savoring the sea breeze and warm sunlight. A close-up shot highlights the feline's intricate details and the refreshing atmosphere of the seaside. "\
-
-    --image-path=https://github.com/Wan-Video/Wan2.2/blob/990af50de458c19590c245151197326e208d7191/examples/i2v_input.JPG?raw=true 
+    --image-path="https://github.com/Wan-Video/Wan2.2/blob/990af50de458c19590c245151197326e208d7191/examples/i2v_input.JPG?raw=true \
     --save-output --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers --num-gpus 2 --enable-cfg-parallel 
 ```
 
@@ -110,16 +109,19 @@ Todo: convert this to a bar chart (with Google sheet or PPT)
 
 ## Roadmap and Diffusion Ecosystem
 
-- Call for contribution
-- Performance optimization
-- Blackwell optimizations (Flash Attention 4 integration)
-- Model coverage
+Our vision is to build a comprehensive diffusion ecosystem in collaboration with the FastVideo team, providing an end-to-end solution from model training to high-performance inference. 
+
+
+The SGLang Diffusion roadmap is centered on continuous innovation in performance and model support. Key priorities include advanced performance optimizations, such as kernel fusion and DiT block caching, to push inference speeds even further. We are also committed to expanding our model coverage to include the latest architectures like LongCatVideo. 
+
+Building this ecosystem is a community effort, and we welcome and encourage all forms of contribution. Join us in shaping the future of open-source diffusion generation.
 
 ## Acknowledgment
 
-SGLang Diffusion Team: Mick..
 
-FastVideo Team: …
+ - SGLang Diffusion Team: [Mick](https://github.com/mickqian), [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Bao Ke](https://github.com/ispobock), []
+
+ - FastVideo Team: [SolitaryThinker](https://github.com/SolitaryThinker), [jzhang38](https://github.com/jzhang38), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
 
 ## Learn more
 
