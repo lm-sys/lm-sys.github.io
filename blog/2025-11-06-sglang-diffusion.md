@@ -127,7 +127,22 @@ Todo: convert this to a bar chart (with Google sheet or PPT)
 
 Our vision is to build a comprehensive diffusion ecosystem in collaboration with the FastVideo team, providing an end-to-end solution from model training to high-performance inference. 
 
-The SGLang Diffusion roadmap is centered on continuous innovation in performance and model support. Key priorities include advanced performance optimizations, such as kernel fusion and DiT block caching, to push inference speeds even further. We are also committed to expanding our model coverage to include the latest architectures like LongCatVideo. 
+The SGLang Diffusion team is centered on continuous innovation in performance and model support
+
+- Model support and optimizations
+  - Optimize Wan, FastWan, Hunyuan, Qwen-Image series, FLUX
+  - Support LongCat-Video
+- Kernel support and Fusions
+  - Quantization kernels
+  - Rotary embedding kernels
+  - Flash Attention 4 integration in sgl-kernel for blackwell
+- More server features
+  - Configurable cloud storage upload of generated files
+  - Batching support
+  - More parallelism methods
+- General architecture:
+  - Simplify the new model support effort
+  - Enhance cache and attention backend supports
 
 Building this ecosystem is a community effort, and we welcome and encourage all forms of contribution. Join us in shaping the future of open-source diffusion generation.
 
