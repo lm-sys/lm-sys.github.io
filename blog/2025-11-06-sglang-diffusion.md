@@ -34,12 +34,10 @@ We support various popular open-source video & image generation models, includin
   - Image models: Qwen-Image, Qwen-Image-Edit, Flux
 
 ## Usage
-
 ### Install
 
 SGL diffusion can be installed via multiple ways:
 
-Install:
 ```bash
 # with pip or uv
 uv pip install sglang[.diffusion] --prerelease=allow
@@ -49,7 +47,7 @@ git clone https://github.com/sgl-project/sglang.git
 cd sglang
 uv pip install --prerelease=allow  -e "python/.[diffusion]"
 ```
-
+### CLI
 Launch a server:
 ```bash
 sglang serve --model-path black-forest-labs/FLUX.1-dev
@@ -135,10 +133,16 @@ sglang generate --model-path=Qwen/Qwen-Image-Edit \
     --width=720 --height=720 --save-output \
 ```
 
-Input: 
-<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/rabbit.jpg" alt="Input" style="display:block; margin: auto; width: 65%;">
-Output:
-<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit.jpg" alt="Output" style="display:block; margin: auto; width: 65%;">
+<div style="display: flex; justify-content: center; gap: 20px;">
+  <div style="text-align: center;">
+    <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/rabbit.jpg" alt="Input" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
+    <div style="margin-top: 5px;">Input</div>
+  </div>
+  <div style="text-align: center;">
+    <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit.jpg" alt="Output" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
+    <div style="margin-top: 5px;">Output</div>
+  </div>
+</div>
 
 
 
