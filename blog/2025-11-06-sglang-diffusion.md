@@ -154,6 +154,8 @@ sglang generate --model-path=Qwen/Qwen-Image-Edit \
 
 
 
+
+
 ## Performance Benchmark
 
 <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&amp;format=interactive"></iframe>
