@@ -1,5 +1,5 @@
 ---
-title: "SGLang Diffusion: Diffusion Generation in SGLang"
+title: "SGLang Diffusion: Diffusion Generation with SGLang"
 author: "The SGLang Team"
 date: "November 6, 2025"
 previewImg: /images/blog/sglang/cover.jpg
@@ -78,6 +78,13 @@ sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
 ```
 
 
+<video controls width="640" preload="metadata"
+poster="">
+  <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
+    Your browser doesn't support HTML5 videos
+</video>
+
+
 #### Image to Video: Wan-AI/Wan2.1-I2V
 
 ```bash
@@ -85,6 +92,14 @@ sglang generate --prompt="Summer beach vacation style, a white cat wearing sungl
     --image-path="https://github.com/Wan-Video/Wan2.2/blob/990af50de458c19590c245151197326e208d7191/examples/i2v_input.JPG?raw=true \
     --save-output --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers --num-gpus 2 --enable-cfg-parallel 
 ```
+
+<video controls width="640" preload="metadata"
+poster="">
+  <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
+    Your browser doesn't support HTML5 videos
+</video>
+
+
 
 #### Text to Image: FLUX
 
@@ -94,6 +109,11 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
           --save-output
 ```
 
+
+
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_FLUX.jpg" alt="Text to Image: FLUX" style="display:block; margin: auto; width: 85%;">
+
+
 #### Text to Image: Qwen-Image
 
 ```bash
@@ -102,32 +122,32 @@ sglang generate \
     --width=720 --height=720 --model-path=Qwen/Qwen-Image
 ```
 
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_Qwen_Image.jpg" alt="Text to Image: FLUX" style="display:block; margin: auto; width: 85%;">
+
+
 #### Image to Image: Qwen-Image-Edit
 
 
 ```bash
-sglang generate --prompt='keep the original style, but change the text to: \"SGL Diffusion\"' 
-    --save-output --image-path=https://raw.githubusercontent.com/sgl-project/sgl-test-files/refs/heads/main/images/sgl_logo.png \ 
+sglang generate --prompt='keep the original style, but change the text to: \"SGL Diffusion\"' \
+    --save-output --image-path="https://raw.githubusercontent.com/sgl-project/sgl-test-files/refs/heads/main/images/sgl_logo.png" \
     --model-path=Qwen/Qwen-Image-Edit
 ```
+
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_FLUX.jpg" alt="Text to Image: FLUX" style="display:block; margin: auto; width: 85%;">
 
 
 ## Performance Benchmark
 
-Todo: convert this to a bar chart (with Google sheet or PPT)
 
-| Model            | Baseline (s) (diffusers) | SGLang Diffusion (s) |
-|------------------|-------------------------:|---------------------:|
-| Flux             |                     38.7 |                 6.50 |
-| Wan 2.1 T2V 1.3B |                    102.7 |                78.83 |
-| Qwen-Image       |                    13.30 |                10.99 |
-| Qwen-Image-Edit  |                     52.5 |                 34.4 |
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/SGLang.Diffusion.vs.Baseline.Performance.diffusers.svg" alt="SGLang Diffusion Performance Benchmark" style="display:block; margin: auto; width: 85%;">
+<p style="color:gray; text-align: center;">Lower is better. Performance measured on a single NVIDIA A100 GPU.</p>
 
 ## Roadmap and Diffusion Ecosystem
 
 Our vision is to build a comprehensive diffusion ecosystem in collaboration with the FastVideo team, providing an end-to-end solution from model training to high-performance inference. 
 
-The SGLang Diffusion team is centered on continuous innovation in performance and model support
+The SGLang Diffusion team is centered on continuous innovation in performance and model support:
 
 - Model support and optimizations
   - Optimize Wan, FastWan, Hunyuan, Qwen-Image series, FLUX
