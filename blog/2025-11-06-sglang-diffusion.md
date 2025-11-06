@@ -7,8 +7,7 @@ previewImg: /images/blog/sglang/cover.jpg
 
 ## Intro
 
-We are excited to release **SGLang Diffusion**, accelerating image and video generation ...
-
+We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the FastVideo team, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
 
 Source code available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen)
 
@@ -26,10 +25,7 @@ SGLang Diffusion is designed to be a future-proof, high-performance solution rea
 
 ## Architecture
 
-- Follow SGLang scheduler architecture
-- Reuse layer and sgl-kernel
-- Focus on easy of use: CLI, Python engine API, OpenAI-compatible API
-- Built on a fork from FastVideo with additional enhancement. Collaborating with the FastVideo team.
+SGLang Diffusion is built upon SGLang's battle-tested, high-performance serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized compute kernels for maximum efficiency. To accelerate development, our system is built on an enhanced fork of FastVideo, and we are collaborating closely with their team. This partnership creates a clear and powerful ecosystem: SGLang Diffusion focuses on delivering state-of-the-art inference speed, while FastVideo provides comprehensive support for training-related tasks like model distillation. For a seamless user experience, we provide a suite of familiar interfaces, including a CLI, a Python engine API, and an OpenAI-compatible API, allowing users to integrate diffusion generation into their workflows with minimal effort.
 
 ## Model Support
 
