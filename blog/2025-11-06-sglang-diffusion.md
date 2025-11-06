@@ -88,27 +88,26 @@ poster="">
 #### Image to Video: Wan-AI/Wan2.1-I2V
 
 ```bash
-sglang generate --prompt="Summer beach vacation style, a white cat wearing sunglasses sits on a surfboard. The fluffy-furred feline gazes directly at the camera with a relaxed expression. Blurred beach scenery forms the background featuring crystal-clear waters, distant green hills, and a blue sky dotted with white clouds. The cat assumes a naturally relaxed posture, as if savoring the sea breeze and warm sunlight. A close-up shot highlights the feline's intricate details and the refreshing atmosphere of the seaside." \
+sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers  \
+    --prompt="Summer beach vacation style, a white cat wearing sunglasses sits on a surfboard. The fluffy-furred feline gazes directly at the camera with a relaxed expression. Blurred beach scenery forms the background featuring crystal-clear waters, distant green hills, and a blue sky dotted with white clouds. The cat assumes a naturally relaxed posture, as if savoring the sea breeze and warm sunlight. A close-up shot highlights the feline's intricate details and the refreshing atmosphere of the seaside." \
     --image-path="https://github.com/Wan-Video/Wan2.2/blob/990af50de458c19590c245151197326e208d7191/examples/i2v_input.JPG?raw=true" \
-    --save-output --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers --num-gpus 2 --enable-cfg-parallel 
+    --save-output --num-gpus 2 --enable-cfg-parallel 
 ```
 
 <video controls width="640" preload="metadata"
 poster="">
-  <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
+  <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4">
     Your browser doesn't support HTML5 videos
 </video>
-
 
 
 #### Text to Image: FLUX
 
 ```bash
 sglang generate --model-path black-forest-labs/FLUX.1-dev \
-          --prompt "A Logo With Bold Large Text: SGL Diffusion" \
-          --save-output
+    --prompt "A Logo With Bold Large Text: SGL Diffusion" \
+    --save-output
 ```
-
 
 
 <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_FLUX.jpg" alt="Text to Image: FLUX" style="display:block; margin: auto; width: 65%;">
@@ -117,9 +116,10 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
 #### Text to Image: Qwen-Image
 
 ```bash
-sglang generate \
-    --prompt='A curious raccoon' --save-output \
-    --width=720 --height=720 --model-path=Qwen/Qwen-Image
+sglang generate --model-path=Qwen/Qwen-Image \
+    --prompt='A curious raccoon' \
+    --width=720 --height=720 \
+    --save-output \
 ```
 
 <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_Qwen_Image.jpg" alt="Text to Image: FLUX" style="display:block; margin: auto; width: 65%;">
@@ -129,12 +129,17 @@ sglang generate \
 
 
 ```bash
-sglang generate --prompt='keep the original style, but change the text to: \"SGL Diffusion\"' \
-    --save-output --image-path="https://raw.githubusercontent.com/sgl-project/sgl-test-files/refs/heads/main/images/sgl_logo.png" \
-    --model-path=Qwen/Qwen-Image-Edit
+sglang generate --model-path=Qwen/Qwen-Image-Edit \
+    --prompt="Change the rabbit\'s color to purple, with a flash light background." \
+    --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/rabbit.jpg" \
+    --width=720 --height=720 --save-output \
 ```
 
-<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_FLUX.jpg" alt="Text to Image: FLUX" style="display:block; margin: auto; width: 85%;">
+Input: 
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/rabbit.jpg" alt="Input" style="display:block; margin: auto; width: 65%;">
+Output:
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit.jpg" alt="Output" style="display:block; margin: auto; width: 65%;">
+
 
 
 ## Performance Benchmark
