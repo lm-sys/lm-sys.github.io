@@ -138,7 +138,7 @@ sglang generate --model-path=Qwen/Qwen-Image \
 sglang generate --model-path=Qwen/Qwen-Image-Edit \
     --prompt="Change the rabbit\'s color to purple, with a flash light background." \
     --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/rabbit.jpg" \
-    --width=720 --height=720 --save-output \
+    --save-output \
 ```
 
 <div style="display: flex; justify-content: center; gap: 20px;">
