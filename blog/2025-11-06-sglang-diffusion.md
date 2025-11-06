@@ -10,8 +10,6 @@ previewImg: /images/blog/sglang/cover.jpg
 We are excited to release **SGLang Diffusion**, accelerating image and video generation ...
 
 
-
-
 Source code available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen)
 
 ## Why Diffusion in SGLang?
@@ -43,7 +41,17 @@ We support various popular open-source video & image generation models, includin
 
 ### Install
 
-SGL diffusion can be installed via:
+SGL diffusion can be installed via multiple ways:
+
+```bash
+# with pip or uv
+uv pip install sglang[.diffusion] --prerelease=allow
+
+# from source
+git clone https://github.com/sgl-project/sglang.git
+cd sglang
+uv pip install --prerelease=allow  -e "python/.[diffusion]"
+```
 
 
 Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) for more info
