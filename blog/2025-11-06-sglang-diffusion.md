@@ -7,7 +7,7 @@ previewImg: /images/blog/sglang/cover.jpg
 
 ## Introduction
 
-We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the FastVideo team, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
+We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the **FastVideo team**, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
 
 Source code available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen)
 
@@ -28,7 +28,12 @@ SGLang Diffusion is designed to be a future-proof, high-performance solution rea
 
 ## Architecture
 
-SGLang Diffusion is built upon SGLang's battle-tested, high-performance serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized compute kernels for maximum efficiency. To accelerate development, our system is built on an enhanced fork of FastVideo, and we are collaborating closely with their team. This partnership creates a clear and powerful ecosystem: SGLang Diffusion focuses on delivering state-of-the-art inference speed, while FastVideo provides comprehensive support for training-related tasks like model distillation. For a seamless user experience, we provide a suite of familiar interfaces, including a CLI, a Python engine API, and an OpenAI-compatible API, allowing users to integrate diffusion generation into their workflows with minimal effort.
+SGLang Diffusion is built upon SGLang's battle-tested, high-performance serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized compute kernels for maximum efficiency. 
+
+To accelerate development, our system is built on an enhanced fork of **FastVideo**, and we are collaborating closely with their team. This partnership creates a clear and powerful ecosystem: SGLang Diffusion focuses on delivering state-of-the-art inference speed, while **FastVideo** provides comprehensive support for training-related tasks like model distillation. 
+
+
+For a seamless user experience, we provide a suite of familiar interfaces, including a CLI, a Python engine API, and an OpenAI-compatible API, allowing users to integrate diffusion generation into their workflows with minimal effort.
 
 ## Model Support
 
@@ -64,7 +69,7 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
 ```
 
 
-Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more info
+Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more information.
 
 
 
@@ -159,7 +164,7 @@ sglang generate --model-path=Qwen/Qwen-Image-Edit \
 
 ## Roadmap and Diffusion Ecosystem
 
-Our vision is to build a comprehensive diffusion ecosystem in collaboration with the FastVideo team, providing an end-to-end solution from model training to high-performance inference. 
+Our vision is to build a comprehensive diffusion ecosystem in collaboration with the **FastVideo** team, providing an end-to-end solution from model training to high-performance inference. 
 
 The SGLang Diffusion team is centered on continuous innovation in performance and model support:
 
@@ -183,7 +188,7 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 ## Acknowledgment
 
 
-- SGLang Diffusion Team: [Mick](https://github.com/mickqian), [YuHao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Bao Ke](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [LaiXin Xie](https://github.com/laixinn), [YiKai Zhu](https://github.com/zyksir)
+- SGLang Diffusion Team: [YuHao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Bao Ke](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [LaiXin Xie](https://github.com/laixinn), [YiKai Zhu](https://github.com/zyksir), [Mick](https://github.com/mickqian)
 
 - FastVideo Team: [SolitaryThinker](https://github.com/SolitaryThinker), [jzhang38](https://github.com/jzhang38), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
 
