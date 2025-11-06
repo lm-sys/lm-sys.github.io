@@ -5,7 +5,7 @@ date: "November 6, 2025"
 previewImg: /images/blog/sglang/cover.jpg
 ---
 
-## Intro
+## Introduction
 
 We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the FastVideo team, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
 
@@ -30,8 +30,8 @@ SGLang Diffusion is built upon SGLang's battle-tested, high-performance serving 
 ## Model Support
 
 We support various popular open-source video & image generation models, including:
-    - Video models: Wan-series, FastWan, Hunyuan
-    - Image models: Qwen-Image, Qwen-Image-Edit, Flux
+  - Video models: Wan-series, FastWan, Hunyuan
+  - Image models: Qwen-Image, Qwen-Image-Edit, Flux
 
 ## Usage
 
@@ -39,6 +39,7 @@ We support various popular open-source video & image generation models, includin
 
 SGL diffusion can be installed via multiple ways:
 
+Install:
 ```bash
 # with pip or uv
 uv pip install sglang[.diffusion] --prerelease=allow
@@ -49,8 +50,20 @@ cd sglang
 uv pip install --prerelease=allow  -e "python/.[diffusion]"
 ```
 
+Launch a server:
+```bash
+sglang serve --model-path black-forest-labs/FLUX.1-dev
+```
 
-Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) for more info
+Generate an image:
+```bash
+sglang generate --model-path black-forest-labs/FLUX.1-dev \
+  --prompt "A Logo With Bold Large Text: SGL Diffusion" \
+  --save-output
+```
+
+
+Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more info
 
 
 
@@ -92,7 +105,6 @@ sglang generate \
 #### Image to Image: Qwen-Image-Edit
 
 
-
 ```bash
 sglang generate --prompt='keep the original style, but change the text to: \"SGL Diffusion\"' 
     --save-output --image-path=https://raw.githubusercontent.com/sgl-project/sgl-test-files/refs/heads/main/images/sgl_logo.png \ 
@@ -115,7 +127,6 @@ Todo: convert this to a bar chart (with Google sheet or PPT)
 
 Our vision is to build a comprehensive diffusion ecosystem in collaboration with the FastVideo team, providing an end-to-end solution from model training to high-performance inference. 
 
-
 The SGLang Diffusion roadmap is centered on continuous innovation in performance and model support. Key priorities include advanced performance optimizations, such as kernel fusion and DiT block caching, to push inference speeds even further. We are also committed to expanding our model coverage to include the latest architectures like LongCatVideo. 
 
 Building this ecosystem is a community effort, and we welcome and encourage all forms of contribution. Join us in shaping the future of open-source diffusion generation.
@@ -123,9 +134,9 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 ## Acknowledgment
 
 
- - SGLang Diffusion Team: [Mick](https://github.com/mickqian), [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Bao Ke](https://github.com/ispobock), []
+- SGLang Diffusion Team: [Mick](https://github.com/mickqian), [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Bao Ke](https://github.com/ispobock), []
 
- - FastVideo Team: [SolitaryThinker](https://github.com/SolitaryThinker), [jzhang38](https://github.com/jzhang38), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
+- FastVideo Team: [SolitaryThinker](https://github.com/SolitaryThinker), [jzhang38](https://github.com/jzhang38), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
 
 ## Learn more
 
