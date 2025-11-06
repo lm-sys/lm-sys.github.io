@@ -149,7 +149,7 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 ## Acknowledgment
 
 
-- SGLang Diffusion Team: [Mick](https://github.com/mickqian), [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Bao Ke](https://github.com/ispobock), []
+- SGLang Diffusion Team: [Mick](https://github.com/mickqian), [YuHao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Bao Ke](https://github.com/ispobock), [Xi Chen](https://github.com/RubiaCx), [LaiXin Xie](https://github.com/laixinn), [YiKai Zhu](https://github.com/zyksir)
 
 - FastVideo Team: [SolitaryThinker](https://github.com/SolitaryThinker), [jzhang38](https://github.com/jzhang38), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
 
