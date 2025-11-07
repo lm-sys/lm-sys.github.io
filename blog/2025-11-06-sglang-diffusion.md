@@ -20,7 +20,6 @@ src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVE
 style="display:block; margin:auto;">
 </iframe>
 
-
 <p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark</p>
 
 
@@ -42,12 +41,13 @@ SGLang Diffusion is designed to be a future-proof, high-performance solution rea
 
 ## Architecture
 
-SGLang Diffusion is built upon SGLang's battle-tested, high-performance serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized compute kernels for maximum efficiency. 
+SGLang Diffusion is engineered for both performance and flexibility, built upon SGLang's battle-tested serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized compute kernels for maximum efficiency.
 
-To accelerate development, our system is built on an enhanced fork of **FastVideo**, and we are collaborating closely with their team. This partnership creates a clear and powerful ecosystem: SGLang Diffusion focuses on delivering state-of-the-art inference speed, while **FastVideo** provides comprehensive support for training-related tasks like model distillation. 
+At its core, our architecture is designed to accommodate the diverse structures of modern diffusion models. We introduce `ComposedPipelineBase`, a flexible abstraction that orchestrates a series of modular `PipelineStage`s. Each stage encapsulates a common diffusion function—such as the denoising loop in `DenoisingStage` or VAE decoding in `DecodingStage`—allowing developers to easily combine and reuse these components to construct complex, customized pipelines.
 
+To achieve state-of-the-art speed, we integrate advanced parallelism techniques. We support Unified Sequence Parallelism (USP)—a combination of Ulysses-SP and Ring-Attention—for the core transformer blocks, alongside CFG-parallelism and tensor parallelism (TP) for other model components.
 
-For a seamless user experience, we provide a suite of familiar interfaces, including a CLI, a Python engine API, and an OpenAI-compatible API, allowing users to integrate diffusion generation into their workflows with minimal effort.
+To accelerate development and foster a powerful ecosystem, our system is built on an enhanced fork of **FastVideo**, and we are collaborating closely with their team. This partnership allows SGLang Diffusion to focus on delivering cutting-edge inference speed, while **FastVideo** provides comprehensive support for training-related tasks like model distillation.
 
 ## Model Support
 
@@ -59,6 +59,9 @@ For full list of supported models, reference [here](https://github.com/sgl-proje
 
 
 ## Usage
+
+For a seamless user experience, we provide a suite of familiar interfaces, including a CLI, a Python engine API, and an OpenAI-compatible API, allowing users to integrate diffusion generation into their workflows with minimal effort.
+
 ### Install
 
 SGL diffusion can be installed via multiple ways:
@@ -170,9 +173,9 @@ sglang generate --model-path=Qwen/Qwen-Image-Edit \
 
 
 
-## Performance Benchmark
 
-You can reference the performance benchmark at the top of this post.
+## Performance Benchmark
+As benchmarked in the chart at the top of this post, SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation.
 
 ## Roadmap and Diffusion Ecosystem
 
