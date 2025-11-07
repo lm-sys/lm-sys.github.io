@@ -164,7 +164,7 @@ sglang generate --model-path=Qwen/Qwen-Image-Edit \
 <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&amp;format=interactive"></iframe>
 
 <img src="/images/blog/sglang_diffusion/performance_benchmark.svg" alt="SGLang Diffusion Performance Benchmark" style="display:block; margin: auto; width: 85%;">
-<p style="color:gray; text-align: center;">Lower is better. Performance measured on a single NVIDIA A100 GPU.</p>
+<p style="color:gray; text-align: center;">Lower is better. Performance measured on a single NVIDIA H100 GPU.</p>
 
 
 ## Roadmap and Diffusion Ecosystem
