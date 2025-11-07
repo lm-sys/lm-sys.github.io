@@ -195,6 +195,9 @@ The SGLang Diffusion team is centered on continuous innovation in performance an
 
 Building this ecosystem is a community effort, and we welcome and encourage all forms of contribution. Join us in shaping the future of open-source diffusion generation.
 
+
+<img src="/images/blog/sgl-diffusion/diffusion_ecosystem.png" style="display:block; margin: auto; width: 85%;"></img>
+
 ## Acknowledgment
 
 SGLang Diffusion Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Bao Ke](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://github.com/mickqian)
