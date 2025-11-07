@@ -32,7 +32,7 @@ SGLang Diffusion is designed to be a future-proof, high-performance solution rea
 
 ## Architecture
 
-SGLang Diffusion is engineered for both performance and flexibility, built upon SGLang's battle-tested serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized kernels for maximum efficiency.
+SGLang Diffusion is engineered for both performance and flexibility, built upon SGLang's battle-tested serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized sgl-kernel for maximum efficiency.
 
 At its core, our architecture is designed to accommodate the diverse structures of modern diffusion models. We introduce `ComposedPipelineBase`, a flexible abstraction that orchestrates a series of modular `PipelineStage`s. Each stage encapsulates a common diffusion function—such as the denoising loop in `DenoisingStage` or VAE decoding in `DecodingStage`—allowing developers to easily combine and reuse these components to construct complex, customized pipelines.
 
@@ -54,7 +54,7 @@ For a seamless user experience, we provide a suite of familiar interfaces, inclu
 
 ### Install
 
-SGL diffusion can be installed via multiple ways:
+SGLang Diffusion can be installed via multiple ways:
 
 ```bash
 # with pip or uv
@@ -99,12 +99,11 @@ sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
     --save-output
 ```
 
-<video controls width="640" preload="metadata"   style="display:block; margin-top: 20px;"
-poster="">
-  <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
-      Download from https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4
-</video>
-
+<video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview">
+        <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <p>Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4">Download the video</a></p>
 
 #### Image to Video: Wan-AI/Wan2.1-I2V
 
@@ -115,12 +114,12 @@ sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers  \
     --save-output --num-gpus 2 --enable-cfg-parallel 
 ```
 
-<video controls width="640" preload="metadata" style="display:block; margin-top: 20px"
-poster="">
-  <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4" margin-top: 20px>
-    Download from https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4
-</video>
+<video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview">  <!-- Replace poster with a real thumbnail URL if you have one -->
+        <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
+    <p>Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4">Download the video</a></p>
 
 #### Text to Image: FLUX
 
@@ -200,7 +199,7 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 
 SGLang Diffusion Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Bao Ke](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://github.com/mickqian)
 
-FastVideo Team: [Zhang Peiyuan](https://github.com/jzhang38), [William Lin](https://github.com/SolitaryThinker), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
+FastVideo Team: [Zhang Peiyuan](https://github.com/jzhang38), [William Lin](https://github.com/SolitaryThinker), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL), [Hao Zhang](https://cseweb.ucsd.edu/~haozhang/)
 
 ## Learn more
 
