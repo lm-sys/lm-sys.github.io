@@ -184,6 +184,7 @@ The SGLang Diffusion team is centered on continuous innovation in performance an
   - Configurable cloud storage upload of generated files
   - Batching support
   - More parallelism methods
+  - Quantization
 - General architecture:
   - Simplify the effort of supporting new models
   - Enhance cache and attention backend supports
