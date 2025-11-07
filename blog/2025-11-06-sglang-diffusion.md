@@ -5,7 +5,6 @@ date: "November 6, 2025"
 previewImg: https://github.com/lm-sys/lm-sys.github.io/releases/download/test/sgl-diffusion-banner-16-9.png
 ---
 
-
 We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the **FastVideo team**, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
 
 Source code available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen)
@@ -22,10 +21,6 @@ style="display:block; margin:auto;">
 </iframe>
 
 <p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark</p>
-
-
-
-
 
 ## Why Diffusion in SGLang?
 
@@ -74,12 +69,17 @@ uv pip install 'sglang[diffusion]' --prerelease=allow
 # from source
 git clone https://github.com/sgl-project/sglang.git
 cd sglang
-uv pip install --prerelease=allow  -e "python[diffusion]"
+uv pip install -e "python[diffusion]" --prerelease=allow
 ```
 ### CLI
-Launch a server:
+
+Launch a server and then send requests:
 ```bash
 sglang serve --model-path black-forest-labs/FLUX.1-dev
+
+
+
+
 ```
 
 Or, Generate an image without launching a server:
@@ -104,7 +104,7 @@ sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
 ```
 
 
-<video controls width="640" preload="metadata"   style="display:block; margin:auto;"
+<video controls width="640" preload="metadata"   style="display:block; margin-top: 20px;"
 poster="">
   <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
     Your browser doesn't support HTML5 videos
@@ -120,9 +120,9 @@ sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers  \
     --save-output --num-gpus 2 --enable-cfg-parallel 
 ```
 
-<video controls width="640" preload="metadata" style="display:block; margin:auto;"
+<video controls width="640" preload="metadata" style="display:block; margin-top: 20px"
 poster="">
-  <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4">
+  <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4" margin-top: 20px>
     Your browser doesn't support HTML5 videos
 </video>
 
@@ -136,7 +136,7 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
 ```
 
 
-<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_FLUX.jpg" alt="Text to Image: FLUX" style="display:block; margin: auto; width: 65%;">
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_FLUX.jpg" alt="Text to Image: FLUX" style="display:block; margin-top: 20px; width: 65%;">
 
 
 #### Text to Image: Qwen-Image
@@ -148,27 +148,27 @@ sglang generate --model-path=Qwen/Qwen-Image \
     --save-output \
 ```
 
-<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_Qwen_Image.jpg" alt="Text to Image: FLUX" style="display:block; margin: auto; width: 65%;">
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_Qwen_Image.jpg" alt="Text to Image: FLUX" style="display:block; margin-top: 20px; width: 65%;">
 
 
 #### Image to Image: Qwen-Image-Edit
 
 
 ```bash
-sglang generate --model-path=Qwen/Qwen-Image-Edit \
-    --prompt="Change the rabbit\'s color to purple, with a flash light background." \
-    --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/rabbit.jpg" \
-    --save-output \
+sglang generate --text-encoder-cpu-offload --pin-cpu-memory \
+  --prompt="Convert 2D style to 3D style" --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" --model-path=Qwen/Qwen-Image-Edit \
+   --width=1024  --height=1536 --save-output
 ```
+
 
 <div style="display: flex; justify-content: center; gap: 20px;">
   <div style="text-align: center;">
-    <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/rabbit.jpg" alt="Input" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
-    <div style="margin-top: 5px;">Input</div>
+    <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" alt="Input" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
+    <div style="margin-top: -25px;">Input</div>
   </div>
   <div style="text-align: center;">
-    <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit.jpg" alt="Output" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
-    <div style="margin-top: 5px;">Output</div>
+    <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Output.jpg" alt="Output" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
+    <div style="margin-top: -25px;">Output</div>
   </div>
 </div>
 
