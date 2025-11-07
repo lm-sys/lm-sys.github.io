@@ -2,8 +2,10 @@
 title: "SGLang Diffusion: Diffusion Generation with SGLang"
 author: "The SGLang Team"
 date: "November 6, 2025"
-previewImg: /images/blog/sglang/cover.jpg
+previewImg: https://github.com/lm-sys/lm-sys.github.io/releases/download/test/sgl-diffusion-logo.png
 ---
+
+<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/sgl-diffusion-logo.png" alt="SGLang Diffusion Banner" style="width: 100%; height: auto;" />
 
 We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the **FastVideo team**, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
 
@@ -73,7 +75,7 @@ uv pip install 'sglang[diffusion]' --prerelease=allow
 # from source
 git clone https://github.com/sgl-project/sglang.git
 cd sglang
-uv pip install --prerelease=allow  -e "python/.[diffusion]"
+uv pip install --prerelease=allow  -e "python[diffusion]"
 ```
 ### CLI
 Launch a server:
@@ -89,7 +91,7 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
 ```
 
 
-Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more information.
+Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more installation methods.
 
 
 ### Demo
@@ -209,7 +211,7 @@ FastVideo Team: [Peiyuan Zhang](https://github.com/SolitaryThinker), [jzhang38](
 
 ## Learn more
 
-- Roadmap: https://github.com/sgl-project/sglang/issues/12799
+- Roadmap: [Diffusion (2025 Q4)](https://github.com/sgl-project/sglang/issues/12799)
 - Slack channel: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A)
 
 
