@@ -185,7 +185,7 @@ The SGLang Diffusion team is centered on continuous innovation in performance an
   - Batching support
   - More parallelism methods
 - General architecture:
-  - Simplify the new model support effort
+  - Simplify the effort of supporting new models
   - Enhance cache and attention backend supports
 
 Building this ecosystem is a community effort, and we welcome and encourage all forms of contribution. Join us in shaping the future of open-source diffusion generation.
