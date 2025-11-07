@@ -1,14 +1,13 @@
 ---
-title: "SGLang Diffusion: Diffusion Generation with SGLang"
-author: "The SGLang Team"
-date: "November 6, 2025"
+title: "SGLang Diffusion: Accelerating Video and Image Generation"
+author: "The SGLang Diffusion Team"
+date: "November 7, 2025"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 ---
 
-We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the **FastVideo team**, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
-
-Source code available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen)
-
+We are excited to introduce SGLang Diffusion, which brings SGLang's state-of-the-art performance to accelerate image and video generation for diffusion models.
+SGLang Diffusion supports major open-source video and image generation models (Wan, Hunyuan, Qwen-Image, Qwen-Image-Edit, Flux) while providing fast inference speeds and ease of use via multiple API entry points (OpenAI-compatible API, CLI, Python interface). SGLang Diffusion delivers 1.2x–5.9x speedup across diverse workloads.
+In collaboration with the FastVideo team, we provide a complete ecosystem for diffusion models, from post-training to production serving. The code is available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen).
 
 <iframe
 width="600"
@@ -20,28 +19,24 @@ src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVE
 style="display:block; margin:15px auto 0 auto;">
 </iframe>
 
-<p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark</p>
+<p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark on an H100 GPU.</p>
 
 ## Why Diffusion in SGLang?
 
+With diffusion models becoming the backbone for state-of-the-art image and video generation, we have heard strong community demand for bringing SGLang's signature performance and seamless user experience to these new modalities. We built SGLang Diffusion to answer this call, providing a unified, high-performance engine for both language and diffusion tasks.
 
-With diffusion models becoming the backbone for state-of-the-art image and video generation, we have heard strong community demand for bringing SGLang's signature performance and seamless user experience to these new modalities. 
-
-
-We built SGLang Diffusion to answer this call, providing a unified, high-performance engine for both language and diffusion tasks. This unified approach is crucial, as the future of generation lies in combining architectures. 
-
+This unified approach is crucial, as the future of generation lies in combining architectures. 
 Pioneering models are already fusing the strengths of autoregressive (AR) and diffusion-based approaches—from models like ByteDance's [Bagel](https://github.com/ByteDance-Seed/Bagel) and Meta's [Transfusion](https://arxiv.org/abs/2408.11039) that use a single transformer for both tasks, to NVIDIA's [Fast-dLLM v2](https://nvlabs.github.io/Fast-dLLM/v2/) which adapts AR models for parallel generation.
 
 SGLang Diffusion is designed to be a future-proof, high-performance solution ready to power these innovative systems.
 
-
 ## Architecture
 
-SGLang Diffusion is engineered for both performance and flexibility, built upon SGLang's battle-tested serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized compute kernels for maximum efficiency.
+SGLang Diffusion is engineered for both performance and flexibility, built upon SGLang's battle-tested serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized kernels for maximum efficiency.
 
 At its core, our architecture is designed to accommodate the diverse structures of modern diffusion models. We introduce `ComposedPipelineBase`, a flexible abstraction that orchestrates a series of modular `PipelineStage`s. Each stage encapsulates a common diffusion function—such as the denoising loop in `DenoisingStage` or VAE decoding in `DecodingStage`—allowing developers to easily combine and reuse these components to construct complex, customized pipelines.
 
-To achieve state-of-the-art speed, we integrate advanced parallelism techniques. We support Unified Sequence Parallelism (USP)—a combination of Ulysses-SP and Ring-Attention—for the core transformer blocks, alongside CFG-parallelism and tensor parallelism (TP) for other model components.
+To achieve state-of-the-art speed, we integrate advanced parallelism techniques. It supports Unified Sequence Parallelism (USP)—a combination of Ulysses-SP and Ring-Attention—for the core transformer blocks, alongside CFG-parallelism and tensor parallelism (TP) for other model components.
 
 To accelerate development and foster a powerful ecosystem, our system is built on an enhanced fork of **FastVideo**, and we are collaborating closely with their team. This partnership allows SGLang Diffusion to focus on delivering cutting-edge inference speed, while **FastVideo** provides comprehensive support for training-related tasks like model distillation.
 
@@ -52,7 +47,6 @@ We support various popular open-source video & image generation models, includin
   - Image models: Qwen-Image, Qwen-Image-Edit, Flux
 
 For full list of supported models, reference [here](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/support_matrix.md).
-
 
 ## Usage
 
@@ -84,8 +78,6 @@ curl -s -D >(grep -i x-request-id >&2) \
   -F "model=Qwen/Qwen-Image-Edit" \
   -F "image[]=@example.jpg" \
   -F 'prompt=Create a meme based on image provide'
-
-
 ```
 
 Or, Generate an image without launching a server:
@@ -95,9 +87,7 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
   --save-output
 ```
 
-
 Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more installation methods.
-
 
 ### Demo
 
@@ -109,11 +99,10 @@ sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
     --save-output
 ```
 
-
 <video controls width="640" preload="metadata"   style="display:block; margin-top: 20px;"
 poster="">
   <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
-    Your browser doesn't support HTML5 videos
+      Download from https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4
 </video>
 
 
@@ -129,7 +118,7 @@ sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers  \
 <video controls width="640" preload="metadata" style="display:block; margin-top: 20px"
 poster="">
   <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4" margin-top: 20px>
-    Your browser doesn't support HTML5 videos
+    Download from https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4
 </video>
 
 
@@ -179,9 +168,8 @@ sglang generate \
 </div>
 
 
-
-
 ## Performance Benchmark
+We benchmarked the performance of SGLang Diffusion against a popular open-source baseline Huggingface Diffuser.
 As benchmarked in the chart at the top of this post, SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation.
 
 ## Roadmap and Diffusion Ecosystem
@@ -212,12 +200,10 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 
 SGLang Diffusion Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Bao Ke](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://github.com/mickqian)
 
-FastVideo Team: [Peiyuan Zhang](https://github.com/SolitaryThinker), [jzhang38](https://github.com/jzhang38), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
+FastVideo Team: [Zhang Peiyuan](https://github.com/jzhang38), [William Lin](https://github.com/SolitaryThinker), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
 
 ## Learn more
 
 - Roadmap: [Diffusion (2025 Q4)](https://github.com/sgl-project/sglang/issues/12799)
-- Slack channel: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A)
-
-
+- Slack channel: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A) (join via slack.sglang.ai)
 
