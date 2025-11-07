@@ -41,6 +41,9 @@ We support various popular open-source video & image generation models, includin
   - Video models: Wan-series, FastWan, Hunyuan
   - Image models: Qwen-Image, Qwen-Image-Edit, Flux
 
+For full list of supported models, reference [here](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/support_matrix.md).
+
+
 ## Usage
 ### Install
 
@@ -197,7 +200,7 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 ## Learn more
 
 - Roadmap: TBD
-- Slack channel: [slack.sglang.ai](https://slack.sglang.ai) (`#diffusion`)
+- Slack channel: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A)
 
 
 
