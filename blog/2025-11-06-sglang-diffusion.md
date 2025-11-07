@@ -77,7 +77,13 @@ Launch a server and then send requests:
 ```bash
 sglang serve --model-path black-forest-labs/FLUX.1-dev
 
-
+curl -s -D >(grep -i x-request-id >&2) \
+  -o >(jq -r '.data[0].b64_json' | base64 --decode > meme.png) \
+  -X POST "$OPENAI_API_BASE/images/edits" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -F "model=Qwen/Qwen-Image-Edit" \
+  -F "image[]=@example.jpg" \
+  -F 'prompt=Create a meme based on image provide'
 
 
 ```
@@ -155,9 +161,9 @@ sglang generate --model-path=Qwen/Qwen-Image \
 
 
 ```bash
-sglang generate --text-encoder-cpu-offload --pin-cpu-memory \
-  --prompt="Convert 2D style to 3D style" --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" --model-path=Qwen/Qwen-Image-Edit \
-   --width=1024  --height=1536 --save-output
+sglang generate \
+   --prompt="Convert 2D style to 3D style" --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" --model-path=Qwen/Qwen-Image-Edit \
+   --width=1024 --height=1536 --save-output
 ```
 
 
