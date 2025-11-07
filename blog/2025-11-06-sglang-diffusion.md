@@ -51,7 +51,7 @@ SGL diffusion can be installed via multiple ways:
 
 ```bash
 # with pip or uv
-uv pip install sglang[.diffusion] --prerelease=allow
+uv pip install 'sglang[diffusion]' --prerelease=allow
 
 # from source
 git clone https://github.com/sgl-project/sglang.git
