@@ -103,7 +103,8 @@ sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
         <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <p>Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4">Download the video</a></p>
+
+Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4">Download the video</a>
 
 #### Image to Video: Wan-AI/Wan2.1-I2V
 
@@ -119,7 +120,7 @@ sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers  \
         Your browser does not support the video tag.
     </video>
 
-    <p>Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4">Download the video</a></p>
+Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4">Download the video</a>
 
 #### Text to Image: FLUX
 
