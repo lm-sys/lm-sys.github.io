@@ -204,6 +204,8 @@ SGLang Diffusion Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong
 
 FastVideo Team: [Zhang Peiyuan](https://github.com/jzhang38), [William Lin](https://github.com/SolitaryThinker), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL), [Hao Zhang](https://cseweb.ucsd.edu/~haozhang/)
 
+Special thanks to NVIDIA and Voltage Park for their compute support.
+
 ## Learn more
 
 - Roadmap: [Diffusion (2025 Q4)](https://github.com/sgl-project/sglang/issues/12799)
