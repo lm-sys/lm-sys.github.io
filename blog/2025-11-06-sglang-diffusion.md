@@ -9,6 +9,24 @@ We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art
 
 Source code available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen)
 
+
+<iframe
+width="600"
+height="371"
+seamless
+frameborder="0"
+scrolling="no"
+src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&format=interactive"
+style="display:block; margin:auto;">
+</iframe>
+
+
+<p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark</p>
+
+
+
+
+
 ## Why Diffusion in SGLang?
 
 
@@ -20,8 +38,6 @@ We built SGLang Diffusion to answer this call, providing a unified, high-perform
 Pioneering models are already fusing the strengths of autoregressive (AR) and diffusion-based approaches—from models like ByteDance's [Bagel](https://github.com/ByteDance-Seed/Bagel) and Meta's [Transfusion](https://arxiv.org/abs/2408.11039) that use a single transformer for both tasks, to NVIDIA's [Fast-dLLM v2](https://nvlabs.github.io/Fast-dLLM/v2/) which adapts AR models for parallel generation.
 
 SGLang Diffusion is designed to be a future-proof, high-performance solution ready to power these innovative systems.
-
-
 
 
 ## Architecture
@@ -62,7 +78,7 @@ Launch a server:
 sglang serve --model-path black-forest-labs/FLUX.1-dev
 ```
 
-Generate an image:
+Or, Generate an image without launching a server:
 ```bash
 sglang generate --model-path black-forest-labs/FLUX.1-dev \
   --prompt "A Logo With Bold Large Text: SGL Diffusion" \
@@ -71,7 +87,6 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
 
 
 Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more information.
-
 
 
 ### Demo
@@ -155,23 +170,9 @@ sglang generate --model-path=Qwen/Qwen-Image-Edit \
 
 
 
-
-
 ## Performance Benchmark
 
-<iframe
-width="600"
-height="371"
-seamless
-frameborder="0"
-scrolling="no"
-src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&amp;format=interactive"
-style="display:block; margin:auto;">
-</iframe>
-
-
-<p style="color:gray; text-align: center;">Lower is better. Performance measured on a single NVIDIA H100 GPU.</p>
-
+You can reference the performance benchmark at the top of this post.
 
 ## Roadmap and Diffusion Ecosystem
 
@@ -199,10 +200,9 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 
 ## Acknowledgment
 
+SGLang Diffusion Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Bao Ke](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://github.com/mickqian)
 
-- SGLang Diffusion Team: [YuHao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Bao Ke](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [LaiXin Xie](https://github.com/laixinn), [YiKai Zhu](https://github.com/zyksir), [Mick](https://github.com/mickqian)
-
-- FastVideo Team: [SolitaryThinker](https://github.com/SolitaryThinker), [jzhang38](https://github.com/jzhang38), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
+FastVideo Team: [SolitaryThinker](https://github.com/SolitaryThinker), [jzhang38](https://github.com/jzhang38), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL)
 
 ## Learn more
 
