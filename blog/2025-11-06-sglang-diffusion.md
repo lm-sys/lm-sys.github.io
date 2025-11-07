@@ -5,8 +5,6 @@ date: "November 6, 2025"
 previewImg: /images/blog/sglang/cover.jpg
 ---
 
-## Introduction
-
 We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the **FastVideo team**, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
 
 Source code available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen)
@@ -87,7 +85,7 @@ sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
 ```
 
 
-<video controls width="640" preload="metadata"
+<video controls width="640" preload="metadata"   style="display:block; margin:auto;"
 poster="">
   <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
     Your browser doesn't support HTML5 videos
@@ -103,7 +101,7 @@ sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers  \
     --save-output --num-gpus 2 --enable-cfg-parallel 
 ```
 
-<video controls width="640" preload="metadata"
+<video controls width="640" preload="metadata" style="display:block; margin:auto;"
 poster="">
   <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4">
     Your browser doesn't support HTML5 videos
@@ -161,9 +159,17 @@ sglang generate --model-path=Qwen/Qwen-Image-Edit \
 
 ## Performance Benchmark
 
-<iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&amp;format=interactive"></iframe>
+<iframe
+width="600"
+height="371"
+seamless
+frameborder="0"
+scrolling="no"
+src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&amp;format=interactive"
+style="display:block; margin:auto;">
+</iframe>
 
-<img src="/images/blog/sglang_diffusion/performance_benchmark.svg" alt="SGLang Diffusion Performance Benchmark" style="display:block; margin: auto; width: 85%;">
+
 <p style="color:gray; text-align: center;">Lower is better. Performance measured on a single NVIDIA H100 GPU.</p>
 
 
