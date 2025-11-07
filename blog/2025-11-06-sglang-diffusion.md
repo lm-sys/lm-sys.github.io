@@ -17,7 +17,7 @@ seamless
 frameborder="0"
 scrolling="no"
 src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&format=interactive"
-style="display:block; margin:auto;">
+style="display:block; margin:15px auto 0 auto;">
 </iframe>
 
 <p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark</p>
