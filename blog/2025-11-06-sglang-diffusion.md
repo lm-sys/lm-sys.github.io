@@ -2,10 +2,9 @@
 title: "SGLang Diffusion: Diffusion Generation with SGLang"
 author: "The SGLang Team"
 date: "November 6, 2025"
-previewImg: https://github.com/lm-sys/lm-sys.github.io/releases/download/test/sgl-diffusion-logo.png
+previewImg: https://github.com/lm-sys/lm-sys.github.io/releases/download/test/sgl-diffusion-banner-16-9.png
 ---
 
-<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/sgl-diffusion-logo.png" alt="SGLang Diffusion Banner" style="width: 100%; height: auto;" />
 
 We are excited to introduce SGLang Diffusion, bringing SGLang's state-of-the-art performance to accelerate image and video generation. In collaboration with the **FastVideo team**, we provide a complete ecosystem for both blazing-fast inference and model training, all accessible through our familiar, user-friendly APIs.
 
