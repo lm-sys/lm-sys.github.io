@@ -199,7 +199,7 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 
 ## Learn more
 
-- Roadmap: TBD
+- Roadmap: https://github.com/sgl-project/sglang/issues/12799
 - Slack channel: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A)
 
 
