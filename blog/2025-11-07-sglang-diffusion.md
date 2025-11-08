@@ -9,7 +9,6 @@ We are excited to introduce SGLang Diffusion, which brings SGLang's state-of-the
 SGLang Diffusion supports major open-source video and image generation models (Wan, Hunyuan, Qwen-Image, Qwen-Image-Edit, Flux) while providing fast inference speeds and ease of use via multiple API entry points (OpenAI-compatible API, CLI, Python interface). SGLang Diffusion delivers 1.2x~ speedup across diverse workloads.
 In collaboration with the FastVideo team, we provide a complete ecosystem for diffusion models, from post-training to production serving. The code is available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen).
 
-
 <iframe
 width="600"
 height="371"
