@@ -201,9 +201,9 @@ Building this ecosystem is a community effort, and we welcome and encourage all 
 
 ## Acknowledgment
 
-SGLang Diffusion Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Bao Ke](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://github.com/mickqian)
+SGLang Diffusion Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ke Bao](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://github.com/mickqian)
 
-FastVideo Team: [Zhang Peiyuan](https://github.com/jzhang38), [William Lin](https://github.com/SolitaryThinker), [BrianChen1129](https://github.com/BrianChen1129), [kevin314](https://github.com/kevin314), [Edenzzzz](https://github.com/Edenzzzz), [JerryZhou54](https://github.com/JerryZhou54), [rlsu9](https://github.com/rlsu9), [Eigensystem](https://github.com/Eigensystem), [foreverpiano](https://github.com/foreverpiano), [RandNMR73](https://github.com/RandNMR73), [PorridgeSwim](https://github.com/PorridgeSwim), [Gary-ChenJL](https://github.com/Gary-ChenJL), [Hao Zhang](https://cseweb.ucsd.edu/~haozhang/)
+FastVideo Team: [Peiyuan Zhang](https://github.com/jzhang38), [William Lin](https://github.com/SolitaryThinker), [Yongqi Chen](https://github.com/BrianChen1129), [Kevin Lin](https://github.com/kevin314), [Wenxuan Tan](https://github.com/Edenzzzz), [Wei Zhou](https://github.com/JerryZhou54), [Runlong Su](https://github.com/rlsu9), [Jinzhe Pan](https://github.com/Eigensystem), [Hangliang Ding](https://github.com/foreverpiano), [Matthew Noto](https://github.com/RandNMR73), [You Zhou](https://github.com/PorridgeSwim), [Jiali Chen](https://github.com/Gary-ChenJL), [Hao Zhang](https://cseweb.ucsd.edu/~haozhang/)
 
 Special thanks to NVIDIA and Voltage Park for their compute support.
 
