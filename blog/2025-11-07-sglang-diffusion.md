@@ -18,8 +18,18 @@ scrolling="no"
 src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&format=interactive"
 style="display:block; margin:15px auto 0 auto;">
 </iframe>
+<p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark on an H100 GPU</p>
 
-<p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark on an H100 GPU.</p>
+<iframe
+width="600"
+height="371"
+seamless
+frameborder="0"
+scrolling="no"
+src="[https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&format=interactive](https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1860768236&format=interactive)"
+style="display:block; margin:15px auto 0 auto;">
+</iframe>
+<p style="color:gray; text-align: center;">SGLang Diffusion performance with different parallelism</p>
 
 ## Why Diffusion in SGLang?
 
@@ -169,8 +179,9 @@ sglang generate \
 
 
 ## Performance Benchmark
-We benchmarked the performance of SGLang Diffusion against a popular open-source baseline Huggingface Diffuser.
-As benchmarked in the chart at the top of this post, SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation.
+As benchmarked in the chart at the top of this post, we benchmarked the performance of SGLang Diffusion:
+  - against a popular open-source baseline Huggingface Diffuser. SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation
+  - under different parallelism setups. CFG-Parallel and USP delivers significant speedup compares to single-gpu
 
 ## Roadmap and Diffusion Ecosystem
 
