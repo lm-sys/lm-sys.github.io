@@ -18,8 +18,18 @@ scrolling="no"
 src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&format=interactive"
 style="display:block; margin:15px auto 0 auto;">
 </iframe>
+<p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark on an H100 GPU</p>
 
-<p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark on an H100 GPU.</p>
+<iframe
+width="600"
+height="371"
+seamless
+frameborder="0"
+scrolling="no"
+src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1860768236&format=interactive"
+style="display:block; margin:15px auto 0 auto;">
+</iframe>
+<p style="color:gray; text-align: center;">SGLang Diffusion Performance Benchmark on an H200 GPU</p>
 
 ## Why Diffusion in SGLang?
 
@@ -99,7 +109,7 @@ sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
     --save-output
 ```
 
-<video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview">
+<video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview" style="display:block; margin: auto; width: 80%;">
         <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -115,7 +125,7 @@ sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers  \
     --save-output --num-gpus 2 --enable-cfg-parallel 
 ```
 
-<video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview">  <!-- Replace poster with a real thumbnail URL if you have one -->
+<video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview" style="display:block; margin: auto; width: 80%;">  
         <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -169,8 +179,10 @@ sglang generate \
 
 
 ## Performance Benchmark
-We benchmarked the performance of SGLang Diffusion against a popular open-source baseline Huggingface Diffuser.
-As benchmarked in the chart at the top of this post, SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation.
+As shown in the chart at the top of this post, we compared the performance of SGLang Diffusion:
+  - Against a popular open-source baseline, Hugging Face Diffusers. SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation.
+  - Under different parallelism setups. Both CFG-Parallel and USP deliver significant speedups compared to the single-GPU setup.
+
 
 ## Roadmap and Diffusion Ecosystem
 
