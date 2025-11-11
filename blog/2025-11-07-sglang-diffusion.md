@@ -35,7 +35,7 @@ style="display:block; margin:15px auto 0 auto;">
 
 With diffusion models becoming the backbone for state-of-the-art image and video generation, we have heard strong community demand for bringing SGLang's signature performance and seamless user experience to these new modalities. We built SGLang Diffusion to answer this call, providing a unified, high-performance engine for both language and diffusion tasks.
 
-This unified approach is crucial, as the future of generation lies in combining architectures. 
+This unified approach is crucial, as the future of generation lies in combining architectures.
 Pioneering models are already fusing the strengths of autoregressive (AR) and diffusion-based approaches—from models like ByteDance's [Bagel](https://github.com/ByteDance-Seed/Bagel) and Meta's [Transfusion](https://arxiv.org/abs/2408.11039) that use a single transformer for both tasks, to NVIDIA's [Fast-dLLM v2](https://nvlabs.github.io/Fast-dLLM/v2/) which adapts AR models for parallel generation.
 
 SGLang Diffusion is designed to be a future-proof, high-performance solution ready to power these innovative systems.
@@ -53,8 +53,8 @@ To accelerate development and foster a powerful ecosystem, our system is built o
 ## Model Support
 
 We support various popular open-source video & image generation models, including:
-  - Video models: Wan-series, FastWan, Hunyuan
-  - Image models: Qwen-Image, Qwen-Image-Edit, Flux
+- Video models: Wan-series, FastWan, Hunyuan
+- Image models: Qwen-Image, Qwen-Image-Edit, Flux
 
 For full list of supported models, reference [here](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/support_matrix.md).
 
@@ -183,31 +183,31 @@ sglang generate --model-path=Qwen/Qwen-Image-Edit \
 
 ## Performance Benchmark
 As shown in the chart at the top of this post, we compared the performance of SGLang Diffusion:
-  - Against a popular open-source baseline, Hugging Face Diffusers. SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation.
-  - Under different parallelism setups. Both CFG-Parallel and USP deliver significant speedups compared to the single-GPU setup.
+- Against a popular open-source baseline, Hugging Face Diffusers. SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation.
+- Under different parallelism setups. Both CFG-Parallel and USP deliver significant speedups compared to the single-GPU setup.
 
 
 ## Roadmap and Diffusion Ecosystem
 
-Our vision is to build a comprehensive diffusion ecosystem in collaboration with the **FastVideo** team, providing an end-to-end solution from model training to high-performance inference. 
+Our vision is to build a comprehensive diffusion ecosystem in collaboration with the **FastVideo** team, providing an end-to-end solution from model training to high-performance inference.
 
 The SGLang Diffusion team is centered on continuous innovation in performance and model support:
 
 - Model support and optimizations
-  - Optimize Wan, FastWan, Hunyuan, Qwen-Image series, FLUX
-  - Support LongCat-Video
+    - Optimize Wan, FastWan, Hunyuan, Qwen-Image series, FLUX
+    - Support LongCat-Video
 - Kernel support and fusions
-  - Quantization kernels
-  - Rotary embedding kernels
-  - Flash Attention 4 integration in sgl-kernel for blackwell
+    - Quantization kernels
+    - Rotary embedding kernels
+    - Flash Attention 4 integration in sgl-kernel for blackwell
 - More server features
-  - Configurable cloud storage upload of generated files
-  - Batching support
-  - More parallelism methods
-  - Quantization
+    - Configurable cloud storage upload of generated files
+    - Batching support
+    - More parallelism methods
+    - Quantization
 - General architecture:
-  - Simplify the effort of supporting new models
-  - Enhance cache and attention backend supports
+    - Simplify the effort of supporting new models
+    - Enhance cache and attention backend supports
 
 Building this ecosystem is a community effort, and we welcome and encourage all forms of contribution. Join us in shaping the future of open-source diffusion generation.
 
