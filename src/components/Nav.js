@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { slide as Menu } from "react-burger-menu";
-import {FaDiscord, FaEnvelope, FaGithub, FaRss, FaTwitter} from "react-icons/fa";
+import {FaDiscord, FaEnvelope, FaGithub, FaRss, FaSlack, FaTwitter} from "react-icons/fa";
 
 export default function Nav() {
   return (
@@ -46,7 +46,7 @@ export default function Nav() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <FaDiscord />
+          <FaSlack />
         </a>
         <a
           href="https://github.com/lm-sys"
