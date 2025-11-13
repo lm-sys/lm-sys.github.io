@@ -79,18 +79,22 @@ uv pip install -e "python[diffusion]" --prerelease=allow
 
 Launch a server and then send requests:
 ```bash
-sglang serve --model-path black-forest-labs/FLUX.1-dev
+sglang serve --model-path black-forest-labs/FLUX.1-dev --port 3000
 
-curl -s -D >(grep -i x-request-id >&2) \
-  -o >(jq -r '.data[0].b64_json' | base64 --decode > meme.png) \
-  -X POST "$OPENAI_API_BASE/images/edits" \
+curl http://127.0.0.1:3000/v1/images/generations \
+  -o >(jq -r '.data[0].b64_json' | base64 --decode > example.png) \
+  -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "model=Qwen/Qwen-Image-Edit" \
-  -F "image[]=@example.jpg" \
-  -F 'prompt=Create a meme based on image provide'
+  -d '{
+    "model": "black-forest-labs/FLUX.1-dev",
+    "prompt": "A cute baby sea otter",
+    "n": 1,
+    "size": "1024x1024",
+    "response_format": "b64_json"
+  }'
 ```
 
-Or, Generate an image without launching a server:
+Or, generate an image without launching a server:
 ```bash
 sglang generate --model-path black-forest-labs/FLUX.1-dev \
   --prompt "A Logo With Bold Large Text: SGL Diffusion" \
@@ -119,10 +123,10 @@ Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/down
 #### Image to Video: Wan-AI/Wan2.1-I2V
 
 ```bash
-sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers  \
+sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers \
     --prompt="Summer beach vacation style, a white cat wearing sunglasses sits on a surfboard. The fluffy-furred feline gazes directly at the camera with a relaxed expression. Blurred beach scenery forms the background featuring crystal-clear waters, distant green hills, and a blue sky dotted with white clouds. The cat assumes a naturally relaxed posture, as if savoring the sea breeze and warm sunlight. A close-up shot highlights the feline's intricate details and the refreshing atmosphere of the seaside." \
     --image-path="https://github.com/Wan-Video/Wan2.2/blob/990af50de458c19590c245151197326e208d7191/examples/i2v_input.JPG?raw=true" \
-    --save-output --num-gpus 2 --enable-cfg-parallel 
+    --num-gpus 2 --enable-cfg-parallel --save-output
 ```
 
 <video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview" style="display:block; margin: auto; width: 80%;">  
@@ -149,8 +153,7 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
 ```bash
 sglang generate --model-path=Qwen/Qwen-Image \
     --prompt='A curious raccoon' \
-    --width=720 --height=720 \
-    --save-output \
+    --width=720 --height=720 --save-output
 ```
 
 <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_Qwen_Image.jpg" alt="Text to Image: FLUX" style="display:block; margin-top: 20px; width: 65%;">
@@ -160,9 +163,9 @@ sglang generate --model-path=Qwen/Qwen-Image \
 
 
 ```bash
-sglang generate \
-   --prompt="Convert 2D style to 3D style" --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" --model-path=Qwen/Qwen-Image-Edit \
-   --width=1024 --height=1536 --save-output
+sglang generate --model-path=Qwen/Qwen-Image-Edit \
+    --prompt="Convert 2D style to 3D style" --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" \
+    --width=1024 --height=1536 --save-output
 ```
 
 
