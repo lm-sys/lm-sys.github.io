@@ -11,7 +11,6 @@ We are thrilled to announce an official collaboration between [**SGLang**](https
 
 Through this integration, developers can now quantize large models with AutoRound’s signed-gradient optimization and directly deploy them in SGLang’s efficient runtime, achieving low-bit model inference with minimal accuracy loss and significant latency reduction.
 
----
 
 ## 🔗 **What Is AutoRound?**
 
@@ -30,40 +29,39 @@ Despite its robust performance, AutoRound remains fast and lightweight—quantiz
 
 It further supports mixed-bit tuning, lm-head quantization, GPTQ/AWQ/GGUF format exports, and customizable tuning recipes.
 
----
+
 
 ### 🔗 **AutoRound Highlights**
-- **Accuracy**: deliver superior accuracy at low-bit precision
+
+- **Accuracy:** deliver superior accuracy at low-bit precision
 <p align="center">
   <img src="/images/blog/AutoRound/int4_accs.png" width="80%">
 </p>
 <p align="center" style="color:gray; text-align: center;"><em>Average accuracy of 10+ tasks at INT4 weight</em></p>
 
-- **Schemes**: support weight-only quantization, weight & activation quantization, dynamic and static for activation quantization
-- **Mixed-bits**: propose an effective algorithm to generate mixed-bits / other data types schemes in minutes
-- **Broad Compatibility**:
+- **Schemes:** support weight-only quantization, weight & activation quantization, dynamic and static for activation quantization
+- **Mixed-bits:** propose an effective algorithm to generate mixed-bits / other data types schemes in minutes
+- **Broad Compatibility:**
   - Support nearly all popular LLM architectures and over 10 vision-language models (VLMs)
   - Support Devices: CPU, Intel GPU, CUDA
   - Support Data Types: INT2 - INT8, MXFP4, NVFP4, FP8, and MXFP8
-- **Efficiency**: Enables block-wise tuning to lower VRAM usage without sacrificing throughput yet fast
+- **Efficiency:** Enables block-wise tuning to lower VRAM usage without sacrificing throughput yet fast
 
 <p align="center">
   <img src="/images/blog/AutoRound/timecost.png" width="80%"> 
 </p>
 <p align="center" style="color:gray; text-align: center;"><em>Quantization time cost comparison</em></p>
 
-- **Community adoption**: 
+- **Community adoption:** 
   - Work seamlessly with SGLang, TorchAO, Transformers, and vLLM
   - Widely used by HuggingFace model hubs such as [Intel](https://huggingface.co/Intel), [OPEA](https://huggingface.co/OPEA),  [Kaitchup](https://huggingface.co/kaitchup), and [fbaldassarri](https://huggingface.co/fbaldassarri) with approximately two million downloads
-- **Export Formats**:
+- **Export Formats:**
   - AutoRound
   - GPTQ
   - AWQ
   - GGUF
   - Compressed-tensor (initial support)
 
-
----
 
 ## 🔗 **Integration Overview**
 
