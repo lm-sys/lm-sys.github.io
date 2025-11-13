@@ -24,7 +24,7 @@ Full technical details are presented in the AutoRound paper:
 <p align="center">
   <img src="/images/blog/AutoRound/autoround_overview.png" width="80%">
 </p>
-<p style="color:gray; text-align: center;"><em>AutoRound algorithm overview</em></p>
+<p align="center" style="color:gray; text-align: center;"><em>AutoRound algorithm overview</em></p>
 
 Despite its robust performance, AutoRound remains fast and lightweight—quantizing a 72B model takes only 37 minutes on a single GPU under light mode.
 
@@ -37,7 +37,7 @@ It further supports mixed-bit tuning, lm-head quantization, GPTQ/AWQ/GGUF format
 <p align="center">
   <img src="/images/blog/AutoRound/int4_accs.png" width="80%">
 </p>
-<p style="color:gray; text-align: center;"><em>Average accuracy of 10+ tasks at INT4 weight</em></p>
+<p align="center" style="color:gray; text-align: center;"><em>Average accuracy of 10+ tasks at INT4 weight</em></p>
 
 - **Schemes**: support weight-only quantization, weight & activation quantization, dynamic and static for activation quantization
 - **Mixed-bits**: propose an effective algorithm to generate mixed-bits / other data types schemes in minutes
@@ -50,7 +50,7 @@ It further supports mixed-bit tuning, lm-head quantization, GPTQ/AWQ/GGUF format
 <p align="center">
   <img src="/images/blog/AutoRound/timecost.png" width="80%"> 
 </p>
-<p style="color:gray; text-align: center;"><em>Quantization time cost comparison</em></p>
+<p align="center" style="color:gray; text-align: center;"><em>Quantization time cost comparison</em></p>
 
 - **Community adoption**: 
   - Work seamlessly with SGLang, TorchAO, Transformers, and vLLM
