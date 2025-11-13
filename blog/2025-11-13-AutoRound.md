@@ -139,7 +139,6 @@ for prompt, output in zip(prompts, outputs):
 
 More flexible configurations and deployment options are waiting for you to explore!
 
----
 
 ## 🔗 **Quantization Roadmap**
 
@@ -173,7 +172,7 @@ As part of AutoRound roadmap, we plan to continue enhancing MXFP4 & NVFP4 accura
     | **5-bit**   | 0.6857 (96.9%) | 0.6823 (96.4%) | 0.6594 (97.5%) | 0.7201 (98.3%) |
     | **6-bit**   | 0.6975 (98.6%) | 0.6970 (98.5%) | 0.6716 (99.3%) | 0.7303 (99.8%) |
 
----
+
 
 ## 📢 **Conclusion**
 
