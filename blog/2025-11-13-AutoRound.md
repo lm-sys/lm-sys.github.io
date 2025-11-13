@@ -33,6 +33,8 @@ It further supports mixed-bit tuning, lm-head quantization, GPTQ/AWQ/GGUF format
 
 ### 🔗 **AutoRound Highlights**
 
+AutoRound is not only focused on algorithmic innovation and exploration, but also widely recognized for its completeness in quantization engineering.
+
 - **Accuracy:** deliver superior accuracy at low-bit precision
 <p align="center">
   <img src="/images/blog/AutoRound/int4_accs.png" width="80%">
