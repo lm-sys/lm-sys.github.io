@@ -5,14 +5,14 @@ date: "November 14, 2025"
 previewImg: /images/blog/AutoRound/preview.png
 ---
 
-## 🔗 **Overview**
+## Overview
 
 We are thrilled to announce an official collaboration between [**SGLang**](https://github.com/sgl-project/sglang) and [**AutoRound**](https://github.com/intel/auto-round), enabling low-bit quantization for efficient LLM inference.
 
 Through this integration, developers can now quantize large models with AutoRound’s signed-gradient optimization and directly deploy them in SGLang’s efficient runtime, achieving low-bit model inference with minimal accuracy loss and significant latency reduction.
 
 
-## 🔗 **What Is AutoRound?**
+## What Is AutoRound?
 
 AutoRound is an advanced post-training quantization (PTQ) toolkit designed for Large Language Models (**LLMs**) and Vision-Language Models (**VLMs**).  It uses signed gradient descent to jointly optimize weight rounding and clipping ranges, enabling accurate low-bit quantization (e.g., INT2 - INT8) with minimal accuracy loss in most scenarios. For example, at INT2 precision, it outperforms popular baselines by up to 2.1x higher in relative accuracy. At INT4 precision, AutoRound continues to hold a competitive edge in most cases. The image below provides an overview of the core algorithm in AutoRound.
 
@@ -31,7 +31,7 @@ It further supports mixed-bit tuning, lm-head quantization, GPTQ/AWQ/GGUF format
 
 
 
-## 🔗 **AutoRound Highlights**
+## AutoRound Highlights
 
 AutoRound is not only focused on algorithmic innovation and exploration, but also widely recognized for its completeness in quantization engineering.
 
@@ -65,7 +65,7 @@ AutoRound is not only focused on algorithmic innovation and exploration, but als
   - Compressed-tensor (initial support)
 
 
-## 🔗 **Integration Overview**
+## Integration Overview
 
 SGLang provides a next-generation inference runtime built for scalable, low-latency LLM deployment. Its multi-modal, multi-GPU, and streaming execution model enables both chat and agentic reasoning workloads with exceptional efficiency.
 
@@ -140,7 +140,7 @@ for prompt, output in zip(prompts, outputs):
 More flexible configurations and deployment options are waiting for you to explore!
 
 
-## 🔗 **Quantization Roadmap**
+## Quantization Roadmap
 
 AutoRound’s quantization benchmark results demonstrate robust accuracy retention at low precision. The results below highlight AutoRound’s strong advantages and potential in MXFP4, NVFP4, and mixed-bits model quantization. Note that the accuracy result is measured by average accuracy across *lambada_openai*, *hellaswag*, *piqa*, *winogrande*, and *mmlu* task.
 
@@ -174,7 +174,7 @@ As part of AutoRound roadmap, we plan to continue enhancing MXFP4 & NVFP4 accura
 
 
 
-## 📢 **Conclusion**
+## Conclusion
 
 The integration of AutoRound and SGLang marks a major milestone in efficient AI model deployment. This collaboration bridges precision optimization and runtime scalability, allowing developers to move seamlessly from quantization to real-time inference with minimal friction. AutoRound’s signed-gradient quantization ensures high fidelity even at extreme compression ratios, while SGLang’s high-throughput inference engine unlocks the full potential of low-bit execution across CPUs, GPUs, and multi-node clusters.
 
