@@ -1,11 +1,11 @@
 ---
 title: "Boost SGLang Inference: Native NVIDIA ModelOpt Integration for Seamless Quantization and Deployment"
 author: "NVIDIA ModelOpt Team"
-date: "Nov 26, 2025"
+date: "Dec 02, 2025"
 previewImg: /images/blog/nvidia-modelopt-quantization/DSR1-nvfp4-perf.jpg
 ---
 
-(Updated on Nov 26)
+(Updated on Dec 2)
 
 We are thrilled to announce a major new feature in SGLang: native support for [NVIDIA Model Optimizer](https://github.com/NVIDIA/TensorRT-Model-Optimizer) quantization! This integration streamlines the entire model optimization and deployment process, allowing you to go from a full-precision model to a high-performance, quantized endpoint entirely within the SGLang ecosystem.
 
@@ -113,7 +113,7 @@ This native ModelOpt integration reinforces SGLang's commitment to providing a s
 
 We can't wait to see the performance gains you achieve with this new feature. Head over to our [GitHub repository](https://github.com/sgl-project/sglang) to pull the latest version and try it out!
 
-Also, please join our dedicated Slack channel [#modelopt](https://sgl-fru7574.slack.com/archives/C09NPJSBR32) to discuss topics such as modelopt, quantization, and low-precision numerics!
+Also, please join our dedicated Slack channel [#modelopt](https://sgl-fru7574.slack.com/archives/C09NPJSBR32) to discuss topics such as modelopt, quantization, and low-precision numerics! If you haven’t joined our workspace yet, you can join it first [here] (https://slack.sglang.io).
 
 
 ### Acknowledgement
