@@ -86,20 +86,24 @@ Or using the Python API:
 ```
 import sglang as sgl
 
-# Deploy exported ModelOpt quantized model
-llm = sgl.Engine(
-   model_path="./quantized_tinyllama_fp8",
-   quantization="modelopt"
-)
+def main():
+   # Deploy exported ModelOpt quantized model
+   llm = sgl.Engine(
+      model_path="./quantized_tinyllama_fp8",
+      quantization="modelopt"
+   )
 
-# Run inference
-prompts = ["Hello, how are you?", "What is the capital of France?"]
-sampling_params = {"temperature": 0.8, "top_p": 0.95, "max_new_tokens": 100}
-outputs = llm.generate(prompts, sampling_params)
+   # Run inference
+   prompts = ["Hello, how are you?", "What is the capital of France?"]
+   sampling_params = {"temperature": 0.8, "top_p": 0.95, "max_new_tokens": 100}
+   outputs = llm.generate(prompts, sampling_params)
 
-for i, output in enumerate(outputs):
-   print(f"Prompt: {prompts[i]}")
-   print(f"Output: {output.outputs[0].text}")
+   for i, output in enumerate(outputs):
+      print(f"Prompt: {prompts[i]}")
+      print(f"Output: {output['text']}")
+
+if __name__ == "__main__":
+    main()
 ```
 
 
