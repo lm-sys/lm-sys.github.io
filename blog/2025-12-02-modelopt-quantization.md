@@ -58,7 +58,7 @@ model_config = ModelConfig(
 )
 
 load_config = LoadConfig(
-	modelopt_export_path="./exported_model",
+	modelopt_export_path="./quantized_qwen3_8b_fp8",
 	modelopt_checkpoint_save_path="./checkpoint.pth",  # optional, fake quantized checkpoint
 )
 device_config = DeviceConfig(device="cuda")
