@@ -41,7 +41,7 @@ As measured by the [latest results from InferenceMAX](https://lmsys.org/blog/202
 
 
 ### How to Get Started
-SGLang provides [an example script](https://github.com/sgl-project/sglang/blob/main/examples/usage/modelopt_quantize_and_export.py) that demonstrates the complete ModelOpt quantization and export workflow. You can also follow the code snippet below to run quantization and export for your models:
+SGLang provides [an example script](https://github.com/sgl-project/sglang/blob/main/examples/usage/modelopt_quantize_and_export.py) that demonstrates the complete ModelOpt quantization and export workflow. You can also follow the code snippet below to run quantization and export for your models. Please make sure you installed `nvidia-modelopt` and `accelerate` in your SGLang environment.
 
 ```
 import sglang as sgl
@@ -52,7 +52,7 @@ from sglang.srt.model_loader.loader import get_model_loader
 
 # Configure model with ModelOpt quantization and export
 model_config = ModelConfig(
-	model_path="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+	model_path="Qwen/Qwen3-8B",
 	quantization="modelopt_fp8",  # or "modelopt_fp4"
 	trust_remote_code=True,
 )
@@ -76,7 +76,7 @@ After quantization and export, you can deploy the model with SGLang:
 ```
 # Deploy the exported quantized model
 python -m sglang.launch_server \
-   --model-path ./quantized_tinyllama_fp8 \
+   --model-path ./quantized_qwen3_8b_fp8 \
    --quantization modelopt \
    --port 30000 --host 0.0.0.0
 ```
@@ -89,7 +89,7 @@ import sglang as sgl
 def main():
    # Deploy exported ModelOpt quantized model
    llm = sgl.Engine(
-      model_path="./quantized_tinyllama_fp8",
+      model_path="./quantized_qwen3_8b_fp8",
       quantization="modelopt"
    )
 
