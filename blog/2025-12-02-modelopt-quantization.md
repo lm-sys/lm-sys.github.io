@@ -85,6 +85,7 @@ Or using the Python API:
 
 ```
 import sglang as sgl
+from transformers import AutoTokenizer
 
 def main():
    # Deploy exported ModelOpt quantized model
@@ -93,9 +94,21 @@ def main():
       quantization="modelopt"
    )
 
+   # Use chat template to format prompts for Qwen3-8B
+   tokenizer = AutoTokenizer.from_pretrained("./quantized_qwen3_8b_fp8")
+
+   messages = [
+       [{"role": "user", "content": "Hello, how are you?"}],
+       [{"role": "user", "content": "What is the capital of France?"}]
+   ]
+
+   prompts = [
+       tokenizer.apply_chat_template(m, tokenize=False, add_generation_prompt=True)
+       for m in messages
+   ]
+
    # Run inference
-   prompts = ["Hello, how are you?", "What is the capital of France?"]
-   sampling_params = {"temperature": 0.8, "top_p": 0.95, "max_new_tokens": 100}
+   sampling_params = {"temperature": 0.8, "top_p": 0.95, "max_new_tokens": 512}
    outputs = llm.generate(prompts, sampling_params)
 
    for i, output in enumerate(outputs):
