@@ -1,31 +1,5 @@
 [
   {
-    "name": "Evaluation",
-    "entries": [
-      {
-        "name": "Chatbot Arena",
-        "architecture": "",
-        "size": "",
-        "desc": "A benchmark platform for large language models (LLMs) that features anonymous, randomized battles in a crowdsourced manner. It comes with a leaderboard based on Elo ratings.",
-        "link": "https://lmarena.ai/"
-      },
-      {
-        "name": "Arena Hard Auto",
-        "architecture": "",
-        "size": "",
-        "desc": "An automatic pipeline converting live data to high quality benchmarks for evaluating chat assistants. The questions are more difficult than those in MT-Bench.",
-        "link": "https://github.com/lm-sys/arena-hard-auto"
-      },
-      {
-        "name": "MT-Bench",
-        "architecture": "",
-        "size": "",
-        "desc": "A set of challenging, multi-turn, and open-ended questions for evaluating chat assistants. It uses LLM-as-a-judge to evaluate model responses.",
-        "link": "https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge"
-      }
-    ]
-  },
-  {
     "name": "Systems",
     "entries": [
       {
@@ -69,6 +43,32 @@
         "size": "",
         "desc": "An exact, fast, parallel decoding algorithm without the need for draft models or data stores.",
         "link": "https://github.com/hao-ai-lab/LookaheadDecoding"
+      }
+    ]
+  },
+  {
+    "name": "Evaluation",
+    "entries": [
+      {
+        "name": "Chatbot Arena",
+        "architecture": "",
+        "size": "",
+        "desc": "A benchmark platform for large language models (LLMs) that features anonymous, randomized battles in a crowdsourced manner. It comes with a leaderboard based on Elo ratings.",
+        "link": "https://lmarena.ai/"
+      },
+      {
+        "name": "Arena Hard Auto",
+        "architecture": "",
+        "size": "",
+        "desc": "An automatic pipeline converting live data to high quality benchmarks for evaluating chat assistants. The questions are more difficult than those in MT-Bench.",
+        "link": "https://github.com/lm-sys/arena-hard-auto"
+      },
+      {
+        "name": "MT-Bench",
+        "architecture": "",
+        "size": "",
+        "desc": "A set of challenging, multi-turn, and open-ended questions for evaluating chat assistants. It uses LLM-as-a-judge to evaluate model responses.",
+        "link": "https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge"
       }
     ]
   },
