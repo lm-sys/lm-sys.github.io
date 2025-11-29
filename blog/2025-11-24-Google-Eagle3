@@ -1,0 +1,83 @@
+---
+title: "SGLang Powers Production EAGLE-3 Deployment on Google Vertex AI"
+author: "SGLang Team"
+date: 2025-01-24
+---
+
+We're excited to share that Google Cloud's Vertex AI team has successfully deployed EAGLE-3 speculative decoding at production scale using SGLang, achieving **2x-3x speedups** for LLM inference. This collaboration demonstrates how SGLang's specialized kernels and scheduling optimizations enable cutting-edge research to reach production systems.
+
+## The Challenge: Making Speculative Decoding Production-Ready
+
+Speculative decoding is a powerful technique that speeds up LLM inference by having a lightweight "draft" mechanism propose multiple tokens at once, which the main model then verifies in parallel. EAGLE-3 takes this further by using a tiny draft head (just 2-5% of the model size) attached directly to the target model's internal layers, eliminating the need for a separate draft model.
+
+But turning this research concept into a production system required solving two critical infrastructure challenges—challenges that SGLang was uniquely positioned to address.
+
+## SGLang's Key Contributions
+
+### 1. Tree Attention Kernel
+
+Unlike traditional speculative decoding that generates a simple chain of tokens, EAGLE-3 produces a **tree of possible token sequences**. This requires verifying all branches in parallel—a specialized operation that standard inference frameworks don't support efficiently.
+
+**SGLang's tree attention kernel** was specifically designed for this use case. It enables the target model to verify all branches of the draft tree in a single parallel operation, rather than sequentially checking each path. This is the foundation that makes EAGLE-3's tree-based speculation practical at scale.
+
+Without this specialized kernel, EAGLE-3's theoretical advantages would be lost to implementation overhead.
+
+### 2. Zero-Overhead Overlap Scheduler
+
+Even with an accelerated model, CPU overhead can become the bottleneck. In traditional synchronous schedulers, the GPU completes a step (like Draft), then sits idle while the CPU does bookkeeping and launches the next step (like Verify). These "sync bubbles" waste valuable GPU time.
+
+**SGLang's Zero-Overhead Overlap Scheduler** eliminates this bottleneck for speculative decoding's multi-step Draft → Verify → Draft Extend workflow. While the GPU runs the current Verify step, the CPU works in parallel to prepare and launch the next Draft and Draft Extend operations. Using a smart data structure called FutureMap, the scheduler ensures the GPU's next job is always ready—no waiting, no idle time.
+
+This overlap scheduling delivered an additional **10-20% speedup** on top of EAGLE-3's already impressive gains, proving that model optimization is only half the story—runtime efficiency matters just as much.
+
+## Real-World Performance
+
+Working closely with Google's Vertex AI team, we benchmarked EAGLE-3 with SGLang using Llama 4 Scout 17B Instruct. The results speak for themselves:
+
+- **Median Time Per Output Token (TPOT)**: EAGLE-3 with SGLang consistently achieves lower latency than baseline across all concurrency levels
+- **Output Throughput**: Substantially higher token throughput across various workload types (multi-turn conversations, code generation, long context)
+- **Overall speedup**: 2x-3x improvement in decoding latency
+
+These aren't just benchmarks—this is production performance on Google Cloud infrastructure serving real customer workloads.
+
+## The Path to Production: Engineering Insights
+
+Google's journey from EAGLE-3 paper to production deployment highlighted several critical engineering lessons:
+
+### Data Preparation
+The team built a synthetic data generation pipeline, extracting prompts from carefully selected datasets, applying DLP and PII filtering, then feeding them to the target model (e.g., Llama 3.3 70B) to generate training data for the EAGLE-3 head.
+
+### Training Pipeline
+They chose an offline training approach, pre-calculating embeddings and saving them to GCS before training the lightweight EAGLE-3 head. Two critical details emerged:
+- **Chat templates matter**: The target model's specific chat template must be applied before generating embeddings, or performance suffers
+- **Mask the prompt**: The loss function must mask the prompt portion, so the head only learns to predict responses
+
+### Serving at Scale
+This is where SGLang's infrastructure proved essential. The combination of tree attention kernels and overlap scheduling transformed EAGLE-3 from a research idea into a production-grade system that could scale to Google Cloud's workload demands.
+
+## What This Means for the Community
+
+This collaboration validates several important principles for the open-source LLM infrastructure ecosystem:
+
+1. **Specialized kernels enable research advances**: Techniques like EAGLE-3 need infrastructure support to reach their potential
+2. **Runtime optimization compounds model optimization**: The 10-20% gain from overlap scheduling stacks with EAGLE-3's 2-3x improvement
+3. **Production deployment reveals critical details**: Chat templates, loss masking, and CPU bottlenecks only become apparent at scale
+
+## Try It Yourself
+
+SGLang is open source and ready to accelerate your LLM inference:
+
+- **GitHub**: [https://github.com/sgl-project/sglang](https://github.com/sgl-project/sglang)
+- **Documentation**: [https://sgl-project.github.io/](https://sgl-project.github.io/)
+- **Google's Benchmark Notebook**: [Vertex AI Samples](https://github.com/GoogleCloudPlatform/vertex-ai-samples)
+- **Google's Blog Post**: [Original Article](https://cloud.google.com/blog/products/ai-machine-learning/accelerate-oss-llm-with-eagle-3-on-vertex)
+
+## Acknowledgements
+
+We're grateful to Google Cloud's Vertex AI team—especially **Ivan Nardini**, **Charles Chen**, **Ying Wang**, and **Harrison Lim**—for their partnership in bringing EAGLE-3 to production. Their rigorous engineering and detailed feedback helped us refine SGLang for demanding production workloads.
+
+Special thanks to the SGLang core team members who contributed to this effort: **Ying Sheng**, **Lianmin Zheng**, **Yineng Zhang**, **Xinyuan Tong**, **Liangsheng Yin**, and the SpecForge team members **Shenggui Li** and **Yikai Zhu**.
+
+---
+
+**About SGLang**: SGLang is a fast serving framework for large language models and vision language models. It makes your interaction with models faster and more controllable by co-designing the backend runtime and frontend language. Learn more at [https://github.com/sgl-project/sglang](https://github.com/sgl-project/sglang).
