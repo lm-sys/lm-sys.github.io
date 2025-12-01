@@ -131,6 +131,6 @@ Also, please join our dedicated Slack channel [#modelopt](https://sgl-fru7574.sl
 
 ### Acknowledgement
 
-Nvidia Model Optimizer team: Zhiyu Cheng, Jingyu Xin, Huizi Mao, Eduardo Alvarez, Pen Chung Li, Omri Almog
+Nvidia team: Zhiyu Cheng, Jingyu Xin, Huizi Mao, Eduardo Alvarez, Pen Chung Li, Omri Almog
 
 SGLang team and community: Qiaolin Yu, Xinyuan Tong
