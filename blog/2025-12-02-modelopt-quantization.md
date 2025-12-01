@@ -1,5 +1,5 @@
 ---
-title: "Boost SGLang Inference: Native NVIDIA ModelOpt Integration for Seamless Quantization and Deployment"
+title: "Boost SGLang Inference: Native NVIDIA Model Optimizer Integration for Seamless Quantization and Deployment"
 author: "NVIDIA ModelOpt Team"
 date: "Dec 02, 2025"
 previewImg: /images/blog/nvidia-modelopt-quantization/DSR1-nvfp4-perf.jpg
@@ -18,7 +18,7 @@ The optimizations from Model Optimizer and SGLang can deliver up to 2x better pe
 
 ### What’s New: Direct ModelOpt APIs in SGLang
 
-SGLang now integrates NVIDIA's ModelOpt directly, allowing you to call its powerful quantization APIs from your SGLang code.
+SGLang now integrates NVIDIA's Model Optimizer directly, allowing you to call its powerful quantization APIs from your SGLang code.
 
 This new capability unlocks a simple, three-step workflow:
 
@@ -30,7 +30,7 @@ This new capability unlocks a simple, three-step workflow:
 
 
 #### Performance Outcomes
-The models optimized through this new API enable significant performance boost. Better yet these optimizations can be stacked with other software components in the NVIDIA software-hardware stack and across the various embodiments of the latest blackwell architecture, from the DGX Spark to GB300 NVL72.
+The models optimized through this new API enable significant performance boost. Better yet these optimizations can be stacked with other software components in the NVIDIA software-hardware stack and across the various embodiments of the latest Blackwell architecture, from the DGX Spark to GB300 NVL72.
 
 
 ![DSR1-nvfp4-perf.jpg](/images/blog/nvidia-modelopt-quantization/DSR1-nvfp4-perf.jpg)
@@ -41,7 +41,7 @@ As measured by the [latest results from InferenceMAX](https://lmsys.org/blog/202
 
 
 ### How to Get Started
-SGLang provides [an example script](https://github.com/sgl-project/sglang/blob/main/examples/usage/modelopt_quantize_and_export.py) that demonstrates the complete ModelOpt quantization and export workflow. You can also follow the code snippet below to run quantization and export for your models. Please make sure you installed `nvidia-modelopt` and `accelerate` in your SGLang environment.
+SGLang provides [an example script](https://github.com/sgl-project/sglang/blob/main/examples/usage/modelopt_quantize_and_export.py) that demonstrates the complete Model Optimizer quantization and export workflow. You can also follow the code snippet below to run quantization and export for your models. Please make sure you installed `nvidia-modelopt` and `accelerate` in your SGLang environment.
 
 ```
 import sglang as sgl
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
 ### Conclusion
 
-This native ModelOpt integration reinforces SGLang's commitment to providing a simple and powerful platform for LLM inference. We are continuing to close the gap between optimization and deployment of highly-performance models.
+This native Model Optimizer integration reinforces SGLang's commitment to providing a simple and powerful platform for LLM inference. We are continuing to close the gap between optimization and deployment of highly-performance models.
 
 We can't wait to see the performance gains you achieve with this new feature. Head over to our [GitHub repository](https://github.com/sgl-project/sglang) to pull the latest version and try it out!
 
