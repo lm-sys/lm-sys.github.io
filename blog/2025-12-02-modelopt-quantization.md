@@ -2,7 +2,7 @@
 title: "Boost SGLang Inference: Native NVIDIA Model Optimizer Integration for Seamless Quantization and Deployment"
 author: "NVIDIA ModelOpt Team"
 date: "Dec 02, 2025"
-previewImg: /images/blog/nvidia-modelopt-quantization/DSR1-nvfp4-perf.jpg
+previewImg: /images/blog/nvidia-modelopt-quantization/Preview-modelopt-integration.png
 ---
 
 (Updated on Dec 2)
