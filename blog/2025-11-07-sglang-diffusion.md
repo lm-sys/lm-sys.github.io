@@ -165,7 +165,7 @@ sglang generate --model-path=Qwen/Qwen-Image \
 ```bash
 sglang generate --model-path=Qwen/Qwen-Image-Edit \
     --prompt="Convert 2D style to 3D style" --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" \
-    --width=1024 --height=1536 --save-output
+    --width=1536 --height=1024 --save-output
 ```
 
 
