@@ -16,7 +16,7 @@ previewImg: /images/blog/miles-fsdp/2_fsdp_train.png
 **FSDP (Fully Sharded Data Parallel)** inherits the design philosophy of [DeepSpeed ZeRO Stage 3](https://www.deepspeed.ai/2021/03/07/zero3-offload.html) and can be seen as a powerful optimization of traditional [DDP (Distributed Data Parallel)](https://docs.pytorch.org/tutorials/beginner/ddp_series_theory.html).
 
 **From Replicate to Shard**
-Note: Some models in Megatron now also do not require manual weight conversion, as it is automatically converted internally [PR link](https://github.com/THUDM/slime/pull/889/files)
+
 In traditional DDP, each GPU maintains a complete copy of model weights, gradients, and optimizer states (Replication), synchronizing gradients via `all-reduce`. In FSDP, we shift to a **Sharding** mode: all the aforementioned data is sharded and distributed across different GPU ranks.
 
 - **Forward Propagation**: When a layer needs to be calculated, full parameters are temporarily collected via `all-gather` and released immediately after calculation.
