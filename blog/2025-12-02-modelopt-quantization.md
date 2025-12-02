@@ -2,7 +2,7 @@
 title: "Boost SGLang Inference: Native NVIDIA Model Optimizer Integration for Seamless Quantization and Deployment"
 author: "NVIDIA ModelOpt Team"
 date: "Dec 02, 2025"
-previewImg: /images/blog/nvidia-modelopt-quantization/DSR1-nvfp4-perf.jpg
+previewImg: /images/blog/nvidia-modelopt-quantization/Preview-modelopt-integration.png
 ---
 
 (Updated on Dec 2)
@@ -22,11 +22,11 @@ SGLang now integrates NVIDIA's Model Optimizer directly, allowing you to call it
 
 This new capability unlocks a simple, three-step workflow:
 
-- **Quantize**: Use the new SGLang-ModelOpt interface to apply state-of-the-art quantization techniques that enable accelerated low-precision inference in NVFP4, MXFP4, FP8, etc.
+1. **Quantize**: Use the new SGLang-ModelOpt interface to apply state-of-the-art quantization techniques that enable accelerated low-precision inference in NVFP4, MXFP4, FP8, etc.
 
-- **Export**: Save the optimized model artifacts, now fully compatible with the SGLang runtime.
+2. **Export**: Save the optimized model artifacts, now fully compatible with the SGLang runtime.
 
-- **Deploy**: Load the quantized model directly into the SGLang runtime and serve it on NVIDIA platforms, immediately benefiting from lower latency and reduced memory usage.
+3. **Deploy**: Load the quantized model directly into the SGLang runtime and serve it on NVIDIA platforms, immediately benefiting from lower latency and reduced memory usage.
 
 
 #### Performance Outcomes
@@ -126,7 +126,7 @@ This native Model Optimizer integration reinforces SGLang's commitment to provid
 
 We can't wait to see the performance gains you achieve with this new feature. Head over to our [GitHub repository](https://github.com/sgl-project/sglang) to pull the latest version and try it out!
 
-Also, please join our dedicated Slack channel [#modelopt](https://sgl-fru7574.slack.com/archives/C09NPJSBR32) to discuss topics such as modelopt, quantization, and low-precision numerics! If you haven’t joined our workspace yet, you can join it first [here] (https://slack.sglang.io).
+Also, please join our dedicated Slack channel [#modelopt](https://sgl-fru7574.slack.com/archives/C09NPJSBR32) to discuss topics such as modelopt, quantization, and low-precision numerics! If you haven’t joined our workspace yet, you can join it first [here](https://slack.sglang.io).
 
 
 ### Acknowledgement
