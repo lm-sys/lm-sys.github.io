@@ -139,7 +139,8 @@ $$
 $$
 
 $$
-r_t(\theta) = \frac{\pi_\theta}{\pi_{\text{old}}}, \quad
+\mathcal{r_t}(\theta)
+ = \frac{\pi_\theta}{\pi_{\text{old}}}, \quad
 \bar{w}_t = \min \left( \frac{\pi_{\text{old}}}{\pi_{\text{rollout}}}, C \right)
 $$
 
