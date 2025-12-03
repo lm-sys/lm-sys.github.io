@@ -265,11 +265,12 @@ SGlang RL team: Chengxi Li, Zilin Zhu, Chengxing Xie, Haoran Wang, Lei Li, Yushe
 
 Miles Team: Huapeng Zhou, Mao Cheng, Chenyang Zhao, Tom
 
-We sincerely thank the Atalas Cloud and DataCrunch for their computing support.
+We sincerely thank the AtlasCloud and DataCrunch for their computing support.
 
 Linkedin: Lancert
 
-## Engineering Implementation Details
+<details>
+<summary>Engineering Implementation Details</summary>
 
 ### Context Parallel
 
@@ -324,4 +325,6 @@ To avoid precision problems caused by improper application of auto cast, we fina
 - **Sample count (n-samples-per-prompt)**: Number of candidate responses generated per prompt
 - **Micro batch size**: Number of samples processed per forward/backward pass during training (limited by GPU VRAM)
 - **Global batch size**: Total samples for a complete training iteration, usually completed by gradient accumulation of multiple micro batches
+
+</details>
 
