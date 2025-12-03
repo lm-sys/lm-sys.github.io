@@ -1,13 +1,13 @@
 ---
 title: "Support FSDP2 as A Training Backend for Miles"
 author: "SGLang RL Team, Miles Team"
-date: "December 2, 2025"
+date: "December 3, 2025"
 previewImg: /images/blog/miles-fsdp/2_fsdp_train.png
 ---
 
 > **TL;DR:**
 > 
-> **We have added FSDP to Miles as a more flexible training framework and have aligned it with Megatron. FSDP supports architecture-innovative models such as Qwen3-Next more flexibly and helps us further support VLM RL.**
+> **We have added FSDP to [Miles](https://github.com/radixark/miles) as a more flexible training framework and have aligned it with Megatron. FSDP supports architecture-innovative models such as Qwen3-Next more flexibly and helps us further support VLM RL.**
 
 ## Background
 
@@ -30,7 +30,7 @@ Compared to FSDP1 which flattens all parameters into a giant `FlatParameter`, FS
 
 ### Why does Miles need FSDP?
 
-Friends familiar with Miles know that we already have a mature training engine based on Megatron-LM. Considering the significant maintenance cost brought by introducing a new backend, why are we still determined to support FSDP?
+Miles is an enterprise-facing reinforcement learning framework for large-scale MoE post-training and production workloads, forked from and co-evolving with [slime](https://github.com/THUDM/slime). People familiar with [Miles](https://github.com/radixark/miles) know that we already have a mature training engine based on [Megatron-LM](https://github.com/NVIDIA/Megatron-LM). Considering the significant maintenance cost brought by introducing a new backend, why are we still determined to support FSDP?
 
 1. **VLM Architecture Adaptation**: The modal interaction architecture of VLM is complex, and FSDP's flexibility makes it much easier to adapt than Megatron. Therefore, we choose FSDP as the preferred path for VLM RL training (of course, Megatron version adaptation is also planned).
 2. **Agility for Architecture Innovation**: For new architectures under rapid iteration like Qwen3-Next, FSDP allows us to support RL processes with maximum speed.
@@ -115,7 +115,7 @@ We further optimize performance under true on policy conditions. `get_logprob_an
 
 ### Algorithms Mitigation For Mismatch
 
-Mainstream algorithm implementations do not enable true on policy features (which would lose about 30% of training efficiency), so there will still be training-inference mismatch. for accuracy, we call the rollout policy log probs recorded during the rollout phase `rollout_log_probs`; after entering the training loop, the log probs of the policy model recalculated in the training backend are recorded as `old_log_probs`.
+The default set up in Miles and most of RL communities do not enable true on policy features, which would lose about 30% of training efficiency. So there will still be training-inference mismatch. For accuracy, we call the rollout policy log probs recorded during the rollout phase `rollout_log_probs`; after entering the training loop, the log probs of the policy model recalculated in the training backend are recorded as `old_log_probs`.
 
 Without considering training-infer mismatch, the actor constructs loss in `_train_step` in the conventional GRPO/GSPO/PPO way. Specifically, each training step calculates the log probs of the current training data batch based on the current policy model, directly noted as `log_probs`. Use `old_log_probs` and `log_probs` to construct importance ratio, superimpose clip, KL norm and entropy bonus to get loss, then do gradient accumulation and optimizer backward.
 
