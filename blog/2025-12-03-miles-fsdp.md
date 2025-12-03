@@ -138,12 +138,11 @@ $$
 = \min \left( r_t(\theta) A_t,\ \text{clip}(r_t(\theta), 1\pm\epsilon)\, A_t \right)
 $$
 
-$$
-r_t(\theta)
-= \frac{\pi_\theta}{\pi_{\text{old}}}, \quad
-\bar{w}_t = \min \left( \frac{\pi_{\text{old}}}{\pi_{\text{rollout}}}, C \right)
-$$
+and
 
+$$
+r_t(\theta) = \frac{\pi_\theta}{\pi\_{\text{old}}}, \quad \bar{w}_t = \min \left( \frac{\pi\_{\text{old}}}{\pi\_{\text{rollout}}}, C \right)
+$$
 
 ### Weight Update Optimization: Weight Update and Colocated Mode
 
