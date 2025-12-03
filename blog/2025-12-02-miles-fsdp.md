@@ -265,6 +265,8 @@ SGlang RL team: Chengxi Li, Zilin Zhu, Chengxing Xie, Haoran Wang, Lei Li, Yushe
 
 Miles Team: Huapeng Zhou, Mao Cheng, Chenyang Zhao, Tom
 
+We sincerely thank the Atalas Cloud and DataCrunch for their computing support.
+
 Linkedin: Lancert
 
 ## Engineering Implementation Details
