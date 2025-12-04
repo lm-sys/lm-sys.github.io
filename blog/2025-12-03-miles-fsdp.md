@@ -127,11 +127,21 @@ Considering mismatch, `rollout_log_probs, old_log_probs, log_probs` will all par
 Taking GRPO as an example, the final loss function is:
 
 $$
-\begin{aligned}
-\mathcal{L}(\theta) &= \frac{1}{L} \sum_{t=1}^L \left[ \bar{w}_t \cdot \mathcal{L}^{\text{clip}}_t(\theta) - \beta \text{KL}_t + \lambda H_t \right] \\
-\text{where } \mathcal{L}^{\text{clip}}_t &= \min \left( r_t(\theta) A_t, \ \text{clip}(r_t(\theta), 1\pm\epsilon) A_t \right) \\
-r_t(\theta) &= \frac{\pi_{\theta}}{\pi_{\text{old}}}, \quad \bar{w}_t = \text{min}\left( \frac{\pi_{\text{old}}}{\pi_{\text{rollout}}}, C \right)
-\end{aligned}
+\mathcal{L}(\theta)
+= \frac{1}{L} \sum_{t=1}^L \left[ \bar{w}_t \cdot \mathcal{L}^{\text{clip}}_t(\theta) - \beta \,\text{KL}_t + \lambda H_t \right]
+$$
+
+where
+
+$$
+\mathcal{L}^{\text{clip}}_t
+= \min \left( r_t(\theta) A_t,\ \text{clip}(r_t(\theta), 1\pm\epsilon)\, A_t \right)
+$$
+
+and
+
+$$
+r_t(\theta) = \frac{\pi_\theta}{\pi\_{\text{old}}}, \quad \bar{w}_t = \min \left( \frac{\pi\_{\text{old}}}{\pi\_{\text{rollout}}}, C \right)
 $$
 
 ### Weight Update Optimization: Weight Update and Colocated Mode
