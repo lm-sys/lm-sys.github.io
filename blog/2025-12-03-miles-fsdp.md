@@ -1,5 +1,5 @@
 ---
-title: "Support FSDP2 as A Training Backend for Miles"
+title: "Power Up FSDP2 as a Flexible Training Backend for Miles"
 author: "SGLang RL Team, Miles Team"
 date: "December 3, 2025"
 previewImg: /images/blog/miles-fsdp/2_fsdp_train.png
@@ -8,6 +8,18 @@ previewImg: /images/blog/miles-fsdp/2_fsdp_train.png
 > **TL;DR:**
 > 
 > **We have added FSDP to [Miles](https://github.com/radixark/miles) as a more flexible training framework and have aligned it with Megatron. FSDP supports architecture-innovative models such as Qwen3-Next more flexibly and helps us further support VLM RL.**
+
+SGLang RL Team and the Miles community have conducted some interesting explorations around RL training stability and acceleration:
+
+[Aligning the SGLang and FSDP backends](https://github.com/radixark/miles/tree/main/examples/true_on_policy) for **strictly zero KL divergence**
+
+[**Speculative Decoding**](https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/rlhf/slime/spec/readme-en.md) with online SFT for the draft model
+
+[Unified FP8](https://lmsys.org/blog/2025-11-25-fp8-rl/): Moving Beyond Mixed Precision for Stable and Accelerated MoE RL
+
+Building on this, we now share a new progress that seeks the best adaptbility and usability to new model architectures, enable FSDP2 a more flexible training backend for Miles.
+
+This work is jointly completed by the **SGLang RL Team and Miles Team**. Special thanks to **DataCrunch, AtlasCloud and EigenAI** for compute sponsorship.
 
 ## Background
 
@@ -268,6 +280,8 @@ Miles Team: Huapeng Zhou, Mao Cheng, Chenyang Zhao, Tom
 We sincerely thank the AtlasCloud and DataCrunch for their computing support.
 
 Linkedin: Lancert
+
+In the same time, our amazing members, Chengxi Li and Huapeng Zhou are looking for new work opportunities, welcome to contact them.
 
 <details>
 <summary>Engineering Implementation Details</summary>
