@@ -1,5 +1,5 @@
 ---
-title: "Support FSDP2 as A Training Backend for Miles"
+title: "Power Up FSDP2 as a Flexible Training Backend for Miles"
 author: "SGLang RL Team, Miles Team"
 date: "December 3, 2025"
 previewImg: /images/blog/miles-fsdp/2_fsdp_train.png
@@ -8,6 +8,18 @@ previewImg: /images/blog/miles-fsdp/2_fsdp_train.png
 > **TL;DR:**
 > 
 > **We have added FSDP to [Miles](https://github.com/radixark/miles) as a more flexible training framework and have aligned it with Megatron. FSDP supports architecture-innovative models such as Qwen3-Next more flexibly and helps us further support VLM RL.**
+
+SGLang RL Team and the Miles community have conducted some interesting explorations around RL training stability and acceleration:
+
+[Aligning the SGLang and FSDP backends](https://github.com/radixark/miles/tree/main/examples/true_on_policy) for **strictly zero KL divergence**
+
+[**Speculative Decoding**](https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/rlhf/slime/spec/readme-en.md) with online SFT for the draft model
+
+[Unified FP8](https://lmsys.org/blog/2025-11-25-fp8-rl/): Moving Beyond Mixed Precision for Stable and Accelerated MoE RL
+
+Building on this, we now share a new progress that seeks the best adaptbility and usability to new model architectures, enable FSDP2 a more flexible training backend for Miles.
+
+This work is jointly completed by the **SGLang RL Team and Miles Team**. Special thanks to **DataCrunch, AtlasCloud and EigenAI** for compute sponsorship.
 
 ## Background
 
@@ -52,7 +64,7 @@ The robust FSDP design leaves the top-level architecture unaffected, and the ove
 In the `init` stage, the following work is mainly completed:
 
 <p align="center">
-  <img src="./pic/1_fsdp_init.png" alt="FSDP actor init flow" width="50%" />
+  <img src="/images/blog/miles-fsdp/1_fsdp_init.png" alt="FSDP actor init flow" width="50%" />
 </p>
 
 FSDP actor init flow
@@ -69,7 +81,7 @@ FSDP actor init flow
 The `train` function serves as the main training entry point:
 
 <p align="center">
-  <img src="./pic/2_fsdp_train.png" alt="FSDP actor train flow" width="50%" />
+  <img src="/images/blog/miles-fsdp/2_fsdp_train.png" alt="FSDP actor train flow" width="50%" />
 </p>
 
 FSDP actor train flow
@@ -105,7 +117,7 @@ After completing Data Packing, the actor calculates log-prob and entropy of ref/
 > Specific details are documented in more detail in Miles's Docs.
 
 <p align="center">
-  <img src="./pic/3_kl_0.png" alt="training-rollout logprob diff = 0" width="50%" />
+  <img src="/images/blog/miles-fsdp/3_kl_0.png" alt="training-rollout logprob diff = 0" width="50%" />
 </p>
 
 
@@ -127,11 +139,21 @@ Considering mismatch, `rollout_log_probs, old_log_probs, log_probs` will all par
 Taking GRPO as an example, the final loss function is:
 
 $$
-\begin{aligned}
-\mathcal{L}(\theta) &= \frac{1}{L} \sum_{t=1}^L \left[ \bar{w}_t \cdot \mathcal{L}^{\text{clip}}_t(\theta) - \beta \text{KL}_t + \lambda H_t \right] \\
-\text{where } \mathcal{L}^{\text{clip}}_t &= \min \left( r_t(\theta) A_t, \ \text{clip}(r_t(\theta), 1\pm\epsilon) A_t \right) \\
-r_t(\theta) &= \frac{\pi_{\theta}}{\pi_{\text{old}}}, \quad \bar{w}_t = \text{min}\left( \frac{\pi_{\text{old}}}{\pi_{\text{rollout}}}, C \right)
-\end{aligned}
+\mathcal{L}(\theta)
+= \frac{1}{L} \sum_{t=1}^L \left[ \bar{w}_t \cdot \mathcal{L}^{\text{clip}}_t(\theta) - \beta \,\text{KL}_t + \lambda H_t \right]
+$$
+
+where
+
+$$
+\mathcal{L}^{\text{clip}}_t
+= \min \left( r_t(\theta) A_t,\ \text{clip}(r_t(\theta), 1\pm\epsilon)\, A_t \right)
+$$
+
+and
+
+$$
+r_t(\theta) = \frac{\pi_\theta}{\pi\_{\text{old}}}, \quad \bar{w}_t = \min \left( \frac{\pi\_{\text{old}}}{\pi\_{\text{rollout}}}, C \right)
 $$
 
 ### Weight Update Optimization: Weight Update and Colocated Mode
@@ -139,7 +161,7 @@ $$
 After training ends, the latest weights are synchronized back to the Inference Engine (this is the best definition of the term refit). In `update_weight_utis.py`, we fully support all modes: `colocated` and `distributed`. The former alternates train / rollout occupying the same batch of GPUs, while the latter distributes train / rollout on different GPUs. For both methods, we adopted a bucketed asynchronous update strategy [Reference](https://hebiao064.github.io/rl-weight-sync), synchronizing chunked weights to the inference engine one by one, minimizing peak memory usage as much as possible.
 
 <p align="center">
-  <img src="./pic/4_fsdp_refit.png" alt="Update weights from training to inference with async tensor handle and bucket" width="50%" />
+  <img src="/images/blog/miles-fsdp/4_fsdp_refit.png" alt="Update weights from training to inference with async tensor handle and bucket" width="50%" />
 </p>
 
 > ✅ For specific mechanisms of weight update, welcome to check the previous blogs of SGLang RL group: [**RL System Deep Thinking: Weight Update Mechanisms**](https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/rlhf/sys-design/readme-1-EN.md)
@@ -162,7 +184,7 @@ Experimental Environment: Single node H100, Miles 0.5.5post1
 Megatron, FSDP colocated w ref model, FSDP colocated w/o ref model
 
 <p align="center">
-  <img src="./pic/5_fsdp_mcore_match.png" alt="Raw reward match" width="50%" />
+  <img src="/images/blog/miles-fsdp/5_fsdp_mcore_match.png" alt="Raw reward match" width="50%" />
 </p>
 
 
@@ -268,6 +290,8 @@ Miles Team: Huapeng Zhou, Mao Cheng, Chenyang Zhao, Tom
 We sincerely thank the AtlasCloud and DataCrunch for their computing support.
 
 Linkedin: Lancert
+
+In the same time, our amazing members, Chengxi Li and Huapeng Zhou are looking for new work opportunities, welcome to contact them.
 
 <details>
 <summary>Engineering Implementation Details</summary>
