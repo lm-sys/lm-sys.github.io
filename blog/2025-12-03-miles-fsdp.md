@@ -13,7 +13,7 @@ SGLang RL Team and the Miles community have conducted some interesting explorati
 
 [Aligning the SGLang and FSDP backends](https://github.com/radixark/miles/tree/main/examples/true_on_policy) for **strictly zero KL divergence**
 
-[**Speculative Decoding**](https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/rlhf/slime/spec/readme-en.md) with online SFT for the draft model
+[Speculative Decoding](https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/rlhf/slime/spec/readme-en.md) with online SFT for the draft model
 
 [Unified FP8](https://lmsys.org/blog/2025-11-25-fp8-rl/): Moving Beyond Mixed Precision for Stable and Accelerated MoE RL
 
@@ -283,7 +283,7 @@ As a lightweight backend, our future plans for FSDP include the following direct
 
 Thanks to all friends who contributed code, testing, and optimization to miles X FSDP:
 
-SGlang RL team: Chengxi Li, Zilin Zhu, Chengxing Xie, Haoran Wang, Lei Li, Yusheng Su, Zhuohao Li, Ji Li, Jiahui Wang, Jin Pan, William Ren, Qisheng Liu, Yuzhen Zhou, Jiajun Li, Yuqi Xiang
+SGLang RL team: Chengxi Li, Zilin Zhu, Chengxing Xie, Haoran Wang, Lei Li, Yusheng Su, Zhuohao Li, Ji Li, Jiahui Wang, Jin Pan, William Ren, Qisheng Liu, Yuzhen Zhou, Jiajun Li, Yuqi Xiang
 
 Miles Team: Huapeng Zhou, Mao Cheng, Chenyang Zhao, Tom
 
@@ -291,7 +291,7 @@ We sincerely thank the AtlasCloud and DataCrunch for their computing support.
 
 Linkedin: Lancert
 
-In the same time, our amazing members, Chengxi Li and Huapeng Zhou are looking for new work opportunities, welcome to contact them.
+## Appendix
 
 <details>
 <summary>Engineering Implementation Details</summary>
