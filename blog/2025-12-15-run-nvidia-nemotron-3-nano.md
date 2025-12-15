@@ -30,7 +30,7 @@ Nemotron 3 Nano is fully open with open-weights, datasets and recipes so develop
 - Get started: 
     - Download model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8)
     - [Run with SGLang for inference](https://cookbook.sglang.io/docs/NVIDIA/Nemotron3-Nano)
-    - [Technical report](http://research.nvidia.com/labs/nemotron) to build custom, optimized models with Nemotron techniques.
+    - [Technical report](https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Nano-Technical-Report.pdf) to build custom, optimized models with Nemotron techniques.
 
 ## Installation and Quick Start
 
