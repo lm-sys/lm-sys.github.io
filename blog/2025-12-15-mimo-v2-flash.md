@@ -24,7 +24,7 @@ In MiMo-V2-Flash, every five attention layers with a sliding window pattern are 
 
 The figure below shows the prefill benchmarking results for MiMo-V2-Flash. 
 
-![figure2](/images/blog/mimo-v2-flash/prefill.PNG)<small><center>MiMo-V2-Flash Prefill Benchmark</center></small>
+![figure2](/images/blog/mimo-v2-flash/prefill.PNG)<small><center>MiMo-V2-Flash Prefill Benchmark (Radix Cache Disabled)</center></small>
 
 ### MTP
 One of the most important designs in MiMo-V2-Flash is the multi-layer MTP, with 3 MTP layers. 
