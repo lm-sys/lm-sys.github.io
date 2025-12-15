@@ -12,7 +12,7 @@ Nemotron 3 Nano, part of the newly announced open [Nemotron 3 family](https://de
 Nemotron 3 Nano is fully open with open-weights, datasets and recipes so developers can easily customize, optimize, and deploy the model on their infrastructure for maximum privacy and security. The chart below shows that Nemotron 3 Nano is in the most attractive quadrant in Artificial Analysis Openness vs Intelligence Index.
 
 
-![figure1](/images/blog/nemotron-3-nano/artificial_analysis.png)<small><center>* NVIDIA Nemotron 3 Sets a New Standard for Open Source AI *</center></small>
+![figure1](/images/blog/nemotron-3-nano/artificial_analysis.png)<small><center>NVIDIA Nemotron 3 Sets a New Standard for Open Source AI</center></small>
 
 ## TL;DR
 
@@ -82,12 +82,12 @@ Nemotron 3 Nano builds on the hybrid Mamba-Transformer architecture by replacing
 
 Nemotron 3 Nano’s hybrid Mamba-Transformer architecture boosts token throughput by up to 4x, allowing the model to reason more quickly while delivering higher accuracy. Its “thinking budget” feature helps avoid unnecessary computation, reducing overthinking and ensuring lower, more predictable inference costs.
 
-![figure1](/images/blog/nemotron-3-nano/speed.png)<small><center>* Nemotron 3 Nano delivers higher throughput with leading accuracy among open reasoning models *</center></small>
+![figure1](/images/blog/nemotron-3-nano/speed.png)<small><center>Nemotron 3 Nano delivers higher throughput with leading accuracy among open reasoning models</center></small>
 
 
 Trained on NVIDIA-curated, high-quality data, Nemotron 3 Nano leads on benchmarks such as SWE Bench Verified, GPQA Diamond, AIME 2025, Arena Hard v2, and IFBench delivering top-tier accuracy in coding, [reasoning](https://www.nvidia.com/en-us/glossary/ai-reasoning/), math and instruction following. This makes it ideal for building AI agents for various enterprise use cases including finance, cybersecurity, software development and retail. 
 
-![figure1](/images/blog/nemotron-3-nano/benchmark.png)<small><center>* Nemotron 3 Nano provides leading accuracy on various popular academic benchmarks among open small reasoning models *</center></small>
+![figure1](/images/blog/nemotron-3-nano/benchmark.png)<small><center>Nemotron 3 Nano provides leading accuracy on various popular academic benchmarks among open small reasoning models</center></small>
 
 
 
@@ -96,17 +96,16 @@ Trained on NVIDIA-curated, high-quality data, Nemotron 3 Nano leads on benchmark
 - Download Nemotron 3 Nano model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8)
 - Run with SGLang for inference using [this](https://cookbook.sglang.io/docs/NVIDIA/Nemotron3-Nano) cookbook or through this NVIDIA Brev [launchable](https://brev.nvidia.com/launchable/deploy?launchableID=env-36ikQZX0ZDTSCGE7YkqxiOKwKsj). 
 
-[Share your ideas](http://nemotron.ideas.nvidia.com/?ncid=so-othe-692335) and vote on what matters to help shape the future of Nemotron. 
-
 
 ## Further Reading
-- Stay up to date on [NVIDIA Nemotron](https://developer.nvidia.com/nemotron) by subscribing to NVIDIA news and following NVIDIA AI on LinkedIn, X, YouTube, and the Nemotron channel on Discord.
+- [Share your ideas](http://nemotron.ideas.nvidia.com/?ncid=so-othe-692335) and vote on what matters to help shape the future of Nemotron. 
 - Stay up to date on [NVIDIA Nemotron](https://developer.nvidia.com/nemotron) by subscribing to NVIDIA news and following NVIDIA AI on [LinkedIn](https://www.linkedin.com/showcase/nvidia-ai/posts/?feedView=all), [X](https://x.com/NVIDIAAIDev), [YouTube](https://www.youtube.com/@NVIDIADeveloper), and the [Nemotron channel](https://discord.com/channels/1019361803752456192/1407781691698708682) on [Discord](https://discord.com/invite/nvidiadeveloper).
+
 
 ## Acknowledgement
 
 We thank all contributors for their efforts in developing and integrating Nemotron V3 Nano into SGLang.
 
-- **Nvidia Team**: Roi Koren, Max Xu, Netanel Haber, Tomer Bar Natan, Daniel Afrimi, Nirmal Kumar Juluru, Ann Guan and many more
+**Nvidia Team**: Roi Koren, Max Xu, Netanel Haber, Tomer Bar Natan, Daniel Afrimi, Nirmal Kumar Juluru, Ann Guan and many more
 
-- **SGLang Team and community**: Baizhou Zhang, Jiajun Li, Ke Bao, Mingyi Lu, Richard Chen
+**SGLang Team and community**: Baizhou Zhang, Jiajun Li, Ke Bao, Mingyi Lu, Richard Chen
