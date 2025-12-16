@@ -84,9 +84,6 @@ docker run -it --gpus all \
   -v ~/hf_cache:/root/.cache/huggingface \
   lmsysorg/sglang:dev-pr-15207 bash
 
-# Set your HuggingFace token
-export HF_TOKEN=XXXXXXXX
-
 # Start the server
 SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
         --model-path XiaomiMiMo/MiMo-V2-Flash \
@@ -131,9 +128,6 @@ pip uninstall sglang -y
 pip install sglang==0.5.6.post2.dev7970+pr.15207.g62f95e0c6 \
   --index-url https://sgl-project.github.io/whl/pr/ \
   --extra-index-url https://pypi.org/simple
-
-# Set your HuggingFace token
-export HF_TOKEN=XXXXXXXX
 
 #Launch the server
 SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
@@ -206,7 +200,5 @@ curl http://localhost:9001/v1/chat/completions \
 **DeepGEMM Timeout Error**
 Occasionally DeepGEMM timeout errors occur during first launch. Simply rerun the server command in the same container - the compiled kernels are cached and subsequent launches will be fast.
 
-**Permission Errors**
-Ensure your HuggingFace token has access to the `XiaomiMiMo/MiMo-V2-Flash` model repository.
 
 </details>
