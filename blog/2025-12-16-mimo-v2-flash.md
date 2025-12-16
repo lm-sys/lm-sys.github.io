@@ -121,7 +121,7 @@ docker run -it --gpus all \
 pip uninstall sglang -y
 
 # Install the PyPI Package
-pip install sglang==0.5.6.post2.dev7970+pr.15207.g62f95e0c6 \
+pip install sglang==0.5.6.post2.dev8005+pr.15207.g39d5bd57a \
   --index-url https://sgl-project.github.io/whl/pr/ \
   --extra-index-url https://pypi.org/simple
 
