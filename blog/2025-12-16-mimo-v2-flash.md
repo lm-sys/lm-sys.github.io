@@ -6,7 +6,7 @@ previewImg: /images/blog/mimo-v2-flash/decode_1.png
 ---
 
 ## Introduction
-MiMo-V2-Flash, with 309B total parameters and 15B activated parameters, is a new inference-centric model designed to maximize decoding efficiency. It is based on two key designs: **sliding window attention** and **multi-layer MTP**. MiMo-V2-Flash is explicitly co-designed for real-world serving workloads, enabling flexible tradeoffs between throughput and latency on different hardware. Combined with SGLang’s optimized Spec v2 runtime, which provides near-zero-overhead support for multi-layer MTP and efficient SWA execution, MiMo-V2-Flash delivers balanced TPOT and throughput on H200. In this blog, we will introduce the model and SGLang's efficient support.
+[XiaomiMiMo/MiMo-V2-Flash](https://huggingface.co/XiaomiMiMo/MiMo-V2-Flash), with 309B total parameters and 15B activated parameters, is a new inference-centric model designed to maximize decoding efficiency. It is based on two key designs: **sliding window attention** and **multi-layer MTP**. MiMo-V2-Flash is explicitly co-designed for real-world serving workloads, enabling flexible tradeoffs between throughput and latency on different hardware. Combined with SGLang’s optimized Spec v2 runtime, which provides near-zero-overhead support for multi-layer MTP and efficient SWA execution, MiMo-V2-Flash delivers balanced TPOT and throughput on H200. In this blog, we will introduce the model and SGLang's efficient support.
 
 ## Inference-Efficient Modeling
 The design of MiMo-V2-Flash follows an inference-efficiency principle. The MiMo-V2-Flash adopted two critical designs:
