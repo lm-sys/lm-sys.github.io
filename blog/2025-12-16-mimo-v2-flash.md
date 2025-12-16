@@ -1,7 +1,7 @@
 ---
 title: "SGLang Day-0 Support for MiMo-V2-Flash Model"
 author: "SGLang Team and Xiaomi LLM Core Team"
-date: "December 15, 2025"
+date: "December 16, 2025"
 previewImg: /images/blog/mimo-v2-flash/decode_1.png
 ---
 
@@ -42,9 +42,9 @@ Generally speaking, devices with a higher roofline benefit more from aggressive 
 
 Here, we provide the benchmarking results on H200. MiMo-V2-Flash achieves balanced performance in both throughput and per request TPS. Thanks to SWA and MTP, the per request decoding throughput remains at 150 TPS even under long-context settings of up to 64K input tokens with per DP rank batch size 16.
 
-![figure3](/images/blog/mimo-v2-flash/decode_1.png)<small><center>MiMo-V2-Flash Decode Benchmark (DP 2, TP 4, MTP Accept Length 3.6, Input Token Length 16k, Varying Batch Size)</center></small>
+![figure3](/images/blog/mimo-v2-flash/decode_1.png)<small><center>MiMo-V2-Flash Decode Benchmark (DP 2, TP 4, EP 8, MTP Accept Length 3.6, Input Token Length 16k, Varying Batch Size)</center></small>
 
-![figure4](/images/blog/mimo-v2-flash/decode_2.png)<small><center>MiMo-V2-Flash Decode Benchmark (DP 2, TP 4, MTP Accept Length 3.6, Input Token Length 16k, Varying Batch Size)</center></small>
+![figure4](/images/blog/mimo-v2-flash/decode_2.png)<small><center>MiMo-V2-Flash Decode Benchmark (DP 2, TP 4, EP 8, MTP Accept Length 3.6, Per DP Rank Batch Size 16, Varying Input Token Length)</center></small>
 
 ## Fast MTP Serving with SGLang Spec v2
 MiMo’s multi-layer MTP is implemented natively on SGLang’s spec v2. We apply the fully overlapped MTP feature to improve throughput and latency, delivering faster MTP serving. In spec v2, the overlap scheduler is fused with speculative decoding: output sync/processing is delayed while the next batch’s kernels launch early, so CPU overhead for batching and syncing is hidden in GPU forward. This cuts GPU bubbles and improves throughput and latency.
@@ -56,11 +56,11 @@ The figure below is a screenshot of the profiling, showing the overlapped decodi
 ## More Discussions
 In most LLM-serving workloads, the decoding stage is memory-bounded, leaving substantial compute underutilized, particularly on the mainstream training-oriented GPUs. While inference-specific accelerators with high bandwidth and lower FLOPs offer a cost-efficient choice, their speed is limited. MiMo-V2-Flash attempts to take another perspective to make the model itself inference-efficient. The multi-layer MTP model may be a generalizable solution - if the acceptance rate can be further optimized, it allows people to leverage their GPU's computation to achieve faster decoding. With a more adaptable architecture, hardware selection becomes more flexible: each device can operate at its own optimal compute–memory balance point. This opens the possibility of using the same class of hardware for both training and inference, simplifying deployment and reducing overall system cost.
 
-MiMo-V2-Flash support is already available in SGLang via PR and will be merged into the main branch shortly. The benchmarks in this blog were conducted on MiMo’s optimized branch, and the corresponding optimizations will be upstreamed into SGLang main in the near future.
+MiMo-V2-Flash support is already available in SGLang via PR ([#15207](https://github.com/sgl-project/sglang/pull/15207), [#15208](https://github.com/sgl-project/sglang/pull/15208)) and will be merged into the main branch shortly. The benchmarks in this blog were conducted on MiMo’s optimized branch, and the corresponding optimizations will be upstreamed into SGLang main in the near future.
 
 ## Getting Started
 
-MiMo-V2-Flash is currently available in SGLang via Docker image and Pip install. Please see the instructions below to launch the SGLang server and start using MiMo-V2-Flash.
+MiMo-V2-Flash is currently available in SGLang via Docker image and pip install. Please see the instructions below to launch the SGLang server and start using MiMo-V2-Flash.
 
 See Instructions below:
 
@@ -73,21 +73,16 @@ See Instructions below:
 # Pull the docker image
 docker pull lmsysorg/sglang:dev-pr-15207
 
-# Create a cache directory for model weights
-mkdir -p ~/hf_cache
-
 # Launch the container
 docker run -it --gpus all \
   --shm-size=32g \
   --ipc=host \
   --network=host \
-  -v ~/hf_cache:/root/.cache/huggingface \
   lmsysorg/sglang:dev-pr-15207 bash
 
 # Start the server
 SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
         --model-path XiaomiMiMo/MiMo-V2-Flash \
-        --revision=FP8-Block-12062106 \
         --dp-size 2 \
         --enable-dp-attention \
         --tp-size 8 \
@@ -117,8 +112,9 @@ SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
 # On a machine with SGLang dependencies installed or inside a SGLang nightly container
 # Start an SGLang nightly container
 docker run -it --gpus all \
+  --shm-size=32g \
   --ipc=host \
-  -p 9001:9001 \
+  --network=host \
   lmsysorg/sglang:nightly-dev-20251215-4449c170 bash
 
 # If you already have SGLang installed, uninstall the current SGLang version
@@ -132,7 +128,6 @@ pip install sglang==0.5.6.post2.dev7970+pr.15207.g62f95e0c6 \
 #Launch the server
 SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
         --model-path XiaomiMiMo/MiMo-V2-Flash \
-        --revision=FP8-Block-12062106 \
         --dp-size 2 \
         --enable-dp-attention \
         --tp-size 8 \
@@ -161,7 +156,7 @@ SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
 Once the server is running, test it with a chat completion request in another terminal:
 
 ```bash
-curl http://localhost:9001/v1/chat/completions \
+curl http://localhost:30000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
     "model": "XiaomiMiMo/MiMo-V2-Flash",
