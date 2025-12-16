@@ -88,40 +88,25 @@ docker run -it --gpus all \
 export HF_TOKEN=XXXXXXXX
 
 # Start the server
-SGLANG_ENABLE_SPEC_V2=1 SGLANG_USE_FUSED_MOE_GATE=1 SGLANG_USE_UPDATE_LOCAL_ATTN_METADATA_CUDA=1 python3 -m sglang.launch_server \
+SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
         --model-path XiaomiMiMo/MiMo-V2-Flash \
         --revision=FP8-Block-12062106 \
-        --enable-cache-report \
-        --pp-size 1 \
         --dp-size 2 \
         --enable-dp-attention \
         --tp-size 8 \
-        --moe-a2a-backend deepep \
-        --init-expert-location trivial \
-        --ep-num-redundant-experts 0 \
-        --eplb-algorithm deepseek \
-        --decode-log-interval 1 \
-        --page-size 1 \
-        --host 0.0.0.0 \
-        --port 9001 \
         --trust-remote-code \
-        --watchdog-timeout 1000000 \
         --mem-fraction-static 0.75 \
         --max-running-requests 128 \
         --chunked-prefill-size 16384 \
-        --reasoning-parser qwen3 \
+        --reasoning-parser qwen \
         --tool-call-parser mimo \
-        --context-length 262144 \
-        --collect-tokens-histogram \
         --model-loader-extra-config '{"enable_multithread_load": "true","num_threads": 64}' \
-        --enable-metrics \
-        --bucket-time-to-first-token 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10 20 40 60 80 100 200 400 800 1200 1800 2400 3600 5400 7200 \
-        --bucket-e2e-request-latency 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10 20 40 60 80 100 200 400 600 1200 1800 2400 3600 5400 7200 \
-        --ep-dispatch-algorithm static \
-        --prefill-round-robin-balance \
         --attention-backend fa3 \
-        --speculative-algorithm EAGLE --speculative-num-steps=3     --speculative-eagle-topk=1     --speculative-num-draft-tokens=4 --enable-mtp \
-        --enable-metrics-for-all-schedulers 2>&1 | tee -a tp8-dp2-$(date +"%Y%m%d_%H%M%S").log
+        --speculative-algorithm EAGLE \
+        --speculative-num-steps=3 \
+        --speculative-eagle-topk=1 \
+        --speculative-num-draft-tokens=4 \
+        --enable-mtp
 ```
 
 </details>
@@ -151,40 +136,25 @@ pip install sglang==0.5.6.post2.dev7970+pr.15207.g62f95e0c6 \
 export HF_TOKEN=XXXXXXXX
 
 #Launch the server
-SGLANG_ENABLE_SPEC_V2=1 SGLANG_USE_FUSED_MOE_GATE=1 SGLANG_USE_UPDATE_LOCAL_ATTN_METADATA_CUDA=1 python3 -m sglang.launch_server \
+SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
         --model-path XiaomiMiMo/MiMo-V2-Flash \
         --revision=FP8-Block-12062106 \
-        --enable-cache-report \
-        --pp-size 1 \
         --dp-size 2 \
         --enable-dp-attention \
         --tp-size 8 \
-        --moe-a2a-backend deepep \
-        --init-expert-location trivial \
-        --ep-num-redundant-experts 0 \
-        --eplb-algorithm deepseek \
-        --decode-log-interval 1 \
-        --page-size 1 \
-        --host 0.0.0.0 \
-        --port 9001 \
         --trust-remote-code \
-        --watchdog-timeout 1000000 \
         --mem-fraction-static 0.75 \
         --max-running-requests 128 \
         --chunked-prefill-size 16384 \
-        --reasoning-parser qwen3 \
+        --reasoning-parser qwen \
         --tool-call-parser mimo \
-        --context-length 262144 \
-        --collect-tokens-histogram \
         --model-loader-extra-config '{"enable_multithread_load": "true","num_threads": 64}' \
-        --enable-metrics \
-        --bucket-time-to-first-token 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10 20 40 60 80 100 200 400 800 1200 1800 2400 3600 5400 7200 \
-        --bucket-e2e-request-latency 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10 20 40 60 80 100 200 400 600 1200 1800 2400 3600 5400 7200 \
-        --ep-dispatch-algorithm static \
-        --prefill-round-robin-balance \
         --attention-backend fa3 \
-        --speculative-algorithm EAGLE --speculative-num-steps=3     --speculative-eagle-topk=1     --speculative-num-draft-tokens=4 --enable-mtp \
-        --enable-metrics-for-all-schedulers 2>&1 | tee -a tp8-dp2-$(date +"%Y%m%d_%H%M%S").log
+        --speculative-algorithm EAGLE \
+        --speculative-num-steps=3 \
+        --speculative-eagle-topk=1 \
+        --speculative-num-draft-tokens=4 \
+        --enable-mtp
 ```
 
 </details>
