@@ -56,5 +56,187 @@ The figure below is a screenshot of the profiling, showing the overlapped decodi
 ## More Discussions
 In most LLM-serving workloads, the decoding stage is memory-bounded, leaving substantial compute underutilized, particularly on the mainstream training-oriented GPUs. While inference-specific accelerators with high bandwidth and lower FLOPs offer a cost-efficient choice, their speed is limited. MiMo-V2-Flash attempts to take another perspective to make the model itself inference-efficient. The multi-layer MTP model may be a generalizable solution - if the acceptance rate can be further optimized, it allows people to leverage their GPU's computation to achieve faster decoding. With a more adaptable architecture, hardware selection becomes more flexible: each device can operate at its own optimal compute–memory balance point. This opens the possibility of using the same class of hardware for both training and inference, simplifying deployment and reducing overall system cost.
 
-## SGLang Integration
 MiMo-V2-Flash support is already available in SGLang via PR and will be merged into the main branch shortly. The benchmarks in this blog were conducted on MiMo’s optimized branch, and the corresponding optimizations will be upstreamed into SGLang main in the near future.
+
+## Getting Started
+
+MiMo-V2-Flash is currently available in SGLang via Docker image and Pip install. Please see the instructions below to launch the SGLang server and start using MiMo-V2-Flash.
+
+See Instructions below:
+
+<br>
+
+<details>
+<summary><span style="font-size: 1.3em; font-weight: bold;">Docker</span></summary>
+
+```bash
+# Pull the docker image
+docker pull lmsysorg/sglang:dev-pr-15207
+
+# Create a cache directory for model weights
+mkdir -p ~/hf_cache
+
+# Launch the container
+docker run -it --gpus all \
+  --shm-size=32g \
+  --ipc=host \
+  --network=host \
+  -v ~/hf_cache:/root/.cache/huggingface \
+  lmsysorg/sglang:dev-pr-15207 bash
+
+# Set your HuggingFace token
+export HF_TOKEN=XXXXXXXX
+
+# Start the server
+SGLANG_ENABLE_SPEC_V2=1 SGLANG_USE_FUSED_MOE_GATE=1 SGLANG_USE_UPDATE_LOCAL_ATTN_METADATA_CUDA=1 python3 -m sglang.launch_server \
+        --model-path XiaomiMiMo/MiMo-V2-Flash \
+        --revision=FP8-Block-12062106 \
+        --enable-cache-report \
+        --pp-size 1 \
+        --dp-size 2 \
+        --enable-dp-attention \
+        --tp-size 8 \
+        --moe-a2a-backend deepep \
+        --init-expert-location trivial \
+        --ep-num-redundant-experts 0 \
+        --eplb-algorithm deepseek \
+        --decode-log-interval 1 \
+        --page-size 1 \
+        --host 0.0.0.0 \
+        --port 9001 \
+        --trust-remote-code \
+        --watchdog-timeout 1000000 \
+        --mem-fraction-static 0.75 \
+        --max-running-requests 128 \
+        --chunked-prefill-size 16384 \
+        --reasoning-parser qwen3 \
+        --tool-call-parser mimo \
+        --context-length 262144 \
+        --collect-tokens-histogram \
+        --model-loader-extra-config '{"enable_multithread_load": "true","num_threads": 64}' \
+        --enable-metrics \
+        --bucket-time-to-first-token 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10 20 40 60 80 100 200 400 800 1200 1800 2400 3600 5400 7200 \
+        --bucket-e2e-request-latency 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10 20 40 60 80 100 200 400 600 1200 1800 2400 3600 5400 7200 \
+        --ep-dispatch-algorithm static \
+        --prefill-round-robin-balance \
+        --attention-backend fa3 \
+        --speculative-algorithm EAGLE --speculative-num-steps=3     --speculative-eagle-topk=1     --speculative-num-draft-tokens=4 --enable-mtp \
+        --enable-metrics-for-all-schedulers 2>&1 | tee -a tp8-dp2-$(date +"%Y%m%d_%H%M%S").log
+```
+
+</details>
+
+<br>
+
+<details>
+<summary><span style="font-size: 1.3em; font-weight: bold;">Pip Installation</span></summary>
+
+```bash
+# On a machine with SGLang dependencies installed or inside a SGLang nightly container
+# Start an SGLang nightly container
+docker run -it --gpus all \
+  --ipc=host \
+  -p 9001:9001 \
+  lmsysorg/sglang:nightly-dev-20251215-4449c170 bash
+
+# If you already have SGLang installed, uninstall the current SGLang version
+pip uninstall sglang -y
+
+# Install the PyPI Package
+pip install sglang==0.5.6.post2.dev7970+pr.15207.g62f95e0c6 \
+  --index-url https://sgl-project.github.io/whl/pr/ \
+  --extra-index-url https://pypi.org/simple
+
+# Set your HuggingFace token
+export HF_TOKEN=XXXXXXXX
+
+#Launch the server
+SGLANG_ENABLE_SPEC_V2=1 SGLANG_USE_FUSED_MOE_GATE=1 SGLANG_USE_UPDATE_LOCAL_ATTN_METADATA_CUDA=1 python3 -m sglang.launch_server \
+        --model-path XiaomiMiMo/MiMo-V2-Flash \
+        --revision=FP8-Block-12062106 \
+        --enable-cache-report \
+        --pp-size 1 \
+        --dp-size 2 \
+        --enable-dp-attention \
+        --tp-size 8 \
+        --moe-a2a-backend deepep \
+        --init-expert-location trivial \
+        --ep-num-redundant-experts 0 \
+        --eplb-algorithm deepseek \
+        --decode-log-interval 1 \
+        --page-size 1 \
+        --host 0.0.0.0 \
+        --port 9001 \
+        --trust-remote-code \
+        --watchdog-timeout 1000000 \
+        --mem-fraction-static 0.75 \
+        --max-running-requests 128 \
+        --chunked-prefill-size 16384 \
+        --reasoning-parser qwen3 \
+        --tool-call-parser mimo \
+        --context-length 262144 \
+        --collect-tokens-histogram \
+        --model-loader-extra-config '{"enable_multithread_load": "true","num_threads": 64}' \
+        --enable-metrics \
+        --bucket-time-to-first-token 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10 20 40 60 80 100 200 400 800 1200 1800 2400 3600 5400 7200 \
+        --bucket-e2e-request-latency 0.1 0.2 0.4 0.6 0.8 1 2 4 6 8 10 20 40 60 80 100 200 400 600 1200 1800 2400 3600 5400 7200 \
+        --ep-dispatch-algorithm static \
+        --prefill-round-robin-balance \
+        --attention-backend fa3 \
+        --speculative-algorithm EAGLE --speculative-num-steps=3     --speculative-eagle-topk=1     --speculative-num-draft-tokens=4 --enable-mtp \
+        --enable-metrics-for-all-schedulers 2>&1 | tee -a tp8-dp2-$(date +"%Y%m%d_%H%M%S").log
+```
+
+</details>
+
+<br>
+
+<details>
+<summary><span style="font-size: 1.3em; font-weight: bold;">Testing the deployment</span></summary>
+
+Once the server is running, test it with a chat completion request in another terminal:
+
+```bash
+curl http://localhost:9001/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "XiaomiMiMo/MiMo-V2-Flash",
+    "messages": [
+      {"role": "user", "content": "Hello! What can you help me with?"}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 100
+  }'
+
+```
+
+**Expected response:**
+
+```json
+{
+  "id": "...",
+  "object": "chat.completion",
+  "model": "XiaomiMiMo/MiMo-V2-Flash",
+  "choices": [{
+    "message": {
+      "role": "assistant",
+      "content": "Hello! I can help you with..."
+    }
+  }]
+}
+```
+
+</details>
+
+<br>
+
+<details>
+<summary><span style="font-size: 1.3em; font-weight: bold;">Troubleshooting</span></summary>
+
+**DeepGEMM Timeout Error**
+Occasionally DeepGEMM timeout errors occur during first launch. Simply rerun the server command in the same container - the compiled kernels are cached and subsequent launches will be fast.
+
+**Permission Errors**
+Ensure your HuggingFace token has access to the `XiaomiMiMo/MiMo-V2-Flash` model repository.
+
+</details>
