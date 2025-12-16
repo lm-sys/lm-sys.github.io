@@ -98,7 +98,7 @@ SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
         --mem-fraction-static 0.75 \
         --max-running-requests 128 \
         --chunked-prefill-size 16384 \
-        --reasoning-parser qwen \
+        --reasoning-parser qwen3 \
         --tool-call-parser mimo \
         --model-loader-extra-config '{"enable_multithread_load": "true","num_threads": 64}' \
         --attention-backend fa3 \
@@ -146,7 +146,7 @@ SGLANG_ENABLE_SPEC_V2=1 python3 -m sglang.launch_server \
         --mem-fraction-static 0.75 \
         --max-running-requests 128 \
         --chunked-prefill-size 16384 \
-        --reasoning-parser qwen \
+        --reasoning-parser qwen3 \
         --tool-call-parser mimo \
         --model-loader-extra-config '{"enable_multithread_load": "true","num_threads": 64}' \
         --attention-backend fa3 \
