@@ -15,7 +15,7 @@ SGLang RL Team and the Miles community have conducted some interesting explorati
 
 [Speculative Decoding](https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/rlhf/slime/spec/readme-en.md) with online SFT for the draft model
 
-[Unified FP8](https://lmsys.org/blog/2025-11-25-fp8-rl/): Moving Beyond Mixed Precision for Stable and Accelerated MoE RL
+[Unified FP8 RL](https://lmsys.org/blog/2025-11-25-fp8-rl/): Moving Beyond Mixed Precision for Stable and Accelerated MoE RL
 
 Building on this, we now share a new progress that seeks the best adaptbility and usability to new model architectures, enable FSDP2 a more flexible training backend for Miles.
 
