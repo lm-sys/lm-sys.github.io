@@ -92,10 +92,10 @@ Simply put, if we visualize the attention mask as a geometric shape for the Q_cu
 
 ## Streaming output animation
 
-Here is an animation comparing the streaming output of LLaDA2.0-flash (100B / BF16) against gpt-oss-120B(117B / MXFP4), while LLaDA2.0-flash is served by SGLang dLLM with TP8 on 8 * H20, and gpt-oss-120B is served by SGLang standard AR process with TP8 on 8 * H20.
+Here is an animation comparing the streaming output of LLaDA2.0-flash-CAP (100B / BF16) against gpt-oss-120B(117B / MXFP4), while LLaDA2.0-flash-CAP is served by SGLang dLLM with TP8 on 8 * H20, and gpt-oss-120B is served by SGLang standard AR process with TP8 on 8 * H20.
 
 <p align="center">
-  <img src="/images/blog/dllm/llada2-vs-gpt-oss.gif" alt="LLaDA2.0-flash vs gpt-oss-120B animation">
+  <img src="/images/blog/dllm/llada2-vs-gpt-oss.gif" alt="LLaDA2.0-flash-CAP vs gpt-oss-120B animation">
   <br>
   <em>Streaming output: LLaDA2.0-flash VS gpt-oss-120B</em>
 </p>
