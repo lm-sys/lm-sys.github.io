@@ -1,7 +1,7 @@
 ---
-title: "Powering Diffusion LLMs: Day‑0 Support for LLaDA 2.0"
+title: "Power Up Diffusion LLMs: Day‑0 Support for LLaDA 2.0"
 author: "Ant Group DeepXPU Team, SGLang Team"
-date: "December 17, 2025"
+date: "December 19, 2025"
 previewImg: /images/blog/dllm/preview.png
 ---
 
