@@ -94,12 +94,12 @@ Simply put, if we visualize the attention mask as a geometric shape for the `Q_c
 
 ## Streaming output animation
 
-Here is an animation comparing the streaming output of LLaDA2.0-flash (100B / BF16) and gpt-oss-120B (117B / MXFP4). LLaDA2.0-flash is served using SGLang dLLM with TP8 on 8 × H20, while gpt-oss-120B is served using SGLang's standard AR process on the same hardware.
+Here is an animation comparing the streaming output of LLaDA2.0-flash-CAP (100B / BF16) and gpt-oss-120B (117B / MXFP4). LLaDA2.0-flash-CAP is served using SGLang dLLM with TP8 on 8 × H20, while gpt-oss-120B is served using SGLang's standard AR process on the same hardware.
 
-Both models are asked to implement the quicksort algorithm in 10 programming languages — a task particularly well-suited for diffusion LLMs. As shown, LLaDA2.0-flash achieves significantly higher throughput at 935 tokens/s, compared to gpt-oss-120B (263 tokens/s) in this scenario.
+Both models are asked to implement the quicksort algorithm in 10 programming languages — a task particularly well-suited for diffusion LLMs. As shown, LLaDA2.0-flash-CAP achieves significantly higher throughput at 935 tokens/s, compared to gpt-oss-120B (263 tokens/s) in this scenario.
 
 <p align="center">
-  <img src="/images/blog/dllm/llada2-vs-gpt-oss.gif" alt="LLaDA2.0-flash vs gpt-oss-120B animation">
+  <img src="/images/blog/dllm/llada2-vs-gpt-oss.gif" alt="LLaDA2.0-flash-CAP vs gpt-oss-120B animation">
   <br>
 </p>
 
