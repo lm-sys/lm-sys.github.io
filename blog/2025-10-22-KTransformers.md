@@ -72,7 +72,7 @@ Before installation, ensure your system meets the following requirements:
 
 ### Step 1: Install SGLang
 
-Follow the official [SGLang installation guide](https://docs.sglang.ai/get_started/install.html) to install SGLang:
+Follow the official [SGLang installation guide](https://docs.sglang.io/get_started/install.html) to install SGLang:
 
 ```bash
 pip install "sglang[all]"

@@ -84,7 +84,7 @@ helm upgrade --install ome-crd oci://ghcr.io/moirai-internal/charts/ome-crd --na
 helm upgrade --install ome oci://ghcr.io/moirai-internal/charts/ome-resources --namespace ome
 ```
 
-For detailed setup instructions, refer to the official [OME installation guide](https://docs.sglang.ai/ome/docs/installation/).
+For detailed setup instructions, refer to the official [OME installation guide](https://docs.sglang.io/ome/docs/installation/).
 
 **Registering the Kimi K2 Model**
 To enable OME to manage the Kimi K2 model family, apply the following ClusterBaseModel resource:

@@ -26,7 +26,7 @@ Now let's dive into the some technical details.
 
 ## Why Deterministic Inference Matters
 
-The ability to achieve consistent outputs from large language models (LLMs) inference is increasingly important. For example, the indeterminism of inference results can implicitly transform on-policy reinforcement learning (RL) into off-policy RL as [researchers pointed out](https://fengyao.notion.site/off-policy-rl). However, even if we turn the temperature down to 0 in SGLang, the sampling is still not deterministic due to the use of dynamic batching and radix cache (past discussions [here](https://docs.sglang.ai/references/faq.html#the-results-are-not-deterministic-even-with-a-temperature-of-0)) .
+The ability to achieve consistent outputs from large language models (LLMs) inference is increasingly important. For example, the indeterminism of inference results can implicitly transform on-policy reinforcement learning (RL) into off-policy RL as [researchers pointed out](https://fengyao.notion.site/off-policy-rl). However, even if we turn the temperature down to 0 in SGLang, the sampling is still not deterministic due to the use of dynamic batching and radix cache (past discussions [here](https://docs.sglang.io/references/faq.html#the-results-are-not-deterministic-even-with-a-temperature-of-0)) .
 
 As mentioned in the [blog](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/), the largest source of nondeterminism is the varying batch sizes: Even when a user repeatedly submits the same prompt, the output can vary across runs, since the request may be batched together with other users' requests, and differences in batch size can lead to nondeterministic inference results.
 

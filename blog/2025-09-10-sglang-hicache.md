@@ -55,7 +55,7 @@ This design has already enabled us to integrate three performant backends—[Moo
 
 ## **Benchmark**
 
-Try experience the performance gain on your own! You can find various benchmark about HiCache [here](https://github.com/sgl-project/sglang/tree/main/benchmark/hicache). Following we highlight two benchmark results using the provided benchmark scripts and you can find the config instructions of backends [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/mem_cache/storage). If you have any questions about benchmarking or deployment, feel free to open an issue on GitHub or post in our [slack channel](https://slack.sglang.ai/).
+Try experience the performance gain on your own! You can find various benchmark about HiCache [here](https://github.com/sgl-project/sglang/tree/main/benchmark/hicache). Following we highlight two benchmark results using the provided benchmark scripts and you can find the config instructions of backends [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/srt/mem_cache/storage). If you have any questions about benchmarking or deployment, feel free to open an issue on GitHub or post in our [slack channel](https://slack.sglang.io/).
 
 ![3fs_benchmark.png](/images/blog/hicache/3fs_benchmark.png)
 

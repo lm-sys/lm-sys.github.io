@@ -42,7 +42,7 @@ export default function Nav() {
         <FaEnvelope />
         </a>
         <a
-          href="https://slack.sglang.ai"
+          href="https://slack.sglang.io"
           target="_blank"
           rel="noopener noreferrer"
         >
