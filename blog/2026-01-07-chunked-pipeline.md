@@ -2,7 +2,7 @@
 title: "Pipeline Parallelism in SGLang: Scaling to Million-Token Contexts and Beyond"
 author: "Shangming Cai"
 date: "January 7, 2026"
-previewImg: /images/blog/specbundle-phase1/preview.png
+previewImg: /images/blog/chunked-pipeline/pp_bubbles_after.png
 ---
 
 ## **TL;DR**
@@ -42,21 +42,20 @@ The key mechanisms of the implementation include:
 ### **3\. Advanced Option: Dynamic chunking**
 
 With Chunked Pipeline Parallelism and Async P2P communication, SGLang already achieves over 80% scale efficiency as the PP size increases to 4. However, Chunked prefill with a fixed size can still cause bubbles in the pipeline, and this inefficiency becomes more pronounced as the PP degree increases. The main reason behind this phenomenon is that the model exhibits non-uniform execution latency across chunks of identical size, primarily due to the incremental nature of self-attention. **As the prefix sequence length grows, the per-chunk processing time increases non-linearly. These timing mismatches propagate through the pipeline, compounding efficiency losses at higher PP ranks.**  
-**![][image1]**  
-**Pipeline diagram with fixed chunked prefill size**
+
+![figure1](/images/blog/chunked-pipeline/pp_bubbles_before.png)<small><center>Pipeline diagram with fixed chunked prefill size</center></small>
 
 We tested different models using a large PP size and found that they all conformed to this conclusion. Below is the profile result of a typical case.
 
-![][image2]  
-**Profile result of the PP rank 7 with fixed chunked prefill size**
+![figure2](/images/blog/chunked-pipeline/profile_before.png)<small><center>Profile result of the PP rank 7 with fixed chunked prefill size</center></small>
 
 To address this issue, SGLang introduces a dynamic chunking mechanism and uses a quadratic function to fit this condition:   
 Runtime(***L*** \+ Next Chunk Size) \- Runtime(***L***) \= Runtime(Initial Chunk Size)  
 where ***L*** denotes the Prefix Sequence Length. By profiling a series of requests with different ITL, we fit this quadratic function approximately, and use it to predict the length of the next chunk for each ***L***. Since Attention computation/communication complexity scales with ***L***, the next chunk size will be progressively reduced as ***L*** grows to maintain an aligned chunk execution time across pipeline stages.
 
-Based on this method, the scheduler can predict and dynamically reduce the chunk size during runtime to minimize the bubbles caused by the stage misalignment.  
-**![][image3]**  
-**Pipeline diagram with perfect dynamic chunked prefill size**
+Based on this method, the scheduler can predict and dynamically reduce the chunk size during runtime to minimize the bubbles caused by the stage misalignment.
+
+![figure3](/images/blog/chunked-pipeline/pp_bubbles_after.png)<small><center>Pipeline diagram with perfect dynamic chunked prefill size</center></small>
 
 However, due to the variation in hardware, models, and target workloads, a static configuration is seldom optimal across all scenarios. Consequently, achieving peak performance necessitates a degree of hyperparameter tuning when switching to the dynamic chunking mode. Also, we find that it is hard to perfectly fit the quadratic function due to the kernel performance variation of different shapes. Therefore, we introduce an environmental variable (`SGLANG_DYNAMIC_CHUNKING_SMOOTH_FACTOR`) to smooth the reduction for the dynamic chunking algorithm, defaulting to 0.75, which determines how much the chunk size can change during the prefill phase. A larger value leads to more aggressive chunk size reduction, potentially improving performance but increasing the total number of chunks (the chunk size at the end may become very small, which could lead to performance degradation).  
 Here is a simple tuning guidance:
@@ -65,16 +64,15 @@ Here is a simple tuning guidance:
 - Set the initial chunk size to a larger value (i.e., 2x or 3x) comparable to the original chunked prefill size, so that there won’t be too many chunks, and the tail small chunks won’t cause performance degradation due to not being able to saturate the hardware. To prevent performance degradation caused by small chunks, when the Input Token Length (ITL) is extremely large, the dynamic predictor also limits the next chunk size to be at least 1/4 of the initial chunk size.  
 - Adjust the smooth factor. When it is set to 1, the chunk size will be adjusted strictly based on the aforementioned quadratic model that predicts the next chunk size. A smaller value means a more conservative chunk size change, which may lead to smaller chunk size changes and fewer total chunks. When it is set to 0, the chunk size will not be adjusted dynamically, so it is identical to the traditional way with a fixed chunked prefill size. Through experiments, we find that a range between 0.6 and 0.85 typically yields the best performance for dynamic chunking.
 
-![][image4]  
-**Example of tuning the smooth factor (DeepSeek-V3.1)**
+![figure4](/images/blog/chunked-pipeline/sigma_ds.png)<small><center>Example of tuning the smooth factor (DeepSeek-V3.1)</center></small>
 
-**![][image5]**  
-**Example of tuning the smooth factor (Qwen3-235B-A22B-FP8)**
+![figure5](/images/blog/chunked-pipeline/sigma_qwen.png)<small><center>Example of tuning the smooth factor (Qwen3-235B-A22B-FP8)</center></small>
 
 Another small optimization tip is to put the larger partition in the higher PP rank when the layers are not evenly divisible across ranks. It can increase the GPU utilization when a larger PP rank is waiting for the previous stage’s result, hence reducing the bubbles on higher PP ranks. If we take DeepSeek-V3.1 as an example, `SGLANG_PP_LAYER_PARTITION=15,15,15,16` usually performs better than `16,15,15,15`.
 
-To validate the effectiveness of these combined strategies, we profiled the execution of DeepSeek-V3.1 using dynamic chunking. As observed in the following profile result of PP rank 3, the pipeline bubbles are significantly minimized compared to the static chunking approach, resulting in a more saturated execution.![][image6]  
-**Profile result of the PP rank 3 with dynamic chunking (DeepSeek-V3.1)**
+To validate the effectiveness of these combined strategies, we profiled the execution of DeepSeek-V3.1 using dynamic chunking. As observed in the following profile result of PP rank 3, the pipeline bubbles are significantly minimized compared to the static chunking approach, resulting in a more saturated execution.
+
+![figure6](/images/blog/chunked-pipeline/profile_after.png)<small><center>Profile result of the PP rank 3 with dynamic chunking (DeepSeek-V3.1)</center></small>
 
 ### **4\. Production Ready: Compatibility with PD Disaggregation and HiCache**
 
@@ -103,13 +101,16 @@ The analysis of Throughput and PP size demonstrates strong horizontal scalabilit
 * **Superior Scalability of DCK**: The **Qwen DCK 18K** configuration exhibits the highest scalability, achieving a speedup factor of **6.14x** on a 32-GPUs (PP8) cluster. This performance suggests that the dynamic adjustment of chunk sizes optimizes the balance between computational intensity and inter-node communication latency.  
 * **Architectural Comparison**: DeepSeek models demonstrate comparable scaling trajectories to Qwen up to the PP4 threshold. Notably, the **DeepSeek DCK 12K** (3.27x) marginally outperforms the static 4K variant (3.20x), validating the cross-architectural robustness of the Dynamic Chunking strategy in enhancing throughput.
 
-![][image7]  
-![][image8]  
-![][image9]
+![figure7](/images/blog/chunked-pipeline/ds_throughput.png)<small><center>Throughput Analysis of DeepSeek-V3.1</center></small>
+
+![figure8](/images/blog/chunked-pipeline/qwen_throughput.png)<small><center>Throughput Analysis of Qwen3-235B-A22B-FP8</center></small>
+
+![figure9](/images/blog/chunked-pipeline/normalized_throughput.png)<small><center>Normalized Total Throughput vs. PP Size Analysis</center></small>
+
 
 The Scale Efficiency curves illustrate the degradation of hardware utilization as the system scales. All configurations exhibit a monotonic decay in efficiency as PP size (GPU counts) increases. However, **Qwen DCK 18K** maintains a superior efficiency of **77%** at the PP8 scale, whereas the static 6K configuration drops to **70%**. This confirms that larger, dynamically managed chunks are more resilient to the communication overheads inherent in large-scale distributed inference. Due to resource constraints, DeepSeek-V3.1 was evaluated up to PP size \= 4, maintaining an efficiency of \~81.7%. Extrapolating the current slope suggests that DeepSeek would likely follow a similar efficiency trajectory to Qwen, where DCK is projected to outperform the fixed chunking strategy.
 
-![][image10]
+![figure10](/images/blog/chunked-pipeline/scale_efficiency.png)<small><center>Scale Efficiency vs. PP Size Analysis</center></small>
 
 ### **Reduced TTFT and Scaling Out for 1 million ITL**
 
@@ -117,9 +118,9 @@ A critical observation from the experimental data is the performance degradation
 
 Furthermore, increasing the pipeline depth from PP1 to PP4 can yield a substantial reduction in TTFT for both the fixed chunked setting and dynamic chunking. But dynamic chunking performs better for different PP setups. For the Qwen3-235B-A22B-FP8, the baseline TTFT of **\~55.5s** (PP1 TP4) is reduced to **\~10.5s** under the PP8 TP4 configuration, representing a latency improvement of approximately **81.1%**. And for the DeepSeek-V3.1, the baseline TTFT of **\~48.5s** (PP1 TP8) is reduced to **\~15.7s** under the PP4 TP8 configuration, depicting a latency improvement of approximately **67.6%**. These results indicate that Chunked Pipeline Parallelism is highly effective for reducing TTFT.
 
-**![][image11]**
+![figure11](/images/blog/chunked-pipeline/ds_ttft.png)<small><center>TTFT Analysis of DeepSeek-V3.1</center></small>
 
-**![][image12]**
+![figure12](/images/blog/chunked-pipeline/qwen_ttft.png)<small><center>TTFT Analysis of Qwen3-235B-A22B-FP8</center></small>
 
 To demonstrate the scalability of SGLang with this optimized Chunked Pipeline Parallelism, we benchmarked the TTFT across varying input token lengths for Qwen3-235B-A22B-FP8 with PP8 (32 NVIDIA H20 GPUs). As shown in the table below, the system efficiently scales to handle massive contexts. Even at the extreme edge of **1 million tokens**, SGLang maintains high stability and acceptable latency on NVIDIA H20, showcasing its capability for the most demanding long-context applications.
 
@@ -134,6 +135,10 @@ To demonstrate the scalability of SGLang with this optimized Chunked Pipeline Pa
 </div>
 
 We invite the community to try out this new feature across diverse hardware configurations. Please share your performance findings and report any bugs you encounter. We’d love to hear from you—feel free to drop any questions in the issue of the [PP Roadmap](https://github.com/sgl-project/sglang/issues/11857). Your feedback is crucial in helping us refine these long-context optimizations!
+
+<div style="border-left: 4px solid #3b82f6; padding: 10px 12px; margin: 12px 0; background: #eff6ff; border-radius: 8px;">
+  <strong>👉 Check out the <a href="https://github.com/sgl-project/sglang/issues/11857">Roadmap</a>.</strong>
+</div>
 
 ## **Getting Started**
 
