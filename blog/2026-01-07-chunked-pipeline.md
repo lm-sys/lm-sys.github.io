@@ -17,7 +17,7 @@ Empirical benchmarks demonstrate that SGLang’s PP implementation achieves indu
 
 In a traditional Pipeline Parallelism setup, the model layers are partitioned across GPUs (Stage 1 to Stage N). When serving standard requests (e.g., < 4K tokens), it normally works well. However, when processing a prompt exceeding **128K or even 1M tokens**, two critical issues emerge:
 
-1. **The Pipeline Bubble:** Processing prompts as monolithic batches forces downstream GPUs into prolonged idle states, creating massive 'pipeline bubbles' that severely degrade throughput.  
+1. **The Pipeline Bubble:** Processing prompts as monolithic batches forces downstream GPUs into prolonged idle states, creating massive 'pipeline bubbles' that severely degrade throughput.
 2. **The Memory Wall:** Processing a 1-million-token prompt in a single pass requires storing and communicating intermediate hidden states for the entire sequence, resulting in significant overhead and peak memory footprint.
 
 ## **The SGLang Pipeline Parallelism Architecture**
@@ -36,12 +36,12 @@ Although combining Pipeline Parallelism and Chunked Prefill can significantly re
 
 The key mechanisms of the implementation include:
 
-* **Decoupled Sync/Async Logic in the Event Loop:** The scheduler uses `async_send` in `_pp_send_pyobj_to_next_stage`. Instead of waiting for a transfer to complete, it returns a `P2PWork` handle. The actual synchronization (`work.wait()`) is deferred until `_pp_commit_comm_work` is called, allowing the CPU to perform other work—like scheduling the next batch or processing metadata—while data is in flight.  
+* **Decoupled Sync/Async Logic in the Event Loop:** The scheduler uses `async_send` in `_pp_send_pyobj_to_next_stage`. Instead of waiting for a transfer to complete, it returns a `P2PWork` handle. The actual synchronization (`P2PWork.work.wait()`) is deferred until `_pp_commit_comm_work` is called, allowing the CPU to perform other work—like scheduling the next batch or processing metadata—while data is in flight.
 * **Multi-Stream Execution:** In addition to the main `default_stream`, which serves as the synchronization stream, SGLang utilizes dedicated `forward_stream` and `copy_stream` to execute forward pass GPU computation and Data-to-Host (D2H) memory transfers separately for better overlapping. While `_pp_launch_batch` is executing the current micro-batch on the GPU for the current stage, the CPU prepares the next micro-batch's results using `_pp_process_batch_result`.
 
 ### **3\. Advanced Option: Dynamic chunking**
 
-With Chunked Pipeline Parallelism and Async P2P communication, SGLang already achieves over 80% scale efficiency as the PP size increases to 4. However, Chunked prefill with a fixed size can still cause bubbles in the pipeline, and this inefficiency becomes more pronounced as the PP degree increases. The main reason behind this phenomenon is that the model exhibits non-uniform execution latency across chunks of identical size, primarily due to the incremental nature of self-attention. **As the prefix sequence length grows, the per-chunk processing time increases non-linearly. These timing mismatches propagate through the pipeline, compounding efficiency losses at higher PP ranks.**  
+With Chunked Pipeline Parallelism and Async P2P communication, SGLang already achieves over 80% scale efficiency as the PP size increases to 4. However, Chunked prefill with a fixed size can still cause bubbles in the pipeline, and this inefficiency becomes more pronounced as the PP degree increases. The main reason behind this phenomenon is that the model exhibits non-uniform execution latency across chunks of identical size, primarily due to the incremental nature of self-attention. **As the prefix sequence length grows, the per-chunk processing time increases non-linearly. These timing mismatches propagate through the pipeline, compounding efficiency losses at higher PP ranks.**
 
 ![figure1](/images/blog/chunked_pipeline/pp_bubbles_before.jpg)<center>Fig. 1: Pipeline diagram with fixed chunked prefill size</center>
 
@@ -83,8 +83,8 @@ To validate the effectiveness of these combined strategies, we profiled the exec
 
 A unique strength of SGLang is its native support for **Prefill-Decode (PD) Disaggregation** within a pipelined setup. In a disaggregated cluster, the prefill nodes can use a high degree of PP to handle extremely long-context prompts, while the decode nodes can utilize a different parallelism strategy (like high-degree TP) to maximize token-generation speed.
 
-* **Chunk by Chunk KVCache Transfer:** Instead of waiting for all chunks to be completed, SGLang supports transfer engine backends like mooncake, which can transfer the KVCache of one chunk from the prefill node to the decode node immediately when PD Disaggregation is enabled. This feature greatly reduces the KVCache transfer overhead.  
-* **Flexible Hybrid Strategies:** SGLang allows users to mix and utilize multiple parallelisms with PD Disaggregation. You can run PP8 TP8 for heavy prefill tasks on one set of nodes for prefill and switch to other combinations, such as DP8 TP1, PP1 TP8, and PP8 TP1, for high-throughput decoding, optimizing for different phases of the inference lifecycle. This allows users to meet the expected Time To First Token (TTFT) and TPOT targets for production in a highly customizable way.  
+* **Chunk by Chunk KVCache Transfer:** Instead of waiting for all chunks to be completed, SGLang supports transfer engine backends like mooncake, which can transfer the KVCache of one chunk from the prefill node to the decode node immediately when PD Disaggregation is enabled. This feature greatly reduces the KVCache transfer overhead.
+* **Flexible Hybrid Strategies:** SGLang allows users to mix and utilize multiple parallelisms with PD Disaggregation. You can run PP8 TP8 for heavy prefill tasks on one set of nodes for prefill and switch to other combinations, such as DP8 TP1, PP1 TP8, and PP8 TP1, for high-throughput decoding, optimizing for different phases of the inference lifecycle. This allows users to meet the expected Time To First Token (TTFT) and TPOT targets for production in a highly customizable way.
 * **Memory Efficiency:** By distributing model weights across devices, PP reduces the per-GPU memory footprint, allowing for larger KV caches and higher concurrency. Therefore, it can be used to scale the max context length in some cases.
 
 When handling contexts exceeding 128K tokens, SGLang also supports Chunked Pipeline Parallelism (CPP) with **HiCache,** a distributed hierarchical KV cache system to further reduce the TTFT of multi-turn QA and agentic applications for ultra-long initial ITL:
@@ -103,7 +103,7 @@ Note: We use DCK to mark the chunked prefill size setup when enabling the dynami
 
 The analysis of Throughput and PP size demonstrates strong horizontal scalability across both model families, though the degree of efficiency varies by configuration.
 
-* **Superior Scalability of DCK**: The **Qwen DCK 18K** configuration exhibits the highest scalability, achieving a speedup factor of **6.14x** on a 32-GPUs (PP8) cluster. This performance suggests that the dynamic adjustment of chunk sizes optimizes the balance between computational intensity and inter-node communication latency.  
+* **Superior Scalability of DCK**: The **Qwen DCK 18K** configuration exhibits the highest scalability, achieving a speedup factor of **6.14x** on a 32-GPUs (PP8) cluster. This performance suggests that the dynamic adjustment of chunk sizes optimizes the balance between computational intensity and inter-node communication latency.
 * **Architectural Comparison**: DeepSeek models demonstrate comparable scaling trajectories to Qwen up to the PP4 threshold. Notably, the **DeepSeek DCK 12K** (3.27x) marginally outperforms the static 4K variant (3.20x), validating the cross-architectural robustness of the Dynamic Chunking strategy in enhancing throughput.
 
 ![figure7](/images/blog/chunked_pipeline/ds_throughput.png)<center>Fig. 7: Throughput Analysis of DeepSeek-V3.1</center>
@@ -202,9 +202,9 @@ python3 -m sglang.launch_server \
 
 We are continuously refining the PP stack. Our 2026 H1 PP Roadmap includes these important tasks:
 
-* Compatibility with Context Parallelism to further reduce TTFT  
-* Pipeline Parallelism for the Decode side   
-  * Performance Optimization and best practice tuning  
+* Compatibility with Context Parallelism to further reduce TTFT
+* Pipeline Parallelism for the Decode side 
+  * Performance Optimization and best practice tuning
 * Better fitting and chunking strategy for dynamic chunking
 
 ## **Conclusion**
@@ -219,6 +219,6 @@ SGLang’s implementation of Pipeline Parallelism is more than just model splitt
 
 ## **Reference**
 
-[1] Qin, Ruoyu, et al. "Mooncake: A kvcache-centric disaggregated architecture for llm serving." ACM Transactions on Storage (2024).  
-[2] Yang, An, et al. "Qwen2. 5-1m technical report." arXiv preprint arXiv:2501.15383 (2025).  
+[1] Qin, Ruoyu, et al. "Mooncake: A kvcache-centric disaggregated architecture for llm serving." ACM Transactions on Storage (2024).
+[2] Yang, An, et al. "Qwen2. 5-1m technical report." arXiv preprint arXiv:2501.15383 (2025).
 [3] Li, Zhuohan, et al. "Terapipe: Token-level pipeline parallelism for training large-scale language models." International Conference on Machine Learning. PMLR, 2021.
