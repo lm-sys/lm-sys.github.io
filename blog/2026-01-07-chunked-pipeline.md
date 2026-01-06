@@ -13,6 +13,10 @@ Drawing inspiration from both open-source innovations and academic research, SGL
 
 Empirical benchmarks demonstrate that SGLang’s PP implementation achieves industry-leading performance. In large-scale deployments, it maintains **over 80% scaling efficiency for various model architectures while scaling out to PP4**, and it also delivers **up to an 81% reduction in TTFT for ultra-long prompts when deploying Qwen3-235B-A22B-FP8 on H20 with PP8**.
 
+<div style="border-left: 4px solid #3b82f6; padding: 10px 12px; margin: 12px 0; background: #eff6ff; border-radius: 8px;">
+  <strong>👉 Check out the <a href="https://github.com/sgl-project/sglang/issues/11857">PP Roadmap</a>.</strong>
+</div>
+
 ## **The Challenge: The "Bubble" and The "Wall"**
 
 In a traditional Pipeline Parallelism setup, the model layers are partitioned across GPUs (Stage 1 to Stage N). When serving standard requests (e.g., < 4K tokens), it normally works well. However, when processing a prompt exceeding **128K or even 1M tokens**, two critical issues emerge:
@@ -103,8 +107,8 @@ Note: We use DCK to mark the chunked prefill size setup when enabling the dynami
 
 The analysis of Throughput and PP size demonstrates strong horizontal scalability across both model families, though the degree of efficiency varies by configuration.
 
-* **Superior Scalability of DCK**: The **Qwen DCK 18K** configuration exhibits the highest scalability, achieving a speedup factor of **6.14x** on a 32-GPUs (PP8) cluster. This performance suggests that the dynamic adjustment of chunk sizes optimizes the balance between computational intensity and inter-node communication latency.
-* **Architectural Comparison**: DeepSeek models demonstrate comparable scaling trajectories to Qwen up to the PP4 threshold. Notably, the **DeepSeek DCK 12K** (3.27x) marginally outperforms the static 4K variant (3.20x), validating the cross-architectural robustness of the Dynamic Chunking strategy in enhancing throughput.
+* **Superior Scalability of DCK**: The **Qwen DCK 18K** configuration exhibits the highest scalability, achieving a speedup factor of **6.14×** on a 32-GPUs (PP8) cluster. This performance suggests that the dynamic adjustment of chunk sizes optimizes the balance between computational intensity and inter-node communication latency.
+* **Architectural Comparison**: DeepSeek models demonstrate comparable scaling trajectories to Qwen up to the PP4 threshold. Notably, the **DeepSeek DCK 12K (3.27×)** marginally outperforms the static 4K variant (3.20×), validating the cross-architectural robustness of the Dynamic Chunking strategy in enhancing throughput.
 
 ![figure7](/images/blog/chunked_pipeline/ds_throughput.png)<center>Fig. 7: Throughput Analysis of DeepSeek-V3.1</center>
 
@@ -129,6 +133,7 @@ Furthermore, increasing the pipeline depth from PP1 to PP4 can yield a substanti
 
 To demonstrate the scalability of SGLang with this optimized Chunked Pipeline Parallelism, we benchmarked the TTFT across varying input token lengths for Qwen3-235B-A22B-FP8 with PP8 (32 NVIDIA H20 GPUs). As shown in the table below, the system efficiently scales to handle massive contexts. Even at the extreme edge of **1 million tokens**, SGLang maintains high stability and acceptable latency on NVIDIA H20, showcasing its capability for the most demanding long-context applications.
 
+<br>
 <center>Table 1: TTFT vs. Input Token length for Qwen3-235B-A22B-FP8 with PP8 TP4 on H20</center>
 <div align="center">
 
@@ -137,12 +142,9 @@ To demonstrate the scalability of SGLang with this optimized Chunked Pipeline Pa
 | TTFT (s) | 10.54 | 32.68 | 114.33 | 420.91 |
 
 </div>
+<br>
 
 We invite the community to try out this new feature across diverse hardware configurations. Please share your performance findings and report any bugs you encounter. We’d love to hear from you—feel free to drop any questions in the issue of the [PP Roadmap](https://github.com/sgl-project/sglang/issues/11857). Your feedback is crucial in helping us refine these long-context optimizations!
-
-<div style="border-left: 4px solid #3b82f6; padding: 10px 12px; margin: 12px 0; background: #eff6ff; border-radius: 8px;">
-  <strong>👉 Check out the <a href="https://github.com/sgl-project/sglang/issues/11857">Roadmap</a>.</strong>
-</div>
 
 ## **Getting Started**
 
@@ -206,6 +208,10 @@ We are continuously refining the PP stack. Our 2026 H1 PP Roadmap includes these
 * Pipeline Parallelism for the Decode side 
   * Performance Optimization and best practice tuning
 * Better fitting and chunking strategy for dynamic chunking
+
+<div style="border-left: 4px solid #3b82f6; padding: 10px 12px; margin: 12px 0; background: #eff6ff; border-radius: 8px;">
+  <strong>👉 Check out the <a href="https://github.com/sgl-project/sglang/issues/11857">PP Roadmap</a>.</strong>
+</div>
 
 ## **Conclusion**
 
