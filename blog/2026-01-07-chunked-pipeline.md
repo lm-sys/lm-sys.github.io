@@ -45,7 +45,7 @@ The key mechanisms of the implementation include:
 
 ### **3\. Advanced Option: Dynamic chunking**
 
-With Chunked Pipeline Parallelism and Async P2P communication, SGLang already achieves over 80% scale efficiency as the PP size increases to 4. However, Chunked prefill with a fixed size can still cause bubbles in the pipeline, and this inefficiency becomes more pronounced as the PP degree increases. The main reason behind this phenomenon is that the model exhibits non-uniform execution latency across chunks of identical size, primarily due to the incremental nature of self-attention. **As the prefix sequence length grows, the per-chunk processing time increases non-linearly. These timing mismatches propagate through the pipeline, compounding efficiency losses at higher PP ranks.**
+With Chunked Pipeline Parallelism and Async P2P communication, SGLang already achieves over 80% strong scaling efficiency as the PP size increases to 4. However, Chunked prefill with a fixed size can still cause bubbles in the pipeline, and this inefficiency becomes more pronounced as the PP degree increases. The main reason behind this phenomenon is that the model exhibits non-uniform execution latency across chunks of identical size, primarily due to the incremental nature of self-attention. **As the prefix sequence length grows, the per-chunk processing time increases non-linearly. These timing mismatches propagate through the pipeline, compounding efficiency losses at higher PP ranks.**
 
 ![figure1](/images/blog/chunked_pipeline/pp_bubbles_before.jpg)<center>Fig. 1: Pipeline diagram with fixed chunked prefill size</center>
 
@@ -103,7 +103,7 @@ Our experimental testbed is a small cluster of 6 H20 nodes (8 × 96GB VRAM GPUs)
 
 Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking.
 
-### **Input Token Throughput and Scale Efficiency**
+### **Input Token Throughput and Strong Scaling Efficiency**
 
 The analysis of Throughput and PP size demonstrates strong horizontal scalability across both model families, though the degree of efficiency varies by configuration.
 
@@ -114,12 +114,9 @@ The analysis of Throughput and PP size demonstrates strong horizontal scalabilit
 
 ![figure8](/images/blog/chunked_pipeline/qwen_throughput.png)<center>Fig. 8: Throughput Analysis of Qwen3-235B-A22B-FP8</center>
 
-![figure9](/images/blog/chunked_pipeline/normalized_throughput.png)<center>Fig. 9: Normalized Total Throughput vs. PP Size Analysis</center>
+The Strong Scaling Efficiency curves illustrate the degradation of hardware utilization as the system scales. All configurations exhibit a monotonic decay in efficiency as PP size (GPU counts) increases. However, **Qwen DCK 18K** maintains a superior efficiency of **77%** at the PP8 scale, whereas the static 6K configuration drops to **70%**. This confirms that larger, dynamically managed chunks are more resilient to the communication overheads inherent in large-scale distributed inference. Due to resource constraints, DeepSeek-V3.1 was evaluated up to PP size \= 4, maintaining an efficiency of **\~81.7%**. Extrapolating the current slope suggests that DeepSeek would likely follow a similar efficiency trajectory to Qwen, where DCK is projected to outperform the fixed chunking strategy.
 
-
-The Scale Efficiency curves illustrate the degradation of hardware utilization as the system scales. All configurations exhibit a monotonic decay in efficiency as PP size (GPU counts) increases. However, **Qwen DCK 18K** maintains a superior efficiency of **77%** at the PP8 scale, whereas the static 6K configuration drops to **70%**. This confirms that larger, dynamically managed chunks are more resilient to the communication overheads inherent in large-scale distributed inference. Due to resource constraints, DeepSeek-V3.1 was evaluated up to PP size \= 4, maintaining an efficiency of **\~81.7%**. Extrapolating the current slope suggests that DeepSeek would likely follow a similar efficiency trajectory to Qwen, where DCK is projected to outperform the fixed chunking strategy.
-
-![figure10](/images/blog/chunked_pipeline/scale_efficiency.png)<center>Fig. 10: Scale Efficiency vs. PP Size Analysis</center>
+![figure9](/images/blog/chunked_pipeline/scale_efficiency.png)<center>Fig. 9: Strong Scaling Efficiency vs. PP Size Analysis</center>
 
 ### **Reduced TTFT and Scaling Out for 1 million ITL**
 
@@ -127,9 +124,9 @@ A critical observation from the experimental data is the performance degradation
 
 Furthermore, increasing the pipeline depth from PP1 to PP4 can yield a substantial reduction in TTFT for both the fixed chunked setting and dynamic chunking. But dynamic chunking performs better for different PP setups. For the Qwen3-235B-A22B-FP8, the baseline TTFT of **\~55.5s** (PP1 TP4) is reduced to **\~10.5s** under the PP8 TP4 configuration, representing a latency improvement of approximately **81.1%**. And for the DeepSeek-V3.1, the baseline TTFT of **\~48.5s** (PP1 TP8) is reduced to **\~15.7s** under the PP4 TP8 configuration, depicting a latency improvement of approximately **67.6%**. These results indicate that Chunked Pipeline Parallelism is highly effective for reducing TTFT.
 
-![figure11](/images/blog/chunked_pipeline/ds_ttft.png)<center>Fig. 11: TTFT Analysis of DeepSeek-V3.1</center>
+![figure10](/images/blog/chunked_pipeline/ds_ttft.png)<center>Fig. 10: TTFT Analysis of DeepSeek-V3.1</center>
 
-![figure12](/images/blog/chunked_pipeline/qwen_ttft.png)<center>Fig. 12: TTFT Analysis of Qwen3-235B-A22B-FP8</center>
+![figure11](/images/blog/chunked_pipeline/qwen_ttft.png)<center>Fig. 11: TTFT Analysis of Qwen3-235B-A22B-FP8</center>
 
 To demonstrate the scalability of SGLang with this optimized Chunked Pipeline Parallelism, we benchmarked the TTFT across varying input token lengths for Qwen3-235B-A22B-FP8 with PP8 (32 NVIDIA H20 GPUs). As shown in the table below, the system efficiently scales to handle massive contexts. Even at the extreme edge of **1 million tokens**, SGLang maintains high stability and acceptable latency on NVIDIA H20, showcasing its capability for the most demanding long-context applications.
 
