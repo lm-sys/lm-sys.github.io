@@ -2,7 +2,7 @@
 title: "Pipeline Parallelism in SGLang: Scaling to Million-Token Contexts and Beyond"
 author: "Shangming Cai"
 date: "January 8, 2026"
-previewImg: /images/blog/chunked_pipeline/preview_cpp.jpg
+previewImg: /images/blog/chunked_pipeline/preview_cpp.png
 ---
 
 ## **TL;DR**
