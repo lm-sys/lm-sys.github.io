@@ -2,7 +2,7 @@
 title: "Pipeline Parallelism in SGLang: Scaling to Million-Token Contexts and Beyond"
 author: "Shangming Cai"
 date: "January 8, 2026"
-previewImg: /images/blog/chunked_pipeline/preview_cpp.png
+previewImg: /images/blog/chunked_pipeline/preview_cpp.jpg
 ---
 
 ## **TL;DR**
@@ -17,6 +17,51 @@ Empirical benchmarks demonstrate that SGLang’s PP implementation achieves indu
   <strong>👉 Check out the <a href="https://github.com/sgl-project/sglang/issues/11857">PP Roadmap</a>.</strong>
 </div>
 
+
+## **Background: Why Pipeline Parallelism?**
+
+To validate the necessity of Pipeline Parallelism (PP) for long-context prefill, it is essential to evaluate it against existing paradigms—specifically Tensor Parallelism (TP) and Context Parallelism (CP). While TP and (Context Parallelism) CP offer distinct advantages, a theoretical and empirical decomposition of their communication volumes, bubble ratios, and implementation complexities reveals that PP occupies a unique, optimal position for multi-node scaling. The following analysis outlines the specific trade-offs inherent to each method.
+
+### **1. Communication Complexity and Scalability Analysis**
+The primary bottleneck in distributed inference scaling is inter-device communication. As model depth and sequence length increase, the volume of data transmitted between devices becomes a limiting factor, especially while scaling to large-scale and multi-node deployments.
+
+Assuming $S$ stands for the total sequence length, $H$ for the Hidden State dimension, $B$ for the Batch Size (often 1 for ultra-long context inference), $M$ for the Micro-batches size, and the activation precision is FP8 (1 byte). Based on this, we analyzed the communication volume per layer of different parallel methods. 
+
+* **TP:** TP splits individual weight tensors across multiple devices within a single layer. Due to this, TP incurs high communication overhead due to the necessity of synchronization after both the Attention Block and MLP Block. The communication volume also scales linearly with the number of layers. This frequent **All-Reduce** synchronization makes TP bandwidth-bound, limiting its scalability across large clusters.
+$$Comm\thinspace Volume({TP}) \approx 4 \cdot B \cdot S \cdot H \cdot \text{bytes}$$
+(Note: Each All-Reduce involves $2 \times$ the data size in a ring-based implementation.)
+* **CP:** Similarly, CP requires extensive synchronization communication to aggregate Key-Value (KV) states across devices. Typically, CP utilizes **All-Gather** at every layer, resulting in significant latency penalties in bandwidth-constrained environments.
+$$Comm\thinspace Volume({CP}) \approx 2*(CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot H_{KV} \right) \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot \text{bytes}$$
+* **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **point-to-point (P2P)** primitives rather than collective operations. Crucially, this communication volume is independent of the number of layers within a stage, allowing PP to scale efficiently to a large number of nodes with minimal bandwidth saturation.
+$$Comm\thinspace Volume({PP}) \approx M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot \text{bytes} = B \cdot S \cdot H \cdot \text{bytes}$$
+
+### **2. The Bubble Ratio Trade-off**
+While PP optimizes communication, it introduces pipeline bubbles—idle periods where devices wait for data dependencies. This presents a trade-off between communication efficiency and device utilization.
+* **TP and CP:** Both methods achieve a zero bubble ratio theoretically, as all devices compute simultaneously on different parts of the same tensor or sequence. This maximizes arithmetic intensity, assuming communication does not stall computation.
+* **PP:** PP inevitably incurs a bubble ratio, quantified by the interaction between the Pipeline Depth ($P$) and the number of Micro-batches ($M$):
+$$
+\text{Bubble Ratio} = \frac{P - 1}{P - 1 + M}
+$$
+However, for long-context prefill scenarios where the workload is substantial ($M \gg P$), this ratio decreases significantly, rendering the efficiency loss negligible compared to the communication gains. In the [**Performance Impact**](#performance-impact) section, we will evaluate the **Strong Scaling Efficiency** (i.e., the number of processors is increased while the problem size remains constant) of our PP implementation.
+
+### **3. Implementation Complexity and Architectural Generality**
+The implementation complexity and architectural generality of a new feature are critical factors for a modern inference system, especially for an open-source project.
+
+* **TP:** TP is easy to implement and widely supported. However, large-scale TP configurations are inherently inapplicable, as the granularity required for the quantization block sometimes cannot be aligned with the partitioning constraints imposed by MoE FFN weights. Consequently, even disregarding communication volume and overhead, larger TP is already precluded in multi-node scaling scenarios due to this incompatibility with quantization, which is a critical and indispensable optimization technique.
+* **CP:** CP is complex, which requires specific, often intrusive modifications to the attention mechanism (e.g., Ring Attention). These changes must be tailored for every attention variant and specific model, reducing generality.
+* **PP:** PP represents a medium complexity. It requires partitioning the model but remains agnostic to the internal mechanics of the layers. This makes PP a general-purpose solution applicable to all model architectures without requiring kernel-level rewrites for specific attention variants. To some extent, eliminating PP bubbles is more difficult than implementing PP itself.
+
+| Metric | Tensor Parallelism (TP) | Context Parallelism (CP) | Pipeline Parallelism (PP) |
+| :---: | :---: | :---: | :---: |
+| **Split Dimension** | Hidden State ($H$) | Sequence ($S$) | Layer ($L$) |
+| **Communication Pattern** | AllReduce (Per Layer) | AllGather (Per Layer) | P2P (Send/Recv) |
+| **Communication Volume** | High | Medium | **Low** |
+| **Bubble Ratio** | 0 | 0 | $\frac{P - 1}{P - 1 + M}$ |
+| **Implementation Complexity** | Low | High<br>(Attention-variant specific) | Medium |
+| **Architectural Generality** | Medium | Low | **High** |
+
+In conclusion, the balance of the generality and scaling efficiency makes PP not merely an alternative, but a **necessary component** for scaling long-context prefill to massive, multi-node clusters where TP and CP encounter bandwidth ceilings. In the meantime, CP has the potential to supplement TP for intra-node scaling and acceleration. **PP × CP** is already under development ([Future Roadmap](#future-roadmap)), which will be included in Part II of this blog.
+
 ## **The Challenge: The "Bubble" and The "Wall"**
 
 In a traditional Pipeline Parallelism setup, the model layers are partitioned across GPUs (Stage 1 to Stage N). When serving standard requests (e.g., < 4K tokens), it normally works well. However, when processing a prompt exceeding **128K or even 1M tokens**, two critical issues emerge:
@@ -30,7 +75,7 @@ SGLang’s pipeline implementation goes beyond the standard "sequential" approac
 
 ### **1\. Chunked Pipeline Parallelism (CPP)**
 
-Processing a 1-million-token prompt in a single forward pass would lead to massive bubbles as later stages wait for the first stage to finish. Inspired by architectures like Mooncake[\[1\]](https://dl.acm.org/doi/pdf/10.1145/3773772), BladeLLM[\[2\]](https://arxiv.org/pdf/2501.15383?), and TeraPipe[\[3\]](http://proceedings.mlr.press/v139/li21y/li21y.pdf), SGLang supports Chunked Pipeline Parallelism. Instead of feeding the full prompt into the pipeline, SGLang partitions the prompt into smaller "chunks" (e.g., 4k or 6k tokens). These chunks flow through the pipeline stages like micro-batches. By breaking long prompts into smaller chunks, the system can "pipeline" the prefill phase. As soon as the first stage finishes computing the hidden states for Chunk 1 and initiates PP communication, it immediately moves to processing Chunk 2, while Stage 2 simultaneously begins processing Chunk 1. This reduces the pipeline startup latency from being proportional to the total sequence length to being proportional only to the first chunk size.
+Processing a 1-million-token prompt in a single forward pass would lead to massive bubbles as later stages wait for the first stage to finish. Inspired by architectures like Mooncake[\[1\]](https://dl.acm.org/doi/pdf/10.1145/3773772), BladeLLM[\[2\]](https://arxiv.org/pdf/2501.15383?), and TeraPipe[\[3\]](http://proceedings.mlr.press/v139/li21y/li21y.pdf), SGLang supports Chunked Pipeline Parallelism. Instead of feeding the full prompt into the pipeline, SGLang partitions the prompt into smaller "chunks" (e.g., 4K or 6K tokens). These chunks flow through the pipeline stages like micro-batches. By breaking long prompts into smaller chunks, the system can "pipeline" the prefill phase. As soon as the first stage finishes computing the hidden states for Chunk 1 and initiates PP communication, it immediately moves to processing Chunk 2, while Stage 2 simultaneously begins processing Chunk 1. This reduces the pipeline startup latency from being proportional to the total sequence length to being proportional only to the first chunk size.
 
 This approach marks a critical first step from an engineering perspective to tackle the challenges of ultra-long contexts. Notably, SGLang pioneered the support for this feature more than six months ago, underscoring its long-standing commitment to optimizing real-world, long-context inference.
 
@@ -67,7 +112,7 @@ However, due to the variation in hardware, models, and target workloads, a stati
 **Tuning Guidance for Dynamic Chunked Prefill**
 
 * **Step 1 \- Iterate to find the optimal fixed chunked prefill size for the targeted PP size**: Different PP Sizes for targeted ITL may have different optimal chunked prefill sizes. Therefore, users should iterate to obtain the baseline according to the available resources for scaling.
-* **Step 2 \- Initial Chunk Size Selection for Dynamic Chunking**: Set the initial size to 2× or 3× the optimal fixed prefill size. This reduces the total number of chunks and prevents "tail chunks" from underutilizing hardware. To maintain efficiency for extremely large Input Token Lengths (ITL), the dynamic predictor automatically ensures subsequent chunks are at least 1/4 of this initial size. In addition, it is recommended to use a larger initial chunk size (e.g., 4× the optimal fixed prefill size) for such cases as well.
+* **Step 2 \- Initial Chunk Size Selection for Dynamic Chunking**: Set the initial size to 2× or 3× the optimal fixed chunked prefill size. This reduces the total number of chunks and prevents "tail chunks" from underutilizing hardware. To maintain efficiency for extremely large Input Token Lengths (ITL), the dynamic predictor automatically ensures subsequent chunks are at least 1/4 of this initial size. In addition, it is recommended to use a larger initial chunk size (e.g., 4× the optimal fixed chunked prefill size) for such cases as well.
 * **Step 3 \- Smooth Factor Adjustment**: This factor controls how strictly the chunk size follows the quadratic prediction model.
   * 1.0: Follows the model strictly.
   * 0.6 – 0.85 (Recommended)**: General range for the best balance between dynamic scaling and hardware stability. Through experiments, we find that a range between 0.6 and 0.85 typically yields the best performance for dynamic chunking.
@@ -91,7 +136,7 @@ A unique strength of SGLang is its native support for **Prefill-Decode (PD) Disa
 * **Flexible Hybrid Strategies:** SGLang allows users to mix and utilize multiple parallelisms with PD Disaggregation. You can run PP8 TP8 for heavy prefill tasks on one set of nodes for prefill and switch to other combinations, such as DP8 TP1, PP1 TP8, and PP8 TP1, for high-throughput decoding, optimizing for different phases of the inference lifecycle. This allows users to meet the expected Time To First Token (TTFT) and TPOT targets for production in a highly customizable way.
 * **Memory Efficiency:** By distributing model weights across devices, PP reduces the per-GPU memory footprint, allowing for larger KV caches and higher concurrency. Therefore, it can be used to scale the max context length in some cases.
 
-When handling contexts exceeding 128K tokens, SGLang also supports Chunked Pipeline Parallelism (CPP) with **HiCache,** a distributed hierarchical KV cache system to further reduce the TTFT of multi-turn QA and agentic applications for ultra-long initial ITL:
+When handling contexts exceeding 128K tokens, SGLang also supports Chunked Pipeline Parallelism with **HiCache,** a distributed hierarchical KV cache system to further reduce the TTFT of multi-turn QA and agentic applications for ultra-long initial ITL:
 
 * **Semantic Prefix Matching:** SGLang’s HiCache uses a radix-tree-based hierarchy to match prefixes at the chunk level. When a long-context request arrives, SGLang can perform a Hierarchical Cache Look-up. If the prefix tokens (processed in previous chunks) are already cached in the HiCache "Storage" layer (e.g., host memory or local disk), the PP pipeline can skip those chunks entirely, drastically reducing TTFT.
 
@@ -101,7 +146,7 @@ This section provides a rigorous quantitative evaluation of the PP performance c
 
 Our experimental testbed is a small cluster of 6 H20 nodes (8 × 96GB VRAM GPUs). Due to limited testing resources, experiments with a PP degree of 8 for DeepSeek-V3.1 are not conducted. Additionally, for the PP size \= 1 configuration of DeepSeek-V3.1, we used a standalone H20 node (8 × 141GB VRAM GPUs) to obtain the baseline performance for an input token length of 128 K. To better verify the throughput performance when the pipeline is saturated, we benchmarked and measured the average of 16 consecutive requests during the throughput test.
 
-Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis.
+Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek V3.1 with TP32 and Qwen with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight.
 
 ### **Input Token Throughput and Strong Scaling Efficiency**
 
