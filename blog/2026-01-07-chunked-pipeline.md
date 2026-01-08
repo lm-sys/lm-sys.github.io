@@ -32,8 +32,10 @@ $$\text{Commu Volume}({TP}) = 2 \cdot \text{All-Reduce}({TP}) \approx 4 \cdot B 
 (Note: Each All-Reduce involves $2 \times$ the data size in a ring-based implementation.)
 * **CP:** Similarly, CP requires extensive synchronization communication to aggregate Key-Value (KV) states across devices. Typically, CP utilizes **All-Gather** at every layer, resulting in significant latency penalties in bandwidth-constrained environments.
 $$\text{Commu Volume}({CP}) = 2 \cdot (CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot H_{KV} \right)  \cdot L \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot L \cdot \text{bytes}$$
-* **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **Point-to-Point (P2P)** primitives rather than collective operations. Crucially, this communication volume is independent of the number of layers within a stage, allowing PP to scale efficiently to a large number of nodes with minimal bandwidth saturation. Assuming PP size equals $L$, we have:
-$$\text{Commu Volume}({PP}) = M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot (L-1) \cdot \text{bytes} \approx B \cdot S \cdot H \cdot L \cdot \text{bytes}$$
+(Note: In models utilizing GQA, $H_{KV}$ is smaller than $H$, which reduces CP's communication volume.)
+* **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **Point-to-Point (P2P)** primitives rather than collective operations. Since a stage typically contains multiple layers, the communication frequency is determined by the number of stages ($P$), not the total number of layers ($L$). Crucially, for a fixed model, as we increase the number of layers per stage, the communication volume remains constant at the boundaries.
+$$\text{Commu Volume}({PP}) = M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot (P-1) \cdot \text{bytes} = B \cdot S \cdot H \cdot (P-1) \cdot \text{bytes}$$
+(Note: In multi-node deployments where $P \ll L$, PP achieves a nearly order-of-magnitude reduction in total communication volume compared to TP.)
 
 ### **2. The Bubble Ratio Trade-off**
 While PP optimizes communication, it introduces pipeline bubbles—idle periods where devices wait for data dependencies. This presents a trade-off between communication efficiency and device utilization.
