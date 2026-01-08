@@ -22,7 +22,7 @@ Empirical benchmarks demonstrate that SGLang’s PP implementation achieves indu
 
 To validate the necessity of Pipeline Parallelism (PP) for long-context prefill, it is essential to evaluate it against existing paradigms—specifically Tensor Parallelism (TP) and Context Parallelism (CP). While TP and (Context Parallelism) CP offer distinct advantages, a theoretical and empirical decomposition of their communication volumes, bubble ratios, and implementation complexities reveals that PP occupies a unique, optimal position for multi-node scaling. The following analysis outlines the specific trade-offs inherent to each method.
 
-### **1. Communication Complexity and Scalability Analysis**
+### **1. Communication Volume and Scalability Analysis**
 The primary bottleneck in distributed inference scaling is inter-device communication. As model depth and sequence length increase, the volume of data transmitted between devices becomes a limiting factor, especially while scaling to large-scale and multi-node deployments.
 
 Assuming $S$ stands for the total sequence length, $H$ for the Hidden State dimension, $B$ for the Batch Size (often 1 for ultra-long context inference), $M$ for the Micro-batches size, and the activation precision is FP8 (1 byte). Based on this, we analyzed the communication volume **per layer** of different parallel methods.
