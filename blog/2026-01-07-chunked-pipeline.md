@@ -25,20 +25,20 @@ To validate the necessity of Pipeline Parallelism (PP) for long-context prefill,
 ### **1. Communication Volume and Scalability Analysis**
 The primary bottleneck in distributed inference scaling is inter-device communication. As model depth and sequence length increase, the volume of data transmitted between devices becomes a limiting factor, especially while scaling to large-scale and multi-node deployments.
 
-Assuming $S$ stands for the total sequence length, $H$ for the Hidden State dimension, $B$ for the Batch Size (often 1 for ultra-long context inference), $M$ for the Micro-batches size, and the activation precision is FP8 (1 byte). Based on this, we analyzed the communication volume **per layer** of different parallel methods.
+Assuming $B$ stands for the Batch Size (often 1 for ultra-long context inference), $S$ for the total Sequence Length, $H$ for the Hidden State dimension, $L$ for the total Layer Number, $M$ for the Micro-batches size, and the activation precision is FP8 (1 byte). Based on this, we analyzed the communication volume of different parallel methods.
 
 * **TP:** TP splits individual weight tensors across multiple devices within a single layer. Due to this, TP incurs high communication overhead due to the necessity of synchronization after both the Attention Block and MLP Block. The communication volume also scales linearly with the number of layers. This frequent **All-Reduce** synchronization makes TP bandwidth-bound, limiting its scalability across large clusters.
-$$\text{Commu Volume}({TP}) = 2 \cdot \text{All-Reduce}({TP}) \approx 4 \cdot B \cdot S \cdot H \cdot \text{bytes}$$
+$$\text{Commu Volume}({TP}) = 2 \cdot \text{All-Reduce}({TP}) \approx 4 \cdot B \cdot S \cdot H \cdot L \cdot \text{bytes}$$
 (Note: Each All-Reduce involves $2 \times$ the data size in a ring-based implementation.)
 * **CP:** Similarly, CP requires extensive synchronization communication to aggregate Key-Value (KV) states across devices. Typically, CP utilizes **All-Gather** at every layer, resulting in significant latency penalties in bandwidth-constrained environments.
-$$\text{Commu Volume}({CP}) \approx 2 \cdot (CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot H_{KV} \right) \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot \text{bytes}$$
-* **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **Point-to-Point (P2P)** primitives rather than collective operations. Crucially, this communication volume is independent of the number of layers within a stage, allowing PP to scale efficiently to a large number of nodes with minimal bandwidth saturation.
-$$\text{Commu Volume}({PP}) \approx M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot \text{bytes} = B \cdot S \cdot H \cdot \text{bytes}$$
+$$\text{Commu Volume}({CP}) = 2 \cdot (CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot H_{KV} \right)  \cdot L \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot L \cdot \text{bytes}$$
+* **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **Point-to-Point (P2P)** primitives rather than collective operations. Crucially, this communication volume is independent of the number of layers within a stage, allowing PP to scale efficiently to a large number of nodes with minimal bandwidth saturation. Assuming PP size equals to $L$, we have:
+$$\text{Commu Volume}({PP}) = M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot (L-1) \cdot \text{bytes} \approx B \cdot S \cdot H \cdot L \cdot \text{bytes}$$
 
 ### **2. The Bubble Ratio Trade-off**
 While PP optimizes communication, it introduces pipeline bubbles—idle periods where devices wait for data dependencies. This presents a trade-off between communication efficiency and device utilization.
 * **TP and CP:** Both methods achieve a zero bubble ratio theoretically, as all devices compute simultaneously on different parts of the same tensor or sequence. This maximizes arithmetic intensity, assuming communication does not stall computation.
-* **PP:** PP inevitably incurs a bubble ratio, quantified by the interaction between the Pipeline Depth ($P$) and the number of Micro-batches ($M$):
+* **PP:** PP inevitably incurs a bubble ratio, quantified by the interaction between the PP Size ($P$) and the number of Micro-batches ($M$):
 $$
 \text{Bubble Ratio} = \frac{P - 1}{P - 1 + M}
 $$
@@ -111,7 +111,7 @@ However, due to the variation in hardware, models, and target workloads, a stati
 
 **Tuning Guidance for Dynamic Chunked Prefill**
 
-* **Step 1 \- Iterate to find the optimal fixed chunked prefill size for the targeted PP size**: Different PP Sizes for targeted ITL may have different optimal chunked prefill sizes. Therefore, users should iterate to obtain the baseline according to the available resources for scaling.
+* **Step 1 \- Iterate to find the optimal fixed chunked prefill size for the targeted PP size**: Different PP sizes for targeted ITL may have different optimal chunked prefill sizes. Therefore, users should iterate to obtain the baseline according to the available resources for scaling.
 * **Step 2 \- Initial Chunk Size Selection for Dynamic Chunking**: Set the initial size to 2× or 3× the optimal fixed chunked prefill size. This reduces the total number of chunks and prevents "tail chunks" from underutilizing hardware. To maintain efficiency for extremely large Input Token Lengths (ITL), the dynamic predictor automatically ensures subsequent chunks are at least 1/4 of this initial size. In addition, it is recommended to use a larger initial chunk size (e.g., 4× the optimal fixed chunked prefill size) for such cases as well.
 * **Step 3 \- Smooth Factor Adjustment**: This factor controls how strictly the chunk size follows the quadratic prediction model.
   * 1.0: Follows the model strictly.
@@ -167,7 +167,7 @@ The Strong Scaling Efficiency curves illustrate the degradation of hardware util
 
 A critical observation from the experimental data is the performance degradation observed when scaling Tensor Parallelism (TP) to 16, compared to a hybrid Parallelism approach (PP2 TP8). Despite utilizing an identical aggregate GPU count, PP2 TP8 consistently outperforms PP1 TP16 in both throughput and latency metrics. This phenomenon can be attributed to the non-linear scaling of communication overheads in high-degree tensor parallelism.
 
-Furthermore, increasing the pipeline depth from PP1 to PP4 can yield a substantial reduction in TTFT for both the fixed chunked setting and dynamic chunking. But dynamic chunking performs better for different PP setups. For the Qwen3-235B-A22B-FP8, the baseline TTFT of **\~55.5s** (PP1 TP4) is reduced to **\~10.5s** under the PP8 TP4 configuration, representing a latency improvement of approximately **81.1%**. And for the DeepSeek-V3.1, the baseline TTFT of **\~48.5s** (PP1 TP8) is reduced to **\~15.7s** under the PP4 TP8 configuration, depicting a latency improvement of approximately **67.6%**. These results indicate that Chunked Pipeline Parallelism is highly effective for reducing TTFT.
+Furthermore, increasing the PP size from PP1 to PP4 can yield a substantial reduction in TTFT for both the fixed chunked setting and dynamic chunking. But dynamic chunking performs better for different PP setups. For the Qwen3-235B-A22B-FP8, the baseline TTFT of **\~55.5s** (PP1 TP4) is reduced to **\~10.5s** under the PP8 TP4 configuration, representing a latency improvement of approximately **81.1%**. And for the DeepSeek-V3.1, the baseline TTFT of **\~48.5s** (PP1 TP8) is reduced to **\~15.7s** under the PP4 TP8 configuration, depicting a latency improvement of approximately **67.6%**. These results indicate that Chunked Pipeline Parallelism is highly effective for reducing TTFT.
 
 ![figure10](/images/blog/chunked_pipeline/ds_ttft.png)<center>Fig. 10: TTFT Analysis of DeepSeek-V3.1</center>
 
