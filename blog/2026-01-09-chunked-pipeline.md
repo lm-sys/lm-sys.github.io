@@ -1,7 +1,7 @@
 ---
 title: "Pipeline Parallelism in SGLang: Scaling to Million-Token Contexts and Beyond"
 author: "Shangming Cai"
-date: "January 8, 2026"
+date: "January 9, 2026"
 previewImg: /images/blog/chunked_pipeline/preview_cpp.jpg
 ---
 
@@ -96,9 +96,9 @@ We tested different models using a large PP size and found that they all conform
 ![figure2](/images/blog/chunked_pipeline/profile_before.png)<center>Fig. 2: Profile result of the PP rank 7 with fixed chunked prefill size</center>
 
 
-Therefore, if SGLang still utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will actually be greater than *(P - 1)/(P - 1 + M)*, a lot.
+Therefore, if SGLang still utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will be significantly greater than the theoretical expectation, *(P - 1)/(P - 1 + M)*.
 
-To address this issue, SGLang introduces a dynamic chunking mechanism to predict the next chunk size and meet this condition:
+To address this issue, SGLang introduces a dynamic chunking mechanism to predict the optimal size for the next chunk such that it satisfies this condition:
 <center>$$ \text{Runtime}(L + \text{Next Chunk Size}) - \text{Runtime}(L) = \text{Runtime}(\text{Initial Chunk Size}) $$</center>
 
 where ***L*** denotes the Prefix Sequence Length. By profiling a series of requests with different ITLs, we model the cumulative runtime as a quadratic function, and use it to simulate the performance of a given sequence length and solve the length of the next chunk for each ***L***. Since the computation/communication complexity of the Attention mechanism scales with ***L***, the next chunk size will be progressively reduced as ***L*** grows to maintain an aligned chunk execution time across pipeline stages.
@@ -118,9 +118,9 @@ However, due to the variation in hardware, models, and target workloads, a stati
   * 0.6 – 0.85 (Recommended)**: General range for the best balance between dynamic scaling and hardware stability. Through experiments, we find that a range between 0.6 and 0.85 typically yields the best performance for dynamic chunking.
   * 0: Disables dynamic adjustment, reverting to traditional fixed-size chunking.
 
-![figure4](/images/blog/chunked_pipeline/sigma_ds.png)<center>Fig. 4: Example of tuning the smooth factor (DeepSeek-V3.1)</center>
+![figure4](/images/blog/chunked_pipeline/sigma_ds.png)<center>Fig. 4: Example of tuning the smooth factor for DeepSeek-V3.1 (Lower is better)</center>
 
-![figure5](/images/blog/chunked_pipeline/sigma_qwen.png)<center>Fig. 5: Example of tuning the smooth factor (Qwen3-235B-A22B-FP8)</center>
+![figure5](/images/blog/chunked_pipeline/sigma_qwen.png)<center>Fig. 5: Example of tuning the smooth factor for Qwen3-235B-A22B-FP8 (Lower is better)</center>
 
 Another small optimization tip is to put the larger partition in the higher PP rank when the layers are not evenly divisible across ranks. It can increase the GPU utilization when a larger PP rank is waiting for the previous stage’s result, hence reducing the bubbles on higher PP ranks. If we take DeepSeek-V3.1 as an example, `SGLANG_PP_LAYER_PARTITION=15,15,15,16` usually performs better than `16,15,15,15`.
 
@@ -144,9 +144,9 @@ When handling contexts exceeding 128K tokens, SGLang also supports Chunked Pipel
 
 This section provides a rigorous quantitative evaluation of the PP performance characteristics of the Qwen3-235B-A22B-FP8 and DeepSeek-V3.1 models. The analysis focuses on the interplay between PP size, Dynamic Chunking (DCK), and hardware scalability.
 
-Our experimental testbed is a small cluster of 6 H20 nodes (8 × 96GB VRAM GPUs). Due to limited testing resources, experiments with a PP degree of 8 for DeepSeek-V3.1 are not conducted. Additionally, for the PP size \= 1 configuration of DeepSeek-V3.1, we used a standalone H20 node (8 × 141GB VRAM GPUs) to obtain the baseline performance for an input token length of 128 K. To better verify the throughput performance when the pipeline is saturated, we benchmarked and measured the average of 16 consecutive requests during the throughput test.
+Our experimental testbed is a small cluster of 6 H20 nodes (8 × 96GB VRAM GPUs). Due to limited testing resources, experiments with a PP degree of 8 for DeepSeek-V3.1 are not conducted. Additionally, for the PP size \= 1 configuration of DeepSeek-V3.1, we used a standalone H20 node (8 × 141GB VRAM GPUs) to obtain the baseline performance for an input token length of 128K. To better verify the throughput performance when the pipeline is saturated, we benchmarked and measured the average of 16 consecutive requests during the throughput test.
 
-Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek V3.1 with TP32 and Qwen3-235B-A22B-FP8 with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight ([Reference issue](https://github.com/sgl-project/sglang/issues/3345)).
+Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek-V3.1 with TP32 and Qwen3-235B-A22B-FP8 with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight ([Reference issue](https://github.com/sgl-project/sglang/issues/3345)).
 
 ### **Input Token Throughput and Strong Scaling Efficiency**
 
@@ -176,7 +176,7 @@ Furthermore, increasing the PP size from PP1 to PP4 can yield a substantial redu
 To demonstrate the scalability of SGLang with this optimized Chunked Pipeline Parallelism, we benchmarked the TTFT across varying input token lengths for Qwen3-235B-A22B-FP8 with PP8 (32 NVIDIA H20 GPUs). As shown in the table below, the system efficiently scales to handle massive contexts. Even at the extreme edge of **1 million tokens**, SGLang maintains high stability and acceptable latency on NVIDIA H20, showcasing its capability for the most demanding long-context applications.
 
 <br>
-<center>Table 1: TTFT vs. Input Token length for Qwen3-235B-A22B-FP8 with PP8 TP4 on H20</center>
+<center>Table 1: TTFT vs. Input Token Length for Qwen3-235B-A22B-FP8 with PP8 TP4 on H20</center>
 <div align="center">
 
 | Input Token Length | 128K | 256K | 512K | 1M |
