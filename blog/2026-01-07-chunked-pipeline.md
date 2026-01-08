@@ -25,15 +25,15 @@ To validate the necessity of Pipeline Parallelism (PP) for long-context prefill,
 ### **1. Communication Complexity and Scalability Analysis**
 The primary bottleneck in distributed inference scaling is inter-device communication. As model depth and sequence length increase, the volume of data transmitted between devices becomes a limiting factor, especially while scaling to large-scale and multi-node deployments.
 
-Assuming $S$ stands for the total sequence length, $H$ for the Hidden State dimension, $B$ for the Batch Size (often 1 for ultra-long context inference), $M$ for the Micro-batches size, and the activation precision is FP8 (1 byte). Based on this, we analyzed the communication volume per layer of different parallel methods. 
+Assuming $S$ stands for the total sequence length, $H$ for the Hidden State dimension, $B$ for the Batch Size (often 1 for ultra-long context inference), $M$ for the Micro-batches size, and the activation precision is FP8 (1 byte). Based on this, we analyzed the communication volume **per layer** of different parallel methods.
 
 * **TP:** TP splits individual weight tensors across multiple devices within a single layer. Due to this, TP incurs high communication overhead due to the necessity of synchronization after both the Attention Block and MLP Block. The communication volume also scales linearly with the number of layers. This frequent **All-Reduce** synchronization makes TP bandwidth-bound, limiting its scalability across large clusters.
-$$Comm\thinspace Volume({TP}) \approx 4 \cdot B \cdot S \cdot H \cdot \text{bytes}$$
+$$\text{Commu Volume}({TP}) = 2 \cdot \text{All-Reduce}({TP}) \approx 4 \cdot B \cdot S \cdot H \cdot \text{bytes}$$
 (Note: Each All-Reduce involves $2 \times$ the data size in a ring-based implementation.)
 * **CP:** Similarly, CP requires extensive synchronization communication to aggregate Key-Value (KV) states across devices. Typically, CP utilizes **All-Gather** at every layer, resulting in significant latency penalties in bandwidth-constrained environments.
-$$Comm\thinspace Volume({CP}) \approx 2*(CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot H_{KV} \right) \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot \text{bytes}$$
-* **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **point-to-point (P2P)** primitives rather than collective operations. Crucially, this communication volume is independent of the number of layers within a stage, allowing PP to scale efficiently to a large number of nodes with minimal bandwidth saturation.
-$$Comm\thinspace Volume({PP}) \approx M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot \text{bytes} = B \cdot S \cdot H \cdot \text{bytes}$$
+$$\text{Commu Volume}({CP}) \approx 2 \cdot (CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot H_{KV} \right) \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot \text{bytes}$$
+* **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **Point-to-Point (P2P)** primitives rather than collective operations. Crucially, this communication volume is independent of the number of layers within a stage, allowing PP to scale efficiently to a large number of nodes with minimal bandwidth saturation.
+$$\text{Commu Volume}({PP}) \approx M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot \text{bytes} = B \cdot S \cdot H \cdot \text{bytes}$$
 
 ### **2. The Bubble Ratio Trade-off**
 While PP optimizes communication, it introduces pipeline bubbles—idle periods where devices wait for data dependencies. This presents a trade-off between communication efficiency and device utilization.
@@ -146,7 +146,7 @@ This section provides a rigorous quantitative evaluation of the PP performance c
 
 Our experimental testbed is a small cluster of 6 H20 nodes (8 × 96GB VRAM GPUs). Due to limited testing resources, experiments with a PP degree of 8 for DeepSeek-V3.1 are not conducted. Additionally, for the PP size \= 1 configuration of DeepSeek-V3.1, we used a standalone H20 node (8 × 141GB VRAM GPUs) to obtain the baseline performance for an input token length of 128 K. To better verify the throughput performance when the pipeline is saturated, we benchmarked and measured the average of 16 consecutive requests during the throughput test.
 
-Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek V3.1 with TP32 and Qwen with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight.
+Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek V3.1 with TP32 and Qwen with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight ([Reference issue](https://github.com/sgl-project/sglang/issues/3345)).
 
 ### **Input Token Throughput and Strong Scaling Efficiency**
 
