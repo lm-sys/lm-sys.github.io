@@ -13,11 +13,6 @@ Drawing inspiration from both open-source innovations and academic research, SGL
 
 Empirical benchmarks demonstrate that SGLang’s PP implementation achieves industry-leading performance. In large-scale deployments, it maintains **over 80% scaling efficiency for various model architectures while scaling out to PP4**, and it also delivers **up to an 81% reduction in TTFT for ultra-long prompts when deploying Qwen3-235B-A22B-FP8 on H20 with PP8**.
 
-<div style="border-left: 4px solid #3b82f6; padding: 10px 12px; margin: 12px 0; background: #eff6ff; border-radius: 8px;">
-  <strong>👉 Check out the <a href="https://github.com/sgl-project/sglang/issues/11857">PP Roadmap</a>.</strong>
-</div>
-
-
 ## **Background: Why Pipeline Parallelism?**
 
 To validate the necessity of Pipeline Parallelism (PP) for long-context prefill, it is essential to evaluate it against existing paradigms—specifically Tensor Parallelism (TP) and Context Parallelism (CP). While TP and (Context Parallelism) CP offer distinct advantages, a theoretical and empirical decomposition of their communication volumes, bubble ratios, and implementation complexities reveals that PP occupies a unique, optimal position for multi-node scaling. The following analysis outlines the specific trade-offs inherent to each method.
@@ -100,10 +95,13 @@ We tested different models using a large PP size and found that they all conform
 
 ![figure2](/images/blog/chunked_pipeline/profile_before.png)<center>Fig. 2: Profile result of the PP rank 7 with fixed chunked prefill size</center>
 
-To address this issue, SGLang introduces a dynamic chunking mechanism and uses a quadratic function to fit this condition:
+
+Therefore, if SGLang still utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will actually be greater than *(P - 1)/(P - 1 + M)*, a lot.
+
+To address this issue, SGLang introduces a dynamic chunking mechanism to predict the next chunk size and meet this condition:
 <center>$$ \text{Runtime}(L + \text{Next Chunk Size}) - \text{Runtime}(L) = \text{Runtime}(\text{Initial Chunk Size}) $$</center>
 
-where ***L*** denotes the Prefix Sequence Length. By profiling a series of requests with different ITL, we fit this quadratic function approximately, and use it to predict the length of the next chunk for each ***L***. Since Attention computation/communication complexity scales with ***L***, the next chunk size will be progressively reduced as ***L*** grows to maintain an aligned chunk execution time across pipeline stages.
+where ***L*** denotes the Prefix Sequence Length. By profiling a series of requests with different ITLs, we model the cumulative runtime as a quadratic function, and use it to simulate the performance of a given sequence length and solve the length of the next chunk for each ***L***. Since the computation/communication complexity of the Attention mechanism scales with ***L***, the next chunk size will be progressively reduced as ***L*** grows to maintain an aligned chunk execution time across pipeline stages.
 
 Based on this method, the scheduler can predict and dynamically reduce the chunk size during runtime to minimize the bubbles caused by the stage misalignment.
 
@@ -115,7 +113,7 @@ However, due to the variation in hardware, models, and target workloads, a stati
 
 * **Step 1 \- Iterate to find the optimal fixed chunked prefill size for the targeted PP size**: Different PP sizes for targeted ITL may have different optimal chunked prefill sizes. Therefore, users should iterate to obtain the baseline according to the available resources for scaling.
 * **Step 2 \- Initial Chunk Size Selection for Dynamic Chunking**: Set the initial size to 2× or 3× the optimal fixed chunked prefill size. This reduces the total number of chunks and prevents "tail chunks" from underutilizing hardware. To maintain efficiency for extremely large Input Token Lengths (ITL), the dynamic predictor automatically ensures subsequent chunks are at least 1/4 of this initial size. In addition, it is recommended to use a larger initial chunk size (e.g., 4× the optimal fixed chunked prefill size) for such cases as well.
-* **Step 3 \- Smooth Factor Adjustment**: This factor controls how strictly the chunk size follows the quadratic prediction model.
+* **Step 3 \- Smooth Factor Adjustment**: This factor controls how strictly the chunk size adjusts the prediction given by the quadratic performance fitting model.
   * 1.0: Follows the model strictly.
   * 0.6 – 0.85 (Recommended)**: General range for the best balance between dynamic scaling and hardware stability. Through experiments, we find that a range between 0.6 and 0.85 typically yields the best performance for dynamic chunking.
   * 0: Disables dynamic adjustment, reverting to traditional fixed-size chunking.
@@ -148,7 +146,7 @@ This section provides a rigorous quantitative evaluation of the PP performance c
 
 Our experimental testbed is a small cluster of 6 H20 nodes (8 × 96GB VRAM GPUs). Due to limited testing resources, experiments with a PP degree of 8 for DeepSeek-V3.1 are not conducted. Additionally, for the PP size \= 1 configuration of DeepSeek-V3.1, we used a standalone H20 node (8 × 141GB VRAM GPUs) to obtain the baseline performance for an input token length of 128 K. To better verify the throughput performance when the pipeline is saturated, we benchmarked and measured the average of 16 consecutive requests during the throughput test.
 
-Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek V3.1 with TP32 and Qwen with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight ([Reference issue](https://github.com/sgl-project/sglang/issues/3345)).
+Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek V3.1 with TP32 and Qwen3-235B-A22B-FP8 with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight ([Reference issue](https://github.com/sgl-project/sglang/issues/3345)).
 
 ### **Input Token Throughput and Strong Scaling Efficiency**
 
