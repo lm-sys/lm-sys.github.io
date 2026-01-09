@@ -27,7 +27,7 @@ $$\text{Commu Volume}({TP}) = 2 \cdot \text{All-Reduce}({TP}) \approx 4 \cdot B 
 (Note: Each All-Reduce involves $2 \times$ the data size in a ring-based implementation.)
 * **CP:** Similarly, CP requires extensive synchronization communication to aggregate Key-Value (KV) states across devices. Typically, CP utilizes **All-Gather** at every layer, resulting in significant latency penalties in bandwidth-constrained environments.
 $$\text{Commu Volume}({CP}) = 2 \cdot (CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot H_{KV} \right)  \cdot L \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot L \cdot \text{bytes}$$
-(Note: In models utilizing GQA, $H_{KV}$ is smaller than $H$, which reduces CP's communication volume.)
+(Note: Assuming CP utilizes Ring-Attention-based solution. For models utilizing GQA, $H_{KV}$ is smaller than $H$, which reduces CP's communication volume.)
 * **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **Point-to-Point (P2P)** primitives rather than collective operations. Since a stage typically contains multiple layers, the communication frequency is determined by the number of stages ($P$), not the total number of layers ($L$). Crucially, for a fixed model, as we increase the number of layers per stage, the communication volume remains constant at the boundaries.
 $$\text{Commu Volume}({PP}) = M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot (P-1) \cdot \text{bytes} = B \cdot S \cdot H \cdot (P-1) \cdot \text{bytes}$$
 (Note: In multi-node deployments where $P \ll L$, PP achieves a nearly order-of-magnitude reduction in total communication volume compared to TP.)
@@ -44,7 +44,7 @@ However, for long-context prefill scenarios where the workload is substantial ($
 ### **3. Implementation Complexity and Architectural Generality**
 The implementation complexity and architectural generality of a new feature are critical factors for a modern inference system, especially for an open-source project.
 
-* **TP:** TP is easy to implement and widely supported. However, large-scale TP configurations are inherently inapplicable, as the granularity required for the quantization block sometimes cannot be aligned with the partitioning constraints imposed by MoE FFN weights. Consequently, even disregarding communication volume and overhead, larger TP is already precluded in multi-node scaling scenarios due to this incompatibility with quantization, which is a critical and indispensable optimization technique.
+* **TP:** TP is easy to implement and widely supported. However, large-scale TP configurations are inherently inapplicable, as the granularity required for the quantization block sometimes cannot be aligned with the partitioning constraints imposed by MoE FFN weights. Consequently, even disregarding communication volume and overhead, larger TP is often precluded in multi-node scaling scenarios due to this incompatibility with quantization, which is a critical and indispensable optimization technique.
 * **CP:** CP is complex, which requires specific, often intrusive modifications to the attention mechanism (e.g., Ring Attention). These changes must be tailored for every attention variant and specific model, reducing generality.
 * **PP:** PP represents a medium complexity. It requires partitioning the model but remains agnostic to the internal mechanics of the layers. This makes PP a general-purpose solution applicable to all model architectures without requiring kernel-level rewrites for specific attention variants. To some extent, eliminating PP bubbles is more difficult than implementing PP itself.
 
@@ -57,7 +57,7 @@ The implementation complexity and architectural generality of a new feature are 
 | **Implementation Complexity** | Low | High<br>(Attention-variant specific) | Medium |
 | **Architectural Generality** | Medium | Low | **High** |
 
-In conclusion, the balance of the generality and scaling efficiency makes PP not merely an alternative, but a **necessary component** for scaling long-context prefill to massive, multi-node clusters where TP and CP encounter bandwidth ceilings. In the meantime, CP has the potential to supplement TP for intra-node scaling and acceleration. **PP × CP** is already under development ([Future Roadmap](#future-roadmap)), which will be included in Part II of this blog.
+In conclusion, the balance of the generality and scaling efficiency makes PP not merely an alternative, but a **necessary component** for scaling long-context prefill to massive, multi-node clusters where TP and CP encounter bandwidth ceilings. In the meantime, CP has the potential to complement TP for intra-node scaling and acceleration. **PP × CP** is already under development ([Future Roadmap](#future-roadmap)), which will be included in Part II of this blog.
 
 ## **The Challenge: The "Bubble" and The "Wall"**
 
@@ -96,7 +96,7 @@ We tested different models using a large PP size and found that they all conform
 ![figure2](/images/blog/chunked_pipeline/profile_before.png)<center>Fig. 2: Profile result of the PP rank 7 with fixed chunked prefill size</center>
 
 
-Therefore, if SGLang still utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will be significantly greater than the theoretical expectation, *(P - 1)/(P - 1 + M)*.
+Therefore, if SGLang still **utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will be greater than the theoretical expectation (i.e., *(P - 1)/(P - 1 + M)*)**.
 
 To address this issue, SGLang introduces a dynamic chunking mechanism to predict the optimal size for the next chunk such that it satisfies this condition:
 <center>$$ \text{Runtime}(L + \text{Next Chunk Size}) - \text{Runtime}(L) = \text{Runtime}(\text{Initial Chunk Size}) $$</center>
@@ -142,36 +142,36 @@ When handling contexts exceeding 128K tokens, SGLang also supports Chunked Pipel
 
 ## **Performance Impact**
 
-This section provides a rigorous quantitative evaluation of the PP performance characteristics of the Qwen3-235B-A22B-FP8 and DeepSeek-V3.1 models. The analysis focuses on the interplay between PP size, Dynamic Chunking (DCK), and hardware scalability.
+This section provides a rigorous quantitative evaluation of the PP performance characteristics of the DeepSeek-V3.1 and Qwen3-235B-A22B-FP8 models. The analysis focuses on the interplay between PP size, Dynamic Chunking (DCK), and hardware scalability.
 
-Our experimental testbed is a small cluster of 6 H20 nodes (8 × 96GB VRAM GPUs). Due to limited testing resources, experiments with a PP degree of 8 for DeepSeek-V3.1 are not conducted. Additionally, for the PP size \= 1 configuration of DeepSeek-V3.1, we used a standalone H20 node (8 × 141GB VRAM GPUs) to obtain the baseline performance for an input token length of 128K. To better verify the throughput performance when the pipeline is saturated, we benchmarked and measured the average of 16 consecutive requests during the throughput test.
+Our experimental testbed is a small cluster of 6 H20 nodes (8 × 96GB VRAM GPUs). Due to limited testing resources, experiments with a PP degree of 8 for DeepSeek-V3.1 are not conducted. Additionally, for the PP size \= 1 configuration of DeepSeek-V3.1, we used a standalone H20 node (8 × 141GB VRAM GPUs) to obtain the baseline performance for an input token length of 128K (OOM will occur on the 96GB VRAM version). To better verify the throughput performance when the pipeline is saturated, we benchmarked and measured the average of 16 consecutive requests during the throughput test.
 
-Note: We use DCK to mark the chunked prefill size setup when enabling the dynamic chunking, and σ stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek-V3.1 with TP32 and Qwen3-235B-A22B-FP8 with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight ([Reference Issue](https://github.com/sgl-project/sglang/issues/3345)).
+Note: We use **DCK** to mark the chunked prefill size setup when enabling the dynamic chunking, and **σ** stands for the smooth factor of dynamic chunking. To conduct experiments with extremely long contexts, we overwrote the context length of the aforementioned model to 1 million, solely for performance analysis. Furthermore, we attempted to conduct experiments for DeepSeek-V3.1 with TP32 and Qwen3-235B-A22B-FP8 with TP8, but unfortunately, large TP configurations are inherently unsupported because the weight quantization block can not be divided by the FFN (MoE) layers' weight ([Reference Issue](https://github.com/sgl-project/sglang/issues/3345)). To thoroughly compare the differences between TP and PP in multi-node scaling scenarios, we hacked the model implementation file (skip parts of weight loading in `load_weights`) and config.json ([Work Around Issue](https://github.com/sgl-project/sglang/issues/3491#issuecomment-2650779851)) of DeepSeek-V3.1, and managed to get TP32 runnable solely for performance verification purposes.
 
 ### **Input Token Throughput and Strong Scaling Efficiency**
 
-The analysis of Throughput and PP size demonstrates strong horizontal scalability across both model families, though the degree of efficiency varies by configuration.
+The analysis of Throughput vs. PP size demonstrates strong horizontal scalability across both model families, though the degree of scaling efficiency varies by configuration.
 
-* **Superior Scalability of DCK**: The **Qwen DCK 18K** configuration exhibits the highest scalability, achieving a speedup factor of **6.14×** on a 32-GPUs (PP8) cluster. This performance suggests that the dynamic adjustment of chunk sizes optimizes the balance between computational intensity and inter-node communication latency.
+* **Superior Scalability of DCK**: The **Qwen DCK 18K** configuration exhibits the highest scalability, achieving a speedup factor of **6.14×** for PP8 (32 GPUs) compared to PP1 (4 GPUs). This performance suggests that the dynamic adjustment of chunk sizes optimizes the balance between computational intensity and inter-node communication latency.
 * **Architectural Comparison**: DeepSeek models demonstrate comparable scaling trajectories to Qwen up to the PP4 threshold. Notably, the **DeepSeek DCK 12K (3.27×)** marginally outperforms the static 4K variant (3.20×), validating the cross-architectural robustness of the Dynamic Chunking strategy in enhancing throughput.
 
-![figure7](/images/blog/chunked_pipeline/ds_throughput.png)<center>Fig. 7: Throughput Analysis of DeepSeek-V3.1</center>
+![figure7](/images/blog/chunked_pipeline/ds_throughput.png)<center>Fig. 7: Throughput Analysis of DeepSeek-V3.1 (Higher is better)</center>
 
-![figure8](/images/blog/chunked_pipeline/qwen_throughput.png)<center>Fig. 8: Throughput Analysis of Qwen3-235B-A22B-FP8</center>
+![figure8](/images/blog/chunked_pipeline/qwen_throughput.png)<center>Fig. 8: Throughput Analysis of Qwen3-235B-A22B-FP8 (Higher is better)</center>
 
-The Strong Scaling Efficiency curves illustrate the degradation of hardware utilization as the system scales. All configurations exhibit a monotonic decay in efficiency as PP size (GPU counts) increases. However, **Qwen DCK 18K** maintains a superior efficiency of **77%** at the PP8 scale, whereas the static 6K configuration drops to **70%**. This confirms that larger, dynamically managed chunks are more resilient to the communication overheads inherent in large-scale distributed inference. Due to resource constraints, DeepSeek-V3.1 was evaluated up to PP size \= 4, maintaining an efficiency of **\~81.7%**. Extrapolating the current slope suggests that DeepSeek would likely follow a similar efficiency trajectory to Qwen, where DCK is projected to outperform the fixed chunking strategy.
+The Strong Scaling Efficiency curves illustrate the degradation of hardware utilization as the system scales (for the strong scaling efficiency analysis,  the ITL remains 128K while $P$ increases, thus the bubble ratio lower bound will definitely be higher according to the formula). All configurations exhibit a monotonic decay in efficiency as PP size (GPU counts) increases. However, **Qwen DCK 18K** still maintains a superior efficiency of **77%** at the PP8 scale, whereas the static 6K configuration drops to **70%**. This confirms that larger, dynamically managed chunks are more resilient to performance degradation caused by pipeline bubbles. Due to resource constraints, DeepSeek-V3.1 was evaluated up to PP size \= 4, maintaining an efficiency of **\~81.7%**. Extrapolating the current slope suggests that DeepSeek would likely follow a similar efficiency trajectory to Qwen, where DCK is projected to outperform the fixed chunking strategy.
 
-![figure9](/images/blog/chunked_pipeline/scale_efficiency.png)<center>Fig. 9: Strong Scaling Efficiency vs. PP Size Analysis</center>
+![figure9](/images/blog/chunked_pipeline/scale_efficiency.png)<center>Fig. 9: Strong Scaling Efficiency vs. PP Size Analysis (Higher is better)</center>
 
 ### **Reduced TTFT and Scaling Out for 1 million ITL**
 
-A critical observation from the experimental data is the performance degradation observed when scaling Tensor Parallelism (TP) to 16, compared to a hybrid Parallelism approach (PP2 TP8). Despite utilizing an identical aggregate GPU count, PP2 TP8 consistently outperforms PP1 TP16 in both throughput and latency metrics. This phenomenon can be attributed to the non-linear scaling of communication overheads in high-degree tensor parallelism.
+A critical observation from the experimental data is the performance degradation observed when scaling Tensor Parallelism (TP) to 16, compared to a hybrid Parallelism approach (PP2 TP8). Despite utilizing an identical aggregate GPU count, PP2 TP8 consistently outperforms PP1 TP16 in both throughput and latency metrics. In addition, PP4 TP8 also consistently outperforms PP1 TP32 in both throughput and latency metrics for all chunk size configurations. This phenomenon can be attributed to the communication bottleneck in high-degree tensor parallelism.
 
 Furthermore, increasing the PP size from PP1 to PP4 can yield a substantial reduction in TTFT for both the fixed chunked setting and dynamic chunking. But dynamic chunking performs better for different PP setups. For the Qwen3-235B-A22B-FP8, the baseline TTFT of **\~55.5s** (PP1 TP4) is reduced to **\~10.5s** under the PP8 TP4 configuration, representing a latency improvement of approximately **81.1%**. And for the DeepSeek-V3.1, the baseline TTFT of **\~48.5s** (PP1 TP8) is reduced to **\~15.7s** under the PP4 TP8 configuration, depicting a latency improvement of approximately **67.6%**. These results indicate that Chunked Pipeline Parallelism is highly effective for reducing TTFT.
 
-![figure10](/images/blog/chunked_pipeline/ds_ttft.png)<center>Fig. 10: TTFT Analysis of DeepSeek-V3.1</center>
+![figure10](/images/blog/chunked_pipeline/ds_ttft.png)<center>Fig. 10: TTFT Analysis of DeepSeek-V3.1 (Lower is better)</center>
 
-![figure11](/images/blog/chunked_pipeline/qwen_ttft.png)<center>Fig. 11: TTFT Analysis of Qwen3-235B-A22B-FP8</center>
+![figure11](/images/blog/chunked_pipeline/qwen_ttft.png)<center>Fig. 11: TTFT Analysis of Qwen3-235B-A22B-FP8 (Lower is better)</center>
 
 To demonstrate the scalability of SGLang with this optimized Chunked Pipeline Parallelism, we benchmarked the TTFT across varying input token lengths for Qwen3-235B-A22B-FP8 with PP8 (32 NVIDIA H20 GPUs). As shown in the table below, the system efficiently scales to handle massive contexts. Even at the extreme edge of **1 million tokens**, SGLang maintains high stability and acceptable latency on NVIDIA H20, showcasing its capability for the most demanding long-context applications.
 
@@ -261,9 +261,9 @@ SGLang’s implementation of Pipeline Parallelism is more than just model splitt
 
 ## **Acknowledgement**
 
-- We would like to thank the SGLang team and community for the implementation and generous support, especially Shangming Cai, Xuchun Shang, Yanbo Yang, Leon Gao, Zhiqiang Xie, Ying Sheng, Lianmin Zheng, and many others.
-- We would like to thank Jianhao Fu (from AntGroup SCT and Inference Team), Kevin Li (from TikTok), Siyu Liu (from Alibaba Cloud Computing), Xiaolei Zhang (from ByteDance), Teng Ma (from Alibaba Cloud Computing), Chao Wang (from Meituan), and Xiaowei Wang (from NVIDIA) for their prominent contribution in code improvement and testing.
-- We learn a lot from the system design of SGLang, vLLM, Mooncake[1], and TeraPipe[3], which jointly help improve this Pipeline Parallelism implementation.
+- We would like to thank the SGLang team and community for the implementation and generous support, especially **Shangming Cai**, **Xuchun Shang**, **Yanbo Yang**, Leon Gao, Zhiqiang Xie, Ying Sheng, **Lianmin Zheng**, and many others.
+- We would like to thank **Jianhao Fu** (from AntGroup SCT and Inference Team), **Kevin Li** (from TikTok), Siyu Liu (from Alibaba Cloud Computing), Xiaolei Zhang (from ByteDance), Teng Ma (from Alibaba Cloud Computing), Chao Wang (from Meituan), and Xiaowei Wang (from NVIDIA) for their prominent contribution in code improvement and testing.
+- We learn a lot from the system design of [SGLang](https://github.com/sgl-project/sglang), vLLM, Mooncake[\[1\]](https://dl.acm.org/doi/pdf/10.1145/3773772), and TeraPipe[\[3\]](http://proceedings.mlr.press/v139/li21y/li21y.pdf), which jointly help improve this Pipeline Parallelism implementation.
 
 ## **Reference**
 
