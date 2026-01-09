@@ -115,7 +115,7 @@ However, due to the variation in hardware, models, and target workloads, a stati
 * **Step 2 \- Initial Chunk Size Selection for Dynamic Chunking**: Set the initial size to 2× or 3× the optimal fixed chunked prefill size. This reduces the total number of chunks and prevents "tail chunks" from underutilizing hardware. To maintain efficiency for extremely large Input Token Lengths (ITL), the dynamic predictor automatically ensures subsequent chunks are at least 1/4 of this initial size. In addition, it is recommended to use a larger initial chunk size (e.g., 4× the optimal fixed chunked prefill size) for such cases as well.
 * **Step 3 \- Smooth Factor Adjustment**: This factor controls how strictly the chunk size adjusts the prediction given by the quadratic performance fitting model.
   * 1.0: Follows the model strictly.
-  * 0.6 – 0.85 (Recommended)**: General range for the best balance between dynamic scaling and hardware stability. Through experiments, we find that a range between 0.6 and 0.85 typically yields the best performance for dynamic chunking.
+  * 0.6 – 0.85 (Recommended)**: Typical range for the best balance between dynamic scaling and hardware stability. Through experiments, we find that a range between 0.6 and 0.85 typically yields the best performance for dynamic chunking, as depicted in Fig. 4 and Fig. 5.
   * 0: Disables dynamic adjustment, reverting to traditional fixed-size chunking.
 
 ![figure4](/images/blog/chunked_pipeline/sigma_ds.png)<center>Fig. 4: Example of tuning the smooth factor for DeepSeek-V3.1 (Lower is better)</center>
