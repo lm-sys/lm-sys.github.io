@@ -39,10 +39,13 @@ Over the past two months, we have been working tirelessly toward this goal. We h
        | List Adapters                   | `/v1/list_loras`            | -                                                |
 
 
-- **Parallelism**: SP for image models, TP for some models. We also support hybrid parallelism (combinations of Ulysses Parallel, Ring Parallel, and Tensor Parallel).
+- **Parallelism**: SP for image models, TP for some models, alongside hybrid parallelism (combinations of Ulysses Parallel, Ring Parallel, and Tensor Parallel).
 - **Attention**: SageAttention2 / SageAttention3, more backends (sparse) are on the way.
 - **Hardware**: AMD / 4090 / 5090.
-- **SGLang Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang Diffusion's high-performance inference engine. While ComfyUI offers exceptional flexibility through its custom nodes, it lacks multi-GPU support and optimal performance. Our solution replaces ComfyUI's denoising model forward pass with SGLang's optimized implementation, preserving ComfyUI's flexibility while leveraging SGLang's superior inference. Users can simply replace ComfyUI's loader node with our SGLDiffusion UNET Loader to enable enhanced performance without modifying existing workflows.
+- **SGLang Diffusion x ComfyUI Integration**: 
+  
+    We have implemented a flexible ComfyUI custom node that integrates SGLang Diffusion's high-performance inference engine.
+    While ComfyUI offers exceptional flexibility through its custom nodes, it lacks multi-GPU support and optimal performance. Our solution replaces ComfyUI's denoising model forward pass with SGLang's optimized implementation, preserving ComfyUI's flexibility while leveraging SGLang's superior inference. Users can simply replace ComfyUI's loader node with our SGLDiffusion UNET Loader to enable enhanced performance without modifying existing workflows.
 
 <img src="/images/blog/sgl-diffusion-26-01/comfyui.png" style="display:block; margin: auto; width: 85%;"></img>
 
