@@ -5,20 +5,19 @@ date: "January 16, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 ---
 
-Since its release in early November, **SGLang Diffusion** has garnered significant attention and widespread adoption within the community. We are deeply grateful for the extensive feedback and growing number of contributions from developers worldwide.
+Since its release in early November, **SGLang Diffusion** has gained significant attention and widespread adoption within the community. We are deeply grateful for the extensive feedback and growing number of contributions from open-source developers.
 
-**Our mission is clear: to build the best diffusion serving framework available—across both open and closed source ecosystems.**
+Over the past two months, we've been meticulously building sglang-diffusion, and here is a summary of our progress:
 
-Over the past two months, we have been working tirelessly toward this goal. We have focused on delivering **Day-0 support** for state-of-the-art models and continuously optimizing **stability and performance**, all while maintaining a pristine, modular code architecture. Here is a summary of our recent progress:
 
 ## Overview
 
-- **New Models**:
-    - **Day-1 support** for Flux.2 / Qwen-Image-Edit-2511 / Qwen-Image-2512 / Z-Image-Turbo / Qwen-Image-Layered / TurboWan and more.
-    - Run SGLang Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are coming (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
-- **LoRA Support**:
-    - We support almost all LoRA formats for supported models. This section lists example LoRAs that have been explicitly tested and verified with each base model in the SGLang Diffusion pipeline.
+**New Models**:
+   * **Day-1 support** for Flux.2 / Qwen-Image-Edit-2511 / Qwen-Image-2512 / Z-Image-Turbo / Qwen-Image-Layered / TurboWan and more.
+   * Run SGLang Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are coming (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+
+
 
        | Base Model        | Supported LoRAs |
        |-------------------|------------------|
@@ -29,7 +28,7 @@ Over the past two months, we have been working tirelessly toward this goal. We h
        | **Qwen-Image-Edit** | `ostris/qwen_image_edit_inpainting`<br> `lightx2v/Qwen-Image-Edit-2511-Lightning` |
        | **Flux**          | `dvyio/flux-lora-simple-illustration`<br> `XLabs-AI/flux-furry-lora`<br> `XLabs-AI/flux-RealismLora` |
 
-    - **Fully functional HTTP API**:
+   * **Fully functional HTTP API**:
 
        | Feature                         | API Endpoint                | Key Parameters                                   |
        |---------------------------------|-----------------------------|--------------------------------------------------|
@@ -39,11 +38,13 @@ Over the past two months, we have been working tirelessly toward this goal. We h
        | List Adapters                   | `/v1/list_loras`            | -                                                |
 
 
-- **Parallelism**: SP for image models, TP for some models, alongside hybrid parallelism (combinations of Ulysses Parallel, Ring Parallel, and Tensor Parallel).
-- **Attention**: SageAttention2 / SageAttention3, more backends (sparse) are on the way.
-- **Hardware**: AMD / 4090 / 5090.
-- **SGLang Diffusion x ComfyUI Integration**: 
-  
+**Parallelism**: SP for image models, TP for some models, alongside hybrid parallelism (combinations of Ulysses Parallel, Ring Parallel, and Tensor Parallel).
+
+**Attention Backend**: SageAttention2 / SageAttention3, more backends (sparse) are on the way.
+
+**Hardware**: AMD / 4090 / 5090.
+
+**SGLang Diffusion x ComfyUI Integration**:
     We have implemented a flexible ComfyUI custom node that integrates SGLang Diffusion's high-performance inference engine.
     While ComfyUI offers exceptional flexibility through its custom nodes, it lacks multi-GPU support and optimal performance. Our solution replaces ComfyUI's denoising model forward pass with SGLang's optimized implementation, preserving ComfyUI's flexibility while leveraging SGLang's superior inference. Users can simply replace ComfyUI's loader node with our SGLDiffusion UNET Loader to enable enhanced performance without modifying existing workflows.
 
@@ -55,14 +56,14 @@ To serve as a robust, industrial-grade framework, **speed, stability, and code q
 
 ### 1. Layerwise Offload
 
-From our early **profiling**, we identified model loading/offloading as **a** major bottleneck, since the forward stream has to wait until all the weights are on-device.
+From our early profiling, we identified model loading/offloading as a major bottleneck, since the forward stream has to wait until all the weights are on-device.
 
 To tackle this, we introduced:
 
 1. `LayerwiseOffloadManager`: A manager class that provides hooks for prefetching weights of the next layer while forwarding on the current layer.
 2. `OffloadableDiTMixin`: A mixin class that registers `LayerwiseOffloadManager`'s prefetch and release hooks for the diffusion-transformer.
 
-This way, the per-layer forward doesn't have to wait for the copy stream, thus significantly improving the inference speed, especially for specialized models like Wan2.2, where there **are** multiple DiTs.
+This way, the per-layer forward doesn't have to wait for the copy stream, thus significantly improving the inference speed, especially for specialized models like Wan2.2, where there are multiple DiTs.
 
 <img src="/images/blog/sgl-diffusion/layerwise.png" style="display:block; margin: auto; width: 85%;"></img>
 
@@ -80,11 +81,23 @@ See related PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#1
 
 ### 3. Cache-DiT Integration
 
-We've integrated Cache-DiT **seamlessly** into SGLang Diffusion. With only a couple of environment variables, the generation speed is boosted by **up to** 169%. It is fully compatible with `torch.compile`.
+We've integrated Cache-DiT seamlessly into SGLang Diffusion, fully compatible with `torch.compile`, Ulysses Parallel, Ring Parallel, and Tensor Parallel, along with any hybrid combination of these three.
 
-We also support Cache-DiT with Ulysses Parallel, Ring Parallel, and Tensor Parallel, along with any hybrid combination of these three. See [PR #16532](https://github.com/sgl-project/sglang/pull/16532) & [PR #15163](https://github.com/sgl-project/sglang/pull/15163).
+With only a couple of environment variables, the generation speed is boosted by **up to** 169%. 
+
+Here is an example to enable Cache-Dit in sglang-diffusion:
+
+```bash
+SGLANG_CACHE_DIT_ENABLED=true \
+SGLANG_CACHE_DIT_SCM_PRESET=fast \
+sglang generate --model-path="Qwen/Qwen-Image" --prompt="Cinematic establishing shot of a city at dusk"
+--save-output
+```
 
 Furthermore, with the new run-with-diffusers backend feature, we can now integrate and refine Cache-DiT optimizations within SGLang Diffusion (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+
+See [PR #16532](https://github.com/sgl-project/sglang/pull/16532) & [PR #15163](https://github.com/sgl-project/sglang/pull/15163) for implementation details
+
 
 ### 4. Few More Things
 
