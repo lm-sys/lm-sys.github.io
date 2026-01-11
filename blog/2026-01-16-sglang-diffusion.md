@@ -5,12 +5,13 @@ date: "Januray 16, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 ---
 
-Since its release in early November, **SGLang-diffusion** has been met with strong enthusiasm, widespread attention, and
-valuable feedback from the community.
+
+Since its release in early November, **SGLang Diffusion** has gained significant attention and widespread adoption within the community. We are deeply grateful for the extensive feedback and growing number of contributions from open-source developers.
+
 
 ## Overview
 
-In the past 2 months, we've been meticulously building sglang-diffusion, and here's what we've done:
+Over the past two months, we've been meticulously building sglang-diffusion, and here a summary of our progress:
 
 - New Models:
     1. Day-0 support for Flux.2 / Qwen-Image-Edit-2511 / Qwen-Image-2512 / Z-Image-Turbo / Qwen-Image-Layered / TurboWan
@@ -54,7 +55,7 @@ In the past 2 months, we've been meticulously building sglang-diffusion, and her
 
 ## Highlighted works
 
-As an industrial-level serving framework, speed and stability are what we care the most.
+To serve as a robust, industrial-grade framework, **speed, stability, and code quality** are our top priorities. Here are the highlights of our technical breakthroughs:
 
 ### 1. Layerwise Offload
 
@@ -114,6 +115,7 @@ Further Roadmap
 2. Sparse Attention Backends
 3. Quantization (nunchaku, nvfp4 and others)
 4. Optimizations on consumer-level GPUs
+5. More New Models
 
 ## Performance Benchmark
 
