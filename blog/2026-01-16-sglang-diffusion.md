@@ -5,225 +5,140 @@ date: "Januray 16, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 ---
 
-We are excited to introduce SGLang Diffusion, which brings SGLang's state-of-the-art performance to accelerate image and video generation for diffusion models.
-SGLang Diffusion supports major open-source video and image generation models (Wan, Hunyuan, Qwen-Image, Qwen-Image-Edit, Flux) while providing fast inference speeds and ease of use via multiple API entry points (OpenAI-compatible API, CLI, Python interface). SGLang Diffusion delivers 1.2x - 5.9x speedup across diverse workloads.
-In collaboration with the FastVideo team, we provide a complete ecosystem for diffusion models, from post-training to production serving. The code is available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen).
+Since its release in early November, **SGLang-diffusion** has been met with strong enthusiasm, widespread attention, and
+valuable feedback from the community.
 
-<iframe
-width="600"
-height="371"
-seamless
-frameborder="0"
-scrolling="no"
-src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1360546403&format=interactive"
-style="display:block; margin:15px auto 0 auto;">
-</iframe>
-<p style="color:gray; text-align: center;">SGL Diffusion Performance Benchmark on an H100 GPU</p>
+## Overview
 
-<iframe
-width="600"
-height="371"
-seamless
-frameborder="0"
-scrolling="no"
-src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3u_F1P6TIUItyXdTctVV4pJVEcBuyPBTqmrdXR3KeQuiN1OdkIhjVNpZyHUDPw_5ZIKe88w2Xz6Dd/pubchart?oid=1860768236&format=interactive"
-style="display:block; margin:15px auto 0 auto;">
-</iframe>
-<p style="color:gray; text-align: center;">SGLang Diffusion Performance Benchmark on an H200 GPU</p>
+In the past 2 months, we've been meticulously building sglang-diffusion, and here's what we've done:
 
-## Why Diffusion in SGLang?
+- New Models:
+    1. Day-0 support for Flux.2 / Qwen-Image-Edit-2511 / Qwen-Image-2512 / Z-Image-Turbo / Qwen-Image-Layered / TurboWan
+       and more
+    2. Run sgl-diffusion with diffusers backend: compatible with all models in diffusers, more improvements are coming (
+       attach issue link here, https://github.com/sgl-project/sglang/issues/16642)
+- LoRA support:
+    1. We support almost all lora formats for supported models. e.g. (list some names here)
+       This section lists example LoRAs that have been explicitly tested and verified with each base model in the SGLang
+       Diffusion pipeline.
 
-With diffusion models becoming the backbone for state-of-the-art image and video generation, we have heard strong community demand for bringing SGLang's signature performance and seamless user experience to these new modalities. We built SGLang Diffusion to answer this call, providing a unified, high-performance engine for both language and diffusion tasks.
+       | Base Model        | Supported LoRAs |
+                   |-------------------|------------------|
+       | **Wan2.2**        | lightx2v/Wan2.2-Distill-Loras<br> Cseti/wan2.2-14B-Arcane_Jinx-lora-v1 |
+       | **Wan2.1**        | lightx2v/Wan2.1-Distill-Loras |
+       | **Z-Image-Turbo** | tarn59/pixel_art_style_lora_z_image_turbo<br> wcde/Z-Image-Turbo-DeJPEG-Lora |
+       | **Qwen-Image**    | lightx2v/Qwen-Image-Lightning<br> flymy-ai/qwen-image-realism-lora<br> prithivMLmods/Qwen-Image-HeadshotX<br> starsfriday/Qwen-Image-EVA-LoRA |
+       | **Qwen-Image-Edit** | ostris/qwen_image_edit_inpainting<br> lightx2v/Qwen-Image-Edit-2511-Lightning |
+       | **Flux**          | dvyio/flux-lora-simple-illustration<br> XLabs-AI/flux-furry-lora<br> XLabs-AI/flux-RealismLora |
 
-This unified approach is crucial, as the future of generation lies in combining architectures. 
-Pioneering models are already fusing the strengths of autoregressive (AR) and diffusion-based approaches—from models like ByteDance's [Bagel](https://github.com/ByteDance-Seed/Bagel) and Meta's [Transfusion](https://arxiv.org/abs/2408.11039) that use a single transformer for both tasks, to NVIDIA's [Fast-dLLM v2](https://nvlabs.github.io/Fast-dLLM/v2/) which adapts AR models for parallel generation.
-
-SGLang Diffusion is designed to be a future-proof, high-performance solution ready to power these innovative systems.
-
-## Architecture
-
-SGLang Diffusion is engineered for both performance and flexibility, built upon SGLang's battle-tested serving architecture. It inherits the powerful SGLang scheduler and reuses highly-optimized sgl-kernel for maximum efficiency.
-
-At its core, our architecture is designed to accommodate the diverse structures of modern diffusion models. We introduce `ComposedPipelineBase`, a flexible abstraction that orchestrates a series of modular `PipelineStage`s. Each stage encapsulates a common diffusion function—such as the denoising loop in `DenoisingStage` or VAE decoding in `DecodingStage`—allowing developers to easily combine and reuse these components to construct complex, customized pipelines.
-
-To achieve state-of-the-art speed, we integrate advanced parallelism techniques. It supports Unified Sequence Parallelism (USP)—a combination of Ulysses-SP and Ring-Attention—for the core transformer blocks, alongside CFG-parallelism and tensor parallelism (TP) for other model components.
-
-To accelerate development and foster a powerful ecosystem, our system is built on an enhanced fork of **FastVideo**, and we are collaborating closely with their team. This partnership allows SGLang Diffusion to focus on delivering cutting-edge inference speed, while **FastVideo** provides comprehensive support for training-related tasks like model distillation.
-
-## Model Support
-
-We support various popular open-source video & image generation models, including:
-  - Video models: Wan-series, FastWan, Hunyuan
-  - Image models: Qwen-Image, Qwen-Image-Edit, Flux
-
-For full list of supported models, reference [here](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/support_matrix.md).
-
-## Usage
-
-For a seamless user experience, we provide a suite of familiar interfaces, including a CLI, a Python engine API, and an OpenAI-compatible API, allowing users to integrate diffusion generation into their workflows with minimal effort.
-
-### Install
-
-SGLang Diffusion can be installed via multiple ways:
-
-```bash
-# with pip or uv
-uv pip install 'sglang[diffusion]' --prerelease=allow
-
-# from source
-git clone https://github.com/sgl-project/sglang.git
-cd sglang
-uv pip install -e "python[diffusion]" --prerelease=allow
-```
-### CLI
-
-Launch a server and then send requests:
-```bash
-sglang serve --model-path black-forest-labs/FLUX.1-dev --port 3000
-
-curl http://127.0.0.1:3000/v1/images/generations \
-  -o >(jq -r '.data[0].b64_json' | base64 --decode > example.png) \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d '{
-    "model": "black-forest-labs/FLUX.1-dev",
-    "prompt": "A cute baby sea otter",
-    "n": 1,
-    "size": "1024x1024",
-    "response_format": "b64_json"
-  }'
-```
-
-Or, generate an image without launching a server:
-```bash
-sglang generate --model-path black-forest-labs/FLUX.1-dev \
-  --prompt "A Logo With Bold Large Text: SGL Diffusion" \
-  --save-output
-```
-
-Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more installation methods.
-
-### Demo
-
-#### Text to Video: Wan-AI/Wan2.1
-
-```bash
-sglang generate --model-path Wan-AI/Wan2.1-T2V-1.3B-Diffusers \
-    --prompt "A curious raccoon" \
-    --save-output
-```
-
-<video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview" style="display:block; margin: auto; width: 80%;">
-        <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
-Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2V.mp4">Download the video</a>
-
-#### Image to Video: Wan-AI/Wan2.1-I2V
-
-```bash
-sglang generate --model-path=Wan-AI/Wan2.1-I2V-14B-480P-Diffusers \
-    --prompt="Summer beach vacation style, a white cat wearing sunglasses sits on a surfboard. The fluffy-furred feline gazes directly at the camera with a relaxed expression. Blurred beach scenery forms the background featuring crystal-clear waters, distant green hills, and a blue sky dotted with white clouds. The cat assumes a naturally relaxed posture, as if savoring the sea breeze and warm sunlight. A close-up shot highlights the feline's intricate details and the refreshing atmosphere of the seaside." \
-    --image-path="https://github.com/Wan-Video/Wan2.2/blob/990af50de458c19590c245151197326e208d7191/examples/i2v_input.JPG?raw=true" \
-    --num-gpus 2 --enable-cfg-parallel --save-output
-```
-
-<video width="800" controls poster="https://via.placeholder.com/800x450?text=Video+Preview" style="display:block; margin: auto; width: 80%;">  
-        <source src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
-Fallback link: <a href="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2V.mp4">Download the video</a>
-
-#### Text to Image: FLUX
-
-```bash
-sglang generate --model-path black-forest-labs/FLUX.1-dev \
-    --prompt "A Logo With Bold Large Text: SGL Diffusion" \
-    --save-output
-```
+    2. Fully functionable http api:
+  
+       | Feature                         | API Endpoint                | Key Parameters                                   |
+              |---------------------------------|-----------------------------|--------------------------------------------------|
+       | Set/Activate (multiple) LoRA(s) | /v1/set_lora                | lora_nickname, lora_path, strength, target       |
+       | Merge Weights                   | /v1/merge_lora_weights      | strength, target                                 |
+       | Unmerge Weights                 | /v1/unmerge_lora_weights    | -                                                |
+       | List Adapters                   | /v1/list_loras              | -                                                |
 
 
-<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_FLUX.jpg" alt="Text to Image: FLUX" style="display:block; margin-top: 20px; width: 65%;">
+- Parallelism : SP for image models, TP for some models. We also support hybrid parallelism ( combinations of Ulysses
+  Parallel, Ring Parallel, and Tensor Parallel).
+- Attention: SageAttention2 / SageAttention3, more backends (sparse) are on the way
+- Hardware: AMD / 4090 / 5090
+- SGLang-diffusion x ComfyUI Integration: We have implemented a flexible ComfyUI custom node that integrates
+  sgl-diffusion's high-performance inference engine. While ComfyUI offers exceptional flexibility through its custom
+  nodes, it lacks multi-GPU support and optimal performance. Our solution replaces ComfyUI's denoising model forward
+  pass with SGLang's optimized implementation, preserving ComfyUI's flexibility while leveraging SGLang's superior
+  inference. Users can simply replace ComfyUI's loader node with our SGLDiffusion UNET Loader to enable enhanced
+  performance without modifying existing workflows.
 
+<img src="/images/blog/sgl-diffusion-26-01/comfyui.png" style="display:block; margin: auto; width: 85%;"></img>
 
-#### Text to Image: Qwen-Image
+## Highlighted works
 
-```bash
-sglang generate --model-path=Qwen/Qwen-Image \
-    --prompt='A curious raccoon' \
-    --width=720 --height=720 --save-output
-```
+As an industrial-level serving framework, speed and stability is what we care the most.
 
-<img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/T2I_Qwen_Image.jpg" alt="Text to Image: FLUX" style="display:block; margin-top: 20px; width: 65%;">
+### 1. Layerwise Offload
 
+From our early profile, we've found that the model loading/offloading as major bottleneck, since the forward stream has
+to wait until all the weights are on-device.
 
-#### Image to Image: Qwen-Image-Edit
+To tackle this, we introduce:
 
+1. LayerwiseOffloadManager: A manager class that provides hooks for prefetching weights of next layer while forwarding
+   on the current layer
+2. OffloadableDiTMixin: A mixin class that registers LayerwiseOffloadManager's prefetch and release hooks for the
+   diffusion-transformer
 
-```bash
-sglang generate --model-path=Qwen/Qwen-Image-Edit \
-    --prompt="Convert 2D style to 3D style" --image-path="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" \
-    --width=1536 --height=1024 --save-output
-```
+This way, the per-layer forward doesn't have to wait for the copy stream, thus significantly improving the inference
+speed, especially for special models like Wan2.2, where there're multiple dits
 
+(attach diagrams to illustrate the concept, @yuhao, @nano banana?)
 
-<div style="display: flex; justify-content: center; gap: 20px;">
-  <div style="text-align: center;">
-    <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Input.jpg" alt="Input" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
-    <div style="margin-top: -25px;">Input</div>
-  </div>
-  <div style="text-align: center;">
-    <img src="https://github.com/lm-sys/lm-sys.github.io/releases/download/test/TI2I_Qwen_Image_Edit_Output.jpg" alt="Output" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
-    <div style="margin-top: -25px;">Output</div>
-  </div>
-</div>
+[Image]
 
+Layerwise offload is enabled for video models by default, it reduces peak VRAM usage while accelerating the speed.
+
+See related prs (https://github.com/sgl-project/sglang/pull/15511 , https://github.com/sgl-project/sglang/pull/16150)
+
+### 2. Kernel Improvements
+
+(please add more details to this part, @bbuf)
+
+1. Fa kernel upstream:  we find that the FlashAttention kernel used in sgl-diffusion is behind the Dao-AILab upstream
+   version, and therefore the performance is also slower than the upstream implementation. Besides, we should avoid
+   using valen format func in diffusion models. See https://github.com/sgl-project/sglang/pull/16382
+2. JIT Qk norm kernel: fuse Q/K RMSNorm into a single inplace kernel to cut launch count and memory traffic before
+   attention.
+3. FlashInfer rope: apply RoPE on Q/K inplace with FlashInfer when available (fallback otherwise), reducing RoPE
+   overhead and intermediate tensor materialization.
+4. Weight fuse (operator fusion): fuse projection + activation patterns (e.g., gate/up merge + SiLU&Mul) to reduce GEMM
+   count and elementwise launches in DiT blocks.
+5. Implementation: timestep: use a dedicated CUDA kernel for timestep sinusoidal embedding (sin/cos) to reduce per-step
+   overhead in diffusion scheduling. See https://github.com/sgl-project/sglang/pull/12995
+6. (more if i miss something here)
+
+### 3. Cache-Dit Integration
+
+We've integrated cache-dit seamless into sgl-diffusion, with only a couple of env vars, the generation speed is boosted
+by upto 169%. And it's fully compatible with torch.compile
+
+We also support Cache-DIT, Ulysses Parallel, Ring Parallel, and Tensor Parallel, along with any hybrid combination of
+these three. https://github.com/sgl-project/sglang/pull/16532 & https://github.com/sgl-project/sglang/pull/15163
+
+Furthermore, with the new run-with-diffusers backend feature, we can now integrate and refine cache-dit optimizations
+within sglang-diffusion (https://github.com/sgl-project/sglang/issues/16642)
+
+### 4. Few More Things
+
+- Diffusion Cookbook: curated recipes, best practices, and benchmarking guides for sglang-diffusion
+- Memory monitoring: peak usage statistics available across offline generation and online serving workflows
+- Profiling suite: full-stage support with step-by-step docs for PyTorch Profiler and Nsight Systems.
+
+Further Roadmap
+
+1. Disaggregated serving x omni models
+2. Sparse Attention Backends
+3. Quantization (nunchaku, nvfp4 and others)
+4. Optimizations on consumer-level GPUs
 
 ## Performance Benchmark
+
 As shown in the chart at the top of this post, we compared the performance of SGLang Diffusion:
-  - Against a popular open-source baseline, Hugging Face Diffusers. SGLang Diffusion delivers state-of-the-art performance, significantly accelerating both image and video generation.
-  - Under different parallelism setups. Both CFG-Parallel and USP deliver significant speedups compared to the single-GPU setup.
 
-
-## Roadmap and Diffusion Ecosystem
-
-Our vision is to build a comprehensive diffusion ecosystem in collaboration with the **FastVideo** team, providing an end-to-end solution from model training to high-performance inference. 
-
-The SGLang Diffusion team is centered on continuous innovation in performance and model support:
-
-- Model support and optimizations
-  - Optimize Wan, FastWan, Hunyuan, Qwen-Image series, FLUX
-  - Support LongCat-Video
-- Kernel support and fusions
-  - Quantization kernels
-  - Rotary embedding kernels
-  - Flash Attention 4 integration in sgl-kernel for blackwell
-- More server features
-  - Configurable cloud storage upload of generated files
-  - Batching support
-  - More parallelism methods
-  - Quantization
-- General architecture:
-  - Simplify the effort of supporting new models
-  - Enhance cache and attention backend supports
-
-Building this ecosystem is a community effort, and we welcome and encourage all forms of contribution. Join us in shaping the future of open-source diffusion generation.
-
-
-<img src="/images/blog/sgl-diffusion/diffusion_ecosystem.png" style="display:block; margin: auto; width: 85%;"></img>
+- Against a popular open-source baseline, Hugging Face Diffusers. SGLang Diffusion delivers state-of-the-art
+  performance, significantly accelerating both image and video generation.
+- Under different parallelism setups. Both CFG-Parallel and USP deliver significant speedups compared to the single-GPU
+  setup.
 
 ## Acknowledgment
 
-SGLang Diffusion Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ke Bao](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://mickqian.github.io)
-
-FastVideo Team: [Peiyuan Zhang](https://github.com/jzhang38), [William Lin](https://github.com/SolitaryThinker), [Yongqi Chen](https://github.com/BrianChen1129), [Kevin Lin](https://github.com/kevin314), [Wenxuan Tan](https://github.com/Edenzzzz), [Wei Zhou](https://github.com/JerryZhou54), [Runlong Su](https://github.com/rlsu9), [Jinzhe Pan](https://github.com/Eigensystem), [Hangliang Ding](https://github.com/foreverpiano), [Matthew Noto](https://github.com/RandNMR73), [You Zhou](https://github.com/PorridgeSwim), [Jiali Chen](https://github.com/Gary-ChenJL), [Hao Zhang](https://cseweb.ucsd.edu/~haozhang/)
+SGLang Diffusion
+Team: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ke Bao](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://mickqian.github.io)
 
 Special thanks to NVIDIA and Voltage Park for their compute support.
 
 ## Learn more
 
-- Roadmap: [Diffusion (2025 Q4)](https://github.com/sgl-project/sglang/issues/12799)
 - Slack channel: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A) (join via slack.sglang.io)
 
