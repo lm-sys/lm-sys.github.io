@@ -154,3 +154,5 @@ Special thanks to NVIDIA and Voltage Park for their compute support.
 ## Learn more
 
 - **Slack channel**: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A) (join via slack.sglang.io)
+- [**Cookbook for SGLang-Diffusion**](https://cookbook.sglang.io/docs/diffusion)
+- [**Documentation on SGLang-Diffusion**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs)
