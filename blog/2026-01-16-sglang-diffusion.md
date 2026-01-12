@@ -1,5 +1,5 @@
 ---
-title: "SGLang Diffusion: 2 Months After Release"
+title: "SGLang Diffusion: Two Months After Release"
 author: "The SGLang Diffusion Team"
 date: "January 16, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
@@ -12,45 +12,41 @@ Over the past two months, we've been meticulously building sglang-diffusion, and
 
 ## Overview
 
-
 **New Models**:
-   * **Day-1 support** for Flux.2 / Qwen-Image-Edit-2511 / Qwen-Image-2512 / Z-Image-Turbo / Qwen-Image-Layered / TurboWan and more.
-   * Run SGLang Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are coming (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+  - Day-0 support for Flux.2 / Qwen-Image-Edit-2511 / Qwen-Image-2512 / Z-Image-Turbo / Qwen-Image-Layered / TurboWan and more.
+  - Run SGLang Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are coming (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
-
-
-       | Base Model        | Supported LoRAs |
-       |-------------------|------------------|
-       | **Wan2.2**        | `lightx2v/Wan2.2-Distill-Loras`<br> `Cseti/wan2.2-14B-Arcane_Jinx-lora-v1` |
-       | **Wan2.1**        | `lightx2v/Wan2.1-Distill-Loras` |
-       | **Z-Image-Turbo** | `tarn59/pixel_art_style_lora_z_image_turbo`<br> `wcde/Z-Image-Turbo-DeJPEG-Lora` |
-       | **Qwen-Image**    | `lightx2v/Qwen-Image-Lightning`<br> `flymy-ai/qwen-image-realism-lora`<br> `prithivMLmods/Qwen-Image-HeadshotX`<br> `starsfriday/Qwen-Image-EVA-LoRA` |
-       | **Qwen-Image-Edit** | `ostris/qwen_image_edit_inpainting`<br> `lightx2v/Qwen-Image-Edit-2511-Lightning` |
-       | **Flux**          | `dvyio/flux-lora-simple-illustration`<br> `XLabs-AI/flux-furry-lora`<br> `XLabs-AI/flux-RealismLora` |
-
-   * **Fully functional HTTP API**:
-
-       | Feature                         | API Endpoint                | Key Parameters                                   |
-       |---------------------------------|-----------------------------|--------------------------------------------------|
-       | Set/Activate (multiple) LoRA(s) | `/v1/set_lora`              | `lora_nickname`, `lora_path`, `strength`, `target` |
-       | Merge Weights                   | `/v1/merge_lora_weights`    | `strength`, `target`                             |
-       | Unmerge Weights                 | `/v1/unmerge_lora_weights`  | -                                                |
-       | List Adapters                   | `/v1/list_loras`            | -                                                |
+**LoRA Support**:
+  - We support almost all LoRA formats for supported models. This section lists example LoRAs that have been explicitly tested and verified with each base model in the SGLang Diffusion pipeline.
+    | Base Model        | Supported LoRAs |
+    |-------------------|------------------|
+    | **Wan2.2**        | `lightx2v/Wan2.2-Distill-Loras`<br> `Cseti/wan2.2-14B-Arcane_Jinx-lora-v1` |
+    | **Wan2.1**        | `lightx2v/Wan2.1-Distill-Loras` |
+    | **Z-Image-Turbo** | `tarn59/pixel_art_style_lora_z_image_turbo`<br> `wcde/Z-Image-Turbo-DeJPEG-Lora` |
+    | **Qwen-Image**    | `lightx2v/Qwen-Image-Lightning`<br> `flymy-ai/qwen-image-realism-lora`<br> `prithivMLmods/Qwen-Image-HeadshotX`<br> `starsfriday/Qwen-Image-EVA-LoRA` |
+    | **Qwen-Image-Edit** | `ostris/qwen_image_edit_inpainting`<br> `lightx2v/Qwen-Image-Edit-2511-Lightning` |
+    | **Flux**          | `dvyio/flux-lora-simple-illustration`<br> `XLabs-AI/flux-furry-lora`<br> `XLabs-AI/flux-RealismLora` |
+  - **Fully functional HTTP API**:
+    | Feature                         | API Endpoint                | Key Parameters                                   |
+    |---------------------------------|-----------------------------|--------------------------------------------------|
+    | Set/Activate (multiple) LoRA(s) | `/v1/set_lora`              | `lora_nickname`, `lora_path`, `strength`, `target` |
+    | Merge Weights                   | `/v1/merge_lora_weights`    | `strength`, `target`                             |
+    | Unmerge Weights                 | `/v1/unmerge_lora_weights`  | -                                                |
+    | List Adapters                   | `/v1/list_loras`            | -                                                |
 
 
 **Parallelism**: SP for image models, TP for some models, alongside hybrid parallelism (combinations of Ulysses Parallel, Ring Parallel, and Tensor Parallel).
 
 **Attention Backend**: SageAttention2 / SageAttention3, more backends (sparse) are on the way.
 
-**Hardware**: AMD / 4090 / 5090.
+**Hardware Support**: AMD / 4090 / 5090.
 
-**SGLang Diffusion x ComfyUI Integration**:
-    We have implemented a flexible ComfyUI custom node that integrates SGLang Diffusion's high-performance inference engine.
-    While ComfyUI offers exceptional flexibility through its custom nodes, it lacks multi-GPU support and optimal performance. Our solution replaces ComfyUI's denoising model forward pass with SGLang's optimized implementation, preserving ComfyUI's flexibility while leveraging SGLang's superior inference. Users can simply replace ComfyUI's loader node with our SGLDiffusion UNET Loader to enable enhanced performance without modifying existing workflows.
+**SGLang Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang Diffusion's high-performance inference engine. While ComfyUI offers exceptional flexibility through its custom nodes, it lacks multi-GPU support and optimal performance. Our solution replaces ComfyUI's denoising model forward pass with SGLang's optimized implementation, preserving ComfyUI's flexibility while leveraging SGLang's superior inference. Users can simply replace ComfyUI's loader node with our SGLDiffusion UNET Loader to enable enhanced performance without modifying existing workflows.
 
-<img src="/images/blog/sgl-diffusion-26-01/comfyui.png" style="display:block; margin: auto; width: 85%;"></img>
+<img src="/images/blog/sgl-diffusion-26-01/comfyui.png" style="display:block; width: 220%; margin:15px auto 0 auto"></img>
+<p style="color:gray; text-align: center;">SGLang-Diffusion Plugin in ComfyUI</p>
 
-## Key Technical Innovations
+## Key Improvements
 
 To serve as a robust, industrial-grade framework, **speed, stability, and code quality** are our top priorities. We have refactored key components to eliminate bottlenecks and maximize hardware efficiency. Here are the highlights of our recent technical breakthroughs:
 
@@ -73,11 +69,11 @@ See related PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#1
 
 ### 2. Kernel Improvements
 
-1. **FlashAttention kernel upstream**: We found that the FlashAttention kernel used in SGLang Diffusion was behind the Dao-AILab upstream version, causing slower performance. We also now avoid using varlen format func in diffusion models. See [PR #16382](https://github.com/sgl-project/sglang/pull/16382).
-2. **JIT QK Norm Kernel**: Fused Q/K RMSNorm into a single inplace kernel to cut launch count and memory traffic before attention.
-3. **FlashInfer RoPE**: Apply RoPE on Q/K inplace with FlashInfer when available (fallback otherwise), reducing RoPE overhead and intermediate tensor materialization.
-4. **Weight Fusion (Operator Fusion)**: Fused projection + activation patterns (e.g., gate/up merge + SiLU&Mul) to reduce GEMM count and elementwise launches in DiT blocks.
-5. **Timestep Implementation**: Use a dedicated CUDA kernel for timestep sinusoidal embedding (sin/cos) to reduce per-step overhead in diffusion scheduling. See [PR #12995](https://github.com/sgl-project/sglang/pull/12995).
+- **FlashAttention kernel upstream**: We found that the FlashAttention kernel used in SGLang Diffusion was behind the Dao-AILab upstream version, causing slower performance. We also now avoid using varlen format func in diffusion models. See [PR #16382](https://github.com/sgl-project/sglang/pull/16382).
+- **JIT QK Norm Kernel**: Fused Q/K RMSNorm into a single inplace kernel to cut launch count and memory traffic before attention.
+- **FlashInfer RoPE**: Apply RoPE on Q/K inplace with FlashInfer when available (fallback otherwise), reducing RoPE overhead and intermediate tensor materialization.
+- **Weight Fusion (Operator Fusion)**: Fused projection + activation patterns (e.g., gate/up merge + SiLU&Mul) to reduce GEMM count and elementwise launches in DiT blocks.
+- **Timestep Implementation**: Use a dedicated CUDA kernel for timestep sinusoidal embedding (sin/cos) to reduce per-step overhead in diffusion scheduling. See [PR #12995](https://github.com/sgl-project/sglang/pull/12995).
 
 ### 3. Cache-DiT Integration
 
@@ -107,10 +103,10 @@ See [PR #16532](https://github.com/sgl-project/sglang/pull/16532) & [PR #15163](
 
 ## Further Roadmap
 
-1. Disaggregated serving x Omni models
-2. Sparse Attention Backends
-3. Quantization (Nunchaku, nvfp4 and others)
-4. Optimizations on consumer-level GPUs
+- Disaggregated serving x Omni models
+- Sparse Attention Backends
+- Quantization (Nunchaku, nvfp4 and others)
+- Optimizations on consumer-level GPUs
 
 ## Performance Benchmark
 
