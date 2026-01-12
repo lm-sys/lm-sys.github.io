@@ -125,9 +125,9 @@ within SGLang Diffusion (see [Issue #16642](https://github.com/sgl-project/sglan
 
 ### 4. Few More Things
 
-- **Diffusion Cookbook**: Curated recipes, best practices, and benchmarking guides for SGLang Diffusion.
+- [**Diffusion Cookbook**](https://cookbook.sglang.io/docs/diffusion/): Curated recipes, best practices, and benchmarking guides for SGLang Diffusion.
 - **Memory Monitoring**: Peak usage statistics available across offline generation and online serving workflows.
-- **Profiling Suite**: Full-stage support with step-by-step docs for PyTorch Profiler and Nsight Systems.
+- [**Profiling Suite**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/profiling.md): Full-stage support with step-by-step docs for PyTorch Profiler and Nsight Systems.
 
 ## Further Roadmap
 
@@ -147,8 +147,7 @@ As shown in the chart at the top of this post, we compared the performance of SG
 
 ## Acknowledgment
 
-**SGLang Diffusion Team
-**: [Yuhao Yang](https://github.com/yhyang201), [Xinyuan Tong](https://github.com/JustinTong0323), [Yi Zhang](https://github.com/yizhang2077), [Ke Bao](https://github.com/ispobock), [Ji Li](https://github.com/GeLee-Q/GeLee-Q), [Xi Chen](https://github.com/RubiaCx), [Laixin Xie](https://github.com/laixinn), [Yikai Zhu](https://github.com/zyksir), [Mick](https://mickqian.github.io)
+**SGLang Diffusion Team**: TBD
 
 Special thanks to NVIDIA and Voltage Park for their compute support.
 
