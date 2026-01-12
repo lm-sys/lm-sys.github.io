@@ -77,12 +77,16 @@ To tackle this, we introduced:
 2. `OffloadableDiTMixin`: A mixin class that registers `LayerwiseOffloadManager`'s prefetch and release hooks for the
    diffusion-transformer.
 
-This way, the per-layer forward doesn't have to wait for the copy stream, thus significantly improving the inference
-speed, especially for specialized models like Wan2.2, where there are multiple DiTs.
+which has the following benefits:
+  - **Compute-Loading Overlap**: Overlapping computation with weight loading eliminates stalls on the copy stream, significantly boosting inference speed — especially for multi-DiT architectures like Wan2.2
+  - **VRAM Optimization**: A reduced peak VRAM footprint enables the generation of longer video sequences and higher-resolution content
 
-<img src="/images/blog/sgl-diffusion/layerwise.png" style="display:block; margin: auto; width: 85%;"></img>
+<img src="/images/blog/sgl-diffusion-26-01/layerwise offload vs serial.png" style="display:block; margin: auto; width: 100%;"></img>
 
-Layerwise offload is enabled for video models by default; it reduces peak VRAM usage while accelerating the speed.
+<p style="color:gray; text-align: center;">Comparison with Layerwise Offload and Standard Loading</p>
+
+
+Layerwise offload is enabled for video models by default
 
 See related
 PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https://github.com/sgl-project/sglang/pull/16150)).
