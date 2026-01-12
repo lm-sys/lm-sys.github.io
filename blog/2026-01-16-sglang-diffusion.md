@@ -15,7 +15,7 @@ Over the past two months, we've been meticulously building sglang-diffusion, and
 
 **New Models**:
 
-- Day-0 support for Flux.2 / Qwen-Image-Edit-2511 / Qwen-Image-2512 / Z-Image-Turbo / Qwen-Image-Layered / TurboWan and
+- Day-0 support for Flux.2, Qwen-Image-Edit-2511, Qwen-Image-2512, Z-Image-Turbo, Qwen-Image-Layered, TurboWan and
   more.
 - Run SGLang Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are coming (
   see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
@@ -37,7 +37,7 @@ Over the past two months, we've been meticulously building sglang-diffusion, and
 - Fully functional HTTP API:
   | Feature | API Endpoint | Key Parameters |
   |---------------------------------|-----------------------------|--------------------------------------------------|
-  | Set/Activate (multiple) LoRA(s) | `/v1/set_lora`              | `lora_nickname`, `lora_path`, `strength`, `target` |
+  | Set or Activate (multiple) LoRA(s) | `/v1/set_lora`              | `lora_nickname`, `lora_path`, `strength`, `target` |
   | Merge Weights | `/v1/merge_lora_weights`    | `strength`, `target`                             |
   | Unmerge Weights | `/v1/unmerge_lora_weights`  | - |
   | List Adapters | `/v1/list_loras`            | - |
@@ -45,9 +45,9 @@ Over the past two months, we've been meticulously building sglang-diffusion, and
 **Parallelism**: SP for image models, TP for some models, alongside hybrid parallelism (combinations of Ulysses
 Parallel, Ring Parallel, and Tensor Parallel).
 
-**Attention Backend**: SageAttention2 / SageAttention3, more backends (sparse) are on the way.
+**Attention Backend**: SageAttention2 and SageAttention3, more backends (sparse) are on the way.
 
-**Hardware Support**: AMD / 4090 / 5090.
+**Hardware Support**: AMD, 4090, 5090.
 
 **SGLang Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang
 Diffusion's high-performance inference engine. While ComfyUI offers exceptional flexibility through its custom nodes, it
