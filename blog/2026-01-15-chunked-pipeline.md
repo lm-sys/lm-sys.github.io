@@ -93,7 +93,7 @@ This approach marks a critical first step from an engineering perspective to tac
 
 ### **2\. Better Overlapping: Micro-batching and Async P2P Communication**
 
-Although combining Pipeline Parallelism and Chunked Prefill can significantly reduce communication volume compared to tensor parallelism, it often suffers from pipeline bubbles where the GPU blocks while waiting for CPU metadata processing or network transfers. To eliminate this performance hazard, SGLang implements a Micro-batching Event Loop with non-blocking asynchronous peer-to-peer (P2P) communication to overlap GPU computation with CPU metadata processing and PP communication. This ensures that while one micro-batch is being computed on the GPU, the next one is already being prepared and moved into position effectively, ensuring the pipeline remains as saturated as possible.
+Although combining Pipeline Parallelism and Chunked Prefill can significantly reduce communication volume compared to tensor parallelism, it often suffers from pipeline bubbles where the GPU blocks while waiting for CPU metadata processing or network transfers. To eliminate this performance hazard, SGLang implements a Micro-batching Event Loop with non-blocking asynchronous peer-to-peer (P2P) communication to overlap GPU computation with CPU metadata processing and PP communication. This ensures that while one micro-batch is being computed on the GPU, the next one is already being prepared and moved into position effectively, ensuring the pipeline remains as saturated as possible. The code is available [here](https://github.com/sgl-project/sglang/blob/main/python/sglang/srt/managers/scheduler_pp_mixin.py).
 
 The key mechanisms of the implementation include:
 
