@@ -11,7 +11,7 @@ We are excited to introduce SGLang's highly optimized Pipeline Parallelism (PP) 
 
 <img src="/images/blog/chunked_pipeline/ds_throughput.png"
      alt="Prefill Throughput (Batch Size = 1) of DeepSeek-V3.1 on H20 (Higher is better)"
-     style="display: block; margin: 20px auto 0; width: 65%; max-width: 100%; height: auto;">
+     style="display: block; margin: 20px auto 0; width: 75%; max-width: 100%; height: auto;">
 
 <p style="color: black; text-align: center; font-size: 0.9em;">Prefill Throughput (Batch Size = 1) of DeepSeek-V3.1 on H20 (Higher is better)<br> Note: DCK 12288 (σ=0.65) means enabling Dynamic Chunking with the initial chunked prefill size set to 12K, and the smooth factor set to 0.65.</p>
 
@@ -54,7 +54,7 @@ $$
 $$
 However, for long-context prefill scenarios where the workload is substantial ($M \gg P$), this ratio decreases significantly, rendering the efficiency loss negligible compared to the communication gains. In the [**Performance Impact**](#performance-impact) section, we will evaluate the **Strong Scaling Efficiency** (i.e., the number of processors is increased while the problem size remains constant) of our PP implementation.
 
-It is worth noting that while PP offers a distinct advantage in cross-node scaling—where communication bandwidth often becomes the primary bottleneck—a pure, high-degree PP configuration is generally not recommended. This is because, for a fixed workload $M$, the pipeline bubble ratio increases proportionally with the PP size $P$. Instead, a better strategy is to leverage bubble-free parallel methods, such as TP or CP, for intra-node scaling. Since intra-node communication typically utilizes high-bandwidth interconnects like NVLink, these collectives are far less likely to become a performance bottleneck compared to cross-node transfers, allowing the system to maximize compute utilization without incurring additional pipeline overhead.
+It is worth noting that while PP offers a distinct advantage in cross-node scaling, where communication bandwidth often becomes the primary bottleneck, a pure high-degree PP configuration is generally not recommended. This is because, for a fixed workload $M$, the pipeline bubble ratio increases proportionally with the PP size $P$. Instead, a better strategy is to leverage bubble-free parallel methods, such as TP or CP, for intra-node scaling. Since intra-node communication typically utilizes high-bandwidth interconnects like NVLink, these collectives are far less likely to become a performance bottleneck compared to cross-node transfers, allowing the system to maximize compute utilization without incurring additional pipeline overhead.
 
 ### **3. Implementation Complexity and Architectural Generality**
 The implementation complexity and architectural generality of a new feature are critical factors for a modern inference system, especially for an open-source project.
@@ -69,7 +69,7 @@ The implementation complexity and architectural generality of a new feature are 
 | **Communication Pattern** | AllReduce (Per Layer) | AllGather (Per Layer) | P2P (Send/Recv) |
 | **Communication Volume** | High | Medium | **Low** |
 | **Bubble Ratio** | **0** | **0** | $\frac{P - 1}{P - 1 + M}$ |
-| **Implementation Complexity** | Low | High<br>(Attention-variant specific) | Medium |
+| **Implementation Complexity** | **Low** | High<br>(Attention-variant specific) | Medium |
 | **Architectural Generality** | Medium | Low | **High** |
 
 In conclusion, the balance of the generality and scaling efficiency makes PP not merely an alternative, but a **necessary component** for scaling long-context prefill to massive, multi-node clusters where TP and CP encounter bandwidth ceilings. In the meantime, CP has the potential to complement TP for intra-node bubble-free scaling and acceleration. **PP × CP** is already under development ([Future Roadmap](#future-roadmap)), which will be included in Part II of this blog.
@@ -89,7 +89,7 @@ SGLang’s pipeline implementation goes beyond the standard "sequential" approac
 
 Processing a 1-million-token prompt in a single forward pass would lead to massive bubbles as later stages wait for the first stage to finish. Inspired by architectures like Mooncake[\[1\]](https://dl.acm.org/doi/pdf/10.1145/3773772), BladeLLM[\[2\]](https://arxiv.org/pdf/2501.15383?), and TeraPipe[\[3\]](http://proceedings.mlr.press/v139/li21y/li21y.pdf), SGLang supports Chunked Pipeline Parallelism. Instead of feeding the full prompt into the pipeline, SGLang partitions the prompt into smaller "chunks" (e.g., 4K or 6K tokens). These chunks flow through the pipeline stages like micro-batches. By breaking long prompts into smaller chunks, the system can "pipeline" the prefill phase. As soon as the first stage finishes computing the hidden states for Chunk 1 and initiates PP communication, it immediately moves to processing Chunk 2, while Stage 2 simultaneously begins processing Chunk 1. This reduces the pipeline startup latency from being proportional to the total sequence length to being proportional only to the first chunk size.
 
-This approach marks a critical first step from an engineering perspective to tackle the challenges of ultra-long contexts. Notably, SGLang pioneered the support for this feature more than six months ago, underscoring its long-standing commitment to optimizing real-world, long-context inference.
+This approach marks a critical first step from an engineering perspective to tackle the challenges of ultra-long contexts. Notably, SGLang pioneered the support for this feature more than six months ago ([#5724](https://github.com/sgl-project/sglang/pull/5724), [#8846](https://github.com/sgl-project/sglang/pull/8846)), underscoring its long-standing commitment to optimizing real-world, long-context inference.
 
 ### **2\. Better Overlapping: Micro-batching and Async P2P Communication**
 
