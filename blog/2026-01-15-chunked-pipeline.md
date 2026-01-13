@@ -122,9 +122,9 @@ We tested different models using a large PP size and found that they all conform
 Therefore, if SGLang still **utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will be greater than the theoretical expectation (i.e., *(P - 1)/(P - 1 + M)*)**.
 
 To address this issue, SGLang introduces a dynamic chunking mechanism to predict the optimal size for the next chunk such that it satisfies this condition:
-<center>$$ \text{Runtime}(L + \text{Next Chunk Size}) - \text{Runtime}(L) = \text{Runtime}(\text{Initial Chunk Size}) $$</center>
+<center>$$ \text{Runtime}(L + \Delta L) - \text{Runtime}(L) = \text{Runtime}(\text{Initial Chunk Size}) $$</center>
 
-where ***L*** denotes the Prefix Sequence Length. By profiling a series of requests with different ITLs, we model the cumulative runtime as a quadratic function, and use it to simulate the performance of a given sequence length and solve the length of the next chunk for each ***L***. Since the computation/communication complexity of the Attention mechanism scales with ***L***, the next chunk size will be progressively reduced as ***L*** grows to maintain an aligned chunk execution time across pipeline stages.
+where $L$ denotes the Prefix Sequence Length, and $\Delta L$ denotes the Next Chunk Size. By profiling a series of requests with different ITLs, we model the cumulative runtime as a quadratic function, and use it to simulate the performance of a given sequence length and solve the length of the next chunk for each $L$. Since the computation/communication complexity of the Attention mechanism scales with $L$, the next chunk size will be progressively reduced as $L$ grows to maintain an aligned chunk execution time across pipeline stages.
 
 Based on this method, the scheduler can predict and dynamically reduce the chunk size during runtime to minimize the bubbles caused by the stage misalignment.
 
