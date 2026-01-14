@@ -104,16 +104,15 @@ which has the following benefits:
 <p style="color:gray; text-align: center;">Comparison with Layerwise Offload and Standard Loading</p>
 
 
-Layerwise offload is enabled for video models by default
+Layerwise offload is now enabled for video models by default.
 
-See related
-PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https://github.com/sgl-project/sglang/pull/16150)).
+See related PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https://github.com/sgl-project/sglang/pull/16150)).
 
 ### 2. Kernel Improvements
 
 - **FlashAttention kernel upstream**: We found that the FlashAttention kernel used in SGLang Diffusion was behind the
   Dao-AILab upstream version, causing slower performance. We also now avoid using varlen format func in diffusion
-  models. See [PR #16382](https://github.com/sgl-project/sglang/pull/16382).
+  models.
 - **JIT QK Norm Kernel**: Fused Q/K RMSNorm into a single inplace kernel to cut launch count and memory traffic before
   attention.
 - **FlashInfer RoPE**: Apply RoPE on Q/K inplace with FlashInfer when available (fallback otherwise), reducing RoPE
@@ -121,7 +120,10 @@ PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https:
 - **Weight Fusion (Operator Fusion)**: Fused projection + activation patterns (e.g., gate/up merge + SiLU&Mul) to reduce
   GEMM count and elementwise launches in DiT blocks.
 - **Timestep Implementation**: Use a dedicated CUDA kernel for timestep sinusoidal embedding (sin/cos) to reduce
-  per-step overhead in diffusion scheduling. See [PR #12995](https://github.com/sgl-project/sglang/pull/12995).
+  per-step overhead in diffusion scheduling.
+
+
+See related PRs ([#16382](https://github.com/sgl-project/sglang/pull/16382), [PR #12995](https://github.com/sgl-project/sglang/pull/12995)).
 
 ### 3. Cache-DiT Integration
 
