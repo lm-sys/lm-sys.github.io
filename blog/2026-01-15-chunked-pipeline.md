@@ -119,14 +119,14 @@ We tested different models using a large PP size and found that they all conform
 <p style="color: black; text-align: center; font-size: 0.9em;">Fig. 2: Profile result of the PP rank 7 with fixed chunked prefill size</p>
 
 
-Therefore, if SGLang still **utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will be greater than the theoretical expectation (i.e., *(P - 1)/(P - 1 + M)*)**.
+Therefore, if SGLang still **utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will be greater than the theoretical expectation (i.e., $\frac{P - 1}{P - 1 + M}$)**.
 
 To address this issue, SGLang introduces a dynamic chunking mechanism to predict the optimal size for the next chunk such that it satisfies this condition:
 <center>$$ \text{Runtime}(L + \Delta L) - \text{Runtime}(L) = \text{Runtime}(\text{Initial Chunk Size}) $$</center>
 
 where $L$ denotes the Prefix Sequence Length, and $\Delta L$ denotes the Next Chunk Size. By profiling a series of requests with different ITLs, we model the cumulative runtime as a quadratic function of sequence length. Using this model, we solve the optimal next chunk size $\Delta L$ for any given prefix length $L$. Since the computation/communication complexity of the Attention mechanism scales with $L$, the next chunk size will be progressively reduced as $L$ grows to maintain an aligned chunk execution time across pipeline stages.
 
-Based on this method, the scheduler can predict and dynamically reduce the chunk size during runtime to minimize the bubbles caused by the stage misalignment. To be noticed, if `--page-size` is set, the scheduler will round the predicted dynamic chunk size to the nearest multiple of the page size to ensure memory alignment.
+Based on this method, the scheduler can predict and dynamically reduce the chunk size during runtime to minimize the bubbles caused by the stage misalignment. To be noticed, the scheduler does not use the raw predicted value. To facilitate efficient KVCache memory management and ensure alignment with hardware execution constraints, the calculated chunk size is aligned downward to the nearest multiple of max(`--page-size`, 64).
 
 <img src="/images/blog/chunked_pipeline/pp_bubbles_after.jpg"
      alt="Fig. 3: Pipeline diagram with perfect dynamic chunking"
