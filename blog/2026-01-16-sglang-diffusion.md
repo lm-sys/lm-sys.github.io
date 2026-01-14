@@ -46,8 +46,12 @@ Parallel, Ring Parallel, and Tensor Parallel).
 **Hardware Support**: AMD, 4090, 5090.
 
 **SGLang Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang
-Diffusion's high-performance inference engine. While ComfyUI offers exceptional flexibility through its custom nodes, it
-lacks multi-GPU support and optimal performance. Our solution replaces ComfyUI's denoising model forward pass with
+Diffusion's high-performance inference engine.
+
+While ComfyUI offers exceptional flexibility through its custom nodes, it
+lacks multi-GPU support and optimal performance.
+
+Our solution replaces ComfyUI's denoising model forward pass with
 SGLang's optimized implementation, preserving ComfyUI's flexibility while leveraging SGLang's superior inference. Users
 can simply replace ComfyUI's loader node with our SGL-Diffusion UNET Loader to enable enhanced performance without
 modifying existing workflows.
@@ -55,19 +59,20 @@ modifying existing workflows.
 <img src="/images/blog/sgl-diffusion-26-01/comfyui.png" style="display:block; width: 220%; margin:15px auto 0 auto"></img>
 <p style="color:gray; text-align: center;">SGLang-Diffusion Plugin in ComfyUI</p>
 
-
 ## Performance Benchmark
 
-<iframe width="984" height="522" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1022178651&amp;format=interactive"></iframe>
+<iframe width="984" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1022178651&amp;format=interactive"></iframe>
 
 <br>
 
-<iframe width="984" height="567" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=174425525&amp;format=interactive"></iframe>
-
+<iframe width="984" height="800" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=174425525&amp;format=interactive"></iframe>
 
 Here are some performance benchmark results:
-- We compared the performance of SGLang-Diffusion with all popular models (including the SGLang-Diffusion in 06/11/2025). **SGLang-Diffusion** delivers the fastest speed among across all popular models.
-- We compared the performance of SGLang Diffusion under different hardware and parallelism setting with one of the fastest vendor.
+
+- We compared the performance of SGLang-Diffusion with all popular models (including the SGLang-Diffusion in
+  06/11/2025). **SGLang-Diffusion** delivers the fastest speed across all popular models, up to 5x compared to others.
+- We compared the performance of SGLang Diffusion under different hardware and parallelism setting with one of the
+  fastest vendor.
 
 ## Key Improvements
 
@@ -88,8 +93,11 @@ To tackle this, we introduced:
    diffusion-transformer.
 
 which has the following benefits:
-  - **Compute-Loading Overlap**: Overlapping computation with weight loading eliminates stalls on the copy stream, significantly boosting inference speed — especially for multi-DiT architectures like Wan2.2
-  - **VRAM Optimization**: A reduced peak VRAM footprint enables the generation of longer video sequences and higher-resolution content
+
+- **Compute-Loading Overlap**: Overlapping computation with weight loading eliminates stalls on the copy stream,
+  significantly boosting inference speed — especially for multi-DiT architectures like Wan2.2
+- **VRAM Optimization**: A reduced peak VRAM footprint enables the generation of longer video sequences and
+  higher-resolution content
 
 <img src="/images/blog/sgl-diffusion-26-01/layerwise offload vs serial.png" style="display:block; margin: auto; width: 100%;"></img>
 
@@ -120,7 +128,8 @@ PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https:
 We've integrated [Cache-DiT🤗](https://github.com/vipshop/cache-dit), the most popular framework for DiT cache,
 seamlessly into SGLang Diffusion, fully compatible with `torch.compile`, Ulysses Parallel, Ring Parallel, and Tensor
 Parallel, along with any hybrid combination of these three.
-See [PR #16532](https://github.com/sgl-project/sglang/pull/16532) & [PR #15163](https://github.com/sgl-project/sglang/pull/15163) for implementation details.
+See [PR #16532](https://github.com/sgl-project/sglang/pull/16532) & [PR #15163](https://github.com/sgl-project/sglang/pull/15163)
+for implementation details.
 
 With only a couple of environment variables, the generation speed is boosted by **up to** 169%.
 
@@ -129,8 +138,8 @@ Here is an example to enable Cache-DiT in sglang-diffusion:
 ```bash
 SGLANG_CACHE_DIT_ENABLED=true \
 SGLANG_CACHE_DIT_SCM_PRESET=fast \
-sglang generate --model-path="Qwen/Qwen-Image" --prompt="Cinematic establishing shot of a city at dusk"
---save-output
+sglang generate --model-path=Qwen/Qwen-Image --prompt="Cinematic establishing shot of a city at dusk"
+  --save-output
 ```
 
 Furthermore, with the new run-with-diffusers backend feature, we can now integrate and refine Cache-DiT optimizations
@@ -138,9 +147,11 @@ within SGLang Diffusion (see [Issue #16642](https://github.com/sgl-project/sglan
 
 ### 4. Few More Things
 
-- [**Diffusion Cookbook**](https://cookbook.sglang.io/docs/diffusion/): Curated recipes, best practices, and benchmarking guides for SGLang Diffusion.
 - **Memory Monitoring**: Peak usage statistics available across offline generation and online serving workflows.
-- [**Profiling Suite**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/profiling.md): Full-stage support with step-by-step docs for PyTorch Profiler and Nsight Systems.
+- [**Profiling Suite**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/profiling.md):
+  Full-stage support with step-by-step docs for PyTorch Profiler and Nsight Systems.
+- [**Diffusion Cookbook**](https://cookbook.sglang.io/docs/diffusion/): Curated recipes, best practices, and
+  benchmarking guides for SGLang Diffusion.
 
 ## Further Roadmap
 
@@ -148,15 +159,6 @@ within SGLang Diffusion (see [Issue #16642](https://github.com/sgl-project/sglan
 - Sparse Attention Backends
 - Quantization (Nunchaku, nvfp4 and others)
 - Optimizations on consumer-level GPUs
-
-## Performance Benchmark
-
-As shown in the chart at the top of this post, we compared the performance of SGLang Diffusion:
-
-- Against a popular open-source baseline, Hugging Face Diffusers. SGLang Diffusion delivers state-of-the-art
-  performance, significantly accelerating both image and video generation.
-- Under different parallelism setups. Both CFG-Parallel and USP deliver significant speedups compared to the single-GPU
-  setup.
 
 ## Acknowledgment
 
