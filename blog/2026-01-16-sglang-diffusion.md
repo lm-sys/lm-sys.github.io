@@ -1,11 +1,11 @@
 ---
-title: "SGLang Diffusion: Two Months After Release"
-author: "The SGLang Diffusion Team"
+title: "SGLang-Diffusion: Two Months After Release"
+author: "The SGLang-Diffusion Team"
 date: "January 16, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 ---
 
-Since its release in early November, **SGLang Diffusion** has gained significant attention and widespread adoption
+Since its release in early November, **SGLang-Diffusion** has gained significant attention and widespread adoption
 within the community. We are deeply grateful for the extensive feedback and growing number of contributions from
 open-source developers.
 
@@ -16,12 +16,12 @@ Over the past two months, we've been meticulously building sglang-diffusion, and
 **New Models**:
 
 - Day-0 support for Flux.2, Qwen-Image-Edit-2511, Qwen-Image-2512, Z-Image-Turbo, Qwen-Image-Layered, TurboWan, GLM-Image and more.
-- Run SGLang Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are coming (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+- Run SGLang-Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are coming (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 **LoRA Support**:
 
 - We support almost all LoRA formats for supported models. This section lists example LoRAs that have been explicitly
-  tested and verified with each base model in the SGLang Diffusion pipeline.
+  tested and verified with each base model in the SGLang-Diffusion pipeline.
   | Base Model | Supported LoRAs |
   |-------------------|------------------|
   | **Wan2.2**        | `lightx2v/Wan2.2-Distill-Loras`<br> `Cseti/wan2.2-14B-Arcane_Jinx-lora-v1` |
@@ -45,7 +45,7 @@ Parallel, Ring Parallel, and Tensor Parallel).
 
 **Hardware Support**: AMD, 4090, 5090.
 
-**SGLang Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang
+**SGLang-Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang
 Diffusion's high-performance inference engine.
 
 While ComfyUI offers exceptional flexibility through its custom nodes, it
@@ -71,7 +71,7 @@ Here are some performance benchmark results:
 
 - We compared the performance of SGLang-Diffusion with all popular models (including the SGLang-Diffusion in
   06/11/2025). **SGLang-Diffusion** delivers the fastest speed across all popular models, up to 5x compared to others.
-- We compared the performance of SGLang Diffusion under different hardware and parallelism setting with one of the
+- We compared the performance of SGLang-Diffusion under different hardware and parallelism setting with one of the
   fastest vendor.
 
 ## Key Improvements
@@ -110,7 +110,7 @@ See related PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#1
 
 ### 2. Kernel Improvements
 
-- **FlashAttention kernel upstream**: We found that the FlashAttention kernel used in SGLang Diffusion was behind the
+- **FlashAttention kernel upstream**: We found that the FlashAttention kernel used in SGLang-Diffusion was behind the
   Dao-AILab upstream version, causing slower performance. We also now avoid using varlen format func in diffusion
   models.
 - **JIT QK Norm Kernel**: Fused Q/K RMSNorm into a single inplace kernel to cut launch count and memory traffic before
@@ -123,14 +123,14 @@ See related PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#1
   per-step overhead in diffusion scheduling.
 
 
-See related PRs ([#16382](https://github.com/sgl-project/sglang/pull/16382), [PR #12995](https://github.com/sgl-project/sglang/pull/12995)).
+See related PRs ([#16382](https://github.com/sgl-project/sglang/pull/16382), [#12995](https://github.com/sgl-project/sglang/pull/12995)).
 
 ### 3. Cache-DiT Integration
 
 We've integrated [Cache-DiT🤗](https://github.com/vipshop/cache-dit), the most popular framework for DiT cache,
-seamlessly into SGLang Diffusion, fully compatible with `torch.compile`, Ulysses Parallel, Ring Parallel, and Tensor
+seamlessly into SGLang-Diffusion, fully compatible with `torch.compile`, Ulysses Parallel, Ring Parallel, and Tensor
 Parallel, along with any hybrid combination of these three.
-See [PR #16532](https://github.com/sgl-project/sglang/pull/16532) & [PR #15163](https://github.com/sgl-project/sglang/pull/15163)
+See [#16532](https://github.com/sgl-project/sglang/pull/16532) & [#15163](https://github.com/sgl-project/sglang/pull/15163)
 for implementation details.
 
 With only a couple of environment variables, the generation speed is boosted by **up to** 169%.
@@ -145,7 +145,7 @@ sglang generate --model-path=Qwen/Qwen-Image --prompt="Cinematic establishing sh
 ```
 
 Furthermore, with the new run-with-diffusers backend feature, we can now integrate and refine Cache-DiT optimizations
-within SGLang Diffusion (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+within SGLang-Diffusion (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 ### 4. Few More Things
 
@@ -153,7 +153,7 @@ within SGLang Diffusion (see [Issue #16642](https://github.com/sgl-project/sglan
 - [**Profiling Suite**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/profiling.md):
   Full-stage support with step-by-step docs for PyTorch Profiler and Nsight Systems.
 - [**Diffusion Cookbook**](https://cookbook.sglang.io/docs/diffusion/): Curated recipes, best practices, and
-  benchmarking guides for SGLang Diffusion.
+  benchmarking guides for SGLang-Diffusion.
 
 ## Further Roadmap
 
@@ -164,7 +164,7 @@ within SGLang Diffusion (see [Issue #16642](https://github.com/sgl-project/sglan
 
 ## Acknowledgment
 
-**SGLang Diffusion Team**: TBD
+**SGLang-Diffusion Team**: TBD
 
 Special thanks to NVIDIA and Voltage Park for their compute support.
 
