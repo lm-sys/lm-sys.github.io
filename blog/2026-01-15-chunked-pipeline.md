@@ -126,7 +126,7 @@ To address this issue, SGLang introduces a dynamic chunking mechanism to predict
 
 where $L$ denotes the Prefix Sequence Length, and $\Delta L$ denotes the Next Chunk Size. By profiling a series of requests with different ITLs, we model the cumulative runtime as a quadratic function of sequence length. Using this model, we solve the optimal next chunk size $\Delta L$ for any given prefix length $L$. Since the computation/communication complexity of the Attention mechanism scales with $L$, the next chunk size will be progressively reduced as $L$ grows to maintain an aligned chunk execution time across pipeline stages.
 
-Based on this method, the scheduler can predict and dynamically reduce the chunk size during runtime to minimize the bubbles caused by the stage misalignment.
+Based on this method, the scheduler can predict and dynamically reduce the chunk size during runtime to minimize the bubbles caused by the stage misalignment. To be noticed, if `--page-size` is set, the scheduler will round the predicted dynamic chunk size to the nearest multiple of the page size to ensure memory alignment.
 
 <img src="/images/blog/chunked_pipeline/pp_bubbles_after.jpg"
      alt="Fig. 3: Pipeline diagram with perfect dynamic chunking"
