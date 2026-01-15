@@ -6,7 +6,7 @@ Large Model Systems (LMSYS Corp.) is a 501(c)(3) non-profit focused on incubatin
 Our mission is to make large AI models accessible to everyone by co-developing open models, datasets, systems, and evaluation tools. We conduct cutting-edge machine learning research, develop open-source software, train large language models for broad accessibility, and build distributed systems to optimize their training and inference.
 
 ## Directors and officers
-[Ying Sheng](https://sites.google.com/view/yingsheng/home), [Lianmin Zheng](https://lmzheng.net/), [Wei-Lin Chiang](https://infwinston.github.io/), [Zihao Ye](https://homes.cs.washington.edu/~zhye/), [Yusi Chen]()
+[Ying Sheng](https://sites.google.com/view/yingsheng/home), [Lianmin Zheng](https://lmzheng.net/), [Wei-Lin Chiang](https://infwinston.github.io/), [Zihao Ye](https://homes.cs.washington.edu/~zhye/), [Yusi Chen](), [Tiancheng Xie](https://niconiconi.github.io/en_index.html).
 
 ## Members of flagship projects
 **SGLang** major developers:
