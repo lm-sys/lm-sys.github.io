@@ -5,10 +5,9 @@ date: "January 16, 2026"
 previewImg: /images/blog/chunked_pipeline/preview_cpp.jpg
 ---
 
-
-# Let Speed Be With Stability: All-In-One Solution to Training-Inference Mismatch with Miles
-
 > TL;DR: We investigate the "Training-Inference Mismatch" in LLM-RL--a phenomenon where numerical inconsistencies between rollout and training engines threaten stability. We introduce two comprehensive solutions implemented in Miles: Truly On Policy training (backend alignment for bitwise precision) and Algorithmic Mitigation (correction via TIS/MIS). While Miles demonstrates impressive stability in practice, we provide these robust tools to ensure correctness and efficiency for the broader RL community.
+
+## Introduction
 
 The SGLang RL Team and the Miles community have recently conducted some interesting explorations around RL training stability and acceleration:
 
@@ -46,7 +45,7 @@ Most notably, Miles has demonstrated extreme industrial-grade stability during t
 
 However, mismatch remains a silent, stochastic threat—a 'black swan' event within the Miles ecosystem, rather than the daily struggle seen in other setups. After hundreds of attempts, we finally isolated a rare, specific MoE trajectory that exhibited a clear collapse. This specific case served as our "laboratory" to test our advanced solutions. We confirmed that while a baseline implementation might struggle to recover from such a "poisoned" state, our Algorithmic Mitigation (MIS/TIS) successfully rescues the run.
 
-In this context, we provide these tools not because Miles is fragile, but to offer a surgical fail-safe for the extreme pressures of training the next generation of frontier models, ensuring that even a 1-in-300 edge case cannot derail your progress.
+**In this context, we provide these tools not because Miles is fragile, but to offer a surgical fail-safe for the extreme pressures of training the next generation of frontier models, ensuring that even a 1-in-300 edge case cannot derail your progress.**
 
 ## Why Training and Inference Can Be Different
 
@@ -67,7 +66,7 @@ We provide these options to the community and try our best to make RL training m
 
 As we revealed, the key to fully eliminating the mismatch is to align all the operator backends between training and rollout—making every operation in training and inference bitwise-identical. To achieve this goal, we carefully selected the kernels we used for each model component.
 
-Specifically, we use batch-invariant kernels: This is a prerequisite for Truly On Policy, and we adopted the kernels from the Thinking Machines. This implementation provides the batch-invariant kernels for RMSNorm, Matmul, and other common operators, including log_softmax and mean.
+Specifically, we use batch-invariant kernels: This is a prerequisite for Truly On Policy, and we adopted the kernels from the Thinking Machines. This implementation provides the batch-invariant kernels for RMSNorm, Matmul, and other common operators, including log softmax and mean.
 
 Based on this implementation, we added the following implementations and optimizations to FSDP:
 
@@ -80,105 +79,67 @@ To Megatron, the implementation is similar. At the final point, we get the log p
 
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/radixark/miles/refs/heads/main/examples/true_on_policy_vlm/diff.png" alt="Truly On Policy" width="50%">
+  <img src="https://raw.githubusercontent.com/radixark/miles/refs/heads/main/examples/true_on_policy_vlm/diff.png" alt="Truly On Policy" style="width: 50%;">
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/radixark/miles/refs/heads/main/examples/true_on_policy/src/train_rollout_abs_diff.png" alt="Truly On Policy" width="50%">
+  <img src="https://raw.githubusercontent.com/radixark/miles/refs/heads/main/examples/true_on_policy/src/train_rollout_abs_diff.png" alt="Truly On Policy" style="width: 50%;">
 </div>
 
 <div align="center">
-  <img src="./pics/megatron-truly-on-policy.png" alt="Megatron Truly On Policy" width="50%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/megatron-truly-on-policy.png" alt="Megatron Truly On Policy" style="width: 50%;">
 </div>
-
-<!-- 这三张图展示了我们在三种 setting 下（FSDP + VLM + Dense Model，FSDP + LLM + Dense Model，Megatron + LLM + Dense Model ）Truly On Policy 特性的效果。注意到，在开启 Truly On Policy 模式后，训练和推理的 log probs 的绝对差值都严格为 0，这证明了我们 Truly On Policy feature 的有效性。
-
-需要格外强调的是，即便我们已经付出了相当多的努力，Truly On Policy 仍旧处于初始阶段。对于不同的模型架构，各种并行策略，甚至是不同的硬件设备，每个变量都引入了指数级的复杂度。我们仍旧在不断探索和优化 Truly On Policy 的实现，并且如我们前文所述，目前的 Truly On Policy 模式只能对 Valina Dense LLM 模型有效。在 Dense 模型上，我们从未观察到 Miles 因为 training-inference mismatch 而 collapse。因此，即便开启了 Truly On Policy 模式，我们并没有见到 reward 等指标有更好的趋势。而且，Truly On Policy 模式由于会对 Megatron 和 FSDP 的实现进行许多侵入性修改，一方面导致复现困难，另一方面性能上也相比原生实现有一定损失。 -->
 
 These three figures demonstrate the effects of our Truly On Policy feature under three different settings (FSDP + VLM + Dense Model, FSDP + LLM + Dense Model, and Megatron + LLM + Dense Model). Notably, after enabling Truly On Policy mode, the absolute difference between training and inference log probs is strictly bit-wise identical, which proves the effectiveness of our Truly On Policy feature.
 
-⚠️ It is important to emphasize that despite our significant efforts, Truly On Policy is still in its early stages. Different model architectures, various parallelization strategies, and even different hardware devices each introduce exponential levels of complexity. We are continuing to explore and optimize the implementation of Truly On Policy. As mentioned earlier, the current Truly On Policy mode is only effective for vanilla dense LLM models. On dense models, we have never observed Miles collapsing due to training-inference mismatch. Therefore, even with Truly On Policy enabled, we haven't seen better trends in metrics like rewards. Furthermore, because Truly On Policy requires many invasive modifications to the implementations of Megatron and FSDP, it is difficult to reproduce and suffers from some performance loss compared to native implementations.
+**It is important to emphasize that despite our significant efforts, Truly On Policy is still in its early stages.** Different model architectures, various parallelization strategies, and even different hardware devices each introduce exponential levels of complexity and there is no universal solution. We are continuing to explore and optimize the implementation of Truly On Policy. As mentioned earlier, the current Truly On Policy mode is only effective for vanilla dense LLM models. On dense models, we have never observed Miles collapsing due to training-inference mismatch. Therefore, even with Truly On Policy enabled, we haven't seen better trends in metrics like rewards. Furthermore, because Truly On Policy requires many invasive modifications to the implementations of Megatron and FSDP, it is difficult to reproduce and suffers from some performance loss compared to native implementations.
 
 ## Algorithmic Mitigation
 
 <div align="center">
-  <img src="pics/algorithmic-mitigation.png" alt="Algorithmic Mitigation" width="50%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/algorithmic-mitigation.png" alt="Algorithmic Mitigation" style="width: 50%;">
 </div>
 
 Let's further look at why this mismatch matters from an algorithmic perspective. The original PPO objective is shown below, where $\pi_\theta$ denotes the current policy being optimized and used to compute the training loss, and $\pi_{\text{old}}$ denotes the behavior policy that generated the rollout data (i.e., the action probabilities from the model before the current update step).
 
-$$\mathcal{L}_{\text{PPO}}(\theta)
-= - \mathbb{E}_{x \sim \mathcal{D}} \mathbb{E}_{y \sim \pi_{\textcolor{red}{\text{old}}}} \left[
-  \sum_{t=0}^{|y|-1}
-  \min \left(
-    \frac{\pi_\theta(y_t \mid x, y_{<t})}{\pi_{\textcolor{red}{\text{old}}}(y_t \mid x, y_{<t})} A_t,
-    \text{clip}\left(
-      \frac{\pi_\theta(y_t \mid x, y_{<t})}{\pi_{\textcolor{red}{\text{old}}}(y_t \mid x, y_{<t})},
-      1 - \epsilon,
-      1 + \epsilon
-    \right) A_t
-  \right)
-\right]$$
+<div align="center">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/original-ppo-latex.png" alt="Algorithmic Mitigation" style="width: 100%;">
+</div>
+
 
 This is the basic PPO algorithm with the training-inference mismatch issue when the output of SGLang and Megatron does not exactly match. In this formula, the policy used for sampling comes from SGLang, while the one used for computing loss comes from Megatron. This mismatch makes the PPO loss an incorrect form of importance sampling.
 
-$$\mathcal{L}_{\text{PPO}}(\theta)
-= - \mathbb{E}_{x \sim \mathcal{D}} \mathbb{E}_{y \sim \pi_{\textcolor{red}{\text{SGLang}}}} \left[
-  \sum_{t=0}^{|y|-1}
-  \min \left(
-    \frac{\pi_\theta(y_t \mid x, y_{<t})}{\pi_{\textcolor{blue}{\text{Megatron}}}(y_t \mid x, y_{<t})} A_t,
-    \text{clip}\left(
-      \frac{\pi_\theta(y_t \mid x, y_{<t})}{\pi_{\textcolor{blue}{\text{Megatron}}}(y_t \mid x, y_{<t})},
-      1 - \epsilon,\,
-      1 + \epsilon
-    \right) A_t
-  \right)
-\right]$$
+<div align="center">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/indeed-ppo-latex.png" alt="Algorithmic Mitigation" style="width: 100%;">
+</div>
+
 
 ### By-Passing Old Log-Prob in PPO Importance Sampling
 
 <div align="center">
-  <img src="pics/bypassing-ppo.png" alt="Bypassing and Unified PPO Importance Sampling" width="50%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/bypassing-ppo.png" alt="Bypassing and Unified PPO Importance Sampling" style="width: 50%;">
 </div>
 
 To achieve algorithmic correctness, one may directly use the rollout engine's log-probs as the old policy in offline PPO's importance sampling, rather than the recomputed log-probs from the training engine. Then it becomes the correct math form:
 
-$$\mathcal{L}_{\text{PPO}}(\theta)
-= - \mathbb{E}_{x \sim \mathcal{D}} \mathbb{E}_{y \sim \pi_{\textcolor{red}{\text{SGLang}}}} \left[
-  \sum_{t=0}^{|y|-1}
-  \min \left(
-    \frac{\pi_\theta(y_t \mid x, y_{<t})}{\pi_{\textcolor{red}{\text{SGLang}}}(y_t \mid x, y_{<t})} A_t,
-    \text{clip}\left(
-      \frac{\pi_\theta(y_t \mid x, y_{<t})}{\pi_{\textcolor{red}{\text{SGLang}}}(y_t \mid x, y_{<t})},
-      1 - \epsilon,
-      1 + \epsilon
-    \right) A_t
-  \right)
-\right]$$
+<div align="center">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/bypass-ppo-latex.png" alt="Bypassing and Unified PPO Importance Sampling" style="width: 100%;">
+</div>
+
 
 In this way, the log_prob recomputation on the training engine will be skipped - it will save one forward pass computation on all the generated trajectories.
 
 ### Decoupled PPO Importance Sampling
 
 <div align="center">
-  <img src="pics/decoupled-ppo.png" alt="Decoupled, 3-policy PPO Importance Sampling" width="50%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/decoupled-ppo.png" alt="Decoupled, 3-policy PPO Importance Sampling" style="width: 50%;">
 </div>
 
 However, sometimes you may want to decouple the training-rollout mismatch from the general off-policy importance sampling. Decoupled PPO achieves batch-independent PPO by decoupling two roles: Proximal Policy (anchor policy for PPO clipping, control update size) and Behavior Policy (for off-policy correction in importance sampling). Therefore, there are 3 roles engaged in this mode: target policy  $\pi_\theta$ , proximal policy $\pi_{\textcolor{blue}{\text{old}}}$, and behavior policy $\pi_{\textcolor{red}{\text{SGLang}}}$. $\pi_{\textcolor{blue}{\text{old}}}$ is recomputed with Megatron at the beginning of each training step. See reference 6 and 7 for details. The total formula is below:
 
-$$\mathcal{L}_{\text{PPO-decoupled}}(\theta)
-= - \mathbb{E}_{x \sim \mathcal{D}} \mathbb{E}_{y \sim \pi_{\textcolor{red}{\text{SGLang}}}} \left[
-  \sum_{t=0}^{|y|-1}
-  \frac{\pi_{\textcolor{blue}{\text{old}}}(y_t \mid x, y_{<t})}{\pi_{\textcolor{red}{\text{SGLang}}}(y_t \mid x, y_{<t})}
-  \min \left(
-    \frac{\pi_\theta(y_t \mid x, y_{<t})}{\pi_{\textcolor{blue}{\text{old}}}(y_t \mid x, y_{<t})} A_t,
-    \mathrm{clip}\left(
-      \frac{\pi_\theta(y_t \mid x, y_{<t})}{\pi_{\textcolor{blue}{\text{old}}}(y_t \mid x, y_{<t})},
-      1 - \epsilon,
-      1 + \epsilon
-    \right) A_t
-  \right)
-\right].$$
+<div align="center">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/decoupled-ppo-latex.png" alt="Decoupled, 3-policy PPO Importance Sampling" style="width: 100%;">
+</div>
 
 The first importance ratio $\frac{\pi_{\text{old}}(y|x)}{\pi_{\text{SGLang}}(y|x)}$ naturally behaves like a dynamic learning-rate scaling term. When the rollout distribution deviates from the proximal policy, the ratio shrinks the effective update (similar to trust-region control). This directly connects to the later smoothing strategy that prevents large updates induced by rollout-training mismatch.
 
@@ -229,12 +190,12 @@ Due to limited resource and time, we chose to use GRPO instead of PPO to demonst
 - Algorithm: REINFORCE (Williams et al. 1992)
 
 <div align="center">
-  <img src="pics/mismatch-existence.png" alt="Existence of Mismatch" width="50%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/mismatch-existence.png" alt="Existence of Mismatch" style="width: 50%;">
 </div>
 
 <p align="center">
-  <img src="pics/base-eval.png" width="45%" />
-  <img src="pics/base-reward.png" width="45%" />
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/base-eval.png" style="width: 45%;" />
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/base-reward.png" style="width: 45%;" />
 </p>
 
 You can see in the initial step of training, as the model learns and perplexity drops, K3 KL actually drops. But after 600 steps, although the train and eval reward remains stable, the K3 KL metrics start to increase dramatically, indicating the existence of training and rollout mismatch.
@@ -242,12 +203,12 @@ You can see in the initial step of training, as the model learns and perplexity 
 On MoE models, the diff in logits causes the training and inference models to select different activated experts, leading to significantly larger train-inference mismatch in MoE models compared to dense models (although on Qwen30B-A3B, when not collapsed, the magnitude of K3 KL is similar to Qwen3-4B, possibly). We successfully found cases where models collapse due to train-inference mismatch (experimental settings are the same as dense models except for the base model). Below are some specific experimental results.
 
 <div align="center">
-  <img src="pics/moe-origin-reward.png" alt="moe origin reward" width="50%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-origin-reward.png" alt="moe origin reward" style="width: 50%;">
 </div>
 
 <div align="center">
-  <img src="pics/moe-origin-mis-k3.png" alt="moe mis k3" width="45%" />
-  <img src="pics/moe-origin-resp.png" alt="moe resp_len" width="42%" />
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-origin-mis-k3.png" alt="moe mis k3" style="width: 45%;" />
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-origin-resp.png" alt="moe resp_len" style="width: 42%;" />
 </div>
 
 Around step 320, we first observed a drop in grad norm (~0.07 -> ~0.02), which is usually a precursor to collapse. Then reward dropped sharply, and K3 KL rose dramatically. Although reward later recovered to normal levels, the grad norm was already abnormal at this point, so we can consider the training to have collapsed.
@@ -255,22 +216,22 @@ Around step 320, we first observed a drop in grad norm (~0.07 -> ~0.02), which i
 We further ensure the situation by continuing the training based on the last checkpoint before collapase. We observe the same situation in this settings. This stable collape ensures the existence of training/inference mismatch.
 
 <div align="center">
-  <img src="pics/moe-continue-reward.png" alt="moe continue reward" width="50%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-continue-reward.png" alt="moe continue reward" style="width: 50%;">
 </div>
 
 <details>
 <summary>More metrics on MoE experiments</summary>
 
 <div align="center">
-  <img src="pics/moe-origin-ratio1.png" alt="moe ratio 1" width="100%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-origin-ratio1.png" alt="moe ratio 1" style="width: 100%;">
 </div>
 
 <div align="center">
-  <img src="pics/moe-origin-ratio2.png" alt="moe ratio 2" width="100%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-origin-ratio2.png" alt="moe ratio 2" style="width: 100%;">
 </div>
 
 <div align="center">
-  <img src="pics/moe-origin-diff.png" alt="moe diff train/inference" width="50%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-origin-diff.png" alt="moe diff train/inference" style="width: 50%;">
 </div>
 
 </details>
@@ -293,8 +254,8 @@ Below are the four configurations we evaluated:
 Across all settings, we consistently observed stable training curves. All four configurations successfully reproduced the characteristic length increase after ~100 steps, indicating that enabling IS does not negatively impact the learning dynamics. Additionally, across all experiments, the reward begins to improve only after the response length starts to increase; prior to this, the reward stagnates around 0.32. Based on these results, we recommend enabling IS as a default configuration, as it provides mismatch correction without sacrificing performance.
 
 <div align="center">
-  <img src="pics/is-performance.png" alt="IS Won't Harm Performance" width="45%">
-  <img src="pics/experiment-raw-reward.png" alt="Raw Reward (Moving Average)" width="45%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/is-performance.png" alt="IS Won't Harm Performance" style="width: 45%;">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/experiment-raw-reward.png" alt="Raw Reward (Moving Average)" style="width: 45%;">
 </div>
 <p align="center">
     <em>Left: Response Length. Right: Raw Reward (smoothed with moving average).</em>
@@ -303,8 +264,8 @@ Across all settings, we consistently observed stable training curves. All four c
 We also examined the K3 KL divergence for these runs. We observed that across all settings, as the training perplexity (PPL) decreases, the training-inference mismatch (measured by K3 KL) also diminishes, which is consistent with our long base run above.
 
 <div align="center">
-  <img src="pics/experiment-mis-k3-kl.png" alt="K3 KL Divergence" width="45%">
-  <img src="pics/experiment-ppl.png" alt="Training PPL" width="45%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/experiment-mis-k3-kl.png" alt="K3 KL Divergence" style="width: 45%;">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/experiment-ppl.png" alt="Training PPL" style="width: 45%;">
 </div>
 <p align="center">
     <em>Left: K3 KL Divergence. Right: Training Perplexity (PPL).</em>
@@ -329,13 +290,13 @@ In Qwen30B-A3B, we took a checkpoint from 300 steps and continued training with 
 <!-- [TODO: add some pics] -->
 
 <div align="center">
-  <img src="pics/moe-config1-reward.png" alt="config1" width="45%">
-  <img src="pics/moe-config2-reward.png" alt="config2" width="45%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-config1-reward.png" alt="config1" style="width: 45%;">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-config2-reward.png" alt="config2" style="width: 45%;">
 </div>
 
 <div align="center">
-  <img src="pics/moe-config3-reward.png" alt="config3" width="45%">
-  <img src="pics/moe-config4-reward.png" alt="config4" width="45%">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-config3-reward.png" alt="config3" style="width: 45%;">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-config4-reward.png" alt="config4" style="width: 45%;">
 </div>
 
 
@@ -429,7 +390,7 @@ In upstream Miles, you can also find additional mismatch-related tooling, for ex
   - Rollout routing replay: [Link](https://github.com/THUDM/slime/pull/715)
   - Truly On Policy training for VLMs: [Link](https://github.com/radixark/Miles/tree/main/examples/true_on_policy_vlm)
 
-Any mismatch solving tool can be found in Miles (or its upstream Miles)!
+Any mismatch solving tool can be found in Miles!
 
 ## Acknowledgments
 
@@ -439,9 +400,7 @@ SGLang RL Team: Changyi Yang, Zhuohao Li, Nan Jiang, Chenxing Xie, Zilin Zhu, Ji
 
 RadixArk Miles Team: Chenyang Zhao, Mao Cheng, Yueming Yuan, Jiajun Li, Banghua Zhu, Tom, Yusheng Su
 
-We sincerely thanks Qiwei Di, Xuheng Li, Heyang Zhao and Prof. Quanquan Gu from UCLA, as well as Liyuan Liu and Feng Yao from Thinking Machines Lab for their valuable suggestions and discussions.
-
-This work is done during the final weeks when Chenyang was a PhD student at UCLA and a student researcher at ByteDance Seed. Thanks to all the support along the way.
+We sincerely thanks Qiwei Di, Xuheng Li, Heyang Zhao and Prof. Quanquan Gu from UCLA, as well as Liyuan Liu and Feng Yao from Thinking Machines Lab for their valuable suggestions and discussions. This idea of this work originated at the final weeks when Chenyang was a PhD student at UCLA and a student researcher at ByteDance Seed. Thanks to all the support along the way and Prof. Quanquan Gu for his guidance.
 
 ## Reference
 
