@@ -29,7 +29,7 @@ For those seeking absolute correctness, we offer a [Truly On Policy mode](https:
 ## What is Training Inference Mismatch?
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/refs/heads/main/rlhf/slime/mismatch/pics/training-inference-mismatch.png" alt="Training Inference Mismatch" width="1">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/refs/heads/main/rlhf/slime/mismatch/pics/training-inference-mismatch.png" alt="Training Inference Mismatch" style="width: 50%;">
 </div>
 
 Training-Inference Mismatch refers to the numerical inconsistency between the rollout (inference) engine and the training engine. Even when both engines utilize identical model weights, they often produce slightly different log-probabilities for the same token sequence. This divergence stems from infrastructure-level variances, such as differing CUDA kernels, batch sizes, expert selection logic, and reduction orders (see Thinking Machine Lab [blog](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/)).
