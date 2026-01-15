@@ -82,13 +82,13 @@ recent technical breakthroughs:
 
 ### 1. Layerwise Offload
 
-From our early profiling, we identified model loading/offloading as a major bottleneck, since the forward stream has to
-wait until all the weights are on-device.
+From our early profiling, we identified model loading/offloading as a major bottleneck, since the compute stream has to
+wait until all the weights are on-device, and most GPUs are not equipped with sufficient VRAM to keep all components in memory throughout inference.
 
 To tackle this, we introduced:
 
-1. `LayerwiseOffloadManager`: A manager class that provides hooks for prefetching weights of the next layer while
-   forwarding on the current layer.
+1. `LayerwiseOffloadManager`: A manager class that provides hooks for **prefetching** weights of the next layer while
+   computing on the current layer, as well as **releasing** hooks after compute.
 2. `OffloadableDiTMixin`: A mixin class that registers `LayerwiseOffloadManager`'s prefetch and release hooks for the
    diffusion-transformer.
 
@@ -123,7 +123,7 @@ See related PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#1
   per-step overhead in diffusion scheduling.
 
 
-See related PRs ([#16382](https://github.com/sgl-project/sglang/pull/16382), [#12995](https://github.com/sgl-project/sglang/pull/12995)).
+See related PRs ([#12995](https://github.com/sgl-project/sglang/pull/12995), [#16382](https://github.com/sgl-project/sglang/pull/16382)).
 
 ### 3. Cache-DiT Integration
 
@@ -133,7 +133,7 @@ Parallel, along with any hybrid combination of these three.
 See [#16532](https://github.com/sgl-project/sglang/pull/16532) & [#15163](https://github.com/sgl-project/sglang/pull/15163)
 for implementation details.
 
-With only a couple of environment variables, the generation speed is boosted by **up to** 169%.
+With only a couple of environment variables, the generation speed is boosted by up to 169%.
 
 Here is an example to enable Cache-DiT in sglang-diffusion:
 
