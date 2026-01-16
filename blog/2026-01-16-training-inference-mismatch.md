@@ -37,15 +37,15 @@ To quantify this discrepancy, we use the K3 KL divergence (see [Reference 8](htt
 
 While many practitioners anticipate immediate collapse when $K_3$ KL exceeds certain thresholds, Miles’ execution engine appears to provide a wider safety margin, allowing training to proceed where other setups might falter. Moreover, Miles treats this mismatch as a non-negligible aspect of RL system design. Users can choose to eliminate it entirely for correctness or mitigate it for efficiency.
 
-## Disclaimer: Miles’ Resilience in Practice
+## Disclaimer
 
-While it is a widely held belief in the RL community—supported by documented cases in existing literature—that training-inference mismatch is a frequent "training killer," our experience with Miles presents a more nuanced picture. Over the past three months, we conducted more than 300 extensive runs across various settings, specifically targeting configurations that are traditionally notorious for instability. To our surprise, Miles demonstrated a significantly wider safety margin than what standard expectations might suggest. Even in these "high-risk" settings, we found that Miles' internal system architecture provides enough resilience that a task rarely exhibits the consistent collapse often associated with this phenomenon.
+In the RL community, training-inference mismatch is often regarded as a major cause of training collapse. However, our experience with Miles suggests that its practical impact may be less frequent than initially expected.
 
-Most notably, Miles has demonstrated extreme industrial-grade stability during the post-training of frontier models like GLM 4.5, 4.6, and 4.7. Throughout these large-scale deployments, we have never encountered a single collapse event. This suggests that for most standard use cases, Miles has effectively "internalized" many of the numerical risks that typically derail RL training.
+We have evaluated Miles across an extensive configuration space—covering various algorithms, model architectures, and task types. Throughout these runs, we found that Miles remains remarkably stable, even in settings traditionally notorious for instability. We attribute this resilience largely to Miles' streamlined implementation, which helps minimize the cumulative numerical drift that often leads to training divergence.
 
-However, mismatch remains a silent, stochastic threat—a 'black swan' event within the Miles ecosystem, rather than the daily struggle seen in other setups. After hundreds of attempts, we finally isolated a rare, specific MoE trajectory that exhibited a clear collapse. This specific case served as our "laboratory" to test our advanced solutions. We confirmed that while a baseline implementation might struggle to recover from such a "poisoned" state, our Algorithmic Mitigation (MIS/TIS) successfully rescues the run.
+This stability has been further validated in large-scale deployments, such as the post-training of the GLM 4.5, 4.6, and 4.7 series, where we have not encountered collapse issues related to this mismatch.
 
-**In this context, we provide these tools not because Miles is fragile, but to offer a surgical fail-safe for the extreme pressures of training the next generation of frontier models, ensuring that even a 1-in-300 edge case cannot derail your progress.**
+That said, numerical mismatch remains a non-negligible stochastic risk. In our experiments, we eventually isolated a specific MoE setup where collapse did occur, providing a valuable "laboratory" to verify our solutions. We provide these Algorithmic Mitigation tools (MIS/TIS) as a robust fail-safe to ensure that even extreme edge cases cannot derail the training of next-generation frontier models.
 
 ## Why Training and Inference Can Be Different
 
