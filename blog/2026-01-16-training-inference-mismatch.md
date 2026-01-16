@@ -314,13 +314,15 @@ Below is a brief overview of the available options.
 
 ### Truly On Policy
 
-To open Truly On Policy mode, add args:
+To open Truly On Policy mode for FSDP, add args:
 
 ```bash
 CUSTOM_ARGS=(
     --true-on-policy-mode
 )
 ```
+
+For Megatron, the modification is much complicated, please refer to our later twitter announcement for details.
 
 ### Algorithmic Mitigation
 
