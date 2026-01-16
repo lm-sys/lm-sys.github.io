@@ -298,6 +298,14 @@ Note that on these figures, the start step is 0, but they are indeed a 300 steps
   <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-config4-reward.png" alt="config4" style="width: 45%;">
 </div>
 
+<details>
+<summary>Take All the Configurations into A Single Figure</summary>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/all-in-one-mismatch.png" alt="config all" style="width: 100%;">
+</div>
+
+</details>
 
 ## Usage
 
