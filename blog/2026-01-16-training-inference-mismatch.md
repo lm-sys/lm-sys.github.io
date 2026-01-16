@@ -1,6 +1,6 @@
 ---
 title: "Let Speed Be With Stability: All-In-One Solution to Training-Inference Mismatch with Miles"
-author: "ByteDance, SGLang RL Team, Miles Team"
+author: "RadixArk, SGLang RL Team, ByteDance"
 date: "January 16, 2026"
 previewImg: /images/blog/mismatch/mismatch-preview.png
 ---
@@ -404,11 +404,13 @@ Any mismatch solving tool can be found in Miles!
 
 ## Acknowledgments
 
+RadixArk Miles Team: Chenyang Zhao, Mao Cheng, Yueming Yuan, Jiajun Li, Banghua Zhu, Tom, Yusheng Su
+
 Bytedance Inc: Yingru Li, Jiacai Liu, Yuxuan Tong, Qian Liu, Hongyu Lu, Ziheng Jiang
 
 SGLang RL Team: Changyi Yang, Zhuohao Li, Nan Jiang, Chenxing Xie, Zilin Zhu, Ji Li, Yuzhen Zhou
 
-RadixArk Miles Team: Chenyang Zhao, Mao Cheng, Yueming Yuan, Jiajun Li, Banghua Zhu, Tom, Yusheng Su
+
 
 We sincerely thanks Qiwei Di, Xuheng Li, Heyang Zhao and Prof. Quanquan Gu from UCLA, as well as Liyuan Liu and Feng Yao from Thinking Machines Lab for their valuable suggestions and discussions. This idea of this work originated at the final weeks when Chenyang was a PhD student at UCLA and a student researcher at ByteDance Seed. Thanks to all the support along the way and Prof. Quanquan Gu for his guidance.
 
