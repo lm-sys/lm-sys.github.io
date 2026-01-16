@@ -9,19 +9,21 @@ Since its release in early November, **SGLang-Diffusion** has gained significant
 within the community. We are deeply grateful for the extensive feedback and growing number of contributions from
 open-source developers.
 
-Over the past two months, we've been meticulously building sglang-diffusion, and here is a summary of our progress:
+
+Over the past two months, we've been meticulously building and accelerating SGLang-Diffusion, now (#16831ab) up to 1.5x faster than our initial release.
+
+Here is a summary of our progress:
 
 ## Overview
 
 **New Models**:
 
 - Day-0 support for Flux.2, Qwen-Image-Edit-2511, Qwen-Image-2512, Z-Image-Turbo, Qwen-Image-Layered, TurboWan, GLM-Image and more.
-- Run SGLang-Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are coming (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+- Run SGLang-Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are planned (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 **LoRA Support**:
 
-- We support almost all LoRA formats for supported models. This section lists example LoRAs that have been explicitly
-  tested and verified with each base model in the SGLang-Diffusion pipeline.
+- We support almost all LoRA formats for supported models. This section lists some example LoRAs that have been explicitly tested and verified.
   | Base Model | Supported LoRAs |
   |-------------------|------------------|
   | **Wan2.2**        | `lightx2v/Wan2.2-Distill-Loras`<br> `Cseti/wan2.2-14B-Arcane_Jinx-lora-v1` |
@@ -38,10 +40,10 @@ Over the past two months, we've been meticulously building sglang-diffusion, and
   | Unmerge Weights | `/v1/unmerge_lora_weights`  | - |
   | List Adapters | `/v1/list_loras`            | - |
 
-**Parallelism**: support SP and TP for most models, alongside hybrid parallelism (combinations of Ulysses
+**Parallelism**: Support SP and TP for most models, alongside hybrid parallelism (combinations of Ulysses
 Parallel, Ring Parallel, and Tensor Parallel).
 
-**Attention Backend**: SageAttention2 and SageAttention3, more backends (sparse) are on the way.
+**Attention Backend**: SageAttention2, SageAttention3 and SLA, more backends are planned.
 
 **Hardware Support**: AMD, 4090, 5090.
 
@@ -61,24 +63,25 @@ modifying existing workflows.
 
 ## Performance Benchmark
 
+Here are some performance benchmark results:
+
+- We compared the performance of SGLang-Diffusion (#16831ab) with all popular models (including the SGLang-Diffusion on Nov. 2025). **SGLang-Diffusion** delivers the fastest speed across all popular models and all environments, up to 5x compared to others.
+- We compared the performance of SGLang-Diffusion under different environments with one of the fastest vendor.
+
 <iframe width="984" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1022178651&amp;format=interactive"></iframe>
 
 <br>
 
 <iframe width="984" height="800" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=174425525&amp;format=interactive"></iframe>
 
-Here are some performance benchmark results:
 
-- We compared the performance of SGLang-Diffusion with all popular models (including the SGLang-Diffusion in
-  06/11/2025). **SGLang-Diffusion** delivers the fastest speed across all popular models, up to 5x compared to others.
-- We compared the performance of SGLang-Diffusion under different hardware and parallelism setting with one of the
-  fastest vendor.
 
 ## Key Improvements
 
 To serve as a robust, industrial-grade framework, **speed, stability, and code quality** are our top priorities. We have
-refactored key components to eliminate bottlenecks and maximize hardware efficiency. Here are the highlights of our
-recent technical breakthroughs:
+refactored key components to eliminate bottlenecks and maximize hardware efficiency. 
+
+Here are the highlights of our recent technical improvements:
 
 ### 1. Layerwise Offload
 
@@ -135,7 +138,7 @@ for implementation details.
 
 With only a couple of environment variables, the generation speed is boosted by up to 169%.
 
-Here is an example to enable Cache-DiT in sglang-diffusion:
+Here is an example to enable Cache-DiT in SGLang-Diffusion:
 
 ```bash
 SGLANG_CACHE_DIT_ENABLED=true \
@@ -144,8 +147,7 @@ sglang generate --model-path=Qwen/Qwen-Image --prompt="Cinematic establishing sh
   --save-output
 ```
 
-Furthermore, with the new run-with-diffusers backend feature, we can now integrate and refine Cache-DiT optimizations
-within SGLang-Diffusion (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+Furthermore, we can now integrate and refine Cache-DiT optimizations to our newly-supported diffuser backend (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 ### 4. Few More Things
 
