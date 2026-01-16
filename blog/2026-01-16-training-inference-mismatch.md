@@ -2,7 +2,7 @@
 title: "Let Speed Be With Stability: All-In-One Solution to Training-Inference Mismatch with Miles"
 author: "ByteDance, SGLang RL Team, Miles Team"
 date: "January 16, 2026"
-previewImg: /images/blog/chunked_pipeline/preview_cpp.jpg
+previewImg: /images/blog/mismatch/mismatch-preview.png
 ---
 
 > TL;DR: We investigate the "Training-Inference Mismatch" in LLM-RL--a phenomenon where numerical inconsistencies between rollout and training engines threaten stability. We introduce two comprehensive solutions implemented in Miles: Truly On Policy training (backend alignment for bitwise precision) and Algorithmic Mitigation (correction via TIS/MIS). While Miles demonstrates impressive stability in practice, we provide these robust tools to ensure correctness and efficiency for the broader RL community.
@@ -322,7 +322,7 @@ CUSTOM_ARGS=(
 )
 ```
 
-For Megatron, the modification is much complicated, please refer to our later twitter announcement for details.
+For Megatron, to enable Truly On Policy mode is much more complicated, please refer to our later twitter announcement for details.
 
 ### Algorithmic Mitigation
 
