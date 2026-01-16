@@ -271,7 +271,6 @@ We also examined the K3 KL divergence for these runs. We observed that across al
     <em>Left: K3 KL Divergence. Right: Training Perplexity (PPL).</em>
 </p>
 
-
 ### When Mismatch is Large, TIS/MIS Can Solve Collapse
 
 > Full wandb log for Qwen30B-A3B can be found [here](https://wandb.ai/miles-public/slime-dapo/reports/Training-inference-Mismatch-MoE-Experiement--VmlldzoxNTYzMTYxOQ?accessToken=p1dohuhn8vtlr9tddxhnjjdtkzwce0mzeat14ehxj3r96cz15sp5f1yxz0qo0qbn) 
@@ -280,14 +279,14 @@ We also examined the K3 KL divergence for these runs. We observed that across al
 
 <!-- the link should be revised later -->
 
-In Qwen30B-A3B, we took a checkpoint from 300 steps and continued training with different TIS/MIS settings. We found that properly configured TIS + MIS can effectively suppress collapse caused by train-inference mismatch. We conducted experiments with 4 different settings:
+In Qwen30B-A3B, we took a 300 steps checkpoint (i.e. [Base-DRPO-original](https://huggingface.co/zhuohaoli/Qwen3-30B-A3B-Base-DRPO-original)) and continued training with different TIS/MIS settings. We found that properly configured TIS + MIS can effectively suppress collapse caused by train-inference mismatch. We conducted experiments with 4 different settings:
 
 * config 1: token TIS [0.5, 2.0] + geometric MIS [0.99, 1.001] + batch norm --> still collapsed
 * config 2: token TIS [0.5, 1.5] + geometric MIS [0.99, 1.001] + batch norm --> did not collapse
 * config 3: token TIS [0.5, 1.5] + geometric MIS [0.99, 1.001] --> did not collapse
 * config 4: token TIS [0.5, 1.5] --> collapsed
 
-<!-- [TODO: add some pics] -->
+Note that on these figures, the start step is 0, but they are indeed a 300 steps checkpoint.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/rlhf/slime/mismatch/pics/moe-config1-reward.png" alt="config1" style="width: 45%;">
@@ -303,6 +302,7 @@ In Qwen30B-A3B, we took a checkpoint from 300 steps and continued training with 
 ## Usage
 
 For more details, we provide complete guides and runnable examples:
+
 - Truly On Policy Training (FSDP): [Link](https://github.com/radixark/Miles/tree/main/examples/true_on_policy)
 - Algorithmic Mismatch Correction (Megatron): [Link](https://github.com/radixark/Miles/tree/main/examples/train_infer_mismatch_helper)
 
