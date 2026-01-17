@@ -286,6 +286,26 @@ In Qwen30B-A3B, we took a 300 steps checkpoint (i.e. [Base-DRPO-original](https:
 * config 3: token TIS [0.5, 1.5] + geometric MIS [0.99, 1.001] --> did not collapse
 * config 4: token TIS [0.5, 1.5] --> collapsed
 
+<details>
+<summary>More other configurations could be found below</summary>
+
+| Category | Setting | Value |
+| --- | --- | --- |
+| Batch | global-batch-size | 256 |
+| Batch | rollout-batch-size | 32 |
+| Optimizer | lr | 2e-6 |
+| Optimizer | weight-decay | 0.01 |
+| Optimizer | adam-betas | (0.9, 0.999) |
+| Parallel | tensor-model-parallel-size | 4 |
+| Parallel | expert-model-parallel-size | 8 |
+| Memory | max-tokens-per-gpu | 20480 |
+| Rollout/Eval | num-rollout | 3000 |
+| Rollout/Eval | n-samples-per-prompt | 8 |
+| Rollout/Eval | n-samples-per-eval-prompt | 16 |
+| Rollout/Eval | max-response-len (rollout/eval) | 16384 / 16384 |
+</details>
+
+
 Note that on these figures, the start step is 0, but they are indeed a 300 steps checkpoint.
 
 <div align="center">
