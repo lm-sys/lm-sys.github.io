@@ -28,7 +28,7 @@ Empirical benchmarks demonstrate that SGLang’s PP implementation achieves indu
 
 ## **Background: Why Pipeline Parallelism?**
 
-To validate the necessity of Pipeline Parallelism (PP) for long-context prefill, it is essential to evaluate it against existing paradigms—specifically Tensor Parallelism (TP) and Context Parallelism (CP). While TP and (Context Parallelism) CP offer distinct advantages, a theoretical and empirical decomposition of their communication volumes, bubble ratios, and implementation complexities reveals that PP occupies a unique, optimal position for multi-node scaling. The following analysis outlines the specific trade-offs inherent to each method.
+To validate the necessity of Pipeline Parallelism (PP) for long-context prefill, it is essential to evaluate it against existing paradigms—specifically Tensor Parallelism (TP) and Context Parallelism (CP). While TP and CP offer distinct advantages, a theoretical and empirical decomposition of their communication volumes, bubble ratios, and implementation complexities reveals that PP occupies a unique, optimal position for multi-node scaling. The following analysis outlines the specific trade-offs inherent to each method.
 
 ### **1. Communication Volume and Scalability Analysis**
 The primary bottleneck in distributed inference scaling is inter-device communication. As model depth and sequence length increase, the volume of data transmitted between devices becomes a limiting factor, especially while scaling to large-scale and multi-node deployments.
@@ -70,7 +70,7 @@ The implementation complexity and architectural generality of a new feature are 
 | **Communication Volume** | High | Medium | **Low** |
 | **Bubble Ratio** | **0** | **0** | $\frac{P - 1}{P - 1 + M}$ |
 | **Implementation Complexity** | **Low** | High<br>(Attention-variant specific) | Medium |
-| **Architectural Generality** | Medium | Low | **High** |
+| **Architectural Generality** | **High** | Low | **High** |
 
 In conclusion, the balance of the generality and scaling efficiency makes PP not merely an alternative, but a **necessary component** for scaling long-context prefill to massive, multi-node clusters where TP and CP encounter bandwidth ceilings. In the meantime, CP has the potential to complement TP for intra-node bubble-free scaling and acceleration. **PP × CP** is already under development ([Future Roadmap](#future-roadmap)), which will be included in Part II of this blog.
 
@@ -98,7 +98,7 @@ Although combining Pipeline Parallelism and Chunked Prefill can significantly re
 The key mechanisms of the implementation include:
 
 * **Decoupled Sync/Async Logic in the Event Loop:** The scheduler uses `async_send` in `_pp_send_pyobj_to_next_stage`. Instead of waiting for a transfer to complete, it returns a `P2PWork` handle. The actual synchronization (`P2PWork.work.wait()`) is deferred until `_pp_commit_comm_work` is called, allowing the CPU to perform other work—like scheduling the next batch or processing metadata—while data is in flight.
-* **Multi-Stream Execution:** In addition to the main `default_stream`, which serves as the synchronization stream, SGLang utilizes dedicated `forward_stream` and `copy_stream` to execute forward pass GPU computation and Data-to-Host (D2H) memory transfers separately for better overlapping. While `_pp_launch_batch` is executing the current micro-batch on the GPU for the current stage, the CPU prepares the next micro-batch's results using `_pp_process_batch_result`.
+* **Multi-Stream Execution:** In addition to the main `default_stream`, which serves as the synchronization stream, SGLang utilizes dedicated `forward_stream` and `copy_stream` to execute forward pass GPU computation and Data-to-Host (D2H) memory transfers separately for better overlapping. While `_pp_launch_batch` is executing the current micro-batch on the GPU for the current stage, the CPU processes the previous micro-batch's results using `_pp_process_batch_result`.
 
 ### **3\. Advanced Option: Dynamic chunking**
 
@@ -323,7 +323,7 @@ SGLang’s implementation of Pipeline Parallelism is more than just model splitt
 ## **Acknowledgement**
 
 - We would like to thank the SGLang team and community for the implementation and generous support, especially **Shangming Cai**, **Xuchun Shang**, **Yanbo Yang**, **Leon Gao**, **Ying Sheng**, Zhiqiang Xie, Lianmin Zheng, and many others.
-- We would like to thank **Jianhao Fu** (from AntGroup SCT and Inference Team), **Kevin Li** (from TikTok), Siyu Liu (from Alibaba Cloud Computing), Xiaolei Zhang (from ByteDance), Teng Ma (from Alibaba Cloud Computing), Chao Wang (from Meituan), and Xiaowei Wang (from NVIDIA) for their prominent contribution in code improvement and testing.
+- We would like to thank **Jianhao Fu** (from AntGroup SCT Network Team), **Kevin Li** (from TikTok), Siyu Liu (from Alibaba Cloud Computing), Xiaolei Zhang (from ByteDance), Teng Ma (from Alibaba Cloud Computing), Chao Wang (from Meituan), and Xiaowei Wang (from NVIDIA) for their prominent contribution in code improvement and testing.
 - We learn a lot from the system design of [SGLang](https://github.com/sgl-project/sglang), Mooncake[\[1\]](https://dl.acm.org/doi/pdf/10.1145/3773772), and TeraPipe[\[3\]](http://proceedings.mlr.press/v139/li21y/li21y.pdf), which jointly help improve this Pipeline Parallelism implementation.
 
 ## **Reference**
