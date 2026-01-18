@@ -121,7 +121,6 @@ PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https:
 
 - **Upstream FlashAttention**: We synchronized our kernels with the latest upstream version from Dao-AILab to eliminate performance lags. See [#16382](https://github.com/sgl-project/sglang/pull/16382).
 - **Optimized QKV Processing**: We analyzed the performance trade-offs between Packed QKV and downstream kernels (e.g., `qk_norm`, FlashInfer RoPE). To achieve optimal preprocessing performance, we implemented QKV unpacking without introducing extra contiguous memory operations.
-- **Triton RMSNorm Kernel**: We implemented a `rms_norm_one_pass` triton kernel that outperforms FlashInfer's RMSNorm for cases with `head_size <= 128` (single RMSNorm without residual). See [#17305](https://github.com/sgl-project/sglang/pull/17305).
 - **JIT QK Norm Kernel**: Fused Q/K RMSNorm into a single inplace kernel to cut launch count and memory traffic before
   attention.
 - **FlashInfer RoPE**: Apply RoPE on Q/K inplace with FlashInfer when available (fallback otherwise), reducing RoPE
