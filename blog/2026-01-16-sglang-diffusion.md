@@ -1,5 +1,5 @@
 ---
-title: "SGLang-Diffusion: Two Months After Release"
+title: "SGLang-Diffusion: Two Months In"
 author: "The SGLang-Diffusion Team"
 date: "January 16, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
