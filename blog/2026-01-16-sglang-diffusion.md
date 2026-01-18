@@ -112,14 +112,16 @@ which has the following benefits:
 <p style="color:gray; text-align: center;">Comparison with Layerwise Offload and Standard Loading</p>
 
 
-Layerwise offload is now enabled for video models by default.
+**Layerwise Offload** is now enabled for video models by default.
 
 See related
 PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https://github.com/sgl-project/sglang/pull/16150)).
 
 ### 2. Kernel Improvements
 
-- **Upstream FlashAttention**: We synchronized our kernels with the latest upstream version from Dao-AILab to eliminate performance lags.
+- **Upstream FlashAttention**: We synchronized our kernels with the latest upstream version from Dao-AILab to eliminate performance lags. See [#16382](https://github.com/sgl-project/sglang/pull/16382).
+- **Optimized QKV Processing**: We analyzed the performance trade-offs between Packed QKV and downstream kernels (e.g., `qk_norm`, FlashInfer RoPE). To achieve optimal preprocessing performance, we implemented QKV unpacking without introducing extra contiguous memory operations.
+- **Triton RMSNorm Kernel**: We implemented a `rms_norm_one_pass` triton kernel that outperforms FlashInfer's RMSNorm for cases with `head_size <= 128` (single RMSNorm without residual). See [#17305](https://github.com/sgl-project/sglang/pull/17305).
 - **JIT QK Norm Kernel**: Fused Q/K RMSNorm into a single inplace kernel to cut launch count and memory traffic before
   attention.
 - **FlashInfer RoPE**: Apply RoPE on Q/K inplace with FlashInfer when available (fallback otherwise), reducing RoPE
@@ -127,10 +129,8 @@ PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https:
 - **Weight Fusion (Operator Fusion)**: Fused projection + activation patterns (e.g., gate/up merge + SiLU&Mul) to reduce
   GEMM count and elementwise launches in DiT blocks.
 - **Timestep Implementation**: Use a dedicated CUDA kernel for timestep sinusoidal embedding (sin/cos) to reduce
-  per-step overhead in diffusion scheduling.
+  per-step overhead in diffusion scheduling. See [#12995](https://github.com/sgl-project/sglang/pull/12995).
 
-See related
-PRs ([#12995](https://github.com/sgl-project/sglang/pull/12995), [#16382](https://github.com/sgl-project/sglang/pull/16382)).
 
 ### 3. Cache-DiT Integration
 
