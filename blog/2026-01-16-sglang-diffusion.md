@@ -162,7 +162,7 @@ see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 - [**Diffusion Cookbook**](https://cookbook.sglang.io/docs/diffusion/): Curated recipes, best practices, and
   benchmarking guides for SGLang-Diffusion.
 
-## Further Roadmap
+## Roadmap
 
 - Sparse Attention Backends
 - Quantization (Nunchaku, nvfp4 and others)
