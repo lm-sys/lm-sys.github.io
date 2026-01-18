@@ -33,16 +33,13 @@ Here is a summary of our progress:
   | **Wan2.2**        | `lightx2v/Wan2.2-Distill-Loras`<br> `Cseti/wan2.2-14B-Arcane_Jinx-lora-v1` |
   | **Wan2.1**        | `lightx2v/Wan2.1-Distill-Loras` |
   | **Z-Image-Turbo** | `tarn59/pixel_art_style_lora_z_image_turbo`<br> `wcde/Z-Image-Turbo-DeJPEG-Lora` |
-  | **Qwen-Image**    | `lightx2v/Qwen-Image-Lightning`<br> `flymy-ai/qwen-image-realism-lora`<br>
-  `prithivMLmods/Qwen-Image-HeadshotX`<br> `starsfriday/Qwen-Image-EVA-LoRA` |
+  | **Qwen-Image**    | `lightx2v/Qwen-Image-Lightning`<br> `flymy-ai/qwen-image-realism-lora`<br> `prithivMLmods/Qwen-Image-HeadshotX`<br> `starsfriday/Qwen-Image-EVA-LoRA` |
   | **Qwen-Image-Edit** | `ostris/qwen_image_edit_inpainting`<br> `lightx2v/Qwen-Image-Edit-2511-Lightning` |
-  | **Flux**          | `dvyio/flux-lora-simple-illustration`<br> `XLabs-AI/flux-furry-lora`<br>
-  `XLabs-AI/flux-RealismLora` |
+  | **Flux**          | `dvyio/flux-lora-simple-illustration`<br> `XLabs-AI/flux-furry-lora`<br> `XLabs-AI/flux-RealismLora` |
 - Fully functional HTTP API:
   | Feature | API Endpoint | Key Parameters |
   |---------------------------------|-----------------------------|--------------------------------------------------|
-  | Set or Activate (multiple) LoRA(s) | `/v1/set_lora`              | `lora_nickname`, `lora_path`, `strength`,
-  `target` |
+  | Set or Activate (multiple) LoRA(s) | `/v1/set_lora`              | `lora_nickname`, `lora_path`, `strength`, `target` |
   | Merge Weights | `/v1/merge_lora_weights`    | `strength`, `target`                             |
   | Unmerge Weights | `/v1/unmerge_lora_weights`  | - |
   | List Adapters | `/v1/list_loras`            | - |
@@ -181,7 +178,7 @@ see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 **SGLang-Diffusion Team**:
 
-Aichen Feng, Changyi Yang, Chunan Zeng, Fan Lin, Fan Luo, Fenglin Yu, Gaoji Liu, Heyang Huang, Hongli Mi, HuangJi,
+Aichen Feng, Alison Shao, Changyi Yang, Chunan Zeng, Fan Lin, Fan Luo, Fenglin Yu, Gaoji Liu, Heyang Huang, Hongli Mi, HuangJi,
 Huanhuan Chen, Jianying Zhu, Jiaqi Zhu, JiaJun Li, Ji Li, Jinliang Li, Junlin Lv, Mingfa Feng, Ran Mei, Shenggui Li,
 Shuyi Fan, Shuxi Guo, Weitao Dai, Wenhao Zhang, Xi Chen, Xiao Jin, Xiaoyu Zhang, Yihan Chen, Yikai Zhu, Yin Fan, Yuhao
 Yang, Yuan Luo, Yueming Pan, Yuhang Qi, Yuzhen Zhou, Zhiyi Liu, Zhuorui Liu, Ziyi Xu, Mick
