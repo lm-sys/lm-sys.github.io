@@ -9,8 +9,9 @@ Since its release in early November, **SGLang-Diffusion** has gained significant
 within the community. We are deeply grateful for the extensive feedback and growing number of contributions from
 open-source developers.
 
-
-Over the past two months, we've been meticulously building and accelerating SGLang-Diffusion, now (#16831ab) up to 1.5x faster than our initial release.
+Over the past two months, we've been meticulously building and accelerating SGLang-Diffusion,
+now ([#16831ab](https://github.com/sgl-project/sglang/commit/16831ab6d707070f42275d596ce2b3b2f4d69072)) up to 1.5x
+faster than our initial release.
 
 Here is a summary of our progress:
 
@@ -18,24 +19,30 @@ Here is a summary of our progress:
 
 **New Models**:
 
-- Day-0 support for Flux.2, Qwen-Image-Edit-2511, Qwen-Image-2512, Z-Image-Turbo, Qwen-Image-Layered, TurboWan, GLM-Image and more.
-- Run SGLang-Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are planned (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+- Day-0 support for Flux.2, Qwen-Image-Edit-2511, Qwen-Image-2512, Z-Image-Turbo, Qwen-Image-Layered, TurboWan,
+  GLM-Image and more.
+- Run SGLang-Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are planned (
+  see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 **LoRA Support**:
 
-- We support almost all LoRA formats for supported models. This section lists some example LoRAs that have been explicitly tested and verified.
+- We support almost all LoRA formats for supported models. This section lists some example LoRAs that have been
+  explicitly tested and verified.
   | Base Model | Supported LoRAs |
   |-------------------|------------------|
   | **Wan2.2**        | `lightx2v/Wan2.2-Distill-Loras`<br> `Cseti/wan2.2-14B-Arcane_Jinx-lora-v1` |
   | **Wan2.1**        | `lightx2v/Wan2.1-Distill-Loras` |
   | **Z-Image-Turbo** | `tarn59/pixel_art_style_lora_z_image_turbo`<br> `wcde/Z-Image-Turbo-DeJPEG-Lora` |
-  | **Qwen-Image**    | `lightx2v/Qwen-Image-Lightning`<br> `flymy-ai/qwen-image-realism-lora`<br> `prithivMLmods/Qwen-Image-HeadshotX`<br> `starsfriday/Qwen-Image-EVA-LoRA` |
+  | **Qwen-Image**    | `lightx2v/Qwen-Image-Lightning`<br> `flymy-ai/qwen-image-realism-lora`<br>
+  `prithivMLmods/Qwen-Image-HeadshotX`<br> `starsfriday/Qwen-Image-EVA-LoRA` |
   | **Qwen-Image-Edit** | `ostris/qwen_image_edit_inpainting`<br> `lightx2v/Qwen-Image-Edit-2511-Lightning` |
-  | **Flux**          | `dvyio/flux-lora-simple-illustration`<br> `XLabs-AI/flux-furry-lora`<br> `XLabs-AI/flux-RealismLora` |
+  | **Flux**          | `dvyio/flux-lora-simple-illustration`<br> `XLabs-AI/flux-furry-lora`<br>
+  `XLabs-AI/flux-RealismLora` |
 - Fully functional HTTP API:
   | Feature | API Endpoint | Key Parameters |
   |---------------------------------|-----------------------------|--------------------------------------------------|
-  | Set or Activate (multiple) LoRA(s) | `/v1/set_lora`              | `lora_nickname`, `lora_path`, `strength`, `target` |
+  | Set or Activate (multiple) LoRA(s) | `/v1/set_lora`              | `lora_nickname`, `lora_path`, `strength`,
+  `target` |
   | Merge Weights | `/v1/merge_lora_weights`    | `strength`, `target`                             |
   | Unmerge Weights | `/v1/unmerge_lora_weights`  | - |
   | List Adapters | `/v1/list_loras`            | - |
@@ -45,7 +52,7 @@ Parallel, Ring Parallel, and Tensor Parallel).
 
 **Attention Backend**: SageAttention2, SageAttention3 and SLA, more backends are planned.
 
-**Hardware Support**: AMD, 4090, 5090.
+**Hardware Support**: AMD, 4090, 5090, MUSA
 
 **SGLang-Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang
 Diffusion's high-performance inference engine.
@@ -65,28 +72,35 @@ modifying existing workflows.
 
 Here are some performance benchmark results:
 
-- We compared the performance of SGLang-Diffusion (#16831ab) with all popular models (including the SGLang-Diffusion on Nov. 2025). **SGLang-Diffusion** delivers the fastest speed across all popular models and all environments, up to 5x compared to others.
+- We compared the performance of SGLang-Diffusion (#16831ab) with all popular models (including the SGLang-Diffusion on
+  Nov. 2025). **SGLang-Diffusion** delivers the fastest speed across all popular models on NVIDIA GPU, up to 5x compared
+  to others.
+
+[//]: # (<iframe width="984" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1022178651&amp;format=interactive"></iframe>)
+
+
+<iframe width="984" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1681696401&amp;format=interactive"></iframe>
+
 - We compared the performance of SGLang-Diffusion under different environments with one of the fastest vendor.
-
-<iframe width="984" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1022178651&amp;format=interactive"></iframe>
-
-<br>
 
 <iframe width="984" height="800" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=174425525&amp;format=interactive"></iframe>
 
+- We also gather results of SGLang-Diffusion on AMD GPU.
 
+<iframe style="display:block; margin: auto;" width="852" height="321" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQCc9ulnNOE8mpM2RjIgZLJlLKxK_KUyws3WlTB1mVz2Ywx790G0IVbrI7-gjY_O5D8G5Grcjb1dBkR/pubchart?oid=319708956&amp;format=interactive"></iframe>
 
 ## Key Improvements
 
 To serve as a robust, industrial-grade framework, **speed, stability, and code quality** are our top priorities. We have
-refactored key components to eliminate bottlenecks and maximize hardware efficiency. 
+refactored key components to eliminate bottlenecks and maximize hardware efficiency.
 
 Here are the highlights of our recent technical improvements:
 
 ### 1. Layerwise Offload
 
 From our early profiling, we identified model loading/offloading as a major bottleneck, since the compute stream has to
-wait until all the weights are on-device, and most GPUs are not equipped with sufficient VRAM to keep all components in memory throughout inference.
+wait until all the weights are on-device, and most GPUs are not equipped with sufficient VRAM to keep all components in
+memory throughout inference.
 
 To tackle this, we introduced:
 
@@ -109,7 +123,8 @@ which has the following benefits:
 
 Layerwise offload is now enabled for video models by default.
 
-See related PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https://github.com/sgl-project/sglang/pull/16150)).
+See related
+PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https://github.com/sgl-project/sglang/pull/16150)).
 
 ### 2. Kernel Improvements
 
@@ -125,8 +140,8 @@ See related PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#1
 - **Timestep Implementation**: Use a dedicated CUDA kernel for timestep sinusoidal embedding (sin/cos) to reduce
   per-step overhead in diffusion scheduling.
 
-
-See related PRs ([#12995](https://github.com/sgl-project/sglang/pull/12995), [#16382](https://github.com/sgl-project/sglang/pull/16382)).
+See related
+PRs ([#12995](https://github.com/sgl-project/sglang/pull/12995), [#16382](https://github.com/sgl-project/sglang/pull/16382)).
 
 ### 3. Cache-DiT Integration
 
@@ -147,7 +162,8 @@ sglang generate --model-path=Qwen/Qwen-Image --prompt="Cinematic establishing sh
   --save-output
 ```
 
-Furthermore, we can now integrate and refine Cache-DiT optimizations to our newly-supported diffuser backend (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+Furthermore, we can now integrate and refine Cache-DiT optimizations to our newly-supported diffuser backend (
+see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 ### 4. Few More Things
 
@@ -166,7 +182,12 @@ Furthermore, we can now integrate and refine Cache-DiT optimizations to our newl
 
 ## Acknowledgment
 
-**SGLang-Diffusion Team**: TBD
+**SGLang-Diffusion Team**:
+
+Aichen Feng, Changyi Yang, Chunan Zeng, Fan Lin, Fan Luo, Fenglin Yu, Gaoji Liu, Heyang Huang, Hongli Mi, HuangJi,
+Huanhuan Chen, Jianying Zhu, Jiaqi Zhu, JiaJun Li, Ji Li, Jinliang Li, Junlin Lv, Mingfa Feng, Ran Mei, Shenggui Li,
+Shuyi Fan, Shuxi Guo, Weitao Dai, Wenhao Zhang, Xi Chen, Xiao Jin, Xiaoyu Zhang, Yihan Chen, Yikai Zhu, Yin Fan, Yuhao
+Yang, Yuan Luo, Yueming Pan, Yuhang Qi, Yuzhen Zhou, Zhiyi Liu, Zhuorui Liu, Ziyi Xu, Mick
 
 Special thanks to NVIDIA and Voltage Park for their compute support.
 
@@ -174,4 +195,4 @@ Special thanks to NVIDIA and Voltage Park for their compute support.
 
 - **Slack channel**: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A) (join via slack.sglang.io)
 - [**Cookbook for SGLang-Diffusion**](https://cookbook.sglang.io/docs/diffusion)
-- [**Documentation on SGLang-Diffusion**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs)
+- [**Documentation on SGLang-Diffusion **](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs)
