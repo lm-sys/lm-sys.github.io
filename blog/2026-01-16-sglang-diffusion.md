@@ -5,11 +5,11 @@ date: "January 16, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 ---
 
-Since its release in early November, **SGLang-Diffusion** has gained significant attention and widespread adoption
+Since its release in early Nov. 2025, **SGLang-Diffusion** has gained significant attention and widespread adoption
 within the community. We are deeply grateful for the extensive feedback and growing number of contributions from
 open-source developers.
 
-Over the past two months, we've been meticulously building and accelerating SGLang-Diffusion,
+Over the past two months, we've been meticulously optimizing SGLang-Diffusion,
 now ([#16831ab](https://github.com/sgl-project/sglang/commit/16831ab6d707070f42275d596ce2b3b2f4d69072)) up to 1.5x
 faster than our initial release.
 
@@ -51,15 +51,14 @@ Parallel, Ring Parallel, and Tensor Parallel).
 
 **Hardware Support**: AMD, 4090, 5090, MUSA
 
-**SGLang-Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang
-Diffusion's high-performance inference engine.
+**SGLang-Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang-Diffusion's high-performance inference engine.
 
-While ComfyUI offers exceptional flexibility through its custom nodes, it
+While ComfyUI offers exceptional flexibility via custom nodes, it often
 lacks multi-GPU support and optimal performance.
 
 Our solution replaces ComfyUI's denoising model forward pass with
 SGLang's optimized implementation, preserving ComfyUI's flexibility while leveraging SGLang's superior inference. Users
-can simply replace ComfyUI's loader node with our SGL-Diffusion UNET Loader to enable enhanced performance without
+can simply swap ComfyUI's loader with our SGL-Diffusion UNET Loader to enable enhanced performance without
 modifying existing workflows.
 
 <img src="/images/blog/sgl-diffusion-26-01/comfyui.png" style="display:block; width: 220%; margin:15px auto 0 auto"></img>
@@ -69,14 +68,12 @@ modifying existing workflows.
 
 Here are some performance benchmark results:
 
-- We compared the performance of SGLang-Diffusion (#16831ab) with all popular models (including the SGLang-Diffusion on
-  Nov. 2025). **SGLang-Diffusion** delivers the fastest speed across all popular models on NVIDIA GPU, up to 5x compared
-  to others.
+- We benchmarked SGLang-Diffusion (#16831ab) across popular models, comparing it against previous version (Nov. 2025) and other frameworks. SGLang-Diffusion achieves state-of-the-art speeds on NVIDIA GPUs, outperforming other solutions by up to 5x.
 
 [//]: # (<iframe width="984" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1022178651&amp;format=interactive"></iframe>)
 <iframe style="display:block; margin: auto;" width="969" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1681696401&amp;format=interactive"></iframe>
 
-- We compared the performance of SGLang-Diffusion under different environments with one of the fastest vendor.
+- We compared the performance of SGLang-Diffusion under different environments with one of the fastest vendors.
 <iframe style="display:block; margin: auto;" width="969" height="780" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=174425525&amp;format=interactive"></iframe>
 
 
@@ -122,9 +119,7 @@ PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https:
 
 ### 2. Kernel Improvements
 
-- **FlashAttention kernel upstream**: We found that the FlashAttention kernel used in SGLang-Diffusion was behind the
-  Dao-AILab upstream version, causing slower performance. We also now avoid using varlen format func in diffusion
-  models.
+- **Upstream FlashAttention**: We synchronized our kernels with the latest upstream version from Dao-AILab to eliminate performance lags.
 - **JIT QK Norm Kernel**: Fused Q/K RMSNorm into a single inplace kernel to cut launch count and memory traffic before
   attention.
 - **FlashInfer RoPE**: Apply RoPE on Q/K inplace with FlashInfer when available (fallback otherwise), reducing RoPE
@@ -145,7 +140,7 @@ Parallel, along with any hybrid combination of these three.
 See [#16532](https://github.com/sgl-project/sglang/pull/16532) & [#15163](https://github.com/sgl-project/sglang/pull/15163)
 for implementation details.
 
-With only a couple of environment variables, the generation speed is boosted by up to 169%.
+By setting just a few environment variables, generation speed can increase by up to 169%.
 
 Here is an example to enable Cache-DiT in SGLang-Diffusion:
 
