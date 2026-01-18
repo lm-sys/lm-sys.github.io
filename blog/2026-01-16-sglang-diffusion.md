@@ -150,8 +150,7 @@ sglang generate --model-path=Qwen/Qwen-Image --prompt="Cinematic establishing sh
   --save-output
 ```
 
-Furthermore, we can now integrate and refine Cache-DiT optimizations to our newly-supported diffuser backend (
-see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+Furthermore, we can now integrate and refine Cache-DiT optimizations to our newly-supported diffuser backend (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 ### 4. Few More Things
 
@@ -164,7 +163,7 @@ see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 ## Roadmap
 
 - Sparse Attention Backends
-- Quantization (Nunchaku, nvfp4 and others)
+- Quantization (nunchaku, nvfp4 and others)
 - Optimizations on consumer-level GPUs
 - Co-design with [sglang-omni](https://github.com/sgl-project/sglang/issues/16546)
 
@@ -172,8 +171,8 @@ see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 **SGLang-Diffusion Team**:
 
-Aichen Feng, Alison Shao, Changyi Yang, Chunan Zeng, Fan Lin, Fan Luo, Fenglin Yu, Gaoji Liu, Heyang Huang, Hongli Mi, HuangJi,
-Huanhuan Chen, Jianying Zhu, Jiaqi Zhu, JiaJun Li, Ji Li, Jinliang Li, Junlin Lv, Mingfa Feng, Ran Mei, Shenggui Li,
+Aichen Feng, Alison Shao, Changyi Yang, Chunan Zeng, Fan Lin, Fan Luo, Fenglin Yu, Gaoji Liu, Heyang Huang, Hongli Mi,
+Huanhuan Chen, Ji Huang, Jiajun Li, Ji Li, Jinliang Li, Junlin Lv, Jianying Zhu, Jiaqi Zhu Mingfa Feng, Ran Mei, Shenggui Li,
 Shuyi Fan, Shuxi Guo, Weitao Dai, Wenhao Zhang, Xi Chen, Xiao Jin, Xiaoyu Zhang, Yihan Chen, Yikai Zhu, Yin Fan, Yuhao
 Yang, Yuan Luo, Yueming Pan, Yuhang Qi, Yuzhen Zhou, Zhiyi Liu, Zhuorui Liu, Ziyi Xu, Mick
 
