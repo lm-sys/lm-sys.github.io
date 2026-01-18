@@ -80,7 +80,7 @@ Here are some performance benchmark results:
 <iframe style="display:block; margin: auto;" width="969" height="780" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=174425525&amp;format=interactive"></iframe>
 
 
-- We also gather results for SGLang-Diffusion on AMD GPU.
+- We also evaluated SGLang-Diffusion on AMD GPU:
 <iframe style="display:block; margin: auto;" width="852" height="321" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQCc9ulnNOE8mpM2RjIgZLJlLKxK_KUyws3WlTB1mVz2Ywx790G0IVbrI7-gjY_O5D8G5Grcjb1dBkR/pubchart?oid=319708956&amp;format=interactive"></iframe>
 
 ## Key Improvements
@@ -169,10 +169,10 @@ see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 ## Further Roadmap
 
-- Disaggregated serving x Omni models
 - Sparse Attention Backends
 - Quantization (Nunchaku, nvfp4 and others)
 - Optimizations on consumer-level GPUs
+- Co-design with [sglang-omni](https://github.com/sgl-project/sglang/issues/16546)
 
 ## Acknowledgment
 
