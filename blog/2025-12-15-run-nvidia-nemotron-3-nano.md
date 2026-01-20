@@ -28,7 +28,7 @@ Nemotron 3 Nano is fully open with open-weights, datasets and recipes so develop
 - Model output: Text
 - Supported GPUs: NVIDIA RTX Pro 6000, DGX Spark, H100, B200. 
 - Get started: 
-    - Download model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8)
+    - Download model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8), [NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4)
     - [Run with SGLang for inference](https://cookbook.sglang.io/docs/NVIDIA/Nemotron3-Nano)
     - [Technical report](https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Nano-Technical-Report.pdf) to build custom, optimized models with Nemotron techniques.
 
@@ -46,8 +46,11 @@ We can then serve this model:
 # BF16
 python3 -m sglang.launch_server --model-path nvidia/NVIDIA-Nemotron-Nano-3-30B-A3B-BF16 --trust-remote-code --reasoning-parser nano_v3 --tool-call-parser qwen3_coder
 
-# Swap out model name for FP8
+# FP8
 python3 -m sglang.launch_server --model-path nvidia/NVIDIA-Nemotron-Nano-3-30B-A3B-FP8 --trust-remote-code --reasoning-parser nano_v3 --tool-call-parser qwen3_coder
+
+# NVFP4
+python3 -m sglang.launch_server --model-path nvidia/NVIDIA-Nemotron-Nano-3-30B-A3B-NVFP4 --trust-remote-code --reasoning-parser nano_v3 --tool-call-parser qwen3_coder
 ```
 
 Once the server is up and running, you can prompt the model using the below code snippets:
@@ -93,7 +96,7 @@ Trained on NVIDIA-curated, high-quality data, Nemotron 3 Nano leads on benchmark
 
 ## Get Started
 
-- Download Nemotron 3 Nano model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8)
+- Download Nemotron 3 Nano model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8), [NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4)
 - Run with SGLang for inference using [this](https://cookbook.sglang.io/docs/NVIDIA/Nemotron3-Nano) cookbook or through this NVIDIA Brev [launchable](https://brev.nvidia.com/launchable/deploy?launchableID=env-36ikQZX0ZDTSCGE7YkqxiOKwKsj). 
 
 
