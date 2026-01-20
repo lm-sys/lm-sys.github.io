@@ -38,7 +38,7 @@ For an easier setup with SGLang, refer to our getting started cookbook, availabl
 
 Run the command below to install dependencies:
 ```bash
-pip install sglang==0.5.6.post2.dev7852+g8102e36b5 --extra-index-url https://sgl-project.github.io/whl/nightly/
+uv pip install sglang==0.5.6.post3.dev1278+gad1b4e472 --extra-index-url https://sgl-project.github.io/whl/nightly/
 ```
 
 We can then serve this model:
