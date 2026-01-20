@@ -9,9 +9,7 @@ Since its release in early Nov. 2025, **SGLang-Diffusion** has gained significan
 within the community. We are deeply grateful for the extensive feedback and growing number of contributions from
 open-source developers.
 
-Over the past two months, we've been meticulously optimizing SGLang-Diffusion,
-now ([#16831ab](https://github.com/sgl-project/sglang/commit/16831ab6d707070f42275d596ce2b3b2f4d69072)) up to 1.5x
-faster than our initial release.
+Over the past two months, we've been meticulously optimizing SGLang-Diffusion, now (docker image tag: `lmsysorg/sglang:dev-pr-17247`) up to 1.5x faster than our initial release.
 
 Here is a summary of our progress:
 
@@ -21,8 +19,7 @@ Here is a summary of our progress:
 
 - Day-0 support for Flux.2, Qwen-Image-Edit-2511, Qwen-Image-2512, Z-Image-Turbo, Qwen-Image-Layered, TurboWan,
   GLM-Image and more.
-- Run SGLang-Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are planned (
-  see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
+- Run SGLang-Diffusion with diffusers backend: compatible with all models in diffusers; more improvements are planned (see [Issue #16642](https://github.com/sgl-project/sglang/issues/16642)).
 
 **LoRA Support**:
 
@@ -68,7 +65,7 @@ modifying existing workflows.
 
 Here are some performance benchmark results:
 
-- We benchmarked SGLang-Diffusion (#16831ab) across popular models, comparing it against previous version (Nov. 2025) and other frameworks. SGLang-Diffusion achieves state-of-the-art speeds on NVIDIA GPUs, outperforming other solutions by up to 5x.
+- We benchmarked SGLang-Diffusion (docker image tag: `lmsysorg/sglang:dev-pr-17247`) across popular models, comparing it against previous version (Nov. 2025) and other frameworks. SGLang-Diffusion achieves state-of-the-art speeds on NVIDIA GPUs, outperforming all other solutions by up to 5x.
 
 [//]: # (<iframe width="984" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1022178651&amp;format=interactive"></iframe>)
 <iframe style="display:block; margin: auto;" width="969" height="923" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=1681696401&amp;format=interactive"></iframe>
@@ -109,7 +106,7 @@ which has the following benefits:
 
 <img src="/images/blog/sgl-diffusion-26-01/layerwise offload vs serial.png" style="display:block; margin: auto; width: 100%;"></img>
 
-<p style="color:gray; text-align: center;">Comparison with Layerwise Offload and Standard Loading</p>
+<p style="color:gray; text-align: center;">Comparison of Standard Loading with Layerwise Offload</p>
 
 
 **Layerwise Offload** is now enabled for video models by default.
@@ -165,7 +162,7 @@ Furthermore, we can now integrate and refine Cache-DiT optimizations to our newl
 - Sparse Attention Backends
 - Quantization (nunchaku, nvfp4 and others)
 - Optimizations on consumer-level GPUs
-- Co-design with [sglang-omni](https://github.com/sgl-project/sglang/issues/16546)
+- Codesign with [sglang-omni](https://github.com/sgl-project/sglang/issues/16546)
 
 ## Acknowledgment
 
@@ -173,10 +170,11 @@ Furthermore, we can now integrate and refine Cache-DiT optimizations to our newl
 
 Aichen Feng, Adarsh Shirawalmath, Alison Shao, Changyi Yang, Chunan Zeng, Fan Lin, Fan Luo, Fenglin Yu, Gaoji Liu, Heyang Huang, Hongli Mi,
 Huanhuan Chen, Ji Huang, Jiajun Li, Ji Li, Jinliang Li, Junlin Lv, Jianying Zhu, Jiaqi Zhu Mingfa Feng, Ran Mei, Ruiguo Yang, Shenggui Li,
-Shuyi Fan, Shuxi Guo, Weitao Dai, Wenhao Zhang, Xi Chen, Xiao Jin, Xiaoyu Zhang, Yihan Chen, Yikai Zhu, Yin Fan, Yuhao
+Shuyi Fan, Shuxi Guo, Triple Mu, Weitao Dai, Wenhao Zhang, Xi Chen, Xiao Jin, Xiaoyu Zhang (BBuf), Yihan Chen, Yikai Zhu, Yin Fan, Yuhao
 Yang, Yuan Luo, Yueming Yuan, Yuhang Qi, Yuzhen Zhou, Zhiyi Liu, Zhuorui Liu, Ziyi Xu, Mick
 
 Special thanks to NVIDIA and Voltage Park for their compute support.
+Special thanks to AMD for their compute support and assistance in development.
 
 ## Learn more
 
