@@ -28,7 +28,7 @@ Here is a summary of our progress:
   | Base Model | Supported LoRAs |
   |-------------------|------------------|
   | **Wan2.2**        | `lightx2v/Wan2.2-Distill-Loras`<br> `Cseti/wan2.2-14B-Arcane_Jinx-lora-v1` |
-  | **Wan2.1**        | `ligdifffhtx2v/Wan2.1-Distill-Loras` |
+  | **Wan2.1**        | `lightx2v/Wan2.1-Distill-Loras` |
   | **Z-Image-Turbo** | `tarn59/pixel_art_style_lora_z_image_turbo`<br> `wcde/Z-Image-Turbo-DeJPEG-Lora` |
   | **Qwen-Image**    | `lightx2v/Qwen-Image-Lightning`<br> `flymy-ai/qwen-image-realism-lora`<br> `prithivMLmods/Qwen-Image-HeadshotX`<br> `starsfriday/Qwen-Image-EVA-LoRA` |
   | **Qwen-Image-Edit** | `ostris/qwen_image_edit_inpainting`<br> `lightx2v/Qwen-Image-Edit-2511-Lightning` |
