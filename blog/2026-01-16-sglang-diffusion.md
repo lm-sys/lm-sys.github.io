@@ -48,7 +48,7 @@ Parallel, Ring Parallel, and Tensor Parallel).
 
 **Hardware Support**: AMD, 4090, 5090, MUSA
 
-**SGLang-Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang-Diffusion's high-performance inference engine.
+**SGLang-Diffusion x ComfyUI Integration**: We have implemented a flexible ComfyUI custom node that integrates SGLang-Diffusion's high-performance inference engine. See [usage guide](https://github.com/sgl-project/sglang/blob/76f69b77530c734ff9b92b5d036316ba097ba943/python/sglang/multimodal_gen/apps/ComfyUI_SGLDiffusion/README.md).
 
 While ComfyUI offers exceptional flexibility via custom nodes, it often
 lacks multi-GPU support and optimal performance.
@@ -133,7 +133,7 @@ PRs ([#15511](https://github.com/sgl-project/sglang/pull/15511), [#16150](https:
 We've integrated [Cache-DiT🤗](https://github.com/vipshop/cache-dit), the most popular framework for DiT cache,
 seamlessly into SGLang-Diffusion, fully compatible with `torch.compile`, Ulysses Parallel, Ring Parallel, and Tensor
 Parallel, along with any hybrid combination of these three.
-See [#16532](https://github.com/sgl-project/sglang/pull/16532) & [#15163](https://github.com/sgl-project/sglang/pull/15163)
+See [#14234](https://github.com/sgl-project/sglang/pull/14234), [#15163](https://github.com/sgl-project/sglang/pull/15163) and [#16532](https://github.com/sgl-project/sglang/pull/16532)
 for implementation details.
 
 By setting just a few environment variables, generation speed can increase by up to 169%.
