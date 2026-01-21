@@ -169,7 +169,7 @@ Furthermore, we can now integrate and refine Cache-DiT optimizations to our newl
 **SGLang-Diffusion Team**:
 
 Aichen Feng, Adarsh Shirawalmath, Alison Shao, Changyi Yang, Chunan Zeng, DefTruth, Fan Lin, Fan Luo, Fenglin Yu, Gaoji Liu, Heyang Huang, Hongli Mi,
-Huanhuan Chen, Ji Huang, Jiajun Li, Ji Li, Jinliang Li, Junlin Lv, Jianying Zhu, Jiaqi Zhu Mingfa Feng, Ran Mei, Ruiguo Yang, Shenggui Li,
+Huanhuan Chen, Ji Huang, Jiajun Li, Ji Li, Jinliang Li, Junlin Lv, Jianying Zhu, Jiaqi Zhu, Mingfa Feng, Ran Mei, Ruiguo Yang, Shenggui Li,
 Shuyi Fan, Shuxi Guo, Triple Mu, Weitao Dai, Wenhao Zhang, Xi Chen, Xiao Jin, Xiaoyu Zhang (BBuf), Yihan Chen, Yikai Zhu, Yin Fan, Yuhao
 Yang, Yixuan Zhang, Yuan Luo, Yueming Yuan, Yuhang Qi, Yuzhen Zhou, Zhiyi Liu, Zhuorui Liu, Ziyi Xu, Mick
 
