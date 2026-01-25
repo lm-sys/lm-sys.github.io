@@ -9,7 +9,7 @@ Since its release in early Nov. 2025, **SGLang-Diffusion** has gained significan
 within the community. We are deeply grateful for the extensive feedback and growing number of contributions from
 open-source developers.
 
-Over the past two months, we've been meticulously optimizing SGLang-Diffusion, now (docker image tag: `lmsysorg/sglang:dev-pr-17247`) up to 1.5x faster than our initial release.
+Over the past two months, we've been meticulously optimizing SGLang-Diffusion, now (docker image tag: `lmsysorg/sglang:dev-pr-17247`) up to 2.5x faster than our initial release.
 
 Here is a summary of our progress:
 
