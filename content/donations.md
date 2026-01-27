@@ -21,7 +21,7 @@ LMSYS is supported by donations from the following institutions:
 [Laude Institute](https://www.laude.org/),
 [Hyperbolic](https://hyperbolic.xyz),
 [NovitaAI](https://novita.ai/),
-[DataCrunch](https://datacrunch.io/),
+[Verda Cloud](https://verda.com/),
 [Sky9](https://www.sky9capital.com/),
 [Kaggle](https://www.kaggle.com/),
 [MBZUAI](https://mbzuai.ac.ae/),
