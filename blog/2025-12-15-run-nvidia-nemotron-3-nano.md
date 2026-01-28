@@ -5,6 +5,8 @@ date: "December 15, 2025"
 previewImg: /images/blog/nemotron-3-nano/benchmark.png
 ---
 
+**Jan 28th Update**: NVIDIA just released their Nemotron 3 Nano model in NVFP4 precision. This model is supported by SGLang out of the box and it uses a new method called Quantization-Aware Distillation (QAD) to maintain accuracy on NVFP4 while delivering 4x throughput on B200 compared to FP8-H100. You can download the NVFP4 checkpoints [here](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4) and run them using this [NVIDIA Brev launchable](https://brev.nvidia.com/launchable/deploy?launchableID=env-386BHXsTBKROX8F2WBCbQP6S6qt).
+
 We are excited to announce that SGLang supports the latest highly efficient NVIDIA Nemotron 3 Nano model on Day 0!
 
 Nemotron 3 Nano, part of the newly announced open [Nemotron 3 family](https://developer.nvidia.com/blog/inside-nvidia-nemotron-3-techniques-tools-and-data-that-make-it-efficient-and-accurate/),  is a compact MoE language model offering industry-leading compute efficiency and accuracy, enabling developers to build specialized agentic AI systems. 
