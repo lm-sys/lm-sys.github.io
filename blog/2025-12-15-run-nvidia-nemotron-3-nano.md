@@ -5,6 +5,8 @@ date: "December 15, 2025"
 previewImg: /images/blog/nemotron-3-nano/benchmark.png
 ---
 
+**Jan 28th Update**: NVIDIA just released their Nemotron 3 Nano model in NVFP4 precision. This model is supported by SGLang out of the box and it uses a new method called Quantization-Aware Distillation (QAD) to maintain accuracy on NVFP4 while delivering 4x throughput on B200 compared to FP8-H100. You can download the NVFP4 checkpoints [here](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4) and run them using this [NVIDIA Brev launchable](https://brev.nvidia.com/launchable/deploy?launchableID=env-386BHXsTBKROX8F2WBCbQP6S6qt).
+
 We are excited to announce that SGLang supports the latest highly efficient NVIDIA Nemotron 3 Nano model on Day 0!
 
 Nemotron 3 Nano, part of the newly announced open [Nemotron 3 family](https://developer.nvidia.com/blog/inside-nvidia-nemotron-3-techniques-tools-and-data-that-make-it-efficient-and-accurate/),  is a compact MoE language model offering industry-leading compute efficiency and accuracy, enabling developers to build specialized agentic AI systems. 
@@ -28,7 +30,7 @@ Nemotron 3 Nano is fully open with open-weights, datasets and recipes so develop
 - Model output: Text
 - Supported GPUs: NVIDIA RTX Pro 6000, DGX Spark, H100, B200. 
 - Get started: 
-    - Download model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8)
+    - Download model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8), [NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4)
     - [Run with SGLang for inference](https://cookbook.sglang.io/docs/NVIDIA/Nemotron3-Nano)
     - [Technical report](https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Nano-Technical-Report.pdf) to build custom, optimized models with Nemotron techniques.
 
@@ -38,7 +40,7 @@ For an easier setup with SGLang, refer to our getting started cookbook, availabl
 
 Run the command below to install dependencies:
 ```bash
-pip install sglang==0.5.6.post2.dev7852+g8102e36b5 --extra-index-url https://sgl-project.github.io/whl/nightly/
+uv pip install sglang==0.5.6.post3.dev1278+gad1b4e472 --extra-index-url https://sgl-project.github.io/whl/nightly/
 ```
 
 We can then serve this model:
@@ -46,8 +48,11 @@ We can then serve this model:
 # BF16
 python3 -m sglang.launch_server --model-path nvidia/NVIDIA-Nemotron-Nano-3-30B-A3B-BF16 --trust-remote-code --reasoning-parser nano_v3 --tool-call-parser qwen3_coder
 
-# Swap out model name for FP8
+# FP8
 python3 -m sglang.launch_server --model-path nvidia/NVIDIA-Nemotron-Nano-3-30B-A3B-FP8 --trust-remote-code --reasoning-parser nano_v3 --tool-call-parser qwen3_coder
+
+# NVFP4
+python3 -m sglang.launch_server --model-path nvidia/NVIDIA-Nemotron-Nano-3-30B-A3B-NVFP4 --trust-remote-code --reasoning-parser nano_v3 --tool-call-parser qwen3_coder
 ```
 
 Once the server is up and running, you can prompt the model using the below code snippets:
@@ -93,7 +98,7 @@ Trained on NVIDIA-curated, high-quality data, Nemotron 3 Nano leads on benchmark
 
 ## Get Started
 
-- Download Nemotron 3 Nano model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8)
+- Download Nemotron 3 Nano model weights from Hugging Face -  [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16), [FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8), [NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4)
 - Run with SGLang for inference using [this](https://cookbook.sglang.io/docs/NVIDIA/Nemotron3-Nano) cookbook or through this NVIDIA Brev [launchable](https://brev.nvidia.com/launchable/deploy?launchableID=env-36ikQZX0ZDTSCGE7YkqxiOKwKsj). 
 
 
