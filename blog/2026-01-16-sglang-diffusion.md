@@ -157,12 +157,14 @@ Furthermore, we can now integrate and refine Cache-DiT optimizations to our newl
 - [**Diffusion Cookbook**](https://cookbook.sglang.io/docs/diffusion/): Curated recipes, best practices, and
   benchmarking guides for SGLang-Diffusion.
 
-## Roadmap
+## Roadmap (26Q1)
 
 - Sparse Attention Backends
 - Quantization (nunchaku, nvfp4 and others)
 - Optimizations on consumer-level GPUs
 - Codesign with [sglang-omni](https://github.com/sgl-project/sglang/issues/16546)
+
+Please refer to [**Roadmap for 26Q1**](https://github.com/sgl-project/sglang/issues/18286) for more details.
 
 ## Acknowledgment
 
@@ -182,3 +184,4 @@ Special thanks to AMD for their compute support and assistance in development.
 - **Slack channel**: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A) (join via slack.sglang.io)
 - [**Cookbook for SGLang-Diffusion**](https://cookbook.sglang.io/docs/diffusion)
 - [**Documentation on SGLang-Diffusion**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs)
+- [**Roadmap for 26Q1**](https://github.com/sgl-project/sglang/issues/18286)
