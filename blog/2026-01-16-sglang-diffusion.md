@@ -159,7 +159,6 @@ Furthermore, we can now integrate and refine Cache-DiT optimizations to our newl
 
 ## Roadmap (26Q1)
 
-
 - Sparse Attention Backends
 - Quantization (nunchaku, nvfp4 and others)
 - Optimizations on consumer-level GPUs
