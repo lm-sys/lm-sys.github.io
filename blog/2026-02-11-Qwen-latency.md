@@ -216,11 +216,9 @@ The Vision Transformer (ViT) module performs visual feature encoding from images
 
 - Sequence length grows quadratically with resolution
 
-- Full selfattention has complexity O(N2)
+- Full selfattention has complexity O(N<sup>2</sup>)
 
-
-A 1280×1280 image generates approximately 4,800 tokens (consistent with original correction: 960×1280 → 4,800 tokens), resulting in over 23 million attention interactions. In extreme scenarios involving large batches of high-resolution images or long videos, token counts can surpass 1M, pushing attention complexity to O(10¹²). This leads to explosive memory consumption, extreme latency, and low hardware utilization.
-
+A 1280×1280 image generates approximately 4,800 tokens (consistent with original correction: 960×1280 → 4,800 tokens), resulting in over 23 million attention interactions. In extreme scenarios involving large batches of high-resolution images or long videos, token counts can surpass 1M, pushing attention complexity to O(10<sup>12</sup>). This leads to explosive memory consumption, extreme latency, and low hardware utilization.
 
 To alleviate these issues, we apply Data Parallelism (DP) to the ViT module: multi-image inputs are split and processed in parallel across independent GPUs (Figure 6). This strategy distributes the computational load and reduces per-GPU pressure. In experiments with 5 images per request (960×1280), we observed 3%–4% performance improvements. The performance gain scales with the number of input images and videos.
 
