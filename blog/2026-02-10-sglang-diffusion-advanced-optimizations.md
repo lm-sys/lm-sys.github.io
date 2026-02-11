@@ -203,6 +203,8 @@ We would like to thank the following contributors for their work on these optimi
 
 Skywork.ai, Song Rui ([Songrui625](https://github.com/Songrui625)), SGLang-Diffusion Team
 
+Special thanks to Song Rui (Member of the SGLang-Diffusion Team) for his excellent and continuous work on VAE Decoding.
+
 Special thanks to our compute partners for their continued support.
 
 Try Diffusion generation powered by SGLang-Diffusion at: https://www.apifree.ai/home
