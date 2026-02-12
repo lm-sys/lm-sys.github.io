@@ -7,7 +7,7 @@ previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 
 We are excited to introduce SGLang Diffusion, which brings SGLang's state-of-the-art performance to accelerate image and video generation for diffusion models.
 SGLang Diffusion supports major open-source video and image generation models (Wan, Hunyuan, Qwen-Image, Qwen-Image-Edit, Flux) while providing fast inference speeds and ease of use via multiple API entry points (OpenAI-compatible API, CLI, Python interface). SGLang Diffusion delivers 1.2x - 5.9x speedup across diverse workloads.
-In collaboration with the FastVideo team, we provide a complete ecosystem for diffusion models, from post-training to production serving. The code is available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen).
+In collaboration with the FastVideo team, we provide a complete ecosystem for diffusion models, from post-training to production serving. The code is available [here](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen). Documentation is available [here](https://docs.sglang.io/diffusion/index.html).
 
 <iframe
 width="600"
@@ -56,7 +56,7 @@ We support various popular open-source video & image generation models, includin
   - Video models: Wan-series, FastWan, Hunyuan
   - Image models: Qwen-Image, Qwen-Image-Edit, Flux
 
-For full list of supported models, reference [here](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/support_matrix.md).
+For full list of supported models, reference [here](https://docs.sglang.io/diffusion/compatibility_matrix.html).
 
 ## Usage
 
@@ -101,7 +101,7 @@ sglang generate --model-path black-forest-labs/FLUX.1-dev \
   --save-output
 ```
 
-Reference [install guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/install.md) and [cli guide](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/cli.md) for more installation methods.
+Reference [install guide](https://docs.sglang.io/diffusion/installation.html) and [cli guide](https://docs.sglang.io/diffusion/api/cli.html) for more installation methods.
 
 ### Demo
 

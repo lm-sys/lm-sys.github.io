@@ -152,7 +152,7 @@ Furthermore, we can now integrate and refine Cache-DiT optimizations to our newl
 ### 4. Few More Things
 
 - **Memory Monitoring**: Peak usage statistics available across offline generation and online serving workflows.
-- [**Profiling Suite**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs/profiling.md):
+- [**Profiling Suite**](https://docs.sglang.io/diffusion/performance/profiling.html):
   Full-stage support with step-by-step docs for PyTorch Profiler and Nsight Systems.
 - [**Diffusion Cookbook**](https://cookbook.sglang.io/docs/diffusion/): Curated recipes, best practices, and
   benchmarking guides for SGLang-Diffusion.
@@ -183,5 +183,5 @@ Special thanks to AMD for their compute support and assistance in development.
 
 - **Slack channel**: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A) (join via slack.sglang.io)
 - [**Cookbook for SGLang-Diffusion**](https://cookbook.sglang.io/docs/diffusion)
-- [**Documentation on SGLang-Diffusion**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs)
+- [**Documentation on SGLang-Diffusion**](https://docs.sglang.io/diffusion/index.html)
 - [**Roadmap for 26Q1**](https://github.com/sgl-project/sglang/issues/18286)
