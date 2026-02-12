@@ -1,6 +1,6 @@
 ---
 title: "SGLang-Diffusion: Advanced Optimizations for Production-Ready Video Generation"
-author: "SGLang-Diffusion Team"
+author: "The SGLang-Diffusion Team"
 date: "February 10, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 ---
@@ -55,16 +55,16 @@ two major benefits:
   eliminating padding entirely
 - **Lower Communication Volume**: When padding is needed, the overhead is minimal compared to frame-level padding
 
-**Comparison:**
+### Comparison: Shape and Comm Volume Analysis
 
-| Solution           | Input Tensor Shape (Per-rank) | All-to-All Comm Volume | Padding Overhead |
-|--------------------|-------------------------------|------------------------|------------------|
-| **Frame Sharding** | `3, 90, 160, C` (24/8 = 3)    | `1.0 × feature_map`    | 3 frames (14.3%) |
-| **Token Sharding** | `2.625, 90, 160, C` (21/8)    | `0.875 × feature_map`  | 0 frames         |
+| Solution           | Padding Overhead | Input Tensor Shape (Per-rank) | All-to-All Comm Volume | 
+|--------------------|------------------|-------------------------------|------------------------|
+| **Frame Sharding** | 3 frames (14.3%) | `3, 90, 160, C` (24/8 = 3)    | `1.0 × feature_map`    |
+| **Token Sharding** | 0 frames         | `2.625, 90, 160, C` (21/8)    | `0.875 × feature_map`  |
 
 This optimization delivers both faster communication and reduced memory footprint, especially for video models.
 
-See related implementation in the codebase for technical details.
+See related [PR](https://github.com/sgl-project/sglang/pull/18161) for technical details.
 
 ### 2. Parallel Folding: Decoupling Text Encoder and DiT Parallelism
 
@@ -83,20 +83,23 @@ Encoder now uses the DiT's SP group as its TP group.
 This approach ensures both components use optimal parallelism strategies without interference, improving overall
 efficiency.
 
+See related [PR](https://github.com/sgl-project/sglang/pull/17818) for technical details.
+
 ### 3. Parallel VAE: Distributed Encoding/Decoding
 
 VAE encoding/decoding involves heavy 3D convolution operations. For high-resolution video, single-GPU implementations
 are slow and prone to OOM.
 
-We considered two approaches:
+The two common approaches to alleviate this are:
 
-1. **Tiling**: Split feature maps into tiles processed sequentially—reduces peak memory but increases latency
+1. **Tiling**: Split feature maps into tiles, process them sequentially—reduces peak memory but increases latency
 2. **Parallel**: Distribute tiles across GPUs for concurrent processing—reduces both peak memory and latency
 
 We implemented **Parallel VAE** for Wan-VAE with the following strategy:
 
 - **Height-wise Sharding**: Split feature maps along the height dimension across ranks
-- **Conv Operations**: Use `halo_exchange` to share boundary pixels between neighboring ranks, ensuring mathematical
+- **Conv Operations**: Use `halo_exchange` to share boundary pixels between neighboring ranks (P2P), ensuring
+  mathematical
   equivalence with global convolution
 - **Attention Operations**: Use `all_gather` for global context when needed
 - **Result Aggregation**: `all_gather` to reconstruct full height at the end of encoding/decoding
@@ -104,12 +107,10 @@ We implemented **Parallel VAE** for Wan-VAE with the following strategy:
 This approach eliminates VAE as a bottleneck for high-resolution video generation, enabling higher resolutions and
 longer sequences without OOM.
 
-<img src="/images/blog/sgl-diffusion-26-02/parallel-vae.png" style="display:block; margin: auto; width: 80%;"></img>
-<p style="color:gray; text-align: center;">Parallel VAE: Height-wise Distributed Processing</p>
-
 ### 4. Serving with Cache-DiT: Fixing Multi-Request Stability
 
-[Cache-DiT](https://github.com/vipshop/cache-dit) accelerates inference by caching residuals and skipping redundant
+[Cache-DiT](https://github.com/vipshop/cache-dit) in SGLang-Diffusion accelerates inference by caching residuals and
+skipping redundant
 computations. However, its correct operation depends on proper `num_inference_steps` configuration, which determines
 step counting and the Selective Computation Mask (SCM).
 
@@ -125,7 +126,7 @@ Wan2.2 uses a dual-transformer architecture, where `transformer` and `transforme
 These issues caused incorrect step counting and cache buffer contamination. When consecutive requests had different
 video shapes, cache buffers would encounter shape mismatches, **crashing the server**.
 
-**The Solution:**
+**Our Solution:**
 
 1. `transformer` and `transformer_2` now use `num_high_noise_steps` and `num_low_noise_steps` respectively to configure
    independent cache contexts
@@ -136,7 +137,9 @@ This ensures stable, production-ready serving with Cache-DiT acceleration.
 
 ### 5. Optimize Video Save: Eliminating Serialization Overhead
 
-In our serving architecture, `scheduler_client` and `gpu_worker` communicate via ZMQ. Previously, `gpu_worker` would:
+In our serving architecture, `scheduler_client` and `gpu_worker` communicate via ZMQ.
+
+Previously, `gpu_worker` would:
 
 1. Complete inference
 2. Serialize output tensor
@@ -146,7 +149,7 @@ In our serving architecture, `scheduler_client` and `gpu_worker` communicate via
 
 This introduced significant overhead from serialization/deserialization and memory copies.
 
-**New Approach:**
+**Our Solution:**
 
 `gpu_worker` now directly processes the output tensor and saves the video to disk, returning only the file path to
 `scheduler_client`.
@@ -155,7 +158,6 @@ This introduced significant overhead from serialization/deserialization and memo
 
 - **Lower Latency**: Eliminates serialization/deserialization overhead
 - **Reduced Memory**: Avoids duplicate tensor copies
-- **Simpler Pipeline**: Cleaner separation of concerns
 
 ### 6. WanVideo LayerNorm Fusion: CuTeDSL JIT Kernels
 
@@ -184,35 +186,28 @@ These micro-optimizations add up, especially for multi-layer architectures like 
 
 ## Performance Results
 
-These optimizations collectively deliver:
+Here's a comparison of SGLang-Diffusion and LightX2V for Wan2.2 T2V under different settings:
 
-- **Up to 2.5× faster inference** compared to our initial November 2025 release
-- **Zero-padding sequence sharding** for common video resolutions
-- **Stable multi-request serving** with Cache-DiT acceleration
-- **Elimination of VAE bottlenecks** for high-resolution video generation
+<iframe style="display:block; margin: auto;" width="838" height="523" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQRK_j_q8NXZKEqtrTBagxFxvvaxYXXB56HTqqYlD_aAv1v74WKle2HIc7HPK3P0ZVrYlZrjshKYnaV/pubchart?oid=677973346&amp;format=interactive"></iframe>
 
 ## What's Next
 
-We continue to push the boundaries of diffusion model serving. Please refer to [**Roadmap for 26Q1**](https://github.com/sgl-project/sglang/issues/18286) for more details.
+We continue to push the boundaries of diffusion model serving. Please refer to [**Roadmap for 26Q1
+**](https://github.com/sgl-project/sglang/issues/18286) for more details.
 
 Stay tuned for more updates as we continue to optimize SGLang-Diffusion for production deployments.
 
 ## Acknowledgment
 
-We would like to thank the following contributors for their work on these optimizations:
+- We would like to thank the following contributors for their work on these optimizations:
+  **Skywork.ai, Song Rui ([Songrui625](https://github.com/Songrui625)), SGLang-Diffusion Team**
+- Special thanks to our compute partners for their continued support.
 
-Skywork.ai, Song Rui ([Songrui625](https://github.com/Songrui625)), SGLang-Diffusion Team
-
-Special thanks to Song Rui (Member of the SGLang-Diffusion Team) for his excellent and continuous work on VAE Decoding.
-
-Special thanks to our compute partners for their continued support.
-
-Try Diffusion generation powered by SGLang-Diffusion at: https://www.apifree.ai/home
+Try Diffusion generation powered by SGLang-Diffusion at: [APIFree](https://www.apifree.ai/home)
 
 ## Learn More
 
 - **Slack channel**: [#diffusion](https://sgl-fru7574.slack.com/archives/C09P0HTKE6A) (join via slack.sglang.io)
 - [**Cookbook for SGLang-Diffusion**](https://cookbook.sglang.io/docs/diffusion)
-- [**Documentation on SGLang-Diffusion
-  **](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs)
+- [**Documentation on SGLang-Diffusion**](https://github.com/sgl-project/sglang/blob/main/python/sglang/multimodal_gen/docs)
 - [**Previous Update: Two Months In**](https://lmsys.org/blog/2026-01-16-sglang-diffusion/)
