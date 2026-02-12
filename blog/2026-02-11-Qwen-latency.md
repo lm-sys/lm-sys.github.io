@@ -1,5 +1,5 @@
 ---
-title: "Unleashing Computational Power: Ultimate Latency Optimization of Qwen3 and Qwen3-VL on AMD MI300 Series"
+title: "Unleashing Computational Power: Ultimate Latency Optimization of Qwen3 and Qwen3-VL on AMD Instinct<sup>TM</sup> MI300X Series"
 author: "The Qwen C-end Infrastructure Engineering Team & The AMD AI Framework Team"
 date: "February 11, 2026"
 previewImg: /images/blog/qwen_amd_latency/preview.png
@@ -11,7 +11,7 @@ previewImg: /images/blog/qwen_amd_latency/preview.png
 Qwen is a series of large-scale, high-performance Large Language Models (LLMs) developed by the Qwen Team of Alibaba Cloud. From the first generation to the latest third-generation flagship models, all Qwen variants have undergone dedicated training and fine-grained tuning, endowing them with strong instruction-following capabilities, efficient deployability for interactive AI applications, and robust performance in solving complex tasks. As flagship models in the Qwen3 family, Qwen3-235B and Qwen3-VL-235B have achieved comprehensive multi-dimensional improvements and have been widely deployed at scale in the Qwen APP.
 
 
-In recent months, the Qwen C-end Infrastructure Engineering Team and the AMD AI Framework Team have collaborated to implement extreme latency optimization solutions for Qwen3-235B and Qwen3-VL-235B on the AMD MI300 series GPU platform based on the SGLang framework. Remarkable breakthroughs have been achieved in terms of performance, precision, and stability.
+In recent months, the Qwen C-end Infrastructure Engineering Team and the AMD AI Framework Team have collaborated to implement extreme latency optimization solutions for Qwen3-235B and Qwen3-VL-235B on the AMD Instinct<sup>TM</sup> MI300X series GPU platform based on the SGLang framework. Remarkable breakthroughs have been achieved in terms of performance, precision, and stability.
 
 
 - For Qwen3-235B: Compared with the baseline, the Time to First Token (TTFT) has been improved by 1.67×, and the Time Per Output Token (TPOT) has been improved by 2.12×.
@@ -20,10 +20,10 @@ In recent months, the Qwen C-end Infrastructure Engineering Team and the AMD AI 
 - For Qwen3-VL-235B: Compared with the baseline, the Time to First Token (TTFT) has been improved by 1.62×, and the Time Per Output Token (TPOT) has been improved by 1.90×.
 
 
-The AMD MI300 series GPUs are built on the CDNA 3 architecture, featuring 192 GB of HBM3 memory per card—sufficient to support inference for models with over 70 billion parameters. Combined with a 5.3 TB/s memory bandwidth, 256 MB Infinity Cache, and native Matrix Core support for FP8 and PTPC quantization, the platform delivers exceptional performance and cost-efficiency, making it an ideal choice for large-scale LLM cluster deployment.
+The AMD Instinct<sup>TM</sup> MI300X series GPUs are built on the CDNA<sup>TM</sup> 3 architecture, featuring 192 GB of HBM3 memory per card—sufficient to support inference for models with over 70 billion parameters. Combined with a 5.3 TB/s memory bandwidth, 256 MB Infinity Cache, and native Matrix Core support for FP8 and PTPC quantization, the platform delivers exceptional performance and cost-efficiency, making it an ideal choice for large-scale LLM cluster deployment.
 
 
-This paper elaborates on the performance optimization techniques jointly explored and implemented by the two teams, with a core focus on achieving ultra-low-latency inference. All optimization work has been opened-source in: [[Tracking][Performance][AMD] Qwen3 & Qwen3-VL Latency Optimization on AMD MI300 Series GPUs](https://github.com/sgl-project/sglang/issues/18466).
+This paper elaborates on the performance optimization techniques jointly explored and implemented by the two teams, with a core focus on achieving ultra-low-latency inference. All optimization work has been opened-source in: [[Tracking][Performance][AMD] Qwen3 & Qwen3-VL Latency Optimization on AMD Instinct<sup>TM</sup> MI300X Series GPUs](https://github.com/sgl-project/sglang/issues/18466).
 
 <p align="center">
   <img src="/images/blog/qwen_amd_latency/QwenVL.jpg" width="80%">
@@ -75,7 +75,7 @@ During experiments on implementing Expert Parallelism (EP) for Qwen3-235B, we ob
 
 
 
-In Qwen’s production scenarios, TTFT and TPOT are critical performance metrics. Measurements confirm that MoE model inference is typically memory-bound. The high-bandwidth HBM of the AMD MI300 series effectively alleviates I/O bottlenecks in Tensor Parallelism (TP), thereby drastically reducing inference latency.
+In Qwen’s production scenarios, TTFT and TPOT are critical performance metrics. Measurements confirm that MoE model inference is typically memory-bound. The high-bandwidth HBM of the AMD Instinct<sup>TM</sup> MI300X series effectively alleviates I/O bottlenecks in Tensor Parallelism (TP), thereby drastically reducing inference latency.
 
 
 For the full Qwen3-235B model (including its MoE structure), we deploy a TP8 tensor parallelism configuration combined with PTPC FP8 quantization to achieve extreme low latency. Specifically, PTPC’s per-channel weight quantization—equipped with 192 independent scaling factors—enables seamless compatibility between MoE modules and TP8, ensuring stable and efficient large-scale parallel deployment.
@@ -95,7 +95,7 @@ For the Attention module, we integrate highperformance MHA and PagedAttention op
 - v_cache: [num_blocks, num_kv_heads, block_size // X, head_dim, X]
 
 
-This layout aligns memory access patterns with the AMD CDNA 3 architecture, drastically improving the memory efficiency of PagedAttention. During the decode phase, no additional device-to-device (D2D) copies are required for layout conversion, thus eliminating redundant overhead (Figure 5). Compared to the standard KV Cache layout [num_blocks, num_kv_heads, head_dim, block_size], this optimization improves decode throughput by 15%–20% while reducing inference latency.
+This layout aligns memory access patterns with the AMD CDNA<sup>TM</sup> 3 architecture, drastically improving the memory efficiency of PagedAttention. During the decode phase, no additional device-to-device (D2D) copies are required for layout conversion, thus eliminating redundant overhead (Figure 5). Compared to the standard KV Cache layout [num_blocks, num_kv_heads, head_dim, block_size], this optimization improves decode throughput by 15%–20% while reducing inference latency.
 
 <p align="center">
   <img src="/images/blog/qwen_amd_latency/K_Cache_Layout.png" width="30%">
@@ -232,7 +232,7 @@ To alleviate these issues, we apply Data Parallelism (DP) to the ViT module: mul
 #### 3.1.1 Hardware
 
 
-We deploy our system with the SGLang inference engine on a single AMD MI308 node with 8 GPU cards. The optimization techniques presented are **general, portable, and readily applicable** to other AMD platforms built upon the **CDNA 3 architecture**.
+We deploy our system with the SGLang inference engine on a single AMD MI308 node with 8 GPU cards. The optimization techniques presented are **general, portable, and readily applicable** to other AMD platforms built upon the **CDNA<sup>TM</sup> 3 architecture**.
 
 
 #### 3.1.2 Model Weights
