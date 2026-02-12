@@ -143,7 +143,7 @@ Operator fusion reduces frequent HBM access and further lowers endtoend inferenc
 
 
 | Fusion pattern | Before (us) | After (us) | Speedup Ratio |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | 
 | QKNorm + RoPE | 11.6 | 5.1 | 127% |
 | AllReduce + AddRMSNorm + Quant | 35 | 21 | 67% |
 
