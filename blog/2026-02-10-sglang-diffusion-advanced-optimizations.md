@@ -192,8 +192,7 @@ Here's a comparison of SGLang-Diffusion and LightX2V for Wan2.2 T2V under differ
 
 ## What's Next
 
-We continue to push the boundaries of diffusion model serving. Please refer to [**Roadmap for 26Q1
-**](https://github.com/sgl-project/sglang/issues/18286) for more details.
+We continue to push the boundaries of diffusion model serving. Please refer to [**SGLang-Diffusion's Roadmap for 26Q1**](https://github.com/sgl-project/sglang/issues/18286) for more details.
 
 Stay tuned for more updates as we continue to optimize SGLang-Diffusion for production deployments.
 
