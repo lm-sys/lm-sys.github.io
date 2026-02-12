@@ -1,5 +1,5 @@
 ---
-title: "Unleashing Computational Power: Ultimate Latency Optimization of Qwen3 and Qwen3-VL on AMD Instinct<sup>TM</sup> MI300X Series"
+title: "Unleashing Computational Power: Ultimate Latency Optimization of Qwen3 and Qwen3-VL on AMD MI300X Series"
 author: "The Qwen C-end Infrastructure Engineering Team & The AMD AI Framework Team"
 date: "February 11, 2026"
 previewImg: /images/blog/qwen_amd_latency/preview.png
@@ -60,7 +60,7 @@ Quantization is critical to accelerating LLM inference. This work adopts the **P
 Compared to standard BlockScale FP8 quantization, PTPC quantization maintains comparable accuracy while delivering superior computational efficiency. The fixed block size of BlockScale often misaligns with the optimal tile size of hardware GEMM units, introducing additional overhead from data splitting and reordering. In contrast, PTPC’s fine-grained design eliminates fixed block constraints and naturally aligns with the native compute granularity of hardware GEMM units. Its per-channel weight quantization also better matches the channel-parallel compute architecture of modern accelerators. Combined with the throughput gains from low-precision computation, PTPC-based GEMM significantly enhances hardware utilization.
 
 
-Experimental results on the AMD ROCm platform demonstrate that PTPC FP8 GEMM quantization outperforms BlockScale FP8 by 15%–30%, with more significant latency reductions in small-matrix and misaligned-matrix deployment scenarios.
+Experimental results on the AMD ROCm<sup>TM</sup> platform demonstrate that PTPC FP8 GEMM quantization outperforms BlockScale FP8 by 15%–30%, with more significant latency reductions in small-matrix and misaligned-matrix deployment scenarios.
 
 
 #### 2.1.2 Parallelization Strategy
@@ -197,7 +197,7 @@ In SGLang, the Tokenizer and Scheduler typically run in separate processes. Prep
 <p align="center" style="color:gray; text-align: center;"><em>Figure 8. Host overhead of multimodality transmission and image hash encoding</em></p>
 
 
-The ROCm backend supports **CUDA IPC**, enabling direct GPU to GPU data transfer without CPU intermediation. This eliminates redundant CPU GPU copies and drastically reduces multimodal transfer latency, as shown in Figure 9. Additionally, we offload image hashing (Figure 6) to the GPU, further compressing overhead.
+The ROCm<sup>TM</sup> backend supports **CUDA IPC**, enabling direct GPU to GPU data transfer without CPU intermediation. This eliminates redundant CPU GPU copies and drastically reduces multimodal transfer latency, as shown in Figure 9. Additionally, we offload image hashing (Figure 6) to the GPU, further compressing overhead.
 
 <p align="center">
   <img src="/images/blog/qwen_amd_latency/cuda_ipc.png" width="40%">
