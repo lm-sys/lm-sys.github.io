@@ -164,6 +164,7 @@ This introduced significant overhead from serialization/deserialization and memo
 WanVideo introduces two specialized LayerNorm patterns:
 
 1. **LayerNormScaleShift**: `y = LN(x) * (1 + scale) + shift`
+
 2. **ScaleResidualLayerNormScaleShift**:
     - `residual_out = residual + gate * x`
     - `y = LN(residual_out) * (1 + scale) + shift`
@@ -199,7 +200,7 @@ Stay tuned for more updates as we continue to optimize SGLang-Diffusion for prod
 ## Acknowledgment
 
 - We would like to thank the following contributors for their work on these optimizations:
-  **Skywork.ai, Song Rui ([Songrui625](https://github.com/Songrui625)), SGLang-Diffusion Team**
+  **Skywork.ai, [Song Rui](https://github.com/Songrui625), SGLang-Diffusion Team**
 - Special thanks to our compute partners for their continued support.
 
 Try Diffusion generation powered by SGLang-Diffusion at: [APIFree](https://www.apifree.ai/home)
