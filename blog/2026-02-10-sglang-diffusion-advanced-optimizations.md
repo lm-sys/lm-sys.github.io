@@ -203,7 +203,7 @@ Stay tuned for more updates as we continue to optimize SGLang-Diffusion for prod
   **Skywork.ai, [Song Rui](https://github.com/Songrui625), SGLang-Diffusion Team**
 - Special thanks to our compute partners for their continued support.
 
-Try Diffusion generation powered by SGLang-Diffusion at: [APIFree](https://www.apifree.ai/home)
+Try diffusion generation, proudly powered by SGLang-Diffusion: [APIFree](https://www.apifree.ai/home)
 
 ## Learn More
 
