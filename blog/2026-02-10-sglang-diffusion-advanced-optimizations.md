@@ -59,7 +59,7 @@ two major benefits:
 
 | Solution           | Padding Overhead | Input Tensor Shape (Per-rank) | All-to-All Comm Volume | 
 |--------------------|------------------|-------------------------------|------------------------|
-| **Frame Sharding** | 3 frames (14.3%) | `3, 90, 160, C` (24/8 = 3)    | `1.0 × feature_map`    |
+| **Frame Sharding** | 3 frames (14.3%) | `3, 90, 160, C` (24/8)        | `1.0 × feature_map`    |
 | **Token Sharding** | 0 frames         | `2.625, 90, 160, C` (21/8)    | `0.875 × feature_map`  |
 
 This optimization delivers both faster communication and reduced memory footprint, especially for video models.
@@ -154,10 +154,7 @@ This introduced significant overhead from serialization/deserialization and memo
 `gpu_worker` now directly processes the output tensor and saves the video to disk, returning only the file path to
 `scheduler_client`.
 
-**Benefits:**
-
-- **Lower Latency**: Eliminates serialization/deserialization overhead
-- **Reduced Memory**: Avoids duplicate tensor copies
+This eliminates serialization/deserialization overhead, while avoiding duplicate tensor copies.
 
 ### 6. WanVideo LayerNorm Fusion: CuTeDSL JIT Kernels
 
@@ -174,7 +171,7 @@ introduce multiple kernel launches and intermediate memory traffic, creating GPU
 
 **Our Solution:**
 
-We implemented **fused JIT kernels** using CuTeDSL (located in `sglang/jit_kernel/diffusion/cutedsl/`) that combine
+We implemented **fused JIT kernels** using CuTeDSL (located in [`sglang/jit_kernel/diffusion/cutedsl/`](https://github.com/sgl-project/sglang/tree/main/python/sglang/jit_kernel/diffusion/cutedsl)) that combine
 these operations into single, efficient kernels.
 
 **Benefits:**
