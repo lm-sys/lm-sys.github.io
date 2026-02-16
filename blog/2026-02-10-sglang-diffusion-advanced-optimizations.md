@@ -171,7 +171,7 @@ introduce multiple kernel launches and intermediate memory traffic, creating GPU
 
 **Our Solution:**
 
-We implemented **fused JIT kernels** using CuTeDSL (located in [`sglang/jit_kernel/diffusion/cutedsl/`](https://github.com/sgl-project/sglang/tree/main/python/sglang/jit_kernel/diffusion/cutedsl)) that combine
+We implemented **fused JIT kernels** using CuTeDSL (located in [`sglang/jit_kernel/diffusion/cutedsl`](https://github.com/sgl-project/sglang/tree/main/python/sglang/jit_kernel/diffusion/cutedsl)) that combine
 these operations into single, efficient kernels.
 
 **Benefits:**
