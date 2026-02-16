@@ -1,7 +1,7 @@
 ---
 title: "SGLang-Diffusion: Advanced Optimizations for Production-Ready Video Generation"
 author: "The SGLang-Diffusion Team"
-date: "February 17, 2026"
+date: "February 16, 2026"
 previewImg: /images/blog/sgl-diffusion/sgl-diffusion-banner-16-9.png
 ---
 
