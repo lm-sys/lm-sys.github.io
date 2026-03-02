@@ -12,12 +12,8 @@ Qwen is a series of large-scale, high-performance Large Language Models (LLMs) d
 
 
 In recent months, the Qwen C-end Infrastructure Engineering Team and the AMD AI Framework Team have collaborated to implement extreme latency optimization solutions for Qwen3-235B and Qwen3-VL-235B on the AMD Instinct<sup>TM</sup> MI300X series GPU platform based on the SGLang framework. Remarkable breakthroughs have been achieved in terms of performance, precision, and stability.
-
-
-- For Qwen3-235B: Compared with the baseline, the Time to First Token (TTFT) has been improved by 1.67×, and the Time Per Output Token (TPOT) has been improved by 2.12×.
-
-
-- For Qwen3-VL-235B: Compared with the baseline, the Time to First Token (TTFT) has been improved by 1.62×, and the Time Per Output Token (TPOT) has been improved by 1.90×.
+* **For Qwen3-235B**: Compared with the baseline, the Time to First Token (TTFT) has been improved by 1.67×, and the Time Per Output Token (TPOT) has been improved by 2.12×.
+* **For Qwen3-VL-235B**: Compared with the baseline, the Time to First Token (TTFT) has been improved by 1.62×, and the Time Per Output Token (TPOT) has been improved by 1.90×.
 
 
 The AMD Instinct<sup>TM</sup> MI300X series GPUs are built on the CDNA<sup>TM</sup> 3 architecture, featuring 192 GB of HBM3 memory per card—sufficient to support inference for models with over 70 billion parameters. Combined with a 5.3 TB/s memory bandwidth, 256 MB Infinity Cache, and native Matrix Core support for FP8 and PTPC quantization, the platform delivers exceptional performance and cost-efficiency, making it an ideal choice for large-scale LLM cluster deployment.
@@ -49,7 +45,7 @@ The inference computation flow of Qwen3-235B is illustrated in Figure 2. The fol
 #### 2.1.1 GEMM Quantization Strategy
 
 <p align="center">
-  <img src="/images/blog/qwen_amd_latency/PTPC.png" width="40%">
+  <img src="/images/blog/qwen_amd_latency/PTPC.png" style="display: block; margin: 20px auto 0; width: 40%; max-width: 100%; height: auto;">
 </p>
 <p align="center" style="color:gray; text-align: center;"><em>Figure 3. PTPC-FP8: Per-Token-Activation, Per-Channel-Weight Quantization</em></p>
 
@@ -91,26 +87,21 @@ In low-concurrency, extreme-latency-critical scenarios, TP8 distributes model we
 For the Attention module, we integrate highperformance MHA and PagedAttention operators from AMD’s AITER Library, which are customized for a specialized KV Cache layout. The layout is defined as:
 
 
-- k_cache: [num_blocks, num_kv_heads, head_dim // x, block_size, x]
-- v_cache: [num_blocks, num_kv_heads, block_size // X, head_dim, X]
+* k_cache: [num_blocks, num_kv_heads, head_dim // x, block_size, x]
+* v_cache: [num_blocks, num_kv_heads, block_size // X, head_dim, X]
 
 
 This layout aligns memory access patterns with the AMD CDNA<sup>TM</sup> 3 architecture, drastically improving the memory efficiency of PagedAttention. During the decode phase, no additional device-to-device (D2D) copies are required for layout conversion, thus eliminating redundant overhead (Figure 5). Compared to the standard KV Cache layout [num_blocks, num_kv_heads, head_dim, block_size], this optimization improves decode throughput by 15%–20% while reducing inference latency.
 
 <p align="center">
-  <img src="/images/blog/qwen_amd_latency/K_Cache_Layout.png" width="30%">
+  <img src="/images/blog/qwen_amd_latency/K_Cache_Layout.png" style="display: block; margin: 20px auto 0; width: 40%; max-width: 100%; height: auto;">
 </p>
 <p align="center" style="color:gray; text-align: center;"><em>Figure 5. K Cache Layout Distribution</em></p>
 
 
 **(2) DataType Optimization**
-
-
-- In the **prefill** phase: per-tensor FP8 quantization is applied to query, key, and value activations for MHA.
-
-
-- In the **decode** phase: query uses BF16, while KV Cache remains stored in per-tensor FP8 (consistent with prefill).
-
+* In the **prefill** phase: per-tensor FP8 quantization is applied to query, key, and value activations for MHA.
+* In the **decode** phase: query uses BF16, while KV Cache remains stored in per-tensor FP8 (consistent with prefill).
 
 This mixed precision configuration reduces HBM usage while maintaining accuracy and performance.
 
@@ -119,14 +110,10 @@ This mixed precision configuration reduces HBM usage while maintaining accuracy 
 
 
 For low-concurrency workloads, we have deeply optimized MoE operators in AITER across four key dimensions:
-
-- **Load Balancing**: Fine-grained task scheduling for Compute Units (CUs) during low-concurrency inference enables near-synchronized execution, eliminating idle cycles and maximizing hardware utilization.
-
-- **Compute Efficiency**: Hardware-aware loop tuning on the K dimension eliminates redundant operations and significantly improves throughput.
-
-- **Memory Efficiency**: Optimized atomic memory access patterns enhance L2 cache hit rates and alleviate memory bandwidth bottlenecks.
-
-- **Auto-tuning**: Following manual optimizations, automated tuning tools search for optimal operator configurations to further maximize performance.
+* **Load Balancing**: Fine-grained task scheduling for Compute Units (CUs) during low-concurrency inference enables near-synchronized execution, eliminating idle cycles and maximizing hardware utilization.
+* **Compute Efficiency**: Hardware-aware loop tuning on the K dimension eliminates redundant operations and significantly improves throughput.
+* **Memory Efficiency**: Optimized atomic memory access patterns enhance L2 cache hit rates and alleviate memory bandwidth bottlenecks.
+* **Auto-tuning**: Following manual optimizations, automated tuning tools search for optimal operator configurations to further maximize performance.
 
 Notably, load balancing and fine-grained scheduling yield particularly strong performance gains during LLM decoding, ultimately **improving MoE module performance by 2×**.
 
@@ -134,10 +121,8 @@ Notably, load balancing and fine-grained scheduling yield particularly strong pe
 #### 2.1.5 Kernel Fusion Optimization
 
 We also fused several critical operators, including:
-
-- Module 2: QKNorm + RoPE
-
-- Modules 6 & 9: AllReduce + AddRMSNorm + per-token quant
+* Module 2: QKNorm + RoPE
+* Modules 6 & 9: AllReduce + AddRMSNorm + per-token quant
 
 Operator fusion reduces frequent HBM access and further lowers endtoend inference latency.
 
@@ -150,24 +135,19 @@ Operator fusion reduces frequent HBM access and further lowers endtoend inferenc
 ### 2.2 Optimization for Qwen3-VL-235B
 
 <p align="center">
-  <img src="/images/blog/qwen_amd_latency/qwenvl_deployment.png" width="40%">
+  <img src="/images/blog/qwen_amd_latency/qwenvl_deployment.png" style="display: block; margin: 20px auto 0; width: 60%; max-width: 100%; height: auto;">
 </p>
 <p align="center" style="color:gray; text-align: center;"><em>Figure 6. Qwen3-VL-235B deployment in SGLang</em></p>
 
 
 Compared to Qwen3‑235B, Qwen3‑VL‑235B introduces several new critical inference stages:
-
-- Multimodal data format adaptation, preprocessing, and cross‑modal alignment
-
-- ViT encoder execution, visual patch embedding, and cross‑modal feature fusion
+* Multimodal data format adaptation, preprocessing, and cross‑modal alignment
+* ViT encoder execution, visual patch embedding, and cross‑modal feature fusion
 
 These extensions lengthen the inference pipeline and involve complex cross‑modal data coordination and feature adaptation, significantly increasing per‑request latency. The full dataflow is shown in Figure 6. Relative to pure language LLMs, Qwen3‑VL’s major overhead comes from three sources:
-
-- Host‑side multimodal preprocessing
-
-- Multimodal data transfer
-
-- GPU‑side ViT encoder computation
+* Host‑side multimodal preprocessing
+* Multimodal data transfer
+* GPU‑side ViT encoder computation
 
 
 We designed targeted latency optimizations for each bottleneck.
@@ -200,7 +180,7 @@ In SGLang, the Tokenizer and Scheduler typically run in separate processes. Prep
 The ROCm<sup>TM</sup> backend supports **CUDA IPC**, enabling direct GPU to GPU data transfer without CPU intermediation. This eliminates redundant CPU GPU copies and drastically reduces multimodal transfer latency, as shown in Figure 9. Additionally, we offload image hashing (Figure 6) to the GPU, further compressing overhead.
 
 <p align="center">
-  <img src="/images/blog/qwen_amd_latency/cuda_ipc.png" width="40%">
+  <img src="/images/blog/qwen_amd_latency/cuda_ipc.png" style="display: block; margin: 20px auto 0; width: 50%; max-width: 100%; height: auto;">
 </p>
 <p align="center" style="color:gray; text-align: center;"><em>Figure 9. CUDA IPC on ROCm backend
 </em></p>
@@ -210,13 +190,9 @@ The ROCm<sup>TM</sup> backend supports **CUDA IPC**, enabling direct GPU to GPU 
 
 
 The Vision Transformer (ViT) module performs visual feature encoding from images and videos. For high-resolution inputs, however, it becomes a severe compute-bound bottleneck due to patch-based tokenization:
-
-
-- Inputs are split into fixed patches (e.g., 16×16)
-
-- Sequence length grows quadratically with resolution
-
-- Full selfattention has complexity O(N<sup>2</sup>)
+* Inputs are split into fixed patches (e.g., 16×16)
+* Sequence length grows quadratically with resolution
+* Full selfattention has complexity O(N<sup>2</sup>)
 
 A 1280×1280 image generates approximately 4,800 tokens (consistent with original correction: 960×1280 → 4,800 tokens), resulting in over 23 million attention interactions. In extreme scenarios involving large batches of high-resolution images or long videos, token counts can surpass 1M, pushing attention complexity to O(10<sup>12</sup>). This leads to explosive memory consumption, extreme latency, and low hardware utilization.
 
@@ -245,22 +221,16 @@ We use PTPC-FP8 quantization recipe and the corresponding model weights are avai
 
 
 These optimizations target **low latency inference scenarios**, with evaluation settings as follows:
-
-
-- **Qwen3‑235B:** Single request, Input Sequence Length (ISL) = 8000, Output Sequence Length (OSL) = 500.
-
-
-- **Qwen3‑VL‑235B:** Single request, text ISL = 8000, 5 images (960×1280) per request, OSL = 500.
+* **Qwen3‑235B:** Single request, Input Sequence Length (ISL) = 8000, Output Sequence Length (OSL) = 500.
+* **Qwen3‑VL‑235B:** Single request, text ISL = 8000, 5 images (960×1280) per request, OSL = 500.
 
 
 ### 3.2 CUDA IPC Configuration 
 
 
 To enable **GPU direct IPC** for efficient multimodal data transfer, users can set the following environment variables. The variable value can be changed according to different scenarios.
-
-- export SGLANG_USE_CUDA_IPC_TRANSPORT=1
-
-- export SGLANG_VLM_CACHE_SIZE_MB=8192
+* export SGLANG_USE_CUDA_IPC_TRANSPORT=1
+* export SGLANG_VLM_CACHE_SIZE_MB=8192
 
 Experimental results show that, for 5 images of 960×1280 resolution, enabling CUDA IPC yields a **significant reduction in data transfer latency**, with a peak reduction of up to 2 seconds compared with gloo:broadcast.
 
@@ -286,7 +256,7 @@ For Qwen3-VL-235B, the performance optimization results are shown in Figure 11. 
 </em></p>
 
 ## 4. Reference
-- [Qwen3：Thinker Deeper, Act Faster](https://qwen.ai/blog?id=qwen3)
-- [AITER](https://github.com/ROCm/aiter)
-- [SGLang Document](https://docs.sglang.io/)
-- [rocJPEG](https://github.com/ROCm/rocJPEG)
+* [Qwen3：Thinker Deeper, Act Faster](https://qwen.ai/blog?id=qwen3)
+* [AITER](https://github.com/ROCm/aiter)
+* [SGLang Document](https://docs.sglang.io/)
+* [rocJPEG](https://github.com/ROCm/rocJPEG)
