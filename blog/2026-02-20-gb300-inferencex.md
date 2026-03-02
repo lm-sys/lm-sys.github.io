@@ -34,6 +34,8 @@ In the latest InferenceXv2, NVIDIA's GB300 NVL72 rack-scale system has been adde
 <img src="/images/blog/gb300_inferencex/img-2.png"
      style="display: block; margin: 20px auto 0; width: 75%; max-width: 100%; height: auto;">
 
+Please note that the H200 baseline used for the 25x improvement is taken at 50 TPS/user interactivity which reflects low latency use cases. In the absence of latency constraint H200 can achieve similar throughput as discussed in this prior blog. We selected 50 TPS/user as the comparison point for this blog to give a scenario where reasonable latency is expected.
+
 ## **Inference Optimizations for Blackwell Ultra**
 
 To fully exploit the capabilities of Blackwell Ultra on GB300 NVL72, SGLang incorporated new optimizations spanning low precision data formats, kernel design, and disaggregated serving:
