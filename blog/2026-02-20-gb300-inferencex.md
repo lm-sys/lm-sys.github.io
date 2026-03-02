@@ -79,6 +79,6 @@ By continuing our collaboration with NVIDIA, SGLang aims to keep pushing inferen
 
 We would like to express our heartfelt gratitude to the following teams and collaborators:
 
-NVIDIA team: Yangmin Li, Hao Lu, Ishan Dhanani, Weiliang Liu, Trevor Morris, Po-Han Huang, Kaixi Hou, Shu Wang, Lee Nau, Alex Yang, Mathew Wicks, Kyle Liang, Grace Ho, Kedar Potar, Pen Chung Li, Amr Elmeleegy and many more
+NVIDIA team: Amr Elmeleegy, Cyrus Chang, Elvis Chen, Grace Ho, Hao Lu, Ishan Dhanani, Jinyan Chen, Julien Lin, Kaixi Hou, Kedar Potar, Kyle Liang, Lee Nau, Mathew Wicks, Nicolas Castet, Pen Chung Li, Po-Han Huang, Qixiang Lin, Shu Wang, Shu-Hao Yeh, Trevor Morris, Weiliang Liu, Xuting Zhou, Yangmin Li  and many more
 
-SGLang Core Team and Community Contributors: Baizhou Zhang, Jingyi Chen, Liangsheng Yin, Qiaolin Yu, Cheng Wan, Lianmin Zheng
+SGLang Core Team and Community Contributors: Baizhou Zhang, Jingyi Chen, Liangsheng Yin, Shangming Cai, Rain Jiang, Cheng Wan, Qiaolin Yu, Lianmin Zheng
