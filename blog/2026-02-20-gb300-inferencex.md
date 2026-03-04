@@ -42,15 +42,9 @@ To fully exploit the capabilities of Blackwell Ultra on GB300 NVL72, SGLang inco
 
 **NVFP4 GEMM for MoE and dense layers.** Using [NVFP4 precision](https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/) for MoE experts and other GEMMs reduces memory bandwidth pressure, taps into the higher FP4 Tensor Core throughput on Blackwell Ultra, and halves communication traffic for token dispatch. This shrinks weights in memory, freeing capacity for a larger KV cache and enabling higher concurrency.
 
-<img src="/images/blog/gb300_inferencex/overlap_scheduling.png"
-     style="display: block; margin: 20px auto 0; width: 75%; max-width: 100%; height: auto;">
-
 **Computation–communication overlap.** Instead of relying on traditional Two-Batch overlapping (TBO), we adopt a single-batch overlap strategy tuned to the higher interconnect bandwidth of NVL72. In practice, this allows combining communication to run concurrently with down-GEMM computation in a producer–consumer pattern, while overlapping shared-expert computation on an additional CUDA stream to minimize idle time.
 
 **NVIDIA Dynamo for disaggregated inference.** For prefill–decode disaggregation, we integrate with [NVIDIA Dynamo](https://www.nvidia.com/en-us/ai/dynamo/), an open-source distributed inference serving engine. Dynamo's modular design makes it possible to deeply couple its KV-aware router with SGLang's HiCache radix tree, while exposing flexible KV cache transfer backends such as NIXL and Mooncake to match different deployment scenarios.
-
-<img src="/images/blog/gb300_inferencex/dynamo_integration.png"
-     style="display: block; margin: 20px auto 0; width: 75%; max-width: 100%; height: auto;">
 
 Together, these optimizations align the inference software stack with the characteristics of Blackwell Ultra, driving higher utilization and turning its raw hardware capability into delivered throughput.
 
