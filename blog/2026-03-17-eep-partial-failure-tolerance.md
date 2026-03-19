@@ -24,7 +24,7 @@ At its core, Elastic EP solves the failure problem by decoupling the rigid mappi
 
 Implementing Elastic EP drastically improves system reliability without sacrificing speed.
 
-- **Service Returns Responsive within Seconds**: To test extreme resilience, we evaluated DeepSeek V3.2 on 4 nodes (32 GPUs total, setting ep_size=dp_size=32) with 256 redundant experts, allowing us to tolerate up to 2 full node failures. When measuring the service interruption time caused by sudden rank failures, Elastic EP reduces downtime by over 90%, from 2–3 minutes to less than 10 seconds.
+- **Service Returns Responsive within Seconds**: To test extreme resilience, we evaluated DeepSeek V3.2 on 4 nodes (32 GPUs total, setting ep_size=dp_size=32) with 256 redundant experts, allowing us to tolerate up to 2 full node failures. When measuring the service interruption time caused by sudden rank failures, Elastic EP reduces downtime by over 90%, from 2–3 minutes to less than 10 seconds. As the number of failed ranks increases, overall throughput declines among the remaining ranks. Meanwhile, the reduced number of participants in communication leads to a lower mean TPOT. This behavior is consistent with the progressively shrinking communication group size.
 
 | Number of failed ranks | Interruption time with Elastic EP (sec) | Throughput with remaining ranks (tokens/sec) | Mean TPOT with remaining ranks (ms) |
 |------------------------|-----------------------------------------|----------------------------------------------|-------------------------------------|
