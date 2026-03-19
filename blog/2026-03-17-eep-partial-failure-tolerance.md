@@ -24,15 +24,15 @@ At its core, Elastic EP solves the failure problem by decoupling the rigid mappi
 
 Implementing Elastic EP drastically improves system reliability without sacrificing speed.
 
-- **Service Recovers Within Seconds**: To test extreme resilience, we ran DeepSeek V3.2 on 4 nodes (32 GPUs total, setting ep_size=dp_size=32) with 256 redundant experts, enabling tolerance of up to 16 rank failures. We then terminated a subset of running processes to simulate failures, benchmarked the system using sglang.bench_serving, and measured the time required to redistribute lost expert weights and restore service, based on EPLBManager logs. After recovery, the system continues inference correctly with reduced resources. The results show that service interruption remains under 10 seconds—representing a 90% reduction compared to the 2–3 minutes typically required for a full restart.
+- **Service Recovers Within Seconds**: To test extreme resilience, we ran DeepSeek V3.2 on 4 nodes (32 GPUs total, setting ep_size=dp_size=32) with 256 redundant experts, enabling tolerance of up to 16 rank failures. We then terminated a subset of running processes to simulate failures, benchmarked the system using sglang.bench_serving, and measured the time required to redistribute lost expert weights and restore service, based on EPLBManager logs. After recovery, the system continues inference correctly with lower overall throughput due to reduced resources. The results show that service interruption remains under 10 seconds—representing a 90% reduction compared to the 2–3 minutes typically required for a full restart.
 
-| Number of failed ranks | Interruption time with Elastic EP (sec) |
-|------------------------|-----------------------------------------|
-| 1                      | 6.8                                     |
-| 2                      | 6.5                                     |
-| 4                      | 6.8                                     |
-| 8                      | 6.4                                     |
-| 16                     | 6.2                                     |
+| Number of failed ranks | Interruption time with Elastic EP (sec) | Throughput with remaining ranks (tokens/sec) |
+|------------------------|-----------------------------------------|----------------------------------------------|
+| 1                      | 6.8                                     | 5552.41                                      |
+| 2                      | 6.5                                     | 5431.50                                      |
+| 4                      | 6.8                                     | 5265.12                                      |
+| 8                      | 6.4                                     | 4479.84                                      |
+| 16                     | 6.2                                     | 2825.44                                      |
 
 - **Zero Static Performance Degradation**: We evaluated DeepSeek V3.2 on a 4-node setup (2 prefill nodes, 2 decode nodes, with 8 GPUs each). Comparing key metrics, serving with our Elastic EP (Mooncake EP) matches the exact static performance of the standard DeepEP approach.
 
@@ -82,7 +82,7 @@ We would like to thank everyone in the community who has contributed to or suppo
 - Mooncake Team: Xun Sun, Pingchuan Ma, Haoran Hu, Feng Ren, Mingxing Zhang, and many others.
 - Volcano Engine: Han Han, Shan Lu, Qin Qi, Yang Zhang, and colleagues.
 - Approaching AI: Yue Chen, Zhanhao Cao, Ke Yang, and colleagues.
-- JD.com: Ziwei Yuan, Junlin Wei, and colleagues.
+- JD.com: Ziwei Yuan, Junlin Wei, Lianzhi Lin, and colleagues.
 - Aliyun: Xinpeng Zhao, Xuchun Shang, Teng Ma, and colleagues.
 
 We would like to extend our sincere gratitude to the NVIDIA Dynamo Team for their support and contributions.
