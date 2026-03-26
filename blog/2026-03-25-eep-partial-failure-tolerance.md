@@ -1,7 +1,7 @@
 ---
 title: "Elastic EP in SGLang: Achieving Partial Failure Tolerance for DeepSeek MoE Deployments"
 author: "The Mooncake Team, Volcano Engine"
-date: "March 17, 2026"
+date: "March 25, 2026"
 previewImg: /images/blog/eep-partial-failure-tolerance/figure.png
 ---
 
