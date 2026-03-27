@@ -3,6 +3,7 @@ title: "ROCm Support for Miles: Large-Scale RL Post-Training on AMD Instinct™ 
 author: "AMD & Miles Team"
 date: "March 17, 2026"
 previewImg: /images/blog/rocm_miles_rl/fig_1.png
+type: news
 ---
 
 Reinforcement learning (RL) has rapidly become a core stage of modern foundation-model development. While large-scale pretraining remains essential, today's most capable models rely heavily on post-training techniques to improve reasoning, tool use, and multi-turn interaction. These workflows depend on scalable reinforcement learning infrastructure capable of running across multi-node GPU clusters.
