@@ -18,7 +18,9 @@ However, sparse attention—typically top-k selection—does not eliminate the *
 ## Design of HiSparse:
 In line with our prior work, [HiCache](https://www.lmsys.org/blog/2025-09-10-sglang-hicache/), we propose HiSparse: a hierarchical memory system designed to overcome this limitation. HiSparse proactively offloads inactive KV cache entries to host memory, significantly reducing GPU memory pressure, while maintaining a hot device buffer on GPU HBM for frequently accessed KV regions to minimize data movement on the critical path. This enables much larger decoding batch sizes, improving throughput while scaling to longer contexts. The diagram below illustrates the HiSparse workflow. Although depicted in a prefill–decode disaggregated setup, the design applies equally to co-located instances.
 
-<img src="/images/blog/hisparse/hisparse_overview.png" style="width: 50vw; min-width: 300px;" />
+<div style="overflow: hidden; margin: 0 auto; width: 50vw; min-width: 300px;">
+  <img src="/images/blog/hisparse/hisparse_diagram.png" style="margin: -7% 0%;" />
+</div>
 
 
 ### Efficient Swap-in Kernel
