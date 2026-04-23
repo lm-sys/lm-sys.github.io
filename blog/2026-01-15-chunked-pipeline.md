@@ -36,13 +36,19 @@ The primary bottleneck in distributed inference scaling is inter-device communic
 Assuming $B$ stands for the Batch Size (often 1 for ultra-long context inference), $S$ for the total Sequence Length, $H$ for the Hidden State dimension, $L$ for the total Layer Number, $M$ for the Micro-batches size, and the activation precision is FP8 (1 byte). Based on this, we analyzed the communication volume of different parallel strategies.
 
 * **TP:** TP splits individual weight tensors across multiple devices within a single layer. Due to this, TP incurs high communication overhead due to the necessity of synchronization after both the Attention Block and MLP Block. Consequently, the communication volume scales linearly with the number of layers. This frequent **All-Reduce** synchronization makes TP bandwidth-bound, limiting its scalability across large clusters.
-$$\text{Commu Volume}({TP}) = 2 \cdot (TP_{Size} - 1) \cdot \left( B \cdot S \cdot \frac{H}{TP_{Size}} \right)  \cdot 2 \cdot L \cdot \text{bytes} \approx 4 \cdot B \cdot S \cdot H \cdot L \cdot \text{bytes}$$
+$$
+\text{Commu Volume}({TP}) = 2 \cdot (TP_{Size} - 1) \cdot \left( B \cdot S \cdot \frac{H}{TP_{Size}} \right)  \cdot 2 \cdot L \cdot \text{bytes} \approx 4 \cdot B \cdot S \cdot H \cdot L \cdot \text{bytes}
+$$
 (Note: Each All-Reduce involves $2 \times$ the data size in a ring-based implementation. Each layer involves $2 \times$ All-Reduce operations, one after the Attention Block, and one after the MLP Block.)
 * **CP:** Similarly, CP requires extensive synchronization communication to aggregate Key-Value (KV) states across devices. Typically, CP utilizes **All-Gather** at every layer, resulting in significant latency penalties in bandwidth-constrained environments.
-$$\text{Commu Volume}({CP}) = (CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot 2 \cdot H_{KV} \right)  \cdot L \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot L \cdot \text{bytes}$$
+$$
+\text{Commu Volume}({CP}) = (CP_{Size} - 1) \cdot \left( B \cdot \frac{S}{CP_{Size}} \cdot 2 \cdot H_{KV} \right)  \cdot L \cdot \text{bytes} \approx 2 \cdot B \cdot S \cdot H_{KV} \cdot L \cdot \text{bytes}
+$$
 (Note: Assuming CP utilizes Ring-Attention-based solution. For models utilizing GQA, $H_{KV}$ is smaller than $H$, which reduces CP's communication volume.)
 * **PP:** In contrast, PP exhibits a significantly reduced communication footprint. Data is transferred **only at the boundaries** of pipeline stages, using **Point-to-Point (P2P)** primitives rather than collective operations. Since a stage typically contains multiple layers, the communication frequency is determined by the number of stages ($P$), not the total number of layers ($L$). Crucially, for a fixed model, as we increase the number of layers per stage, the communication volume remains constant at the boundaries.
-$$\text{Commu Volume}({PP}) = M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot (P-1) \cdot \text{bytes} = B \cdot S \cdot H \cdot (P-1) \cdot \text{bytes}$$
+$$
+\text{Commu Volume}({PP}) = M \cdot \left( \frac{B}{M} \cdot S \cdot H \right) \cdot (P-1) \cdot \text{bytes} = B \cdot S \cdot H \cdot (P-1) \cdot \text{bytes}
+$$
 (Note: In multi-node deployments where $P \ll L$, PP achieves a nearly order-of-magnitude reduction in total communication volume compared to TP.)
 
 ### **2. The Bubble Ratio Trade-off**
@@ -122,7 +128,9 @@ We tested different models using a large PP size and found that they all conform
 Therefore, if SGLang still **utilizes a fixed chunked prefill size for CPP, the pipeline bubble ratio will be greater than the theoretical expectation (i.e., $\frac{P - 1}{P - 1 + M}$)**.
 
 To address this issue, SGLang introduces a dynamic chunking mechanism to predict the optimal size for the next chunk such that it satisfies this condition:
-<center>$$ \text{Runtime}(L + \Delta L) - \text{Runtime}(L) = \text{Runtime}(\text{Initial Chunk Size}) $$</center>
+$$
+\text{Runtime}(L + \Delta L) - \text{Runtime}(L) = \text{Runtime}(\text{Initial Chunk Size})
+$$
 
 where $L$ denotes the Prefix Sequence Length, and $\Delta L$ denotes the Next Chunk Size. By profiling a series of requests with different ITLs, we model the cumulative runtime as a quadratic function of sequence length. Using this model, we solve the optimal next chunk size $\Delta L$ for any given prefix length $L$. Since the computation/communication complexity of the Attention mechanism scales with $L$, the next chunk size will be progressively reduced as $L$ grows to maintain an aligned chunk execution time across pipeline stages.
 
