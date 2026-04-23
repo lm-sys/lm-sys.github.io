@@ -115,7 +115,7 @@ For powerful GPUs (e.g., A100), lookahead decoding can better squeeze its perfor
 Increasing $N$ together with $W$ would be best to achieve balanced performance, avoiding hitting a theoretical cap if only increasing one side. Our experimental results show that on A100, the following configs in Table 1 work well in most cases. The 7B, 13B, and 33B models require 120x, 80x, and 56x extra FLOPs per step, respectively. However, because of the memory-intensive bound characteristic of the LLM decoding, these extra FLOPs only bring little per-step cost and a visible step compression ratio, resulting in a notable speedup.
 
 
-<p style="color:gray; text-align: center;">Table 1. Good configurations for window size $W$ and N-gram size $N$ on A100. </p>
+<p style="color:gray; text-align: center;">Table 1. Good configurations for window size W and N-gram size N on A100. </p>
 
 <style>
 .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}

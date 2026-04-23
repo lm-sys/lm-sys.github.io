@@ -100,7 +100,7 @@ python3 -m sglang.launch_server \
 #### **Multi-Node Deployment（** 16xH800-80G **）**
 
 In a multi-node setup, Tensor Parallelism and Expert Parallelism are employed, with additional parallel strategies planned for future implementation.
-Replace $NODE_RANK and $MASTER_IP with the specific values for your cluster.
+Replace `$NODE_RANK` and `$MASTER_IP` with the specific values for your cluster.
 ```Shell
 python3 -m sglang.launch_server \
     --model meituan-longcat/LongCat-Flash-Chat \
