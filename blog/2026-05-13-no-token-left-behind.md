@@ -1,6 +1,6 @@
 ---
 title: "No Token Left Behind: Demystifying Token-In-Token-Out in Miles"
-author: "RadixArk Miles RL Team"
+author: "Miles Team"
 date: "May 13, 2026"
 previewImg: /images/blog/tito/definition.png
 ---
