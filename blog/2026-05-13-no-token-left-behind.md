@@ -139,8 +139,10 @@ Encoding that gives the incremental tokens to append onto `P`.
 The following diagrams illustrate how the splice-point patches work for Qwen3 and GLM-4.7.
 
 ![Qwen3 splice-point patch](/images/blog/tito/qwen3-splice.png)
+<p style="text-align: left; color: #666; font-style: italic;">Qwen3 splice-point patch. The engine stops at <code>&lt;|im_end|&gt;</code>, but the canonical chat template ends every turn with <code>&lt;|im_end|&gt;\n</code>. Miles appends the missing <code>\n</code> to <code>P</code> before splicing the incremental tokens for the next message.</p>
 
 ![GLM-4.7 splice-point patch](/images/blog/tito/glm47-splice.png)
+<p style="text-align: left; color: #666; font-style: italic;">GLM-4.7 splice-point patch. The model samples <code>&lt;|user|&gt;</code> or <code>&lt;|observation|&gt;</code> as both stop and next-message-start tokens, but the harness may inject a different role next. Miles overwrites the wrong boundary token in <code>P</code> with the correct one for the incoming role (loss-masked to zero so it is not trained on) before splicing the incremental tokens.</p>
 
 ### (4) Verification via a token-sequence comparator
 
