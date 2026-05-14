@@ -87,6 +87,7 @@ Miles instantiates TITO with four components, designed so that the core invarian
 An *inference session* is a single trajectory's interaction with the inference engine — the sequence of turns belonging to the same task, sharing one growing token buffer. The [inference session server](https://github.com/radixark/miles/blob/3270915550fcd69dce788f382fa8c12548a63618/miles/rollout/session/session_server.py#L24) is a thin server layer that maintains per-trajectory state, keyed by session id. Under each id it holds a growing token buffer `P` that is appended in place every turn. The token buffer preserves each sample's exact token-level info (logprobs, routed experts), so it can be sent directly to training.
 
 ![Inference session server architecture](/images/blog/tito/session-server.png)
+<p style="text-align: left; color: #666; font-style: italic;">TITO inference session server flow.</p>
 
 ### (2) Ensure append-only at three levels
 
