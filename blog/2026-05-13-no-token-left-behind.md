@@ -1,6 +1,6 @@
 ---
 title: "No Token Left Behind: Demystifying Token-In-Token-Out in Miles"
-author: "Jiajun Li, Yanbin Jiang, Mao Cheng, Shi Dong, Yusheng Su, Yueming Yuan, Zhichen Zeng, Banghua Zhu"
+author: "Miles Team: Jiajun Li, Yanbin Jiang, Mao Cheng, Shi Dong, Yusheng Su, Yueming Yuan, Zhichen Zeng, Banghua Zhu"
 date: "May 13, 2026"
 previewImg: /images/blog/tito/definition.png
 ---
