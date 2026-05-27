@@ -6,6 +6,7 @@ previewImg: /images/blog/hetero-epd/1.png
 ---
 
 **TL;DR**
+
 We enabled heterogeneous Encode-Prefill-Decode (EPD) disaggregation via Dynamo and SGLang for Vision-Language Models (VLMs). By offloading vision encoding tasks to the head node's CPU, we achieved consistent performance improvements across metrics: TTFT (Time to First Token), TPOT (Time Per Output Token), and overall throughput under heavy load.
 
 ## Introduction
@@ -35,6 +36,7 @@ The routing decision is straightforward, when $I_{cpu}$ (total in-flight request
 ## Experiment Setup
 
 ### Use Case Configuration
+
 **Environment:**
 - Intel(R) Xeon(R) 6747P CPUs (2 sockets, 2 NUMA nodes per socket, in total 4 NUMA nodes)
 - 5x L40S CUDA GPUs
@@ -51,7 +53,6 @@ The routing decision is straightforward, when $I_{cpu}$ (total in-flight request
 **Deployment Configurations:**
 - 1E/4PD (Encoder: 1 GPU Encoder, PD: 4 GPU)
 - (4 CPU + 1 GPU) E/4PD (Encoder: 4 CPU + 1 GPU, PD: 4 GPU), Capability Ratio $R$ is set to be 12
-
 
 ### Use Case Launch Scripts
 
@@ -144,12 +145,12 @@ python -m sglang.bench_serving.py --model Qwen/Qwen3-VL-8B-Instruct  --num-promp
 
 
 **Key Findings:**
+
 - Heterogeneous CPU + GPU EPD disaggregation brings consistent better performance over pure GPU EPD disaggregation across all metrics (TTFT, TPOT, request throughput) under load (QPS between 1 and 2).
 - ~1.2x-1.3x P99 TTFT and request throughput improvement can be observed, indicating CPU helps offloading the vision encoder burden of GPU under load.
 - Significant ~1.3x-30x P99 TPOT reduction is achieved by relieving vision encoding traffic and mitigating the 2+ token generation queueing time.
 
 Heterogeneous CPU + GPU EPD disaggregation achieves an extra higher return on investment (ROI) in addition to the ROI brought by the pure GPU EPD disaggregation [1] almost for free. This is achieved by the system-level optimization which includes the AMX powered CPU into the solution space with a whole system view.
-
 
 ## Reference
 1. [EPD Disaggregation: Elastic Encoder Scaling for Vision-Language Models in SGLang](https://www.lmsys.org/blog/2026-01-12-epd/)
