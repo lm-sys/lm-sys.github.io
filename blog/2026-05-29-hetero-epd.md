@@ -81,7 +81,6 @@ for node in 0 1 2 3; do DYN_ENCODER_CUDA_TO_CPU_RATIO
       --chat-template "$CHAT_TEMPLATE" \
       --embedding-transfer-mode nixl-read & 
 done
-
 ```
 
 **Launch the PD instance:**
@@ -142,7 +141,6 @@ python -m sglang.bench_serving.py --model Qwen/Qwen3-VL-8B-Instruct  --num-promp
 
 <img src="/images/blog/hetero-epd/4.png"
      style="display: block; margin: 20px auto 0; width: 75%; max-width: 100%; height: auto;">
-
 
 **Key Findings:**
 
