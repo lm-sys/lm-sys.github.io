@@ -7,18 +7,18 @@ previewImg: /images/blog/hetero-epd/1.png
 
 **TL;DR**
 
-We enabled heterogeneous Encode-Prefill-Decode (EPD) disaggregation via Dynamo and SGLang for Vision-Language Models (VLMs). By offloading vision encoding tasks to the head node's CPU, we achieved consistent performance improvements across metrics: TTFT (Time to First Token), TPOT (Time Per Output Token), and overall throughput under heavy load.
+We enabled heterogeneous Encode-Prefill-Decode (EPD) disaggregation via Dynamo and SGLang for Vision-Language Models (VLMs). By offloading vision encoding tasks to CPUs (the most easy-getting CPU resource is the CPU in head node), we achieved consistent performance improvements across metrics: TTFT (Time to First Token), TPOT (Time Per Output Token), and overall throughput under heavy load.
 
 ## Introduction
 
 The SGLang community has already demonstrated the necessity and benefits of EPD disaggregation to VLM serving ^{[1]}. It shows that EPD can significantly reduce TTFT in image-heavy scenarios where multi-images are fed into the service. With the observation that vision encoding is the primary computational bottleneck in image-heavy scenarios, we see offloading some vision encoding work to the head node CPU can help improve performance:
 
-- Vision encoder (CNN/ViT) is usually smaller than language model part, which makes modern CPU equipped with advanced matrix accelerators (e.g. AMX in Intel Xeon CPU) can help.
+- Vision encoder (CNN/ViT) is usually smaller than language model part, which makes modern CPUs equipped with advanced matrix accelerators (e.g. AMX in Intel Xeon CPUs) be able to help.
 - Vision encoding only happens during prefill, which makes it easy to plug in a heterogenous worker, without the needing of continuous cross-worker state management
 
 ## Device-Aware Weighted Router
 
-By co-working with Dynamo community, we merged a new device-aware weighted router mode into Dynamic router to support heterogeneous dispatching(PR [#7215](https://github.com/ai-dynamo/dynamo/pull/7215)). It introduces a budget-based throttle between devices (specifically CPU vs. GPU).
+By collaborating with Dynamo community, we merged a new device-aware weighted router mode into Dynamic router to support heterogeneous dispatching(PR [#7215](https://github.com/ai-dynamo/dynamo/pull/7215)). It introduces a budget-based throttle between devices (specifically CPU vs. GPU).
 
 In a heterogeneous deployment environment where computing capabilities vary (e.g., a GPU vs. a CPU), the device-aware weighted router uses a Capability Ratio $R$ to define the relative throughput of the GPU against CPU. The router calculates an Allowed CPU In-flight Budget ($B_{cpu}$). This budget represents the maximum number of requests the CPU pool should handle to stay "in sync" with the current pressure on the GPU pool:
 
@@ -38,8 +38,8 @@ The routing decision is straightforward, when $I_{cpu}$ (total in-flight request
 ### Use Case Configuration
 
 **Environment:**
-- Intel(R) Xeon(R) 6747P CPUs (2 sockets, 2 NUMA nodes per socket, in total 4 NUMA nodes)
-- 5x L40S CUDA GPUs
+- Intel(R) Xeon(R) 6747P CPUs (2 sockets, 2 NUMA nodes per socket, in total 4 NUMA nodes) $^{[2]}$
+- 5x L40S CUDA GPUs $^{[3]}$
 
 **Model:** 
 - Qwen3-VL-8B-Instruct
@@ -62,8 +62,8 @@ The routing decision is straightforward, when $I_{cpu}$ (total in-flight request
 # launch cuda encoder
 CUDA_VISIBLE_DEVICES=0 numactl --cpunodebind=0 --membind=0 python -m dynamo.sglang --multimodal-encode-worker --model-path "$MODEL_NAME" --chat-template "$CHAT_TEMPLATE" --embedding-transfer-mode nixl-read &
 
-# launch cpu encoders
-for node in 0 1 2 3; do DYN_ENCODER_CUDA_TO_CPU_RATIO
+# launch cpu encoders, DYN_ENCODER_CUDA_TO_CPU_RATIO is 12 in this case
+for node in 0 1 2 3; do 12
   case "$node" in
     0) cpus="$(printf "%s\n%s\n" "$(seq 0 2 46)"  "$(seq 96 2 142)" | paste -sd, -)" ;;
     1) cpus="$(printf "%s\n%s\n" "$(seq 48 2 94)" "$(seq 144 2 190)" | paste -sd, -)" ;;
@@ -154,3 +154,5 @@ Heterogeneous CPU + GPU EPD disaggregation achieves an extra higher return on in
 
 ## Reference
 1. [EPD Disaggregation: Elastic Encoder Scaling for Vision-Language Models in SGLang](https://www.lmsys.org/blog/2026-01-12-epd/)
+2. [Intel(R) Xeon(R) 6747P CPU](https://www.intel.com/content/www/us/en/products/sku/241825/intel-xeon-6747p-processor-288m-cache-2-70-ghz/specifications.html)
+3. [NVIDIA L40S](https://www.nvidia.com/en-us/data-center/l40s/)
