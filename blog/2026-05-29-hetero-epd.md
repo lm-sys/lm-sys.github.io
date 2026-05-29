@@ -148,7 +148,7 @@ python -m sglang.bench_serving.py --model Qwen/Qwen3-VL-8B-Instruct  --num-promp
 - ~1.2x-1.3x P99 TTFT and request throughput improvement can be observed, indicating CPU helps offloading the vision encoder burden of GPU under load.
 - Significant ~1.3x-30x P99 TPOT reduction is achieved by relieving vision encoding traffic and mitigating the 2+ token generation queueing time.
 
-Heterogeneous CPU + GPU EPD disaggregation achieves an extra higher return on investment (ROI) in addition to the ROI brought by the pure GPU EPD disaggregation [1] almost for free. This is achieved by the system-level optimization which includes the AMX powered CPU into the solution space with a whole system view.
+Heterogeneous CPU + GPU EPD disaggregation achieves an extra higher return on investment (ROI) in addition to the ROI brought by the pure GPU EPD disaggregation $^{[1]}$ almost for free. This is achieved by the system-level optimization which includes the AMX powered CPU into the solution space with a whole system view.
 
 ## Reference
 1. [EPD Disaggregation: Elastic Encoder Scaling for Vision-Language Models in SGLang](https://www.lmsys.org/blog/2026-01-12-epd/)
