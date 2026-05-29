@@ -161,7 +161,6 @@ Even with the above checks, the model can still produce output that diverges fro
 - Spaces or newlines around tool-call boundaries (Scenario 3)
 - Unclosed `<think>` blocks
 - Stripping or extra newlines around `<think>`
-- Early stopping caused by pad tokens `<|end_of_text|>`
 
 ![Assistant text anomalies](/images/blog/tito/assistant-anomalies.png)
 
