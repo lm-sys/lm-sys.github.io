@@ -7,7 +7,7 @@ previewImg: /images/blog/hetero-epd/1.png
 
 **TL;DR**
 
-We enabled heterogeneous Encode-Prefill-Decode (EPD) disaggregation via Dynamo and SGLang for Vision-Language Models (VLMs). By offloading vision encoding tasks to CPUs (the most easy-getting CPU resource is the CPU in head node), we achieved consistent performance improvements across metrics: TTFT (Time to First Token), TPOT (Time Per Output Token), and overall throughput under heavy load.
+We enabled heterogeneous Encode-Prefill-Decode (EPD) disaggregation via Dynamo and SGLang for Vision-Language Models (VLMs). By offloading vision encoding tasks to CPUs (the easiest-getting CPU resource is the CPU in head node), we achieved consistent performance improvements across metrics: TTFT (Time to First Token), TPOT (Time Per Output Token), and overall throughput under heavy load.
 
 ## Introduction
 
