@@ -419,4 +419,4 @@ If you are interested in multi-stage inference, TTS, omni models, multimodal gen
 - **Serving framework:** [SGLang-Omni on GitHub](https://github.com/sgl-project/sglang-omni)
 - **Documentation:** [SGLang-Omni docs](https://sgl-project.github.io/sglang-omni/) · [Higgs TTS cookbook](https://sgl-project.github.io/sglang-omni/cookbook/higgs_tts.html)
 - **Higgs optimization roadmap:** [#478](https://github.com/sgl-project/sglang-omni/issues/478)
-- **Design background:** *SGLang-Omni: Redesigning the Inference Framework for Multi-Stage Generative Models*
+- **Design background:** [SGLang-Omni: Redesigning the Inference Framework for Multi-Stage Generative Models](https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/sglang/sglang-omni/why-sglang-omni-en.md)
