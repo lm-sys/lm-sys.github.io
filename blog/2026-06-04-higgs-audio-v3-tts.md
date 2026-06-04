@@ -5,7 +5,7 @@ date: "June 4, 2026"
 previewImg: "https://sgl-project.github.io/sglang-omni/_images/higgs-architecture.png"
 ---
 
-Today we are announcing end-to-end serving for [**Higgs Audio v3 TTS**](https://www.boson.ai/blog/higgs-audio-v3-tts) on [**SGLang-Omni**](https://github.com/sgl-project/sglang-omni). Higgs Audio v3 TTS is Boson AI's text-to-speech model for conversational voice agents: it generates natural and expressive speech at low latency, supports [100 languages with single-digit WER/CER](https://www.boson.ai/blog/higgs-audio-v3-tts), and lets developers control emotion, style, prosody, and sound effects directly from the input text stream.
+Today we are announcing end-to-end serving for [**Higgs Audio v3 TTS**](https://www.boson.ai/blog/higgs-audio-v3-tts) on [**SGLang-Omni**](https://github.com/sgl-project/sglang-omni). Higgs Audio v3 TTS is Boson AI's text-to-speech model for conversational voice agents: it generates natural and expressive speech at low latency, supports [100 languages with single-digit WER/CER](https://huggingface.co/bosonai/higgs-audio-v3-tts-4b#supported-languages), and lets developers control emotion, style, prosody, and sound effects directly from the input text stream.
 
 For us, serving Higgs is not just about adding one more TTS model. Higgs represents a broader class of generation workloads where the end-to-end path is no longer a single autoregressive decode loop. Instead, generation is split across multiple stages with different compute patterns, latency requirements, and memory behavior. SGLang-Omni is the inference framework we built for exactly this class of multi-stage models.
 
@@ -18,6 +18,8 @@ For us, serving Higgs is not just about adding one more TTS model. Higgs represe
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
   allowfullscreen
 ></iframe>
+
+Note: The demo video is from [Higgs Audio v3 TTS](https://www.boson.ai/blog/higgs-audio-v3-tts), where the synthetic audio generation is supported on SGLang-Omni.
 
 ## Meet Higgs Audio v3 TTS
 
@@ -89,13 +91,13 @@ Higgs now joins the TTS and omni models already supported by SGLang-Omni:
 
 | Model | Type | Notes |
 |---|---|---|
-| [Higgs Audio v3 TTS](https://huggingface.co/bosonai/higgs-audio-v3-tts-4b) | TTS | Voice cloning, streaming, 100 languages ｜
+| [Higgs Audio v3 TTS](https://huggingface.co/bosonai/higgs-audio-v3-tts-4b) | TTS | Voice cloning, streaming, 100 languages |
 | [Fish Audio S2-Pro](https://huggingface.co/fishaudio/s2-pro) | TTS | Voice cloning, streaming |
 | [Voxtral TTS](https://huggingface.co/mistralai/Voxtral-4B-TTS-2603) | TTS | Named voices, streaming, 9 languages |
 | [Qwen3-TTS](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base) | TTS | Voice cloning, streaming, 10 languages |
-| [MOSS-TTS-v1.5](https://huggingface.co/OpenMOSS-Team/MOSS-TTS-v1.5) | TTS | Voice cloning, streaming, 31 languages |
+| [MOSS-TTS](https://huggingface.co/OpenMOSS-Team/MOSS-TTS-v1.5) | TTS | Voice cloning, streaming, 31 languages |
 | [Qwen3-Omni](https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Instruct) | Omni | Text/image/audio/video → text + audio |
-| [Ming-flash-omni-2.0](https://huggingface.co/inclusionAI/Ming-flash-omni-2.0) | Omni | Streaming TTS |
+| [Ming-Omni](https://huggingface.co/inclusionAI/Ming-flash-omni-2.0) | Omni | Streaming TTS |
 | [LLaDA2.0-Uni](https://huggingface.co/inclusionAI/LLaDA2.0-Uni) | Multimodal | Text + image understanding and generation |
 
 These models look different from the outside, but at the inference-system level they share the same underlying problem: how to organize multiple heterogeneous stages into a stable, efficient, and extensible generation pipeline. That is why onboarding Higgs on SGLang-Omni was mostly about declaring its pipeline (`preprocessing → audio_encoder → tts_engine → vocoder`) and adding model-specific hooks, rather than building a serving stack from scratch.
@@ -105,10 +107,10 @@ These models look different from the outside, but at the inference-system level 
 Beyond the framework abstraction, we also optimized the Higgs pipeline end to end. The main pieces are listed below; implementation details and tracking live in the [Higgs optimization roadmap (#478)](https://github.com/sgl-project/sglang-omni/issues/478) and the [repository](https://github.com/sgl-project/sglang-omni).
 
 - **AR backbone**: [CUDA Graph capture](https://github.com/sgl-project/sglang-omni/pull/503) for the decode loop, [async one-step-lookahead decode](https://github.com/sgl-project/sglang-omni/pull/590) for the omni AR loop, and [batching per-step D2H syncs](https://github.com/sgl-project/sglang-omni/pull/572) into a single transfer.
-- **Encoder**: [fusing preprocessing into the encoder stage](https://github.com/sgl-project/sglang-omni/issues/576), an [LRU cache](https://github.com/sgl-project/sglang-omni/pull/563) for [reused reference audio](https://github.com/sgl-project/sglang-omni/pull/605), and a [batched audio encoder](https://github.com/sgl-project/sglang-omni/pull/610).
+- **Encoder**: [fusing preprocessing into the encoder stage](https://github.com/sgl-project/sglang-omni/issues/576), an LRU cache for [reused reference audio](https://github.com/sgl-project/sglang-omni/pull/605), and a [batched audio encoder](https://github.com/sgl-project/sglang-omni/pull/610).
 - **Vocoder**: [batched vocoder decode](https://github.com/sgl-project/sglang-omni/pull/574).
 - **Caching**: RadixAttention cache partitioned by reference audio with `extra_key` namespacing, so repeated voice-cloning references can reuse prefix cache.
-- **Scheduling and streaming**: [dropping the bespoke scheduler](https://github.com/sgl-project/sglang-omni/pull/476) in favor of the shared `OmniScheduler`, plus real SSE [streaming](https://github.com/sgl-project/sglang-omni/pull/597) [schedulers](https://github.com/sgl-project/sglang-omni/pull/614) to reduce time to first audio.
+- **Scheduling and streaming**: [dropping the bespoke scheduler](https://github.com/sgl-project/sglang-omni/pull/476) in favor of the shared `OmniScheduler`, plus real SSE [streaming schedulers](https://github.com/sgl-project/sglang-omni/pull/614) to reduce time to first audio.
 
 ### Performance
 
