@@ -22,6 +22,7 @@ npm run dev
 - A new blog post is picked up automatically by `src/pages/blog/[slug].js`; the URL slug is the markdown filename without `.md`.
 - Blog post frontmatter should include `title`, `author`, `date`, and `previewImg`.
 - Keep the first four frontmatter fields in this order when practical: `title`, `author`, `date`, `previewImg`. `scripts/gen-rss.mjs` parses those first four header lines directly for the RSS feed.
+- Newer blog index pages also read a `type` frontmatter field for the card label and category filters. Use `type: blog` for ordinary blog posts and `type: news` only for news announcements.
 - Non-blog content is mostly under `content/`, for example about, FAQ, impressum, team, and Vicuna evaluation content.
 
 ## Images and Media
