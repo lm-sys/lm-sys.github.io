@@ -3,6 +3,7 @@ title: "SGLang and Miles Add Day-0 Support for NVIDIA Nemotron 3 Ultra for Long-
 author: "NVIDIA Nemotron Team and SGLang & Miles Team"
 date: "June 4, 2026"
 previewImg: /images/blog/nemotron-3-ultra/image1.png
+type: blog
 ---
 
 ![](/images/blog/nemotron-3-ultra/image1.png)
