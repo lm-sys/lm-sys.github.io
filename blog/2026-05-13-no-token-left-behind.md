@@ -179,7 +179,7 @@ The TITO pipeline currently supports the following models natively (both thinkin
 - **Minimax**: Minimax-M2.5, Minimax-M2.7
 - **Deepseek**: Deepseek-v3.2, Deepseek-v4
 
-For each model, TITO is verified to handle the following combinations of message roles a harness may append after the first assistant turn:
+For each model (except Deepseek-v4), TITO is verified to handle the following combinations of message roles a harness may append after the first assistant turn:
 
 - `{tool}`: harnesses that only inject tool outputs.
 - `{tool, user}`: harnesses that also inject `User`-role messages such as terminal outputs (e.g., Terminus-2) or parser-retry prompts.
