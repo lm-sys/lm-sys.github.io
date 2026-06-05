@@ -177,7 +177,7 @@ The TITO pipeline currently supports the following models natively (thinking & n
 - **Kimi**: Kimi-K2, Kimi-K2.5, Kimi-K2.6
 - **Nemotron**: Nemotron-3
 - **Minimax**: Minimax-M2.5, Minimax-M2.7
-- **Deepseek**: Deepseek-v3.2
+- **Deepseek**: Deepseek-v3.2, Deepseek-v4 (only the `tool` role is supported for v4)
 
 For each model, TITO is verified to handle the following combinations of message roles a harness may append after the first assistant turn:
 
