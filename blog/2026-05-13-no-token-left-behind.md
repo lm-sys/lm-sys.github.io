@@ -177,12 +177,14 @@ The TITO pipeline currently supports the following models natively (both thinkin
 - **Kimi**: Kimi-K2, Kimi-K2.5, Kimi-K2.6
 - **Nemotron**: Nemotron-3
 - **Minimax**: Minimax-M2.5, Minimax-M2.7
-- **Deepseek**: Deepseek-v3.2, Deepseek-v4 (only the `tool` role is supported for v4)
+- **Deepseek**: Deepseek-v3.2, Deepseek-v4
 
 For each model, TITO is verified to handle the following combinations of message roles a harness may append after the first assistant turn:
 
 - `{tool}`: harnesses that only inject tool outputs.
 - `{tool, user}`: harnesses that also inject `User`-role messages such as terminal outputs (e.g., Terminus-2) or parser-retry prompts.
 - `{tool, user, system}`: harnesses that further inject `System`-role reminders mid-task.
+
+Deepseek-v4 currently supports only the `{tool}` surface.
 
 Adding a new model is usually a fixed Jinja template plus a small [`merge_tokens`](https://github.com/radixark/miles/blob/3270915550fcd69dce788f382fa8c12548a63618/miles/utils/chat_template_utils/tito_tokenizer.py) override.
