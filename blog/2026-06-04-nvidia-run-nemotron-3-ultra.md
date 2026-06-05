@@ -143,12 +143,14 @@ Using the Miles framework, we've enabled GRPO RL training on Nemotron 3 Ultra ac
 
 * **On-policyness.** A key health check for an RL pipeline is whether the policy used to generate rollouts matches the policy being updated during training. If the two drift apart, the gradients no longer reflect the data the model actually sampled, and training becomes off-policy and unstable. We track this with train\_rollout\_logprob\_abs\_diff, the average absolute difference between the log-probabilities assigned to each token by SGLang and Megatron. This value stays around 0.01 throughout the run, a small gap that suggests the rollout and training policies remain closely aligned and the pipeline is behaving on-policy.
 
-![](/images/blog/nemotron-3-ultra/image4.png)
+<img src="/images/blog/nemotron-3-ultra/image4.png" style="display:block; margin-left: auto; margin-right: auto; width: 60%"></img>
+
 *Figure: train\_rollout\_logprob\_abs\_diff over a full run; the band stays around 0.01.*
 
 * **Reward curve.** As training proceeds, the model should learn to produce answers that score higher under the reward function. We track rollout/raw\_reward, the average reward of the model's sampled responses. The reward grows steadily over the run within 30 rollout steps.
 
-![](/images/blog/nemotron-3-ultra/image5.png)
+<img src="/images/blog/nemotron-3-ultra/image5.png" style="display:block; margin-left: auto; margin-right: auto; width: 60%"></img>
+
 *Figure: rollout/raw\_reward on dapo-math-17k at 8k max context length, rising from \~0.55 to \~0.58 over the run.*
 
 ### Nemotron 3 Ultra RL example:
