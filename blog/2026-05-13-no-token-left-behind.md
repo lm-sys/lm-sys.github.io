@@ -170,10 +170,10 @@ Two verification scripts run this comparator across all supported (model, append
 
 ## Supported Models
 
-The TITO pipeline currently supports the following models natively (thinking & non-):
+The TITO pipeline currently supports the following models natively (both thinking and non-thinking variants):
 
 - **Qwen**: Qwen3, Qwen3.5, Qwen3-Next
-- **GLM**: GLM-4.7, GLM-5
+- **GLM**: GLM-4.7, GLM-5, GLM-5.1
 - **Kimi**: Kimi-K2, Kimi-K2.5, Kimi-K2.6
 - **Nemotron**: Nemotron-3
 - **Minimax**: Minimax-M2.5, Minimax-M2.7
