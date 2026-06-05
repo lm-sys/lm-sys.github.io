@@ -1,7 +1,7 @@
 ---
 title: "No Token Left Behind: Demystifying Token-In-Token-Out in Miles"
 author: "Miles Team: Jiajun Li, Yanbin Jiang, Mao Cheng, Shi Dong, Yusheng Su, Yueming Yuan, Zhichen Zeng, Banghua Zhu"
-date: "May 13, 2026"
+date: "June 5, 2026"
 previewImg: /images/blog/tito/definition.png
 ---
 
@@ -185,6 +185,4 @@ For each model (except Deepseek-v4), TITO is verified to handle the following co
 - `{tool, user}`: harnesses that also inject `User`-role messages such as terminal outputs (e.g., Terminus-2) or parser-retry prompts.
 - `{tool, user, system}`: harnesses that further inject `System`-role reminders mid-task.
 
-Deepseek-v4 currently supports only the `{tool}` surface.
-
-Adding a new model is usually a fixed Jinja template plus a small [`merge_tokens`](https://github.com/radixark/miles/blob/3270915550fcd69dce788f382fa8c12548a63618/miles/utils/chat_template_utils/tito_tokenizer.py) override.
+Deepseek-v4 currently supports only the `{tool}` surface; broadening it — like onboarding any new model — is usually just a fixed Jinja template plus a small [`merge_tokens`](https://github.com/radixark/miles/blob/3270915550fcd69dce788f382fa8c12548a63618/miles/utils/chat_template_utils/tito_tokenizer.py) override. That low cost is the whole point: TITO keeps every rollout bit-perfect for training while staying cheap to extend, so no token is left behind.
