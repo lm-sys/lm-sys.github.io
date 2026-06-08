@@ -179,12 +179,12 @@ The TITO pipeline currently supports the following models natively (both thinkin
 - **Minimax**: Minimax-M2.5, Minimax-M2.7
 - **Deepseek**: Deepseek-v3.2, Deepseek-v4
 
-For each model (except Deepseek-v4), TITO is verified to handle the following combinations of message roles a harness may append after the first assistant turn:
+For each model (except Deepseek-v3.2 and Deepseek-v4), TITO is verified to handle the following combinations of message roles a harness may append after the first assistant turn:
 
 - `{tool}`: harnesses that only inject tool outputs.
 - `{tool, user}`: harnesses that also inject `User`-role messages such as terminal outputs (e.g., Terminus-2) or parser-retry prompts.
 - `{tool, user, system}`: harnesses that further inject `System`-role reminders mid-task.
 
-Deepseek-v4 currently supports only the `{tool}` surface; broadening it — like onboarding any new model — is usually just a fixed Jinja template plus a small [`merge_tokens`](https://github.com/radixark/miles/blob/3270915550fcd69dce788f382fa8c12548a63618/miles/utils/chat_template_utils/tito_tokenizer.py) override. That low cost is the whole point: TITO keeps every rollout bit-perfect for training while staying cheap to extend, so no token is left behind.
+Both Deepseek-v3.2 and Deepseek-v4 currently support only the `{tool}` surface; broadening them — like onboarding any new model — is usually just a fixed Jinja template plus a small [`merge_tokens`](https://github.com/radixark/miles/blob/3270915550fcd69dce788f382fa8c12548a63618/miles/utils/chat_template_utils/tito_tokenizer.py) override. That low cost is the whole point: TITO keeps every rollout bit-perfect for training while staying cheap to extend, so no token is left behind.
 
 If you want to try it in miles, look at the doc [link](https://www.radixark.com/miles/docs/user-guide/agentic-chat-template). 
