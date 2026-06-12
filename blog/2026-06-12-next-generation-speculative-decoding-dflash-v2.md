@@ -134,4 +134,4 @@ Z Lab: Jian Chen, Yesheng Liang, and Zhijian Liu.
 
 Modal: David Wang and Charles Frye.
 
-SGLang: Qiaolin Yu and Liangsheng Yin.
+SGLang: Qiaolin Yu, Liangsheng Yin, and Khoa Pham.
