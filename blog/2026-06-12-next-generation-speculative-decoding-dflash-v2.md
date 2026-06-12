@@ -1,7 +1,7 @@
 ---
 title: "The next generation of speculative decoding: DFlash and Spec V2"
 author: "Z Lab, Modal, and SGLang Teams"
-date: "June 12, 2026"
+date: "June 15, 2026"
 previewImg: /images/blog/dflash-v2/dflash-arch-diagram.webp
 type: blog
 ---
