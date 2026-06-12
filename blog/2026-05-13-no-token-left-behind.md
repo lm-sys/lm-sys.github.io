@@ -187,4 +187,4 @@ For each model (except Deepseek-v3.2 and Deepseek-v4), TITO is verified to handl
 
 Both Deepseek-v3.2 and Deepseek-v4 currently support only the `{tool}` surface; broadening them — like onboarding any new model — is usually just a fixed Jinja template plus a small [`merge_tokens`](https://github.com/radixark/miles/blob/3270915550fcd69dce788f382fa8c12548a63618/miles/utils/chat_template_utils/tito_tokenizer.py) override. That low cost is the whole point: TITO keeps every rollout bit-perfect for training while staying cheap to extend, so no token is left behind.
 
-**If you want to try out TITO in miles, please take a look at the doc [here](https://www.radixark.com/miles/docs/user-guide/agentic-chat-template).**
+**If you want to try out TITO in miles, please take a look at the doc [here](https://miles.radixark.com/docs/user-guide/agentic-chat-template).**
