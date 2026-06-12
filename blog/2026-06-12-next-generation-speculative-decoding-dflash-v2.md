@@ -2,15 +2,18 @@
 title: "The next generation of speculative decoding: DFlash and Spec V2"
 author: "Z Lab, Modal, and SGLang Teams"
 date: "June 12, 2026"
-previewImg: /images/blog/nemotron-3-ultra/image1.png
+previewImg: /images/blog/dflash-v2/dflash-arch-diagram.webp
 type: blog
 ---
 
 Using Z Lab's DFlash speculative decoding models with SGLang’s newly default Spec V2 engine, you can achieve state-of-the-art latencies for LLM inference serving.
 
+<img src="/images/blog/dflash-v2/dflash-headline-perf.webp" style="display:block; margin-left: auto; margin-right: auto; width: 60%"></img>
+
 Below, we describe DFlash’s novel diffusion \+ KV injection strategy for speculative decoding, why that matters for achieving massive speedups, and how the teams at [Z Lab](https://z-lab.ai), SGLang, and [Modal](https://modal.com) worked together to make those speedups available to everyone.
 
 And we mean everyone! You can [run tensor-parallel Qwen 3.6 35B-A3B with DFlash right now](https://modal.com/docs/examples/sglang_low_latency) on Modal's serverless GPUs, achieving decode speeds of up to 1k tps:
+
 ```shell
 git clone https://github.com/modal-labs/modal-examples
 cd modal-examples
@@ -23,23 +26,23 @@ Transformer-based large language models (LLMs) are powerful, but their autoregre
 
 [Speculative decoding](https://arxiv.org/abs/2211.17192) addresses this bottleneck by using a smaller, faster draft model to propose multiple tokens, which are then verified in parallel by the target LLM, with no impact on model quality.
 
-However, many speculative decoding methods, like the [EAGLE series](https://arxiv.org/abs/2503.01840) and the native MTP modules in recent models like [Gemma 4](https://blog.google/innovation-and-ai/technology/developers-tools/multi-token-prediction-gemma-4/) and [DeepSeek-V4](https://www.lmsys.org/blog/2026-04-25-deepseek-v4/), still rely on sequential autoregression – but in the draft model instead of the target. The draft model generates draft tokens one-by-one, which makes them a poor fit for modern hardware and limits the achievable speedup.
+However, many speculative decoding methods, like the [EAGLE series](https://arxiv.org/abs/2503.01840) and the native multi-token prediction (MTP) modules in recent models like [Gemma 4](https://blog.google/innovation-and-ai/technology/developers-tools/multi-token-prediction-gemma-4/) and [DeepSeek-V4](https://www.lmsys.org/blog/2026-04-25-deepseek-v4/), still rely on sequential autoregression – but in the draft model instead of the target. The draft model generates draft tokens one-by-one, which makes them a poor fit for modern hardware and limits the achievable speedup.
 
-That’s why the Z Lab developed [DFlash](https://arxiv.org/abs/2602.06036), which uses a lightweight block diffusion draft model to generate an entire block of draft tokens in parallel, just the way that GPUs and TPUs like. Xiaomi's Mimo v2.5-Pro-UltraSpeed uses DFlash to achieve [over 1k output tps](https://mimo.xiaomi.com/blog/mimo-tilert-1000tps).
+That’s why the Z Lab developed [DFlash](https://arxiv.org/abs/2602.06036), which uses a lightweight block diffusion draft model to generate an entire block of draft tokens in parallel, just the way that GPUs and TPUs like. Xiaomi's new Mimo v2.5-Pro-UltraSpeed uses DFlash to achieve [over 1k output tps](https://mimo.xiaomi.com/blog/mimo-tilert-1000tps).
 
 Using block diffusion for speculative drafting is non-trivial. Directly training a small block diffusion model as the drafter leads to low acceptance length, while using an existing large diffusion LLM like [SpecDiff-2](https://arxiv.org/abs/2511.00606) as the drafter introduces a large memory footprint and high drafting cost.
 
-The key insight of DFlash is simple: the target LLM knows the context best. Inspired by previous methods like [Medusa](https://arxiv.org/abs/2401.10774), [EAGLE](https://arxiv.org/html/2503.01840v1) and [Apple's MTP](https://arxiv.org/abs/2507.11851), we extract hidden representations of the context tokens from the target model. But different from previous work, we inject them directly into the draft model’s KV cache. This allows the draft model to skip modeling the full context from scratch and focus purely on predicting the next block of tokens – using the same tensors as the later layers of the target model\!
+The key insight of DFlash is simple: the target LLM knows the context best. Inspired by previous methods like [Medusa](https://arxiv.org/abs/2401.10774), [EAGLE](https://arxiv.org/html/2503.01840v1) and MTP ([Gloeckle et al., 2024](https://arxiv.org/abs/2404.19737); [Samragh et al., 2025](https://arxiv.org/abs/2507.11851)), we extract hidden representations of the context tokens from the target model. But different from previous work, we inject them directly into the draft model’s KV cache. This allows the draft model to skip modeling the full context from scratch and focus purely on predicting the next block of tokens – using the same tensors as the later layers of the target model\!
 
-![][image1]
+![](/images/blog/dflash-v2/dflash-arch-diagram.webp)
 
-With this design, DFlash leverages the rich contextual features produced by the powerful target LLM while keeping the draft model extremely small and efficient. As a result, DFlash achieves high acceptance length with low drafting latency.
+With this design, DFlash leverages the rich, highly relevant contextual features produced by the target LLM while keeping the draft model extremely small and efficient. As a result, DFlash achieves high acceptance length with low drafting latency.
 
 ### Why is DFlash so fast?
 
-Speculative decoding speedup mainly depends on two factors: how many drafted tokens are accepted per cycle and how much extra cost the draft model adds. DFlash improves both.
+Speculative decoding speedup mainly depends on two factors: how many drafted tokens are accepted per cycle and how much extra cost the draft model adds. DFlash improves both, using two distinct techniques.
 
-DFlash achieves a similar acceptance length to a 5-layer EAGLE-3 drafter, but thanks to its ultra-fast parallel drafting, it delivers much higher end-to-end speedup. Results are reported as `acc_len / speedup`.
+Concretely, DFlash achieves a similar acceptance length to a 5-layer EAGLE-3 drafter, but thanks to its ultra-fast parallel drafting, it delivers much higher end-to-end speedup. Results are reported as `acc_len / speedup`.
 
 | Task      | EAGLE-3 (5 layers) | DFlash         |
 | :-------- | :----------------- | :------------- |
@@ -51,9 +54,9 @@ DFlash achieves a similar acceptance length to a 5-layer EAGLE-3 drafter, but th
 
 Autoregressive drafters like EAGLE-3 generate draft tokens one by one. As the draft length grows, the drafting cost grows roughly linearly. To keep latency low, these methods usually rely on very shallow draft models, which limits draft quality.
 
-DFlash avoids this bottleneck with a block diffusion drafter. It generates the whole draft block in parallel with a single forward pass, making drafting much more hardware-friendly. A 5-layer DFlash drafter generating 16 tokens has lower drafting latency than even a 1-layer EAGLE-3 drafter.
+DFlash avoids this bottleneck with a block diffusion drafter. It generates the whole draft block in parallel with a single forward pass, making drafting much more hardware-friendly. A 5-layer DFlash drafter generating 16 tokens has lower drafting latency than a shallower EAGLE-3 drafter.
 
-**![][image2]**
+<img src="/images/blog/dflash-v2/dflash-vs-eagle-draft-latency.webp" style="display:block; margin-left: auto; margin-right: auto; width: 60%"></img>
 
 We can observe the independent impact of this technique in end-to-end benchmarks, where DFlash still provides a higher end-to-end speedup than EAGLE-3, even at lower acceptance lengths.
 
@@ -69,7 +72,7 @@ Fast drafting only helps if the drafted tokens are accepted. Existing methods li
 
 DFlash instead injects target features into the KV cache of every draft layer. This keeps the drafter strongly conditioned on the target model’s context throughout generation, allowing deeper drafters to produce higher-quality drafts.
 
-We can also observe the independent impact of this technique in end-to-end-benchmarks, where DFlash in autoregressive mode results in a higher speedup due to higher acceptance lengths.
+We can also observe the independent impact of this technique in end-to-end-benchmarks, where DFlash in autoregressive mode still runs faster due to higher acceptance lengths.
 
 | Task      | EAGLE-3 (5 layers) | DFlash (injection only) |
 | :-------- | :----------------- | :------------------------- |
@@ -77,11 +80,9 @@ We can also observe the independent impact of this technique in end-to-end-bench
 | HumanEval | 4.3 / 2.2x         | **4.6 / 2.3x**             |
 | MT-Bench  | 3.1 / 1.4x         | **3.4 / 1.5x**             |
 
-The benchmark numbers in this section are from the initial implementation of DFlash as part of R &D by Z Lab. Based on these impressive results, the teams at Modal and SGLang joined the project to optimize end-to-end performance in the SGLang inference engine.
-
 ## Implementing DFlash in SGLang
 
-DFlash is now available in SGLang, offering state-of-the-art inference speeds to real production deployments.
+The benchmark numbers in this section are from the initial implementation of DFlash as part of R&D by Z Lab. Based on these impressive results, the teams at Modal and SGLang collaborated with Z Lab to optimize end-to-end performance in the SGLang inference engine.
 
 Bringing a performance optimization technique like DFlash from research to prod requires two basic components: implementing the technique inside a high-performance engine and then optimizing the performance of the end-to-end system, from host scheduler to GPU execution.
 
@@ -95,7 +96,7 @@ That’s not new in DFlash. The main novelty is the KV injection, which ties sta
 
 We don’t want to store those latents and cut into precious KV cache space and we want all requests that have the same prefix to share the radix cache. So we run the draft KV projection ahead of the rest of the draft forward pass – *immediate materialization*. That needs to be fast, so we added a layer-batched linear projection and a fused Triton kernel for the norm+RoPE post-processing.
 
-## Eliminating host overhead for DFlash with Spec V2 and overlap shceduling
+## Eliminating host overhead for DFlash with Spec V2 and overlap scheduling
 
 That worked and was fast, but we knew it could be faster. We were concurrently working on the V2 speculative decoding engine, so the next step was to [combine DFlash with the V2 engine](https://github.com/sgl-project/sglang/pull/23000), which is what’s now available in SGLang.
 
@@ -110,55 +111,24 @@ Under V2 with these optimizations, performance improved by over 25%, from \~9,70
 
 The aforementioned optimizations can be used by all draft models. But DFlash is able to take greater advantage of overlap scheduling. In particular, because DFlash uses immediate materialization from the target to construct the draft KV, it doesn’t need a separate draft-extend step to run the draft model on only accepted tokens and populate KV. This draft-extend step, used in EAGLE, requires that accepted tokens are known before host-side planning can proceed.
 
-**Try DFlash in SGLang now**
+## High-performance DFlash speculative models are available for a variety of models
+
+TODO: Write this section up once we have final model list and numbers.
+
+![](/images/blog/dflash-v2/dflash-perf-big-sweep.webp)
+
+## Try DFlash in SGLang now
 
 Unlike posts from proprietary inference providers, you don’t have to just read this blog and feel FOMO. You can [read the code](https://github.com/sgl-project/sglang/pull/23000). You can deploy a DFlash-accelerated SGLang server [right now](https://modal.com/docs/examples/sglang_low_latency), and then start tinkering.
 
 More broadly: you can run inference at state-of-the-art intelligences and speeds thanks to the work of the open-weights model builders, systems researchers, and the open source community. Whether it’s research work on techniques like DFlash by the [Z Lab](https://z-lab.ai/) or features and performance enhancements from open source contributors like [Modal](https://modal.com/), the world’s best work on LLM inference is landing in the SGLang open source engine for you to build on and with.
 
-![](/images/blog/nemotron-3-ultra/image1.png)
-
-## TL;DR: About Nemotron 3 Ultra
-
-### What Miles supports
-
-<img src="/images/blog/nemotron-3-ultra/image4.png" style="display:block; margin-left: auto; margin-right: auto; width: 60%"></img>
-
-*Figure: rollout/raw\_reward on dapo-math-17k at 8k max context length, rising from \~0.55 to \~0.58 over the run.*
-
-### Nemotron 3 Ultra RL example
-
-```shell
-## Miles docker image for nemotron-3-ultra
-
-docker pull radixark/miles:nemotron-3-ultra
-cd /root/miles
-
-## convert hf to dist
-
-## env (optional): MODELS_DIR=/your/models
-
-HF=$MODELS_DIR/NVIDIA-Nemotron-3-Ultra-550B-A55B-BF16
-bash scripts/convert-nemotron-3-ultra-550b-hf-to-dist.sh <NODE_RANK 0..15> <HEAD_IP>
-
-## Launch RL (128 GPU, colocate)
-
-## head pod:
-bash scripts/run-nemotron-3-ultra-550b-a55b.sh head   <HEAD_IP>
-
-## each worker pod:
-bash scripts/run-nemotron-3-ultra-550b-a55b.sh worker <HEAD_IP>
-```
-
-## Summary
-
-
-## Acknowledgement
+## Acknowledgements
 
 Thanks to everyone who contributed to bringing Spec V2 and DFlash to SGLang.
 
-Z Lab:
+Z Lab: Jian Chen, Yesheng Liang, and Zhijian Liu.
 
-Modal:
+Modal: David Wang and Charles Frye.
 
-SGLang:
+SGLang: Qiaolin Yu and Liangsheng Yin.
