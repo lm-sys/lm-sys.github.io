@@ -8,7 +8,10 @@ type: blog
 
 Using Z Lab's DFlash speculative decoding models with SGLang’s newly default Spec V2 engine, you can achieve state-of-the-art latencies for LLM inference serving.
 
-<img src="/images/blog/dflash-v2/dflash-headline-perf.webp" style="display:block; margin-left: auto; margin-right: auto; width: 60%"></img>
+<div style="text-align: center;">
+  <img src="/images/blog/dflash-v2/dflash-headline-perf.webp" style="width: 60%;"></img>
+  <small>Workload: Qwen 3.5 397B-A17B (BF16), HumanEval. Settings: greedy decoding, thinking enabled, max new tokens 4096. Hardware: 8xB200.</small>
+</div>
 
 Below, we describe DFlash’s novel diffusion \+ KV injection strategy for speculative decoding, why that matters for achieving massive speedups, and how the teams at [Z Lab](https://z-lab.ai), SGLang, and [Modal](https://modal.com) worked together to make those speedups available to everyone.
 
