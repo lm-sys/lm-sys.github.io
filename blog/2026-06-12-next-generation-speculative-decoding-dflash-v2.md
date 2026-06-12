@@ -6,12 +6,17 @@ previewImg: /images/blog/dflash-v2/dflash-arch-diagram.webp
 type: blog
 ---
 
-Using Z Lab's DFlash speculative decoding models with SGLang’s newly default Spec V2 engine, you can achieve state-of-the-art latencies for LLM inference serving.
+Using Modal and Z Lab's DFlash speculative decoding models with SGLang’s newly default Spec V2 engine, you can achieve state-of-the-art latencies for LLM inference serving. Our jointly-released DFlash model for Qwen 3.5 397B-A17B achieves about 4x the throughput of the baseline model and 2x the throughput of the native MTP speculation.
 
 <div style="text-align: center;">
   <img src="/images/blog/dflash-v2/dflash-headline-perf.webp" style="width: 60%;"></img>
-  <small>Workload: Qwen 3.5 397B-A17B (BF16), HumanEval. Settings: greedy decoding, thinking enabled, max new tokens 4096. Hardware: 8xB200.</small>
+  <small>Workload: Qwen 3.5 397B-A17B (BF16), HumanEval. Settings: greedy decoding, thinking enabled, max new tokens 4096. Hardware: 8xB200. Acceptance lengths are averaged across requests.</small>
 </div>
+
+To celebrate this collaboration, we're releasing this model in triplicate across our Hugging Face organizations:
+- [`z-lab/Qwen3.5-397B-A17B-DFlash`](https://huggingface.co/z-lab/Qwen3.5-397B-A17B-DFlash)
+- [`modal-labs/Qwen3.5-397B-A17B-DFlash`](https://huggingface.co/modal-labs/Qwen3.5-397B-A17B-DFlash)
+- [`lmsys/Qwen3.5-397B-A17B-DFlash`](https://huggingface.co/lmsys/Qwen3.5-397B-A17B-DFlash)
 
 Below, we describe DFlash’s novel diffusion \+ KV injection strategy for speculative decoding, why that matters for achieving massive speedups, and how the teams at [Z Lab](https://z-lab.ai), SGLang, and [Modal](https://modal.com) worked together to make those speedups available to everyone.
 
@@ -114,11 +119,13 @@ Under V2 with these optimizations, performance improved by over 25%, from \~9,70
 
 The aforementioned optimizations can be used by all draft models. But DFlash is able to take greater advantage of overlap scheduling. In particular, because DFlash uses immediate materialization from the target to construct the draft KV, it doesn’t need a separate draft-extend step to run the draft model on only accepted tokens and populate KV. This draft-extend step, used in EAGLE, requires that accepted tokens are known before host-side planning can proceed.
 
-## High-performance DFlash speculative models are available for a variety of models
+## High-performance DFlash draft models are available for a variety of models
 
-TODO: Write this section up once we have final model list and numbers.
+Today, we're releasing a new DFlash draft model for Qwen 3.5 397B-A17B.
 
 ![](/images/blog/dflash-v2/dflash-perf-big-sweep.webp)
+
+You can find more high-quality drafters in Z Lab's [DFlash collection on Hugging Face](https://huggingface.co/collections/z-lab/dflash). And keep your eyes peeled for more models soon.
 
 ## Try DFlash in SGLang now
 
