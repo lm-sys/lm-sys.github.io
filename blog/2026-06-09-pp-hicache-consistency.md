@@ -1,6 +1,6 @@
 ---
 title: "Host Tree Consistency for HiCache under Pipeline Parallelism: Problem and Fix"
-author: "Iflytek MaaS & Zhangheng Huang, Shangming Cai, Chao Shi, Tingwei Huang, Zhiqiang Xie"
+author: "Yanbo Yang, Zhangheng Huang, Shangming Cai, Chao Shi, Tingwei Huang, Zhiqiang Xie"
 date: "June 9, 2026"
 previewImg: /images/blog/pp_hicache_consistency/preview.png
 ---
