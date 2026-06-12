@@ -18,7 +18,7 @@
   <!-- ===== Row 1: PG1 ===== -->
   <g>
     <rect x="20" y="92" width="260" height="78" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
-    <text x="34" y="116" font-size="13" font-weight="700" fill="#5b21b6">PG1 · prefetch_sync_groups</text>
+    <text x="34" y="116" font-size="13" font-weight="700" fill="#5b21b6">PG1 · prefetch_hits_sync_groups</text>
     <text x="34" y="135" font-size="11.5" fill="#4b5563">owner: prefetch_thread</text>
     <text x="34" y="152" font-size="11" fill="#7c3aed">gloo · CPU · TP ring + PP ring</text>
 
@@ -38,7 +38,7 @@
   <!-- ===== Row 2: PG2 ===== -->
   <g>
     <rect x="20" y="186" width="260" height="78" rx="10" fill="#ecfeff" stroke="#0891b2" stroke-width="1.5"/>
-    <text x="34" y="210" font-size="13" font-weight="700" fill="#0e7490">PG2 · prefetch_sync_groups2</text>
+    <text x="34" y="210" font-size="13" font-weight="700" fill="#0e7490">PG2 · prefetch_completion_sync_groups</text>
     <text x="34" y="229" font-size="11.5" fill="#4b5563">owner: prefetch_sync_thread</text>
     <text x="34" y="246" font-size="11" fill="#0891b2">gloo · CPU · TP ring + PP ring</text>
 

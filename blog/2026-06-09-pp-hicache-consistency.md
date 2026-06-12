@@ -171,7 +171,7 @@ It is worth recording how we arrived at this design, because the first version s
 
 That worked, but it coupled a correctness-critical invariant of the inference engine to the external storage backend: the store had to be aware of SGLang's parallel topology and group membership, the reduction semantics lived outside the engine, and any other storage backend would have to re-implement the same logic. It also could not handle the *second* divergence (`completed_tokens`) symmetrically, since that quantity only materializes during the actual page transfer **inside** the engine, not at query time.
 
-So we moved the MIN back into SGLang, onto a dedicated background thread (`prefetch_thread` doing `all_reduce(MIN)` over `prefetch_sync_groups`). The engine now owns both reductions end-to-end (PG1 for the prefetch range, PG2 for the landed length), the storage backend stays a topology-agnostic key-value store, and the two divergence sources are unified by one uniform mechanism. The rest of this article describes that final, in-engine design.
+So we moved the MIN back into SGLang, onto a dedicated background thread (`prefetch_thread` doing `all_reduce(MIN)` over `prefetch_hits_sync_groups`). The engine now owns both reductions end-to-end (PG1 = `prefetch_hits_sync_groups` for the prefetch range, PG2 = `prefetch_completion_sync_groups` for the landed length), the storage backend stays a topology-agnostic key-value store, and the two divergence sources are unified by one uniform mechanism. The rest of this article describes that final, in-engine design.
 
 ## 6. Implementation Walkthrough (current branch)
 
@@ -183,17 +183,22 @@ So we moved the MIN back into SGLang, onto a dedicated background thread (`prefe
 
 ### 6.1 Bring pp_group into the sync, and build two independent sets
 
-`_create_prefetch_sync_groups`, building on main, appends `pp_group` and creates both `prefetch_sync_groups` and `prefetch_sync_groups2` for each member set:
+`_create_sync_groups`, building on main, appends `pp_group`, and is called twice to build two independent sets—`prefetch_hits_sync_groups` (PG1) and `prefetch_completion_sync_groups` (PG2):
 
 ```python
-# current branch: _create_prefetch_sync_groups
+# current branch: _create_sync_groups
 base_groups = [self.tp_group]            # or attn_cp_group / attn_tp_group
 if self.pp_group is not None:            # HACK: bring the PP ring into the sync
     base_groups.append(self.pp_group)
+groups = []
 for group in base_groups:
     ...
-    self.prefetch_sync_groups.append(create_custom_parallel_group(..., backend="gloo"))
-    self.prefetch_sync_groups2.append(create_custom_parallel_group(..., backend="gloo"))
+    groups.append(create_custom_parallel_group(..., backend="gloo"))
+return groups
+
+# called twice -> two independent sets
+self.prefetch_hits_sync_groups = self._create_sync_groups()        # PG1
+self.prefetch_completion_sync_groups = self._create_sync_groups()  # PG2
 ```
 
 The sync scope expands from "TP ring only" to "TP ring + PP ring", covering cross-PP divergence at the root.
@@ -205,7 +210,7 @@ The sync scope expands from "TP ring only" to "TP ring + PP ring", covering cros
 ```python
 # current branch: prefetch_thread_func
 hash_value, storage_hit_count = self._storage_hit_query(operation)
-self._all_reduce_prefetch_groups(storage_hit_count_tensor, ReduceOp.MIN)   # @ PG1
+self._all_reduce(storage_hit_count_tensor, ReduceOp.MIN, self.prefetch_hits_sync_groups)   # @ PG1
 storage_hit_count = storage_hit_count_tensor.item()
 operation.hash_value   = hash_value[: storage_hit_count // self.page_size]
 operation.host_indices = operation.host_indices[:storage_hit_count]
@@ -248,7 +253,7 @@ for i in range(0, len(operation.hash_value), self.storage_batch_size):
 ```python
 # current branch: prefetch_sync_thread_func
 ack = self.prefetch_sync_queue.get(...)
-self._all_reduce_prefetch_groups2(completed_tokens_tensor, ReduceOp.MIN)   # @ PG2
+self._all_reduce(completed_tokens_tensor, ReduceOp.MIN, self.prefetch_completion_sync_groups)   # @ PG2
 ack.completed_tokens = completed_tokens_tensor.item()
 self.ack_prefetch_queue.put(ack)
 ```
@@ -287,12 +292,12 @@ sharing one group group1 (dangerous):
 
 ### 7.2 The fix: each thread owns its own set
 
-`_create_prefetch_sync_groups` creates two independent gloo communicators over the **same set of ranks**—`prefetch_sync_groups` (PG1) and `prefetch_sync_groups2` (PG2)—each dedicated to one background thread. The two collective streams travel over their own communicators, never interleave, and the rendezvous always pairs one-to-one within the "same group + same thread" semantics:
+`_create_sync_groups`, called twice, creates two independent gloo communicators over the **same set of ranks**—`prefetch_hits_sync_groups` (PG1) and `prefetch_completion_sync_groups` (PG2)—each dedicated to one background thread. The two collective streams travel over their own communicators, never interleave, and the rendezvous always pairs one-to-one within the "same group + same thread" semantics:
 
 ```python
 # PG1 dedicated to prefetch_thread (storage_hit_count), PG2 to prefetch_sync_thread (completed_tokens)
-self.prefetch_sync_groups.append(create_custom_parallel_group(..., backend="gloo"))
-self.prefetch_sync_groups2.append(create_custom_parallel_group(..., backend="gloo"))
+self.prefetch_hits_sync_groups = self._create_sync_groups()        # PG1
+self.prefetch_completion_sync_groups = self._create_sync_groups()  # PG2
 ```
 
 <p align="center">
@@ -316,8 +321,8 @@ def worker(rank, world, mode, rounds, port):
     dist.init_process_group("gloo", rank=rank, world_size=world)
     ranks = list(range(world))
     # call new_group twice over the same ranks -> two independent communicators
-    g1 = dist.new_group(ranks=ranks, backend="gloo")   # ~ prefetch_sync_groups  (PG1)
-    g2 = dist.new_group(ranks=ranks, backend="gloo")   # ~ prefetch_sync_groups2 (PG2)
+    g1 = dist.new_group(ranks=ranks, backend="gloo")   # ~ prefetch_hits_sync_groups       (PG1)
+    g2 = dist.new_group(ranks=ranks, backend="gloo")   # ~ prefetch_completion_sync_groups (PG2)
 
     def reduce_loop(group, base, n):
         for _ in range(n):

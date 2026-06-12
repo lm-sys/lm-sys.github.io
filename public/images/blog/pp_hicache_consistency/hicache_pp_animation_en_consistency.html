@@ -335,8 +335,8 @@
     </div>
     <div class="ranks" id="ranks"></div>
     <div class="story-sync">
-      <div class="syncbadge g1" id="s5sync1">◆ MIN 组1 · prefetch_sync_groups · storage_hit_count</div>
-      <div class="syncbadge g2" id="s5sync2">◆ MIN 组2 · prefetch_sync_groups2 · completed_tokens</div>
+      <div class="syncbadge g1" id="s5sync1">◆ MIN 组1 · prefetch_hits_sync_groups · storage_hit_count</div>
+      <div class="syncbadge g2" id="s5sync2">◆ MIN 组2 · prefetch_completion_sync_groups · completed_tokens</div>
     </div>
     <div class="consist-flag" id="s5flag"></div>
     <div class="caption" id="cap5">自动播放中…</div>
@@ -374,8 +374,8 @@
     <div class="note" style="margin-bottom:8px;">每个 cell = 1 个 rank，内含 2 个独立后台线程（小圆点 ●A ●B）。每一行是一个 <b>TP communicator</b>，每一列是一个 <b>PP communicator</b>。</div>
     <div id="mesh2"></div>
     <div class="groups">
-      <div class="grp g1" id="g1"><b>prefetch_sync_groups</b><br>命中页数归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(storage_hit_count)</span></div>
-      <div class="grp g2" id="g2"><b>prefetch_sync_groups2</b><br>完成 token 归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(completed_tokens)</span></div>
+      <div class="grp g1" id="g1"><b>prefetch_hits_sync_groups</b><br>命中页数归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(storage_hit_count)</span></div>
+      <div class="grp g2" id="g2"><b>prefetch_completion_sync_groups</b><br>完成 token 归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(completed_tokens)</span></div>
     </div>
     <div class="banner" id="banner2"></div>
     <div class="caption" id="cap2">选择场景：用 <b>1 套组</b> 会死锁，用 <b>2 套组</b> 则安全。</div>
@@ -451,7 +451,7 @@
           <div class="tdesc"><code>_storage_hit_query()</code> 查询 L3 命中页数；命中足够→放 prefetch_buffer，不足→prefetch_revoke_queue</div>
         </div>
         <div class="minnode" id="t4m1">◆ all_reduce(MIN) storage_hit_count
-          <small>@ prefetch_sync_groups（组1，gloo/CPU，含 TP 环 + PP 环）</small></div>
+          <small>@ prefetch_hits_sync_groups（组1，gloo/CPU，含 TP 环 + PP 环）</small></div>
         <div class="tarrow" id="t4a1">▼ <b>prefetch_buffer</b></div>
 
         <div class="tbox thread-io" id="t4b2">
@@ -465,7 +465,7 @@
           <div class="tdesc">对每个 ack 的 <b>completed_tokens</b> 做归约</div>
         </div>
         <div class="minnode g2" id="t4m2">◆ all_reduce(MIN) completed_tokens
-          <small>@ prefetch_sync_groups2（组2，gloo/CPU，含 TP 环 + PP 环）</small></div>
+          <small>@ prefetch_completion_sync_groups（组2，gloo/CPU，含 TP 环 + PP 环）</small></div>
         <div class="tarrow" id="t4a3">▼ <b>ack_prefetch_queue</b></div>
 
         <div class="tbox sched" id="t4b4">
@@ -508,7 +508,7 @@
     </div>
     <div class="ackmesh" id="ackmesh"></div>
     <div class="barriers">
-      <div class="barlabel">◆ <code>all_reduce(MIN)</code> @ 组2（prefetch_sync_groups2）· 每个 ack 一次 barrier</div>
+      <div class="barlabel">◆ <code>all_reduce(MIN)</code> @ 组2（prefetch_completion_sync_groups）· 每个 ack 一次 barrier</div>
       <div class="barrow"><div class="barspacer"></div><div class="barcols" id="barcols"></div></div>
     </div>
     <div class="banner" id="banner6"></div>
@@ -718,11 +718,11 @@ async function play2Groups(){
   resetMesh2(); const my=t2Token;
   try{
     g1.classList.add('hot'); g2.classList.add('hot');
-    cap2.innerHTML='用 <b>2 套独立组</b>：<b style="color:var(--purple)">A 永远走 prefetch_sync_groups</b>，<b style="color:var(--cyan)">B 永远走 prefetch_sync_groups2</b>。';
+    cap2.innerHTML='用 <b>2 套独立组</b>：<b style="color:var(--purple)">A 永远走 prefetch_hits_sync_groups</b>，<b style="color:var(--cyan)">B 永远走 prefetch_completion_sync_groups</b>。';
     await s2(800,my);
 
     // wave A: every rank's prefetch_thread submits A to group-set-1; TP rings + PP rings light purple
-    cap2.innerHTML='第一波：所有 rank 的 <b>prefetch_thread</b> 只在 <code>prefetch_sync_groups</code> 上提交 A → 序列一致。';
+    cap2.innerHTML='第一波：所有 rank 的 <b>prefetch_thread</b> 只在 <code>prefetch_hits_sync_groups</code> 上提交 A → 序列一致。';
     for(let p=0;p<PP;p++){
       row2(p).classList.add('ring-a');
       for(let t=0;t<TP;t++) dotEl('A',p,t).classList.add('on');
@@ -738,7 +738,7 @@ async function play2Groups(){
     await s2(900,my);
 
     // wave B: prefetch_sync_thread submits B to group-set-2; rings light cyan
-    cap2.innerHTML='第二波：所有 rank 的 <b>prefetch_sync_thread</b> 只在 <code>prefetch_sync_groups2</code> 上提交 B → 序列一致。';
+    cap2.innerHTML='第二波：所有 rank 的 <b>prefetch_sync_thread</b> 只在 <code>prefetch_completion_sync_groups</code> 上提交 B → 序列一致。';
     for(let p=0;p<PP;p++){
       row2(p).classList.add('ring-b');
       for(let t=0;t<TP;t++) dotEl('B',p,t).classList.add('on');
@@ -932,12 +932,12 @@ const T4SEQ=[
   [['t4b0'], '调度器主线程把 prefetch 请求（writeback / load）放入队列，触发后台流水线。'],
   [['t4a0'], '<b>PrefetchOperation</b> 入队 <code>prefetch_queue</code>，交给后台线程处理。'],
   [['t4b1'], '① <b>prefetch_thread</b> 调 <code>_storage_hit_query()</code> 查询 L3 命中页数（各 rank 可能不同）。'],
-  [['t4m1','t4wa'], '◆ <b style="color:var(--amber)">第一个 MIN</b>：在 <code>prefetch_sync_groups</code>（组1）对 storage_hit_count 取最小 → <b>抓取范围逐 rank 一致</b>。'],
+  [['t4m1','t4wa'], '◆ <b style="color:var(--amber)">第一个 MIN</b>：在 <code>prefetch_hits_sync_groups</code>（组1）对 storage_hit_count 取最小 → <b>抓取范围逐 rank 一致</b>。'],
   [['t4a1'], '命中足够的请求落入 <code>prefetch_buffer</code>，进入实际 IO 加载。'],
   [['t4b2'], '② <b>prefetch_io_aux_thread</b> 用 <code>_page_transfer()</code> 逐 batch 把页 L3→host；<b>每个 batch 恒产生 1 个 PrefetchAck</b>（出错也产生）。'],
   [['t4a2'], '每个 batch 的 <b>PrefetchAck</b> 入队 <code>prefetch_sync_queue</code>。'],
   [['t4b3'], '③ <b>prefetch_sync_thread</b> 对每个 ack 的 <b>completed_tokens</b> 做归约。'],
-  [['t4m2','t4wb'], '◆ <b style="color:var(--green)">第二个 MIN</b>：在 <code>prefetch_sync_groups2</code>（组2）对 completed_tokens 取最小 → <b>真正落盘前缀逐 rank 一致</b>。'],
+  [['t4m2','t4wb'], '◆ <b style="color:var(--green)">第二个 MIN</b>：在 <code>prefetch_completion_sync_groups</code>（组2）对 completed_tokens 取最小 → <b>真正落盘前缀逐 rank 一致</b>。'],
   [['t4a3'], '统一后的结果入队 <code>ack_prefetch_queue</code> 回到调度器。'],
   [['t4b4','t4wc'], '调度器只插入 <b>completed_tokens</b> 长度的前缀 → <code>_insert_helper_host()</code>。每 batch 恒 1 个 ack，<b>reduce 次数严格相等 → 不会 hang</b>。'],
 ];
@@ -1080,7 +1080,7 @@ async function runTab5(){
       s5flag('⚠ 查询长度不一致（4/3/4）→ 若各自建树，host tree 会发散','bad');
       await t5step(2600,my);
 
-      cap5.innerHTML='◆ <b>第一个 MIN</b> @ <code>prefetch_sync_groups</code>（组1，gloo/CPU，含 TP环+PP环）：<code>all_reduce(MIN)</code> 统一查询长度 = <b>3</b>。';
+      cap5.innerHTML='◆ <b>第一个 MIN</b> @ <code>prefetch_hits_sync_groups</code>（组1，gloo/CPU，含 TP环+PP环）：<code>all_reduce(MIN)</code> 统一查询长度 = <b>3</b>。';
       document.getElementById('s5sync1').classList.add('fire');
       await t5step(1500,my);
       allRanks(p=>{ for(let i=0;i<NPG;i++) hideNode(p,i); for(let i=0;i<3;i++) setNode(p,i,'matched'); rstat(p,'match 3','hit'); });
@@ -1098,7 +1098,7 @@ async function runTab5(){
       s5flag('⚠ 实际落盘不一致（3/3/2）→ 若各自插入，host tree 会发散','bad');
       await t5step(2600,my);
 
-      cap5.innerHTML='◆ <b>第二个 MIN</b> @ <code>prefetch_sync_groups2</code>（组2，<b>独立 communicator</b>）：<code>all_reduce(MIN)</code> 统一 completed_tokens = <b>2</b>。';
+      cap5.innerHTML='◆ <b>第二个 MIN</b> @ <code>prefetch_completion_sync_groups</code>（组2，<b>独立 communicator</b>）：<code>all_reduce(MIN)</code> 统一 completed_tokens = <b>2</b>。';
       document.getElementById('s5sync2').classList.add('fire');
       await t5step(1500,my);
 
@@ -1281,8 +1281,8 @@ runTab5();
     ['<span class="sw" style="background:var(--green)"></span>barrier 凑齐 3/3 → 通过','<span class="sw" style="background:var(--green)"></span>barrier reaches 3/3 → pass'],
     ['<span class="sw" style="background:var(--amber)"></span>已到达，等待缺席方','<span class="sw" style="background:var(--amber)"></span>arrived, waiting for the absent rank'],
     ['<span class="sw" style="background:var(--red)"></span>缺失 ack → 永远等不到','<span class="sw" style="background:var(--red)"></span>missing ack → never arrives'],
-    ['◆ <code>all_reduce(MIN)</code> @ 组2（prefetch_sync_groups2）· 每个 ack 一次 barrier',
-     '◆ <code>all_reduce(MIN)</code> @ set 2 (prefetch_sync_groups2) · one barrier per ack'],
+    ['◆ <code>all_reduce(MIN)</code> @ 组2（prefetch_completion_sync_groups）· 每个 ack 一次 barrier',
+     '◆ <code>all_reduce(MIN)</code> @ set 2 (prefetch_completion_sync_groups) · one barrier per ack'],
     ['选择场景：<b>每 batch 恒 1 ack</b> → 次数对齐、安全；<b>出错就 break</b> → ack 缺一个 → 组2 reduce 错位 → hang。',
      'Pick a scenario: <b>one ack per batch</b> → counts aligned, safe; <b>break on error</b> → one ack missing → set-2 reduces misalign → hang.'],
     ['<b style="color:var(--green)">正确</b>：即便某 batch 出错，<code>_page_transfer</code> 也<strong>继续循环、照常产 ack</strong> → 三个 rank 都产 3 个 ack。',
@@ -1305,8 +1305,8 @@ runTab5();
     ['<b>L3 持久化存储</b>（storage backend，3 个 rank 共享视图）',
      '<b>L3 persistent storage</b> (storage backend, shared view across 3 ranks)'],
     ['GPU 计算','GPU compute'],
-    ['◆ MIN 组1 · prefetch_sync_groups · storage_hit_count','◆ MIN set 1 · prefetch_sync_groups · storage_hit_count'],
-    ['◆ MIN 组2 · prefetch_sync_groups2 · completed_tokens','◆ MIN set 2 · prefetch_sync_groups2 · completed_tokens'],
+    ['◆ MIN 组1 · prefetch_hits_sync_groups · storage_hit_count','◆ MIN set 1 · prefetch_hits_sync_groups · storage_hit_count'],
+    ['◆ MIN 组2 · prefetch_completion_sync_groups · completed_tokens','◆ MIN set 2 · prefetch_completion_sync_groups · completed_tokens'],
     // tab5 consistency flags
     ['✓ 3 棵 host tree 同步插入 4 个 page（一致）','✓ all 3 host trees insert 4 pages in sync (consistent)'],
     ['✓ 3 棵 host tree 同步删除（delete 一致）','✓ all 3 host trees delete in sync (consistent)'],
@@ -1333,14 +1333,14 @@ runTab5();
      '③ <b>Request B</b> arrives (reuses A\u2019s prefix). The L2 host tree is empty → <b style="color:var(--red)">L2 miss</b>, fall through to L3.'],
     ['③ <b>prefetch_thread</b> 各 rank 向 L3 查命中页数 → 结果可能<strong style="color:var(--amber)">不同</strong>（host 视图/内存差异）：4 / 3 / 4。',
      '③ <b>prefetch_thread</b> on each rank queries L3 hit pages → results may <strong style="color:var(--amber)">differ</strong> (host view / memory): 4 / 3 / 4.'],
-    ['◆ <b>第一个 MIN</b> @ <code>prefetch_sync_groups</code>（组1，gloo/CPU，含 TP环+PP环）：<code>all_reduce(MIN)</code> 统一查询长度 = <b>3</b>。',
-     '◆ <b>First MIN</b> @ <code>prefetch_sync_groups</code> (set 1, gloo/CPU, TP+PP rings): <code>all_reduce(MIN)</code> unifies the query length = <b>3</b>.'],
+    ['◆ <b>第一个 MIN</b> @ <code>prefetch_hits_sync_groups</code>（组1，gloo/CPU，含 TP环+PP环）：<code>all_reduce(MIN)</code> 统一查询长度 = <b>3</b>。',
+     '◆ <b>First MIN</b> @ <code>prefetch_hits_sync_groups</code> (set 1, gloo/CPU, TP+PP rings): <code>all_reduce(MIN)</code> unifies the query length = <b>3</b>.'],
     ['③ <b>prefetch_io_aux_thread</b> 逐 batch 把 page 从 L3 拉回 L2（<code>_page_transfer</code>），每 batch 产 1 个 PrefetchAck。',
      '③ <b>prefetch_io_aux_thread</b> pulls pages L3→L2 batch by batch (<code>_page_transfer</code>), one PrefetchAck per batch.'],
     ['③ 逐页加载<strong style="color:var(--amber)">部分失败</strong>：rank2 第 3 页 <code>page_get</code> 未成功 → completed_tokens = 3 / 3 / 2。',
      '③ Per-page load <strong style="color:var(--amber)">partially fails</strong>: rank2\u2019s 3rd page <code>page_get</code> fails → completed_tokens = 3 / 3 / 2.'],
-    ['◆ <b>第二个 MIN</b> @ <code>prefetch_sync_groups2</code>（组2，<b>独立 communicator</b>）：<code>all_reduce(MIN)</code> 统一 completed_tokens = <b>2</b>。',
-     '◆ <b>Second MIN</b> @ <code>prefetch_sync_groups2</code> (set 2, <b>independent communicator</b>): <code>all_reduce(MIN)</code> unifies completed_tokens = <b>2</b>.'],
+    ['◆ <b>第二个 MIN</b> @ <code>prefetch_completion_sync_groups</code>（组2，<b>独立 communicator</b>）：<code>all_reduce(MIN)</code> 统一 completed_tokens = <b>2</b>。',
+     '◆ <b>Second MIN</b> @ <code>prefetch_completion_sync_groups</code> (set 2, <b>independent communicator</b>): <code>all_reduce(MIN)</code> unifies completed_tokens = <b>2</b>.'],
     ['③ 各 rank 只把统一的 <b>2 个 page</b> 插入 L2 host tree（<code>_insert_helper_host</code>）→ 3 棵 host tree <strong style="color:var(--green)">再次完全一致</strong>。',
      '③ Each rank inserts only the unified <b>2 pages</b> into its L2 host tree (<code>_insert_helper_host</code>) → all 3 host trees are <strong style="color:var(--green)">identical again</strong>.'],
     ['✅ 两套<strong>独立 gloo 组</strong>（组1 命中数、组2 完成数）+ 每 batch 恒 1 个 ack → 各 rank 对 host tree 的<strong>插入/删除完全一致</strong> → <b style="color:var(--green)">host radix tree 始终一致，后台 collective 不会死锁</b>。',
@@ -1376,10 +1376,10 @@ runTab5();
     ['<span class="sw" style="background:var(--cyan)"></span><b>prefetch_sync_thread</b>（独立后台线程）· reduce(completed_tokens)','<span class="sw" style="background:var(--cyan)"></span><b>prefetch_sync_thread</b> (independent background thread) · reduce(completed_tokens)'],
     ['每个 cell = 1 个 rank，内含 2 个独立后台线程（小圆点 ●A ●B）。每一行是一个 <b>TP communicator</b>，每一列是一个 <b>PP communicator</b>。',
      'Each cell = 1 rank, holding 2 independent background threads (dots ●A ●B). Each row is a <b>TP communicator</b>, each column a <b>PP communicator</b>.'],
-    ['<b>prefetch_sync_groups</b><br>命中页数归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(storage_hit_count)</span>',
-     '<b>prefetch_sync_groups</b><br>hit-count reduce set (TP rings + PP rings)<br><span style="font-size:11px">reduce(storage_hit_count)</span>'],
-    ['<b>prefetch_sync_groups2</b><br>完成 token 归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(completed_tokens)</span>',
-     '<b>prefetch_sync_groups2</b><br>completed-token reduce set (TP rings + PP rings)<br><span style="font-size:11px">reduce(completed_tokens)</span>'],
+    ['<b>prefetch_hits_sync_groups</b><br>命中页数归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(storage_hit_count)</span>',
+     '<b>prefetch_hits_sync_groups</b><br>hit-count reduce set (TP rings + PP rings)<br><span style="font-size:11px">reduce(storage_hit_count)</span>'],
+    ['<b>prefetch_completion_sync_groups</b><br>完成 token 归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(completed_tokens)</span>',
+     '<b>prefetch_completion_sync_groups</b><br>completed-token reduce set (TP rings + PP rings)<br><span style="font-size:11px">reduce(completed_tokens)</span>'],
     ['选择场景：用 <b>1 套组</b> 会死锁，用 <b>2 套组</b> 则安全。','Pick a scenario: <b>1 group set</b> deadlocks, <b>2 group sets</b> are safe.'],
     ['只有 <b>1 套组</b>：prefetch_thread(A) 与 prefetch_sync_thread(B) 共用同一个 communicator 集。',
      'Only <b>1 group set</b>: prefetch_thread(A) and prefetch_sync_thread(B) share the same communicator set.'],
@@ -1390,13 +1390,13 @@ runTab5();
     ['只要任一 communicator 上 A/B 交错，该环就死锁 → 全局 PP/TP 通信连环卡住。',
      'If A/B interleave on any communicator, that ring deadlocks → all PP/TP communication hangs in a chain.'],
     ['💥 DEADLOCK — 整个 24-rank job 卡死','💥 DEADLOCK — the whole 24-rank job hangs'],
-    ['用 <b>2 套独立组</b>：<b style="color:var(--purple)">A 永远走 prefetch_sync_groups</b>，<b style="color:var(--cyan)">B 永远走 prefetch_sync_groups2</b>。',
-     'With <b>2 independent group sets</b>: <b style="color:var(--purple)">A always uses prefetch_sync_groups</b>, <b style="color:var(--cyan)">B always uses prefetch_sync_groups2</b>.'],
-    ['第一波：所有 rank 的 <b>prefetch_thread</b> 只在 <code>prefetch_sync_groups</code> 上提交 A → 序列一致。',
-     'Wave 1: every rank\u2019s <b>prefetch_thread</b> posts A only on <code>prefetch_sync_groups</code> → consistent order.'],
+    ['用 <b>2 套独立组</b>：<b style="color:var(--purple)">A 永远走 prefetch_hits_sync_groups</b>，<b style="color:var(--cyan)">B 永远走 prefetch_completion_sync_groups</b>。',
+     'With <b>2 independent group sets</b>: <b style="color:var(--purple)">A always uses prefetch_hits_sync_groups</b>, <b style="color:var(--cyan)">B always uses prefetch_completion_sync_groups</b>.'],
+    ['第一波：所有 rank 的 <b>prefetch_thread</b> 只在 <code>prefetch_hits_sync_groups</code> 上提交 A → 序列一致。',
+     'Wave 1: every rank\u2019s <b>prefetch_thread</b> posts A only on <code>prefetch_hits_sync_groups</code> → consistent order.'],
     ['✓ TP 环 + PP 环上 A 全部到齐 → 第一波归约完成。','✓ A arrives on every TP ring + PP ring → wave 1 reduce done.'],
-    ['第二波：所有 rank 的 <b>prefetch_sync_thread</b> 只在 <code>prefetch_sync_groups2</code> 上提交 B → 序列一致。',
-     'Wave 2: every rank\u2019s <b>prefetch_sync_thread</b> posts B only on <code>prefetch_sync_groups2</code> → consistent order.'],
+    ['第二波：所有 rank 的 <b>prefetch_sync_thread</b> 只在 <code>prefetch_completion_sync_groups</code> 上提交 B → 序列一致。',
+     'Wave 2: every rank\u2019s <b>prefetch_sync_thread</b> posts B only on <code>prefetch_completion_sync_groups</code> → consistent order.'],
     ['每个 communicator 上的 collective 序列在所有 rank <b style="color:var(--green)">完全一致</b>（A→组1、B→组2 不交叉）→ 不会死锁。',
      'The collective sequence on each communicator is <b style="color:var(--green)">identical across ranks</b> (A→set1, B→set2, never crossing) → no deadlock.'],
     ['✅ 安全 — 24 个 rank 全部对齐完成','✅ Safe — all 24 ranks aligned and complete'],
@@ -1438,8 +1438,8 @@ runTab5();
     ['① prefetch_thread <span class="pin">storage-hit 线程</span>','① prefetch_thread <span class="pin">storage-hit thread</span>'],
     ['<code>_storage_hit_query()</code> 查询 L3 命中页数；命中足够→放 prefetch_buffer，不足→prefetch_revoke_queue',
      '<code>_storage_hit_query()</code> queries L3 hit pages; enough hits → prefetch_buffer, too few → prefetch_revoke_queue'],
-    ['◆ all_reduce(MIN) storage_hit_count <small>@ prefetch_sync_groups（组1，gloo/CPU，含 TP 环 + PP 环）</small>',
-     '◆ all_reduce(MIN) storage_hit_count <small>@ prefetch_sync_groups (set 1, gloo/CPU, TP rings + PP rings)</small>'],
+    ['◆ all_reduce(MIN) storage_hit_count <small>@ prefetch_hits_sync_groups（组1，gloo/CPU，含 TP 环 + PP 环）</small>',
+     '◆ all_reduce(MIN) storage_hit_count <small>@ prefetch_hits_sync_groups (set 1, gloo/CPU, TP rings + PP rings)</small>'],
     ['▼ <b>prefetch_buffer</b>','▼ <b>prefetch_buffer</b>'],
     ['② prefetch_io_aux_thread <span class="pin">IO 加载线程</span>','② prefetch_io_aux_thread <span class="pin">IO load thread</span>'],
     ['<code>_page_transfer()</code> 逐 batch 把页从 L3 读入 host；累加 <b>completed_tokens</b>；<b>每个 storage batch 产生 1 个 PrefetchAck</b>（出错也照常产生）',
@@ -1447,8 +1447,8 @@ runTab5();
     ['▼ <b>prefetch_sync_queue</b>（PrefetchAck）','▼ <b>prefetch_sync_queue</b> (PrefetchAck)'],
     ['③ prefetch_sync_thread <span class="pin">completion-token 线程</span>','③ prefetch_sync_thread <span class="pin">completion-token thread</span>'],
     ['对每个 ack 的 <b>completed_tokens</b> 做归约','Reduces <b>completed_tokens</b> of every ack'],
-    ['◆ all_reduce(MIN) completed_tokens <small>@ prefetch_sync_groups2（组2，gloo/CPU，含 TP 环 + PP 环）</small>',
-     '◆ all_reduce(MIN) completed_tokens <small>@ prefetch_sync_groups2 (set 2, gloo/CPU, TP rings + PP rings)</small>'],
+    ['◆ all_reduce(MIN) completed_tokens <small>@ prefetch_completion_sync_groups（组2，gloo/CPU，含 TP 环 + PP 环）</small>',
+     '◆ all_reduce(MIN) completed_tokens <small>@ prefetch_completion_sync_groups (set 2, gloo/CPU, TP rings + PP rings)</small>'],
     ['▼ <b>ack_prefetch_queue</b>','▼ <b>ack_prefetch_queue</b>'],
     ['调度器写入 host radix tree','Scheduler inserts into host radix tree'],
     ['只插入 <b>completed_tokens</b> 长度的前缀 → <code>_insert_helper_host()</code>','Inserts only the <b>completed_tokens</b>-long prefix → <code>_insert_helper_host()</code>'],
@@ -1472,8 +1472,8 @@ runTab5();
      'A <b>PrefetchOperation</b> enters <code>prefetch_queue</code>, handed to the background threads.'],
     ['① <b>prefetch_thread</b> 调 <code>_storage_hit_query()</code> 查询 L3 命中页数（各 rank 可能不同）。',
      '① <b>prefetch_thread</b> calls <code>_storage_hit_query()</code> to query L3 hit pages (may differ per rank).'],
-    ['◆ <b style="color:var(--amber)">第一个 MIN</b>：在 <code>prefetch_sync_groups</code>（组1）对 storage_hit_count 取最小 → <b>抓取范围逐 rank 一致</b>。',
-     '◆ <b style="color:var(--amber)">First MIN</b>: take the min of storage_hit_count on <code>prefetch_sync_groups</code> (set 1) → <b>the fetch range is identical per rank</b>.'],
+    ['◆ <b style="color:var(--amber)">第一个 MIN</b>：在 <code>prefetch_hits_sync_groups</code>（组1）对 storage_hit_count 取最小 → <b>抓取范围逐 rank 一致</b>。',
+     '◆ <b style="color:var(--amber)">First MIN</b>: take the min of storage_hit_count on <code>prefetch_hits_sync_groups</code> (set 1) → <b>the fetch range is identical per rank</b>.'],
     ['命中足够的请求落入 <code>prefetch_buffer</code>，进入实际 IO 加载。',
      'Requests with enough hits drop into <code>prefetch_buffer</code> for the actual IO load.'],
     ['② <b>prefetch_io_aux_thread</b> 用 <code>_page_transfer()</code> 逐 batch 把页 L3→host；<b>每个 batch 恒产生 1 个 PrefetchAck</b>（出错也产生）。',
@@ -1482,8 +1482,8 @@ runTab5();
      'Each batch\u2019s <b>PrefetchAck</b> enters <code>prefetch_sync_queue</code>.'],
     ['③ <b>prefetch_sync_thread</b> 对每个 ack 的 <b>completed_tokens</b> 做归约。',
      '③ <b>prefetch_sync_thread</b> reduces the <b>completed_tokens</b> of every ack.'],
-    ['◆ <b style="color:var(--green)">第二个 MIN</b>：在 <code>prefetch_sync_groups2</code>（组2）对 completed_tokens 取最小 → <b>真正落盘前缀逐 rank 一致</b>。',
-     '◆ <b style="color:var(--green)">Second MIN</b>: take the min of completed_tokens on <code>prefetch_sync_groups2</code> (set 2) → <b>the actually-loaded prefix is identical per rank</b>.'],
+    ['◆ <b style="color:var(--green)">第二个 MIN</b>：在 <code>prefetch_completion_sync_groups</code>（组2）对 completed_tokens 取最小 → <b>真正落盘前缀逐 rank 一致</b>。',
+     '◆ <b style="color:var(--green)">Second MIN</b>: take the min of completed_tokens on <code>prefetch_completion_sync_groups</code> (set 2) → <b>the actually-loaded prefix is identical per rank</b>.'],
     ['统一后的结果入队 <code>ack_prefetch_queue</code> 回到调度器。',
      'The unified result enters <code>ack_prefetch_queue</code> back to the scheduler.'],
     ['调度器只插入 <b>completed_tokens</b> 长度的前缀 → <code>_insert_helper_host()</code>。每 batch 恒 1 个 ack，<b>reduce 次数严格相等 → 不会 hang</b>。',
