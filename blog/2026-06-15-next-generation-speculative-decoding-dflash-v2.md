@@ -118,8 +118,6 @@ In particular, there are two key opportunities for overlap:
 
 Under V2 with these optimizations, performance improved by over 33%, from \~11.4 ktok/s to \~15.3 ktok/s, when running Qwen 3-8B on a single B200 at concurrency 32 ([details here](https://github.com/sgl-project/sglang/pull/23000)).
 
-The aforementioned optimizations are broadly applicable to draft-model speculative decoding. DFlash benefits more from overlap scheduling because each next step can be planned from a fixed block-size watermark: it carries `new_seq_lens` on GPU plus separate planning/reserved host KV lengths, so scheduler planning does not require refreshing the current CPU seq-lens mirror.
-
 ## High-performance DFlash draft models are available for a variety of models
 
 Today, we're releasing a new DFlash draft model for Qwen 3.5 397B-A17B. It achieves higher throughput than the model's native MTP speculation in all of the settings we tested, from GSM8K to HumanEval to MT-Bench and for request concurrencies from 1 to 32.
