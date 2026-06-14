@@ -134,6 +134,8 @@ You can find more high-quality drafters in Z Lab's [DFlash collection on Hugging
 
 Unlike posts from proprietary inference providers, you don’t have to just read this blog and feel FOMO. You can [read the code](https://github.com/sgl-project/sglang/pull/23000). You can deploy a DFlash-accelerated SGLang server [right now](https://modal.com/docs/examples/sglang_low_latency) and then start tinkering.
 
+You can also train a DFlash speculator model for your own data or target model. The same block diffusion plus KV injection approach can be applied to most target LLMs. Reach out to [Z Lab](https://z-lab.ai) or [Modal](https://modal.com) if you're interested!
+
 More broadly: you can run inference at optimal intelligence, speed, and cost thanks to the work of the open-weights model builders, systems researchers, and the open source community. Whether it’s research work on techniques like DFlash by the [Z Lab](https://z-lab.ai/) or features and performance enhancements from open source contributors like [Modal](https://modal.com/), the world’s best work on LLM inference is landing in the SGLang open source engine for you to build on and with.
 
 ## Acknowledgements
