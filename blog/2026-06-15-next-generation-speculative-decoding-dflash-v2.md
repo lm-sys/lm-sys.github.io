@@ -6,11 +6,11 @@ previewImg: /images/blog/dflash-v2/dflash-arch-diagram.webp
 type: blog
 ---
 
-Using Modal and Z Lab's DFlash speculative decoding models with SGLang’s newly default Spec V2 engine, you can achieve state-of-the-art latencies for LLM inference serving. Our jointly-released DFlash model for Qwen 3.5 397B-A17B achieves about 4x the throughput of the baseline model and 2x the throughput of the native MTP speculation.
+Using Modal and Z Lab's DFlash speculative decoding models with SGLang’s newly default Spec V2 engine, you can achieve state-of-the-art latencies for LLM inference serving. Our new, jointly-released DFlash model for Qwen 3.5 397B-A17B achieves higher throughput than both the baseline model and native MTP speculation in all the settings we benchmarked. At concurrency 1 on the HumanEval coding dataset, it achieves 4x the throughput of baseline and 1.5x the throughput of MTP.
 
 <div style="text-align: center;">
   <img src="/images/blog/dflash-v2/dflash-headline-perf.webp" style="width: 60%;"></img>
-  <small>Workload: Qwen 3.5 397B-A17B (BF16), HumanEval. Settings: greedy decoding, thinking enabled, max new tokens 4096. Hardware: 8xB200. Acceptance lengths are averaged across requests.</small>
+  <small>Workload: Qwen 3.5 397B-A17B (BF16), HumanEval. Settings: greedy decoding, thinking enabled, max new tokens 4096. Hardware: 8xB200 on Modal. Acceptance lengths are averaged across requests. Draft token/block counts selected for maximum throughput (MTP: 7 steps; DFlash: block size 16).</small>
 </div>
 
 To celebrate this collaboration, we're releasing this model in triplicate across our Hugging Face organizations:
@@ -91,7 +91,7 @@ We can also observe the independent impact of KV injection by ablating the diffu
 
 ## Implementing DFlash in SGLang
 
-The benchmark numbers in this section are from the initial implementation of DFlash as part of R&D by Z Lab. Based on these impressive results, the teams at Modal and SGLang collaborated with Z Lab to optimize end-to-end performance in the SGLang inference engine.
+The benchmark numbers in the above section are from the initial implementation of DFlash as part of R&D by Z Lab. Based on these impressive results, the teams at Modal and SGLang collaborated with Z Lab to optimize end-to-end performance in the SGLang inference engine.
 
 Bringing a performance optimization technique like DFlash from research to prod requires two basic components: implementing the technique inside a high-performance engine and then optimizing the performance of the end-to-end system, from host scheduler to GPU execution.
 
@@ -116,21 +116,25 @@ In particular, there are two key opportunities for overlap:
 1. host-side `pop_and_process` cleanup after the GPU finishes batch N-1 (e.g. stop token detection, request metadata updates) can overlap with GPU work on batch N;
 2. host KV allocation (in `prepare_for_decode`) for batch N can overlap with GPU work on batch N-1.
 
-Under V2 with these optimizations, performance improved by over 25%, from \~9,700 tok/s to \~12,300 tok/s, when running Qwen 3-8B on a single B200 at concurrency 32 ([details here](https://github.com/sgl-project/sglang/pull/20547)).
+Under V2 with these optimizations, performance improved by over 33%, from \~11.4 ktok/s to \~15.3 ktok/s, when running Qwen 3-8B on a single B200 at concurrency 32 ([details here](https://github.com/sgl-project/sglang/pull/23000)).
 
-The aforementioned optimizations can be used by all draft models. But DFlash is able to take greater advantage of overlap scheduling. In particular, because DFlash uses immediate materialization from the target to construct the draft KV, it doesn’t need a separate draft-extend step to run the draft model on only accepted tokens and populate KV. This draft-extend step, used in EAGLE, requires that accepted tokens are known before host-side planning can proceed.
+The aforementioned optimizations are broadly applicable to draft-model speculative decoding. DFlash benefits more from overlap scheduling because each next step can be planned from a fixed block-size watermark: it carries `new_seq_lens` on GPU plus separate planning/reserved host KV lengths, so scheduler planning does not require refreshing the current CPU seq-lens mirror.
 
 ## High-performance DFlash draft models are available for a variety of models
 
-Today, we're releasing a new DFlash draft model for Qwen 3.5 397B-A17B.
+Today, we're releasing a new DFlash draft model for Qwen 3.5 397B-A17B. It achieves higher throughput than the model's native MTP speculation in all of the settings we tested, from GSM8K to HumanEval to MT-Bench and for request concurrencies from 1 to 32.
 
-![](/images/blog/dflash-v2/dflash-perf-big-sweep.webp)
+<div style="text-align: center;">
+  <img src="/images/blog/dflash-v2/dflash-perf-big-sweep.webp" style="width: 80%;"></img>
+  <small>For benchmark details and to reproduce the numbers yourself, see <a href="https://huggingface.co/modal-labs/Qwen3.5-397B-A17B-DFlash/tree/main/benchmark">the Hugging Face repo</a>.</small>
+</div>
 
-You can find more high-quality drafters in Z Lab's [DFlash collection on Hugging Face](https://huggingface.co/collections/z-lab/dflash). And keep your eyes peeled for more models soon.
+
+You can find more high-quality drafters in Z Lab's [DFlash collection on Hugging Face](https://huggingface.co/collections/z-lab/dflash). And keep your eyes peeled for more models soon!
 
 ## Try DFlash in SGLang now
 
-Unlike posts from proprietary inference providers, you don’t have to just read this blog and feel FOMO. You can [read the code](https://github.com/sgl-project/sglang/pull/23000). You can deploy a DFlash-accelerated SGLang server [right now](https://modal.com/docs/examples/sglang_low_latency), and then start tinkering.
+Unlike posts from proprietary inference providers, you don’t have to just read this blog and feel FOMO. You can [read the code](https://github.com/sgl-project/sglang/pull/23000). You can deploy a DFlash-accelerated SGLang server [right now](https://modal.com/docs/examples/sglang_low_latency) and then start tinkering.
 
 More broadly: you can run inference at optimal intelligence, speed, and cost thanks to the work of the open-weights model builders, systems researchers, and the open source community. Whether it’s research work on techniques like DFlash by the [Z Lab](https://z-lab.ai/) or features and performance enhancements from open source contributors like [Modal](https://modal.com/), the world’s best work on LLM inference is landing in the SGLang open source engine for you to build on and with.
 
