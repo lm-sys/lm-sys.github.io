@@ -6,7 +6,7 @@ previewImg: /images/blog/dflash-v2/dflash-arch-diagram.webp
 type: blog
 ---
 
-Using Modal and Z Lab's DFlash speculative decoding models with SGLang’s newly default Spec V2 engine, you can achieve state-of-the-art latencies for LLM inference serving. Our new, jointly-released DFlash model for Qwen 3.5 397B-A17B achieves higher throughput than both the baseline model and native MTP speculation in all the settings we benchmarked. At concurrency 1 on the HumanEval coding dataset, it achieves 4x the throughput of baseline and 1.5x the throughput of MTP.
+Using Modal and Z Lab's DFlash speculative decoding models with SGLang’s newly default Spec V2 engine, you can achieve state-of-the-art latencies for LLM inference serving. Our new, jointly-released DFlash model for Qwen 3.5 397B-A17B achieves higher throughput than both the baseline model and native MTP speculation in all the settings we benchmarked. At concurrency 1 on the HumanEval coding dataset, it achieves >4.3x the throughput of baseline and 1.5x the throughput of MTP.
 
 <div style="text-align: center;">
   <img src="/images/blog/dflash-v2/dflash-headline-perf.webp" style="width: 60%;"></img>
@@ -21,7 +21,7 @@ To celebrate this collaboration, we're releasing this model in triplicate across
 
 Below, we describe DFlash’s novel diffusion \+ KV injection strategy for speculative decoding, why that matters for achieving massive speedups, and how the teams at [Z Lab](https://z-lab.ai), SGLang, and [Modal](https://modal.com) worked together to make those speedups available to everyone.
 
-And we mean everyone! You can [run tensor-parallel Qwen 3.6 35B-A3B with DFlash right now](https://modal.com/docs/examples/sglang_low_latency) on Modal's serverless GPUs, achieving decode speeds of up to 1k tps:
+And we mean everyone! You can [run tensor-parallel Qwen 3.6 35B-A3B with DFlash and Spec V2 right now](https://modal.com/docs/examples/sglang_low_latency) on Modal's serverless GPUs, achieving decode speeds of up to 1k tps:
 
 ```shell
 git clone https://github.com/modal-labs/modal-examples
