@@ -19,15 +19,32 @@ To celebrate this collaboration, we're releasing this model in triplicate across
 - [`modal-labs/Qwen3.5-397B-A17B-DFlash`](https://huggingface.co/modal-labs/Qwen3.5-397B-A17B-DFlash)
 - [`lmsys/Qwen3.5-397B-A17B-DFlash`](https://huggingface.co/lmsys/Qwen3.5-397B-A17B-DFlash)
 
-Below, we describe DFlash’s novel diffusion \+ KV injection strategy for speculative decoding, why that matters for achieving massive speedups, and how the teams at [Z Lab](https://z-lab.ai), SGLang, and [Modal](https://modal.com) worked together to make those speedups available to everyone.
-
-And we mean everyone! You can [run tensor-parallel Qwen 3.6 35B-A3B with DFlash and Spec V2 right now](https://modal.com/docs/examples/sglang_low_latency) on Modal's serverless GPUs, achieving decode speeds of up to 1k tps:
+You can try the model yourself with this command:
 
 ```shell
-git clone https://github.com/modal-labs/modal-examples
-cd modal-examples
-uvx modal setup && uvx modal run 06_gpu_and_ml/llm-serving/sglang_low_latency.py
+export SGLANG_ENABLE_OVERLAP_PLAN_STREAM=1
+
+python -m sglang.launch_server \
+  --model-path Qwen/Qwen3.5-397B-A17B \
+  --trust-remote-code \
+  --speculative-algorithm DFLASH \
+  --speculative-draft-model-path modal-labs/Qwen3.5-397B-A17B-DFlash \
+  --speculative-dflash-block-size 8 \
+  --speculative-draft-attention-backend fa4 \
+  --attention-backend trtllm_mha \
+  --linear-attn-prefill-backend triton \
+  --linear-attn-decode-backend flashinfer \
+  --mamba-scheduler-strategy extra_buffer \
+  --tp-size 8 \
+  --max-running-requests 32 \
+  --cuda-graph-max-bs-decode 32 \
+  --cuda-graph-backend-prefill tc_piecewise \
+  --enable-flashinfer-allreduce-fusion \
+  --mem-fraction-static 0.8 \
+  --host 0.0.0.0 \
 ```
+
+Below, we describe DFlash’s novel diffusion \+ KV injection strategy for speculative decoding, why that matters for achieving massive speedups, and how the teams at [Z Lab](https://z-lab.ai), SGLang, and [Modal](https://modal.com) worked together to make those speedups available to everyone.
 
 ## DFlash: Parallel drafting with KV injection
 
@@ -132,7 +149,7 @@ You can find more high-quality drafters in Z Lab's [DFlash collection on Hugging
 
 ## Try DFlash in SGLang now
 
-Unlike posts from proprietary inference providers, you don’t have to just read this blog and feel FOMO. You can [read the code](https://github.com/sgl-project/sglang/pull/23000). You can deploy a DFlash-accelerated SGLang server [right now](https://modal.com/docs/examples/sglang_low_latency) and then start tinkering.
+Unlike posts from proprietary inference providers, you don’t have to just read this blog and feel FOMO. You can [read the code](https://github.com/sgl-project/sglang/pull/23000). You can deploy a DFlash-accelerated SGLang server [on Modal right now](https://modal.com/docs/examples/sglang_low_latency) and then start tinkering.
 
 You can also train a DFlash speculator model for your own data or target model. The same block diffusion plus KV injection approach can be applied to most target LLMs. Reach out to [Z Lab](https://z-lab.ai) or [Modal](https://modal.com) if you're interested!
 
