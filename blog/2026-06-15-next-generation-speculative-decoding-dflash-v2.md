@@ -149,7 +149,7 @@ You can find more high-quality drafters in Z Lab's [DFlash collection on Hugging
 
 ## Try DFlash in SGLang now
 
-Unlike posts from proprietary inference providers, you don’t have to just read this blog and feel FOMO. You can [read the code](https://github.com/sgl-project/sglang/pull/23000). You can deploy a DFlash-accelerated SGLang server [on Modal right now](https://modal.com/docs/examples/sglang_low_latency) and then start tinkering.
+You don’t have to just read this blog and feel FOMO. You can [read the code](https://github.com/sgl-project/sglang/pull/23000). You can deploy a DFlash-accelerated SGLang server using the command shown at the start of this post — or spin one up on [Modal](https://modal.com/docs/examples/sglang_low_latency).
 
 You can also train a DFlash speculator model for your own data or target model. The same block diffusion plus KV injection approach can be applied to most target LLMs. Reach out to [Z Lab](https://z-lab.ai) or [Modal](https://modal.com) if you're interested!
 
