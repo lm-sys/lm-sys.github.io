@@ -46,9 +46,31 @@ A standard LLM serving engine is built around one repeated model loop. MOSS has 
 - **Autoregressive TTS engine.** The Qwen3 backbone and local transformer generate `[1, 13]` frame rows.
 - **Streaming vocoder.** Generated RVQ rows are decoded by a stateful MOSS codec decoder into waveform chunks.
 
-Each stage has a different bottleneck. Reference encoding runs a large neural codec encoder. AR generation mixes a normal backbone decode with a tiny but strictly sequential local codebook loop. The vocoder is a stateful decoder that must preserve streaming state across chunks. The system has to manage all three without letting one stage's batching or memory behavior damage the others.
+Each stage has a different bottleneck. Reference encoding runs a large neural codec encoder. AR generation mixes a normal backbone decode with a tiny but strictly sequential local codebook loop. The vocoder is a stateful decoder that must preserve streaming state across chunks. The system has to manage all three without letting one stage's batching or memory behavior damage the others. This is the kind of workload [**SGLang-Omni**](https://github.com/sgl-project/sglang-omni) is built for: a multi-stage generation pipeline where each stage is scheduled according to its own compute pattern, stages communicate through low-overhead channels, and GPU placement and memory budgets are managed by the framework.
 
 ## Serving MOSS with SGLang-Omni
+
+Detailed instructions are available in the [SGLang-Omni MOSS-TTS-Local cookbook](https://sgl-project.github.io/sglang-omni/cookbook/moss_tts_local.html).
+
+### Install and Serve
+
+```bash
+docker pull lmsysorg/sglang-omni:dev
+docker run -it --gpus all --shm-size 32g --ipc host --network host --privileged \
+  lmsysorg/sglang-omni:dev /bin/zsh
+
+git clone git@github.com:sgl-project/sglang-omni.git
+cd sglang-omni
+uv venv .venv -p 3.12
+source .venv/bin/activate
+uv pip install -v -e .
+
+hf download OpenMOSS-Team/MOSS-TTS-Local-Transformer-v1.5
+
+sgl-omni serve \
+  --model-path OpenMOSS-Team/MOSS-TTS-Local-Transformer-v1.5 \
+  --port 8000
+```
 
 SGLang-Omni serves MOSS-TTS Local Transformer v1.5 as a three-stage pipeline:
 
@@ -138,43 +160,6 @@ Non-streaming reaches **5.976 req/s** with mean RTF **0.644**. Streaming emits i
 The quality numbers stay close across modes: **1.75%** WER for non-streaming and **2.14%** for streaming in the same CI run. Streaming/non-streaming artifact consistency checks also pass.
 
 The individual optimization measurements should not be added into one headline number because they were collected under different hardware and concurrency settings. They are more useful as a map of where MOSS spends time: reference caching removes redundant encoder work, frame CUDA Graphs remove local-loop launch overhead, sampler compilation improves a hot sampling path, vocoder CUDA Graphs accelerate short streaming chunks, and memory budgeting stabilizes colocated deployment.
-
-## Try It Yourself
-
-The [SGLang-Omni MOSS-TTS-Local cookbook](https://sgl-project.github.io/sglang-omni/cookbook/moss_tts_local.html) has the full setup, API options, and streaming examples. The minimal path is:
-
-### Install and Serve
-
-```bash
-docker pull lmsysorg/sglang-omni:dev
-docker run -it --gpus all --shm-size 32g --ipc host --network host --privileged \
-  lmsysorg/sglang-omni:dev /bin/zsh
-
-git clone git@github.com:sgl-project/sglang-omni.git
-cd sglang-omni
-uv venv .venv -p 3.12
-source .venv/bin/activate
-uv pip install -v -e .
-
-hf download OpenMOSS-Team/MOSS-TTS-Local-Transformer-v1.5
-
-sgl-omni serve \
-  --model-path OpenMOSS-Team/MOSS-TTS-Local-Transformer-v1.5 \
-  --port 8000
-```
-
-The default layout colocates the AR backbone and codec/vocoder on one GPU. An explicit config is available at `examples/configs/moss_tts_local.yaml`.
-
-After the server starts, a basic synthesis request returns a WAV file:
-
-```bash
-curl -X POST http://localhost:8000/v1/audio/speech \
-  -H "Content-Type: application/json" \
-  -d '{"input": "SGLang-Omni is a great project for high-fidelity speech generation."}' \
-  --output output.wav
-```
-
-For voice cloning, streaming PCM, duration control, pause markup, pronunciation hints, language hints, sampling parameters, and benchmark commands, see the cookbook.
 
 ## Roadmap
 
