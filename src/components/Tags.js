@@ -9,6 +9,10 @@ export default function Tags(props) {
     ? props.desc
     : "LMSYS Org, Large Model Systems Organization, is an organization missioned to democratize the technologies underlying large models and their system infrastructures.";
   const image = props.image ? props.image : "/social.png";
+  const imageUrl =
+    image.startsWith("http://") || image.startsWith("https://")
+      ? image
+      : "https://lmsys.org" + image;
   const alt = props.alt
     ? props.alt
     : "The text: LLMSYS Org, Large Model Systems Organization.";
@@ -26,8 +30,8 @@ export default function Tags(props) {
       <meta property="og:description" content={desc} />
       <meta name="twitter:description" content={desc} />
 
-      <meta property="og:image" content={"https://lmsys.org" + image} />
-      <meta name="twitter:image" content={"https://lmsys.org" + image} />
+      <meta property="og:image" content={imageUrl} />
+      <meta name="twitter:image" content={imageUrl} />
 
       <meta name="twitter:image:alt" content={alt} />
 

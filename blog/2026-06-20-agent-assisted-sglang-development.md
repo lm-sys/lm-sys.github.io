@@ -6,9 +6,14 @@ previewImg: "https://raw.githubusercontent.com/BBuf/AI-Infra-Auto-Driven-SKILLS/
 type: blog
 ---
 
-SGLang development increasingly goes beyond isolated code changes. The same repository now spans LLM serving, multi-node runtime, attention/MoE/quantization kernels, diffusion pipelines, `torch.compile`, ModelOpt quantization, video model parallelism, and production incident handling. In the past, many of these workflows depended on individual developer memory: how to launch a certain model, how to read a profile trace, which log to add first when debugging a CUDA crash, or which benchmarks a performance PR should include. As agent tools mature, this experience can be turned into executable `SKILL.md` files, scripts, benchmark contracts, and review loops.
+SGLang development increasingly goes beyond isolated code changes. The same repository now spans LLM serving, distributed runtime, GPU kernels, diffusion pipelines, model-specific execution paths, and production incident handling. In the past, many of these workflows depended on individual developer memory: how to launch a certain model, how to read a profile trace, which log to add first when debugging a CUDA crash, or which benchmarks a performance PR should include. As agent tools mature, this experience can be turned into executable `SKILL.md` files, scripts, benchmark contracts, and review loops.
 
-Around SGLang Agent development, a set of skills has already emerged for both LLM and diffusion work. [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers workflows such as serving benchmarks, profile analysis, production incident triage, and SOTA loops. [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) explores automated optimization for SGLang diffusion kernels. Viewed together, these efforts point to the same direction: the value of agents comes from procedural engineering knowledge, including executable steps, reproducible experiments, and reviewable evidence.
+Around SGLang agent development, a set of skills has already emerged for both LLM and diffusion work:
+
+- [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers workflows such as serving benchmarks, profile analysis, production incident triage, and SOTA loops.
+- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) explores automated optimization for SGLang diffusion kernels.
+
+Viewed together, these efforts point to the same direction: the value of agents comes from procedural engineering knowledge, including executable steps, reproducible experiments, and reviewable evidence.
 
 ## 1. TL;DR
 
@@ -32,7 +37,7 @@ These problems are a natural fit for agents. Launching servers, fixing workloads
 
 The agent discussed here is therefore an executor constrained by engineering workflows. Repeated SGLang development procedures can be captured as skills, letting the agent handle repetitive execution, evidence collection, and state tracking. Developers remain responsible for defining goals, judging evidence, and reviewing whether a change belongs in the real serving path.
 
-## 3. From Prompt Engineering to SKILL
+## 3. From Prompt Engineering to SKILL: Protocols and Examples
 
 In the SGLang framework, a useful skill should at least answer the following questions:
 
@@ -44,11 +49,11 @@ In the SGLang framework, a useful skill should at least answer the following que
 | How to decide | Output tables, failure modes, priorities, risk categories, and fallback conditions |
 | How to deliver | Artifact directories, result schemas, PR descriptions, reproduction commands, and review requirements |
 
-SGLang Agent-related skills cover different layers. Some are close to source changes, such as debugging, testing, adding diffusion models, and benchmark/profile workflows. Others target cross-framework benchmarking, profile analysis, production incident triage, PR optimization knowledge, and higher-level workflows such as Humanize/RLCR.
+SGLang agent-related skills cover different layers. Some are close to source changes, such as debugging, testing, adding diffusion models, and benchmark/profile workflows. Others target cross-framework benchmarking, profile analysis, production incident triage, PR optimization knowledge, and higher-level workflows such as Humanize/RLCR.
 
-## 4. Current Skill Stack
+### 3.1 Current Skill Stack
 
-The commonly used SGLang Agent-related skills fall into the following groups.
+The commonly used SGLang agent-related skills fall into the following groups.
 
 | Layer | Representative skill / project | Problem it solves |
 | --- | --- | --- |
@@ -64,7 +69,7 @@ The commonly used SGLang Agent-related skills fall into the following groups.
 
 These entries turn easy-to-miss steps into executable protocols so the workflow can run, resume, and be reviewed.
 
-## 5. Recent Optimization and Workflow Examples
+### 3.2 Recent Optimization and Workflow Examples
 
 The following examples come from recently merged SGLang PRs. The table focuses on the full engineering path: benchmarking, profiling, localization, code changes, tests, and revalidation.
 
@@ -79,7 +84,7 @@ The following examples come from recently merged SGLang PRs. The table focuses o
 
 In these examples, the agent mainly contributes by executing the workflow: running benchmarks, reading profiles, locating Python source, changing code, adding tests, revalidating, and preparing PR descriptions. Without skills, many steps rely on manual reminders. Once encoded as skills, the workflow becomes much easier to repeat.
 
-## 6. Profiler Skills: From Trace to Layer
+## 4. Profiling, Review, and Loop Engineering
 
 A common mistake in SGLang performance work is to look only at total runtime, or to open Perfetto for a few minutes and decide by intuition that something "should be fused." This is even riskier for agents, because they can easily mistake a visually hot kernel for the real bottleneck.
 
@@ -100,7 +105,7 @@ The next step is `llm-pipeline-analysis`. Once global hotspots are known, we sti
 
 Profile analysis therefore becomes a two-step process. First, `llm-torch-profiler-analysis` identifies the main conflict in the full trace. Then, `llm-pipeline-analysis` grounds the problem in steady-state forward passes, representative layers, and concrete kernel flows. The first step avoids choosing a direction by intuition. The second avoids staring at one global hot kernel while missing layer-type differences in the model structure.
 
-## 7. Humanize/RLCR: Adding External Review to the Loop
+### 4.1 Humanize/RLCR: Adding External Review to the Loop
 
 Humanize addresses state and review in long-running tasks. A high-risk SGLang performance task usually does not finish in one implementation pass. It may go through many rounds of benchmarking, profiling, patching, reverting, changing direction, and validating again. Humanize splits this process into two stages:
 
@@ -118,7 +123,7 @@ In practice, the command order should be explicit so the agent does not jump dir
 4. Keep all decisions, summaries, and review state in the local Humanize workspace.
 ```
 
-## 8. SGLang SOTA Performance Loop (Loop Engineering)
+### 4.2 SGLang SOTA Performance Loop (Loop Engineering)
 
 A single skill can stabilize one task. After a dozen rounds of experiments, however, another problem appears: which candidate is best, which directions have already failed, what the previous NCU report showed, whether the benchmark still matches the baseline, and when to stop. This state cannot live only in chat context.
 
@@ -139,7 +144,7 @@ A full SGLang SOTA Performance Loop contains the following stages:
 
 In B200/H200 experiments with Qwen3.6-35B-A3B-FP8, the same model showed different bottlenecks on different hardware. On B200, under a fixed workload, the SGLang baseline already outperformed vLLM. Continued profiling still found optimization room in GDN prefill split, and after patching, output tok/s in both chat and long-context scenarios improved by about `2.6%`. On H200, changes around FP8 MoE Triton configs, the CUTLASS scaled-mm replacement path, and GDN backend defaults were needed to match and then exceed vLLM. If this type of task is split into many independent prompts, benchmarks, profiles, failed attempts, and intermediate conclusions are easy to lose. A loop with evidence and review keeps conditions aligned across rounds.
 
-## 9. Codex Goal: A Lower-Cost Full Replacement
+### 4.3 Codex Goal: A Lower-Cost Full Replacement
 
 The SGLang SOTA Performance Loop above uses a two-role setup: Claude Code executes benchmarks, profiling, patching, and revalidation, while Codex Review checks each round at the end. This setup is suitable for serious PR work, but every round consumes both an execution model and a review model, increasing cost and waiting time.
 
@@ -232,7 +237,7 @@ Requirements:
 
 The Goal version preserves the same benchmark, profile, accuracy, and artifact requirements. The difference is that execution and review are folded into one persistent target. With clear hard-stop conditions, it can fully carry the SGLang SOTA Performance Loop.
 
-## 10. KDA-Based CUDA Kernel Optimization for SGLang Systems
+## 5. KDA-Based CUDA Kernel Optimization for SGLang Systems
 
 Beyond model-level optimization for LLMs and diffusion, kernel optimization is harder. Asking an agent to write CUDA directly can easily lead to benchmark reward hacking: changing the benchmark, using a lighter wrapper, enabling fast math that the baseline does not use, optimizing only one shape, breaking numerical semantics, or producing no gain in the real SGLang path.
 
@@ -267,7 +272,7 @@ Two rules from the KDA-Pilot experiments are worth keeping:
 - Do not leave room for benchmark reward hacking. Results become unreliable when baseline and candidate use different ABIs, different fast-math settings, or different wrapper paths. Another common issue is changing the benchmark shape set after seeing the results, for example removing shapes where the candidate is slower. Such results should not be used.
 - Buckets close to the Roofline should allow no-go or fallback decisions. A good kernel optimization task should not force the agent to win every shape. For giant contiguous buckets or paths already close to the bandwidth limit, recording a fallback may be better than adding more complexity.
 
-## 11. Practice Rules
+## 6. Practice Rules
 
 1. Define the task boundary before starting the agent.
 "Optimize SGLang" is too broad. "Match vLLM for `Qwen/Qwen3.6-35B-A3B-FP8` on 1x H200 under fixed `1000->1000` and `8000->1000` workloads" is an executable target.
@@ -278,8 +283,8 @@ If the workload can change after results are known, the agent may accidentally o
 3. Interpret NCU results according to the kernel's compute characteristics.
 For memory-bound kernels, focus on DRAM/L2 throughput, load/store efficiency, and memory pipe utilization. For compute-bound GEMM/attention kernels, focus on Tensor Core utilization, SM busy, eligible warps, and the main stall reasons. For small latency-bound kernels, check launch count, per-kernel duration, synchronization points, and possible fusion opportunities. A single trace screenshot is not enough; the next code change should be supported by specific metrics.
 
-4. For diffusion, first confirm there is no fallback.
-If logs already show a fallback to the diffusers backend, that trace cannot be used as evidence for native SGLang diffusion. This type of hard-stop condition should be written into the skill instead of relying on manual reminders every time.
+4. Check backend and fallback gates before trusting a profile.
+If an LLM run silently switches attention backend, disables CUDA graph, or takes a wrapper path different from the benchmarked one, the trace is no longer describing the target serving path. The same rule applies to diffusion: if logs show fallback to the diffusers backend, that trace cannot be used as evidence for native SGLang diffusion. These hard-stop conditions should live in the skill.
 
 5. Kernel optimization must use the same ABI, wrapper, and compile flags.
 In particular, the candidate should not silently take a lighter path, and `--use_fast_math` should not be enabled on only one side.
@@ -289,15 +294,15 @@ Agents can create more PRs, and they can also create more plausible mistakes. Re
 
 Agent-era SGLang development will not remove developers from the system. The more realistic change is to write developer experience into workflows, hand repetitive execution to agents, and leave judgment, design, and review to people. The saved time can go into harder performance problems, model paths, and production stability, or back into improving the agent workflow itself. For an open-source inference framework, this kind of infrastructure is worth sustained investment.
 
-## 12. Acknowledgments
+## 7. Acknowledgments and References
 
-We thank the SGLang Team members and contributors who helped build the SGLang Agent skills: Xiaoyu Zhang (BBuf), Lianmin Zheng, Liangsheng Yin, Ke Bao, fzyzcjy, Kangyan Zhou, DarkSharpness, Mick, Alison Shao, Baizhou Zhang, Bingxu Chen, Cheng Wan, Ratish P, shuwenn, ykcai-daniel, Yuhao Yang, and Artem Savkin.
+We thank the SGLang Team members and contributors who helped build the SGLang agent skills: Xiaoyu Zhang (BBuf), Lianmin Zheng, Liangsheng Yin, Ke Bao, fzyzcjy, Kangyan Zhou, DarkSharpness, Mick, Alison Shao, Baizhou Zhang, Bingxu Chen, Cheng Wan, Ratish P, shuwenn, ykcai-daniel, Yuhao Yang, and Artem Savkin.
 
 We thank the KDA team: Dongyun Zou, Ligeng Zhu, Sihao Liu, Junxian Guo, Yixin Dong, Zijian Zhang, and Hao Kang.
 
 We thank the Humanize team and contributors: Sihao Liu, Ligeng Zhu, Zijian Zhang, Zenus Zhang, shinan6, DYZhang, Chao Liu, Zhou Yaoyang, gyy0592, AcrossForest, Emin, Qiming Chu, jiaxiaoyu, tastynoob, and zhenwei.
 
-## 13. References
+### 7.1 References
 
 - [SGLang GitHub Repository](https://github.com/sgl-project/sglang)
 - [SGLang `.claude/skills`](https://github.com/sgl-project/sglang/tree/main/.claude/skills)
