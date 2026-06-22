@@ -11,7 +11,8 @@ SGLang development increasingly goes beyond isolated code changes. The same repo
 Around SGLang agent development, a set of skills has already emerged for both LLM and diffusion work:
 
 - [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers workflows such as serving benchmarks, profile analysis, production incident triage, and SOTA loops.
-- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) explores automated optimization for SGLang diffusion kernels.
+- [kernel-design-agents](https://github.com/mit-han-lab/kernel-design-agents) is the KDA project and the winning solution for the MLSys 2026 FlashInfer Kernel Contest.
+- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. It has optimized a batch of LLM and diffusion kernels, observed end-to-end model-level speedups, and is pushing the corresponding code upstream into the SGLang main branch.
 
 Viewed together, these efforts point to the same direction: the value of agents comes from procedural engineering knowledge, including executable steps, reproducible experiments, and reviewable evidence.
 
