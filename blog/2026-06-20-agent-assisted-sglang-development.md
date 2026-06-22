@@ -12,7 +12,7 @@ Around SGLang agent development, a set of skills has already emerged for both LL
 
 - [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers workflows such as serving benchmarks, profile analysis, production incident triage, and SOTA loops.
 - [kernel-design-agents](https://github.com/mit-han-lab/kernel-design-agents) is the KDA project and the winning solution for the MLSys 2026 FlashInfer Kernel Contest.
-- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. It has optimized a batch of LLM and diffusion kernels, observed end-to-end model-level speedups, and is pushing the corresponding code upstream into the SGLang main branch.
+- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. Its B200 diffusion work currently covers seven SGLang kernel tasks with wall-geomean speedups from `1.1341x` to `2.7499x` on extracted production rows, while its LLM-side GLM-5.2 B200 campaign has extracted 21 kernel-interface tasks for further optimization.
 
 Viewed together, these efforts point to the same direction: the value of agents comes from procedural engineering knowledge, including executable steps, reproducible experiments, and reviewable evidence.
 
@@ -256,6 +256,10 @@ KDA-Pilot separates kernel optimization into isolated tasks so the agent does no
 - Each iteration refreshes the task prompt, benchmark evidence, KernelWiki, and ncu-report-skill.
 - Shape-specialized dispatch is allowed, but each bucket must document its condition, path, latency, and fallback.
 
+A concrete snapshot makes the scale easier to see. On the diffusion side, KDA-Pilot has optimized seven B200 SGLang diffusion kernel tasks, with wall-geomean speedups ranging from `1.1341x` to `2.7499x` on extracted production rows. On the LLM side, the GLM-5.2 B200 capture produced 21 kernel-interface tasks; four representative active tasks are per-token group quantization (`115,949` calls / `2,958` variants), in-place RoPE (`25,181` / `262`), grouped top-k (`17,404` / `131`), and fused K-cache index store (`7,090` / `131`), all drawn from six workloads.
+
+The upstreaming path is also becoming concrete. [SGLang PR #27392](https://github.com/sgl-project/sglang/pull/27392) proposes a B200 native diffusion norm-scale-shift fast path for Qwen-Image-2512 and reports `1.081x` full-request speedup and `1.093x` denoise-wall speedup on one B200. [SGLang PR #28051](https://github.com/sgl-project/sglang/pull/28051) splits out the B200 `fused_inplace_qknorm_rope` path; its profiler evidence shows the target qknorm+RoPE CUDA work improving from `24.087 ms / 1440 calls` to `18.081 ms / 720 calls + 1.896 ms / 720 calls`, about `1.21x` kernel-level speedup. Its production end-to-end benchmark stayed at parity, so this evidence should be read as a target-kernel improvement rather than a model-level gain.
+
 ![KDA-Pilot B200 diffusion kernel results](/images/blog/agent-assisted-sglang-development/kda-pilot-b200-speedups.svg)
 
 Figure 2: Wall-geomean speedup for seven SGLang diffusion kernel tasks optimized by KDA-Pilot on B200. Wall time includes Python dispatch, wrapper overhead, kernel launch, and synchronization overhead visible through `cuda.synchronize()`, which is closer to the real call path than pure kernel device time.
@@ -318,6 +322,8 @@ We thank the Humanize team and contributors: Sihao Liu, Ligeng Zhu, Zijian Zhang
 - [KernelWiki skill](https://github.com/mit-han-lab/KernelWiki)
 - [ncu-report-skill](https://github.com/DongyunZou/ncu-report-skill)
 - [KDA-Pilot](https://github.com/BBuf/KDA-Pilot)
+- [SGLang PR #27392: Add B200 native diffusion norm-scale-shift fast path](https://github.com/sgl-project/sglang/pull/27392)
+- [SGLang PR #28051: Add B200 staged qknorm-rope fast path](https://github.com/sgl-project/sglang/pull/28051)
 - [SGLang Diffusion Advanced Optimizations, LMSYS Blog](https://lmsys.org/blog/2026-02-16-sglang-diffusion-advanced-optimizations/)
 - [OpenAI Codex Prompting: Goal mode](https://developers.openai.com/codex/prompting#goal-mode)
 - [Humanize](https://github.com/PolyArch/humanize)
