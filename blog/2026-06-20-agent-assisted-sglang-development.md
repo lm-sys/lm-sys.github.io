@@ -2,7 +2,7 @@
 title: "Agent-Assisted SGLang Development: An Initial Exploration"
 author: "SGLang Team"
 date: "June 20, 2026"
-previewImg: /images/blog/agent-assisted-sglang-development/sglang-sota-performance-loop.svg
+previewImg: /images/blog/agent-assisted-sglang-development/sglang-agent-cover.jpg
 type: blog
 ---
 
