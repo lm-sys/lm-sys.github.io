@@ -239,7 +239,11 @@ The Goal version preserves the same benchmark, profile, accuracy, and artifact r
 
 ## 5. KDA-Based CUDA Kernel Optimization for SGLang Systems
 
-Beyond model-level optimization for LLMs and diffusion, kernel optimization is harder. Asking an agent to write CUDA directly can easily lead to benchmark reward hacking: changing the benchmark, using a lighter wrapper, enabling fast math that the baseline does not use, optimizing only one shape, breaking numerical semantics, or producing no gain in the real SGLang path.
+Beyond model-level optimization for LLMs and diffusion, kernel optimization has a harsher scaling problem. There is no single best kernel independent of hardware and workload. The same operator can prefer different implementations on H100, H200, B200, or B300; different model architectures expose different tensor shapes and layout constraints; and serving workloads change batch size, sequence length, precision format, wrapper overhead, synchronization behavior, and fallback paths. In practice, the search space is a Cartesian product of hardware, model, and workload definitions.
+
+This creates a combinatorial optimization burden. For each candidate kernel, a developer needs to extract representative production rows, build a same-ABI harness, run A/B measurements, check correctness across shape buckets, read NCU metrics, decide whether a bucket deserves specialization, and then revalidate in the real SGLang path. Doing this by hand for every hardware/model/workload combination is expensive. It is also exactly the kind of repetitive, evidence-heavy workflow that agents are good at, as long as humans define the invariants and review the final path.
+
+Asking an agent to write CUDA directly, however, can easily lead to benchmark reward hacking: changing the benchmark, using a lighter wrapper, enabling fast math that the baseline does not use, optimizing only one shape, breaking numerical semantics, or producing no gain in the real SGLang path.
 
 KDA-Pilot separates kernel optimization into isolated tasks so the agent does not freely modify the whole SGLang repository:
 
@@ -294,7 +298,7 @@ Agents can create more PRs, and they can also create more plausible mistakes. Re
 
 Agent-era SGLang development will not remove developers from the system. The more realistic change is to write developer experience into workflows, hand repetitive execution to agents, and leave judgment, design, and review to people. The saved time can go into harder performance problems, model paths, and production stability, or back into improving the agent workflow itself. For an open-source inference framework, this kind of infrastructure is worth sustained investment.
 
-## 7. Acknowledgments and References
+## 7. Acknowledgments
 
 We thank the SGLang Team members and contributors who helped build the SGLang agent skills: Xiaoyu Zhang (BBuf), Lianmin Zheng, Liangsheng Yin, Ke Bao, fzyzcjy, Kangyan Zhou, DarkSharpness, Mick, Alison Shao, Baizhou Zhang, Bingxu Chen, Cheng Wan, Ratish P, shuwenn, ykcai-daniel, Yuhao Yang, and Artem Savkin.
 
@@ -302,7 +306,7 @@ We thank the KDA team: Dongyun Zou, Ligeng Zhu, Sihao Liu, Junxian Guo, Yixin Do
 
 We thank the Humanize team and contributors: Sihao Liu, Ligeng Zhu, Zijian Zhang, Zenus Zhang, shinan6, DYZhang, Chao Liu, Zhou Yaoyang, gyy0592, AcrossForest, Emin, Qiming Chu, jiaxiaoyu, tastynoob, and zhenwei.
 
-### 7.1 References
+## 8. References
 
 - [SGLang GitHub Repository](https://github.com/sgl-project/sglang)
 - [SGLang `.claude/skills`](https://github.com/sgl-project/sglang/tree/main/.claude/skills)
