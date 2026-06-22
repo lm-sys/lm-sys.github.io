@@ -10,6 +10,8 @@ SGLang development increasingly goes beyond isolated code changes. The same repo
 
 Around SGLang agent development, a set of skills has already emerged for both LLM and diffusion work:
 
+- [SGLang `.claude/skills`](https://github.com/sgl-project/sglang/tree/main/.claude/skills) is maintained inside the SGLang repository and captures repo-level development workflows such as CUDA crash debugging, kernel integration, tests, CI, and profiling.
+- [SGLang diffusion `.claude/skills`](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen/.claude/skills) focuses on diffusion-specific workflows, including adding new diffusion models, benchmarking and profiling denoise paths, tuning performance options, and validating quantized pipelines.
 - [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers workflows such as serving benchmarks, profile analysis, production incident triage, and SOTA loops.
 - [kernel-design-agents](https://github.com/mit-han-lab/kernel-design-agents) is the KDA project and the winning solution for the MLSys 2026 FlashInfer Kernel Contest.
 - [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. Its B200 diffusion work currently covers seven SGLang kernel tasks with wall-geomean speedups from `1.1341x` to `2.7499x` on extracted production rows.
@@ -322,8 +324,6 @@ We thank the Humanize team and contributors: Sihao Liu, Ligeng Zhu, Zijian Zhang
 - [KernelWiki skill](https://github.com/mit-han-lab/KernelWiki)
 - [ncu-report-skill](https://github.com/DongyunZou/ncu-report-skill)
 - [KDA-Pilot](https://github.com/BBuf/KDA-Pilot)
-- [SGLang PR #27392: Add B200 native diffusion norm-scale-shift fast path](https://github.com/sgl-project/sglang/pull/27392)
-- [SGLang PR #28051: Add B200 staged qknorm-rope fast path](https://github.com/sgl-project/sglang/pull/28051)
 - [SGLang Diffusion Advanced Optimizations, LMSYS Blog](https://lmsys.org/blog/2026-02-16-sglang-diffusion-advanced-optimizations/)
 - [OpenAI Codex Prompting: Goal mode](https://developers.openai.com/codex/prompting#goal-mode)
 - [Humanize](https://github.com/PolyArch/humanize)
