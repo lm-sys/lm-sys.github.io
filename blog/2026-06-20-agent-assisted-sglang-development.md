@@ -142,19 +142,19 @@ A full SGLang SOTA Performance Loop contains the following stages:
 5. Patch only evidence-supported paths, such as hybrid attention, Mamba/GDN, radix cache, target verify, CUDA graph, MoE/EP, quant kernels, or model wrappers.
 6. Revalidate on the same workload. Every round records benchmarks, profiles, accuracy, failed attempts, environment information, and cleanup actions.
 
-In B200/H200 experiments with Qwen3.6-35B-A3B-FP8, the same model showed different bottlenecks on different hardware. On B200, under a fixed workload, the SGLang baseline already outperformed vLLM. Continued profiling still found optimization room in GDN prefill split, and after patching, output tok/s in both chat and long-context scenarios improved by about `2.6%`. On H200, changes around FP8 MoE Triton configs, the CUTLASS scaled-mm replacement path, and GDN backend defaults were needed to match and then exceed vLLM. If this type of task is split into many independent prompts, benchmarks, profiles, failed attempts, and intermediate conclusions are easy to lose. A loop with evidence and review keeps conditions aligned across rounds.
+For a target such as `Qwen/Qwen3-Next-80B-A3B-Instruct-FP8` on 2x B200, the loop matters because benchmark results, profile traces, failed patches, and intermediate conclusions all need to stay attached to the same model, hardware, workload, and framework commits. If this type of task is split into many independent prompts, it is easy to lose which command produced which result or whether a later profile still matches the original baseline. A loop with evidence and review keeps conditions aligned across rounds.
 
 ### 4.3 Codex Goal: A Lower-Cost Full Replacement
 
 The SGLang SOTA Performance Loop above uses a two-role setup: Claude Code executes benchmarks, profiling, patching, and revalidation, while Codex Review checks each round at the end. This setup is suitable for serious PR work, but every round consumes both an execution model and a review model, increasing cost and waiting time.
 
-Codex Goal offers another implementation. Once "fair benchmark -> gap decision -> profile -> patch -> revalidate -> artifact ledger" is written into a persistent Goal, a lower-cost GPT-5.5 model can complete execution, self-checking, and revalidation within the same goal. The core constraints of the SGLang SOTA Performance Loop remain: fixed workload, evidence-driven patches, revalidation under the same experimental conditions, and artifact manifest updates after every round.
+Codex Goal offers another implementation. Once "fair benchmark -> gap decision -> profile -> patch -> revalidate -> artifact ledger" is written into a persistent Goal, a single Codex Goal can carry execution, self-checking, and revalidation without the two-role execution/review setup. The core constraints of the SGLang SOTA Performance Loop remain: fixed workload, evidence-driven patches, revalidation under the same experimental conditions, and artifact manifest updates after every round.
 
 The two approaches differ as follows:
 
 | Dimension | Humanize/RLCR SOTA Loop | Codex Goal |
 | --- | --- | --- |
-| Execution | Claude Code handles implementation and experiments; Codex Review reviews each round | GPT-5.5 continuously executes, self-checks, and revalidates within the same Goal |
+| Execution | Claude Code handles implementation and experiments; Codex Review reviews each round | One Codex Goal continuously executes, self-checks, and revalidates |
 | State location | Plan, prompt, summary, and review results under `.humanize/rlcr/...` | Current Goal thread plus manifest/evidence under `artifact_root` |
 | Review method | Stop hook, Codex Review, and git/state/schema checks | Goal-level self-checks, artifact contracts, and human spot checks |
 | Cost | Two model roles participate, so each round costs more | One Goal carries both execution and checks, reducing cost |
@@ -201,7 +201,7 @@ artifact_root:
 Codex Goal version:
 
 ```text
-/goal Using GPT-5.5, keep optimizing SGLang serving for
+/goal Keep optimizing SGLang serving for
 `Qwen/Qwen3-Next-80B-A3B-Instruct-FP8` on a single node with 2 NVIDIA B200
 GPUs until SGLang matches or exceeds the best reproducible vLLM/TensorRT-LLM
 result under the same 2-GPU budget, FP8 precision, workload, SLA, model, and
@@ -279,7 +279,7 @@ Two rules from the KDA-Pilot experiments are worth keeping:
 ## 6. Practice Rules
 
 1. Define the task boundary before starting the agent.
-"Optimize SGLang" is too broad. "Match vLLM for `Qwen/Qwen3.6-35B-A3B-FP8` on 1x H200 under fixed `1000->1000` and `8000->1000` workloads" is an executable target.
+"Optimize SGLang" is too broad. "Match vLLM for `Qwen/Qwen3-Next-80B-A3B-Instruct-FP8` on 2x B200 under fixed `1000->1000` and `8000->1000` workloads" is an executable target.
 
 2. Fix the benchmark before reading profiles.
 If the workload can change after results are known, the agent may accidentally optimize an easier problem. Both the SOTA loop and KDA-Pilot put fixed workloads before patching.
