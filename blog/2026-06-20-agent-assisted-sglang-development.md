@@ -2,7 +2,7 @@
 title: "Agent-Assisted SGLang Development: An Initial Exploration"
 author: "SGLang Team"
 date: "June 20, 2026"
-previewImg: "https://raw.githubusercontent.com/BBuf/AI-Infra-Auto-Driven-SKILLS/main/docs/assets/sglang-sota-performance-loop.svg"
+previewImg: /images/blog/agent-assisted-sglang-development/sglang-sota-performance-loop.svg
 type: blog
 ---
 
@@ -129,7 +129,7 @@ A single skill can stabilize one task. After a dozen rounds of experiments, howe
 
 The SGLang SOTA Performance Loop is a Loop Engineering workflow built on Humanize/RLCR. Here, SOTA means the best reproducible result under fixed experimental conditions: the same model, hardware, GPU count, precision, workload, SLA, framework commit, and serving parameters. The question is whether SGLang can reach the current best reproducible result under those conditions.
 
-![SGLang SOTA Performance Loop](https://raw.githubusercontent.com/BBuf/AI-Infra-Auto-Driven-SKILLS/main/docs/assets/sglang-sota-performance-loop.svg)
+![SGLang SOTA Performance Loop](/images/blog/agent-assisted-sglang-development/sglang-sota-performance-loop.svg)
 
 Figure 1: SGLang SOTA Performance Loop. A fixed fair benchmark first establishes a reproducible baseline. The subsequent gap decision, profiling, pipeline analysis, patching, and revalidation are driven by the Humanize/RLCR loop.
 
@@ -251,7 +251,7 @@ KDA-Pilot separates kernel optimization into isolated tasks so the agent does no
 - Each iteration refreshes the task prompt, benchmark evidence, KernelWiki, and ncu-report-skill.
 - Shape-specialized dispatch is allowed, but each bucket must document its condition, path, latency, and fallback.
 
-![KDA-Pilot B200 diffusion kernel results](https://raw.githubusercontent.com/BBuf/how-to-optim-algorithm-in-cuda/master/large-language-model/sglang/assets/kda-pilot-b200-speedups.svg)
+![KDA-Pilot B200 diffusion kernel results](/images/blog/agent-assisted-sglang-development/kda-pilot-b200-speedups.svg)
 
 Figure 2: Wall-geomean speedup for seven SGLang diffusion kernel tasks optimized by KDA-Pilot on B200. Wall time includes Python dispatch, wrapper overhead, kernel launch, and synchronization overhead visible through `cuda.synchronize()`, which is closer to the real call path than pure kernel device time.
 
