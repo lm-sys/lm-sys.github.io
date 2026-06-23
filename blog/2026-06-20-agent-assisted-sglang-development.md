@@ -309,7 +309,7 @@ Agent-era SGLang development will not remove developers from the system. The mor
 
 We thank the SGLang Team members and contributors who helped build the SGLang agent skills: Xiaoyu Zhang (BBuf), Lianmin Zheng, Liangsheng Yin, Ke Bao, fzyzcjy, Kangyan Zhou, DarkSharpness, Mick, Alison Shao, Baizhou Zhang, Bingxu Chen, Cheng Wan, Ratish P, shuwenn, ykcai-daniel, Yuhao Yang, and Artem Savkin.
 
-We thank the KDA team: Dongyun Zou, Ligeng Zhu, Sihao Liu, Junxian Guo, Yixin Dong, Zijian Zhang, and Hao Kang.
+We thank the KDA team: Dongyun Zou, Ligeng Zhu, Sihao Liu, Junxian Guo, Yixin Dong, Zijian Zhang, Hao Kang, and Song Bian.
 
 We thank the Humanize team and contributors: Sihao Liu, Ligeng Zhu, Zijian Zhang, Zenus Zhang, shinan6, DYZhang, Chao Liu, Zhou Yaoyang, gyy0592, AcrossForest, Emin, Qiming Chu, jiaxiaoyu, tastynoob, and zhenwei.
 
