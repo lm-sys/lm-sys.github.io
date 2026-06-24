@@ -59,12 +59,15 @@ At a high level, the algorithm is:
 2. Use that count as a per-rank load score. In dynamic mode, SGLang first runs one EP-group collective, so the score can use the global routed-load vector plus each rank's current local batch size.
 3. Add one shared-expert slot per participating token, and compute a target waterline:
 
-   $$H = \lceil\frac{\sum_r L_r + N}{R}\rceil$$
-   
+   $$
+   H = \left\lceil\frac{\sum_r L_r + N}{R}\right\rceil\notag
+   $$
    Here $L_r$ is rank $r$'s load score, $N$ is the number of shared-expert slots to place, and $R$ is the EP group size.
 4. Ranks below this waterline have slack:
 
-   $$S_r = \max(H - L_r, 0)$$
+   $$
+   S_r = \max(H - L_r, 0)\notag
+   $$
    
 5. For each token, Waterfill samples the shared-expert target rank from candidate ranks with probability proportional to slack, with a small local-rank preference. If all candidates have zero slack, it falls back to the clearly lighter candidate rank, again keeping the local-rank preference.
 
