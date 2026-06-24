@@ -262,8 +262,6 @@ A concrete snapshot makes the scale easier to see. KDA-Pilot has optimized seven
 
 The first upstream result has landed. [SGLang PR #27392](https://github.com/sgl-project/sglang/pull/27392) merged a B200 native diffusion norm-scale-shift CUDA fast path for Qwen-Image-2512. On one B200, five interleaved runs per side showed `1.125x` full-request speedup and `1.130x` denoise-wall speedup; profiler attribution showed the target norm-scale-shift kernel group improving by `1.279x`.
 
-Two follow-up KDA-Pilot PRs extend the same workflow beyond diffusion. [SGLang PR #29126](https://github.com/sgl-project/sglang/pull/29126) targets the B200 FP8 `scaled_mm` `M == 1` decode case with a native GEMV fast path, reporting `1.89x` to `2.56x` kernel-level speedups on covered shapes. [SGLang PR #29134](https://github.com/sgl-project/sglang/pull/29134) targets non-power-of-two MoE expert counts, replacing the two-launch `topk_sigmoid` workspace path with a fused kernel and reporting about `1.74x` geomean kernel-level speedup across measured B200 shapes. Because both PRs are still under review, we treat these numbers as kernel-level evidence before upstream merge.
-
 ![KDA-Pilot B200 diffusion kernel results](/images/blog/agent-assisted-sglang-development/kda-pilot-b200-speedups.svg)
 
 Figure 2: Wall-geomean speedup for seven SGLang diffusion kernel tasks optimized by KDA-Pilot on B200. Wall time includes Python dispatch, wrapper overhead, kernel launch, and synchronization overhead visible through `cuda.synchronize()`, which is closer to the real call path than pure kernel device time.
