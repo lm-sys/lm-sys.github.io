@@ -260,7 +260,9 @@ KDA-Pilot separates kernel optimization into isolated tasks so the agent does no
 
 A concrete snapshot makes the scale easier to see. KDA-Pilot has optimized seven B200 SGLang diffusion kernel tasks, with wall-geomean speedups ranging from `1.1341x` to `2.7499x` on extracted production rows.
 
-The upstreaming path is also becoming concrete. [SGLang PR #27392](https://github.com/sgl-project/sglang/pull/27392) proposes a B200 native diffusion norm-scale-shift fast path for Qwen-Image-2512 and reports `1.081x` full-request speedup and `1.093x` denoise-wall speedup on one B200. [SGLang PR #28051](https://github.com/sgl-project/sglang/pull/28051) splits out the B200 `fused_inplace_qknorm_rope` path; its profiler evidence shows the target qknorm+RoPE CUDA work improving from `24.087 ms / 1440 calls` to `18.081 ms / 720 calls + 1.896 ms / 720 calls`, about `1.21x` kernel-level speedup.
+The first upstream result has landed. [SGLang PR #27392](https://github.com/sgl-project/sglang/pull/27392) merged a B200 native diffusion norm-scale-shift CUDA fast path for Qwen-Image-2512. On one B200, five interleaved runs per side showed `1.125x` full-request speedup and `1.130x` denoise-wall speedup; profiler attribution showed the target norm-scale-shift kernel group improving by `1.279x`.
+
+Two follow-up KDA-Pilot PRs extend the same workflow beyond diffusion. [SGLang PR #29126](https://github.com/sgl-project/sglang/pull/29126) targets the B200 FP8 `scaled_mm` `M == 1` decode case with a native GEMV fast path, reporting `1.89x` to `2.56x` kernel-level speedups on covered shapes. [SGLang PR #29134](https://github.com/sgl-project/sglang/pull/29134) targets non-power-of-two MoE expert counts, replacing the two-launch `topk_sigmoid` workspace path with a fused kernel and reporting about `1.74x` geomean kernel-level speedup across measured B200 shapes. Because both PRs are still under review, we treat these numbers as kernel-level evidence before upstream merge.
 
 ![KDA-Pilot B200 diffusion kernel results](/images/blog/agent-assisted-sglang-development/kda-pilot-b200-speedups.svg)
 
