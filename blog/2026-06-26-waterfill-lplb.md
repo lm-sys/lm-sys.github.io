@@ -128,7 +128,7 @@ LPLB casts this as a small linear program solved per layer. The intuition maps d
 
 - **Objective — minimize the peak.** Introduce a scalar `M` representing the maximum load over all ranks, and minimize it. Driving `M` down pulls the busiest rank toward the average, which is exactly what shortens the grouped-GEMM tail that EP imbalance creates.
 - **Rank-load constraints.** For every rank, *(load from its redundant-expert copies) + (load from its single-copy experts) + (slack to the peak) = M*. The single-copy load on each rank is fixed input — those experts have no dispatch choice. Each rank gets one such equation; the slack is non-negative, so `M` is forced to be at least every rank's true load.
-- **Redundant-expert conservation.** For every replicated logical expert, the loads assigned to its copies must sum to that expert's total observed load: `x_1 + x_2 + ... + x_n = L`, where `x_i` is the load placed on copy `i` and `L` is the expert's total observed load. This guarantees LPLB only redistributes existing traffic and never invents or drops tokens.
+- **Redundant-expert conservation.** For every replicated logical expert, the loads assigned to its copies must sum to that expert's total observed load: $x_1 + x_2 + ... + x_n = L$, where $x_i$ is the load placed on copy $i$ and $L$ is the expert's total observed load. This guarantees LPLB only redistributes existing traffic and never invents or drops tokens.
 
 The decision variables are the per-copy loads of the replicated experts plus the per-rank slacks and `M`. Single-copy experts are not variables — they contribute only fixed terms — which keeps the LP small: its size scales with the number of *redundant* experts and the number of ranks, not the full expert count.
 
@@ -321,7 +321,9 @@ We thank the SGLang maintainers and reviewers for discussions, reviews, and inte
 - [#25391: Support DeepSeek V4 DeepEP Waterfill](https://github.com/sgl-project/sglang/pull/25391)
 - [#24515: LPLB: linear-programming load balancer for MoE expert parallelism](https://github.com/sgl-project/sglang/pull/24515)
 
-We also thank DeepSeek for open-sourcing their LPLB work at
-[deepseek-ai/LPLB](https://github.com/deepseek-ai/LPLB), whose linear-programming
-formulation for balancing tokens across redundant expert replicas inspired the
-SGLang LPLB integration described here.
+We gratefully acknowledge the people who contributed to this work:
+
+- NVIDIA team: Xuting Zhou, Fei Liang, and Aichen Feng
+- SGLang team: Cheng Wan
+
+We also thank DeepSeek for open-sourcing their LPLB work at [deepseek-ai/LPLB](https://github.com/deepseek-ai/LPLB), whose linear-programming formulation for balancing tokens across redundant expert replicas inspired the SGLang LPLB integration described here.
