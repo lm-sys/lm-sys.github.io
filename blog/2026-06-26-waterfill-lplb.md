@@ -11,14 +11,14 @@ Mixture-of-Experts (MoE) models rely on Expert Parallelism (EP) to scale inferen
 
 This blog introduces two dispatch-time load balancing features in SGLang:
 
-- **Waterfill**, a lightweight shared-expert load balancing method for DeepEP. It dispatches the shared expert through DeepEP and assigns it to less-loaded ranks. On two Hopper GPU nodes with DeepSeek-V3/R1-style serving workloads, Waterfill improves total throughput by **+1.48% to +4.66%** across MMLU, GPQA, and GSM8K. On DeepSeek V4 Flash, the best measured point improved from **49,253 tok/s** to **51,677 tok/s** (**+4.92%**).
+- **Waterfill**, a lightweight shared-expert load balancing method for DeepEP. It dispatches the shared expert through DeepEP and assigns it to less-loaded ranks. On two Hopper GPU nodes with DeepSeek-V3/R1-style serving workloads, Waterfill improves total throughput by **+1.48% to +4.66%** across MMLU, GPQA, and GSM8K. On DeepSeek V4, the best measured point improved from **49,253 tok/s** to **51,677 tok/s** (**+4.92%**).
 - **LPLB**, a linear-programming-based load balancer for redundant expert replicas. It solves a per-layer dispatch optimization problem over redundant experts. With redundant EPLB placement on the same two Hopper GPU nodes, LPLB improves total throughput by **+0.84% to +7.34%** across MMLU, GPQA, and GSM8K.
 
-The Waterfill work is built on two SGLang PRs: [shared expert fusion under EP](https://github.com/sgl-project/sglang/pull/20089) and [Waterfill dispatch balancing](https://github.com/sgl-project/sglang/pull/19290). DeepSeek V4 Flash support is added in [#25391](https://github.com/sgl-project/sglang/pull/25391). LPLB is introduced in [#24515](https://github.com/sgl-project/sglang/pull/24515).
+The Waterfill work is built on two SGLang PRs: [shared expert fusion under EP](https://github.com/sgl-project/sglang/pull/20089) and [Waterfill dispatch balancing](https://github.com/sgl-project/sglang/pull/19290). DeepSeek V4 support is added in [#25391](https://github.com/sgl-project/sglang/pull/25391). LPLB is introduced in [#24515](https://github.com/sgl-project/sglang/pull/24515).
 
 ## Introduction
 
-Large MoE models such as DeepSeek-V3/R1 and DeepSeek V4 Flash use sparse expert activation to increase model capacity while keeping per-token computation manageable. During inference, EP distributes experts across GPUs and routes tokens to the ranks that own the selected experts. This reduces per-GPU memory pressure and makes large-scale serving practical, but it also introduces a central systems problem: **the router does not generate perfectly balanced expert traffic**.
+Large MoE models such as DeepSeek-V3/R1 and DeepSeek V4 use sparse expert activation to increase model capacity while keeping per-token computation manageable. During inference, EP distributes experts across GPUs and routes tokens to the ranks that own the selected experts. This reduces per-GPU memory pressure and makes large-scale serving practical, but it also introduces a central systems problem: **the router does not generate perfectly balanced expert traffic**.
 
 When some experts receive many more tokens than others, the EP group waits for the busiest ranks. This imbalance affects both computation and communication. Static placement methods such as EPLB can improve the long-term placement of experts and redundant replicas, but a single batch can still have residual imbalance. Dispatch-time load balancing addresses this remaining gap by deciding, at runtime, which physical replica should process each token or each shared-expert request.
 
@@ -217,9 +217,9 @@ Figure 4. LPLB improves throughput when redundant expert replicas exist (`red16`
 
 These results indicate that Waterfill improves throughput while preserving model quality, because it only changes physical shared-expert placement and does not change the logical expert computation. LPLB is strongest when redundant expert replicas provide useful dispatch choices, as shown by the red16 and red32 rows. In contrast, when no redundant experts are provided, LPLB has no room to balance the load and thus shows only the algorithm overhead.
 
-### Waterfill on DeepSeek V4 Flash
+### Waterfill on DeepSeek V4
 
-DeepSeek V4 Flash can use a `HashTopK` routing path, where Waterfill must append
+DeepSeek V4 can use a `HashTopK` routing path, where Waterfill must append
 and remap the shared-expert slot in the `HashTopK` output path as well.
 [#25391](https://github.com/sgl-project/sglang/pull/25391) extends Waterfill to
 that path. The shared-expert balancing idea itself is not specific to
@@ -277,7 +277,7 @@ The important flags are:
 - `--enable-deepep-waterfill`: enable the shared expert fusion and Waterfill path.
 - `--init-expert-location`: optionally initialize expert placement and rank-load metadata from collected expert distribution statistics.
 
-DeepSeek V4 Flash support uses the `HashTopK` path added in
+DeepSeek V4 support uses the `HashTopK` path added in
 [#25391](https://github.com/sgl-project/sglang/pull/25391).
 
 ### Enable LPLB
