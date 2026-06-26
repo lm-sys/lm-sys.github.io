@@ -5,7 +5,7 @@ date: "June 17, 2026"
 previewImg: "https://raw.githubusercontent.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/main/sglang/sglang-omni/images/moss-local-transformer-arch.svg"
 ---
 
-Today we are announcing end-to-end serving for [**MOSS-TTS-Local-Transformer-v1.5**](https://huggingface.co/OpenMOSS-Team/MOSS-TTS-Local-Transformer-v1.5) on [**SGLang-Omni**](https://github.com/sgl-project/sglang-omni), together with [MOSI](https://mosi.cn/) and the [OpenMOSS Team](https://www.open-moss.com/).
+Today we are announcing end-to-end serving for [**MOSS-TTS-Local-Transformer-v1.5**](https://huggingface.co/OpenMOSS-Team/MOSS-TTS-Local-Transformer-v1.5) on [**SGLang-Omni**](https://github.com/sgl-project/sglang-omni), together with [MOSI](https://mosi.cn/) and the [OpenMOSS Team](https://openmoss.ai/).
 
 MOSS-TTS-Local-Transformer-v1.5 is an open TTS model for 48 kHz stereo speech, zero-shot voice cloning, long-form synthesis, multilingual generation, duration control, and native streaming. The model is not hard to call from a demo script. Serving it well is harder: one request crosses reference-audio encoding, a Qwen3-4B autoregressive backbone, a frame-local 12-codebook sampling loop, and a stateful codec decoder.
 
