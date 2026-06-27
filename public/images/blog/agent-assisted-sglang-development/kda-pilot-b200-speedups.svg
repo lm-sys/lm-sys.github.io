@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1040" height="700" viewBox="0 0 1040 700" role="img" aria-labelledby="title desc">
   <title id="title">KDA-Pilot B200 diffusion kernel speedups</title>
-  <desc id="desc">A bar chart of B200 evidence from KDA-Pilot diffusion kernel tasks, including numeric speedup rows and one review row.</desc>
+  <desc id="desc">A bar chart of B200 speedup evidence from KDA-Pilot diffusion kernel tasks, including the residual-gate speedup reported by SGLang PR 29361.</desc>
   <defs>
     <style>
       .bg { fill: #fbfbf7; }
@@ -9,7 +9,6 @@
       .bar1 { fill: #5f9ea0; }
       .bar2 { fill: #e0a458; }
       .bar3 { fill: #7b8fc6; }
-      .review { fill: #eef1ef; stroke: #8a9997; stroke-width: 1.4; }
       .title { font: 700 25px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #243b3b; }
       .subtitle { font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #52696b; }
       .label { font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #243b3b; }
@@ -20,8 +19,8 @@
 
   <rect class="bg" x="0" y="0" width="1040" height="700"/>
   <text class="title" x="56" y="50">KDA-Pilot B200 Diffusion Kernel Results</text>
-  <text class="subtitle" x="56" y="78">B200 evidence over SGLang/Triton/CuTe-DSL baselines. Numeric rows include dispatch, launch, and synchronization overhead.</text>
-  <text class="subtitle" x="56" y="98">Rows marked review turned into SGLang-facing fast paths after the original task baseline moved.</text>
+  <text class="subtitle" x="56" y="78">B200 evidence over SGLang/Triton/CuTe-DSL baselines. Rows include dispatch, launch, and synchronization overhead when available.</text>
+  <text class="subtitle" x="56" y="98">residual_gate_add uses the B200 LTX-2.3 Triton-row result reported by merged SGLang PR #29361.</text>
 
   <line class="grid" x1="460" y1="112" x2="460" y2="592"/>
   <line class="grid" x1="660" y1="112" x2="660" y2="592"/>
@@ -69,8 +68,8 @@
   <text class="value" x="685" y="499">2.06x</text>
 
   <text class="label" x="58" y="546">residual_gate_add</text>
-  <rect class="review" x="260" y="526" width="118" height="25" rx="4"/>
-  <text class="value" x="392" y="545">review</text>
+  <rect class="bar1" x="260" y="526" width="222" height="25" rx="4"/>
+  <text class="value" x="495" y="545">1.11x</text>
 
-  <text class="subtitle" x="56" y="664">Source: BBuf/KDA-Pilot README and task benchmark ledgers, June 2026.</text>
+  <text class="subtitle" x="56" y="664">Source: BBuf/KDA-Pilot README, task benchmark ledgers, and SGLang PR #29361, June 2026.</text>
 </svg>
