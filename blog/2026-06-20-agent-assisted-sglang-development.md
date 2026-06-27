@@ -12,7 +12,7 @@ Around SGLang agent development, a set of skills has already emerged for both LL
 
 - [SGLang `.claude/skills`](https://github.com/sgl-project/sglang/tree/main/.claude/skills) is maintained inside the SGLang repository and captures repo-level development workflows such as CUDA crash debugging, kernel integration, tests, CI, profiling, production triage, and source-tree conventions.
 - [SGLang diffusion `.claude/skills`](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen/.claude/skills) focuses on diffusion-specific workflows, including adding new diffusion models, benchmarking and profiling denoise paths, tuning performance options, and validating quantized pipelines.
-- [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers cross-framework serving benchmarks, capacity planning, profile and pipeline analysis, model compute simulation, SGLang human-style review, production incident triage, SGLang/vLLM SOTA loops, and model PR history.
+- [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers cross-framework serving benchmarks, capacity planning, profile and pipeline analysis, model compute simulation, SGLang human-style review, production incident triage, SOTA loops for SGLang and other open-source inference frameworks, and model PR history.
 - [kernel-design-agents](https://github.com/mit-han-lab/kernel-design-agents) is the KDA project and the winning solution for the MLSys 2026 FlashInfer Kernel Contest.
 - [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. Its public B200 diffusion summary covers seven SGLang kernel tasks with wall-geomean speedups from `1.1341x` to `2.7499x` on extracted production rows, and KDA-Pilot-derived work has now landed in three SGLang integration PRs.
 
@@ -61,8 +61,8 @@ The commonly used SGLang agent-related skills fall into the following groups.
 | Layer | Representative skill / project | Problem it solves |
 | --- | --- | --- |
 | CUDA crash | [`debug-cuda-crash`](https://github.com/sgl-project/sglang/tree/main/.claude/skills/debug-cuda-crash) | Records inputs, exceptions, and dumps around custom op/kernel API boundaries, turning transient crashes into samples that can be analyzed offline |
-| LLM benchmark | [`llm-serving-auto-benchmark`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/llm-serving-auto-benchmark) | Runs fair, bounded, resumable serving benchmark search across SGLang, vLLM, TensorRT-LLM, TokenSpeed, or another OpenAI-compatible stack |
-| Capacity planning | [`llm-serving-capacity-planner`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/llm-serving-capacity-planner) | Parses SGLang/vLLM startup logs to explain weight memory, KV cache budget, CUDA graph overhead, request capacity, and OOM pressure |
+| LLM benchmark | [`llm-serving-auto-benchmark`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/llm-serving-auto-benchmark) | Runs fair, bounded, resumable serving benchmark search across SGLang and other OpenAI-compatible inference stacks |
+| Capacity planning | [`llm-serving-capacity-planner`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/llm-serving-capacity-planner) | Parses SGLang and other inference-framework startup logs to explain weight memory, KV cache budget, CUDA graph overhead, request capacity, and OOM pressure |
 | Trace triage | [`llm-torch-profiler-analysis`](https://github.com/sgl-project/sglang/tree/main/.claude/skills/llm-torch-profiler-analysis) | Produces fixed kernel, overlap-opportunity, and fuse-pattern tables, and maps kernels back to Python source; the same unified workflow also lives in AI-Infra for cross-framework use |
 | Pipeline/layer analysis | [`llm-pipeline-analysis`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/llm-pipeline-analysis) | Slices torch profiler traces into forward passes, layers, and kernel flows to locate steady-state passes, bottleneck layer types, and Perfetto time ranges |
 | Model compute simulation | [`model-compute-simulation`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/model-compute-simulation) | Builds operator-level compute templates for LLMs and estimates tensor shapes, FLOPs, MFU, kernel-to-op mapping, and parallelism what-ifs |
@@ -71,7 +71,7 @@ The commonly used SGLang agent-related skills fall into the following groups.
 | Diffusion performance tuning | [`sglang-diffusion-performance`](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen/.claude/skills/sglang-diffusion-performance) | Chooses performance settings such as `torch.compile`, warmup, SP/CFG parallelism, offload, attention backend, and quantization |
 | Production triage | [`sglang-prod-incident-triage`](https://github.com/sgl-project/sglang/tree/main/.claude/skills/sglang-prod-incident-triage) | Collects live-server bundles, saves failing requests, replays them, and then routes to focused crash/hang/profile tools |
 | SGLang review / PR history | [`sglang-humanize-review`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/sglang-humanize-review) and [`model-pr-history-knowledge`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/model-pr-optimization-history) | Reviews SGLang patches against real maintainer discussion patterns and keeps PR-driven model evolution histories close to the changed source |
-| SGLang SOTA Performance Loop (Loop Engineering) | [`sglang-sota-humanize-loop`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/sglang-sota-humanize-loop) | First compares SGLang against the requested comparison framework set fairly, then puts gap decision, profiling, patching, and revalidation into a Humanize/RLCR loop |
+| SGLang SOTA Performance Loop (Loop Engineering) | [`sglang-sota-humanize-loop`](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS/tree/main/skills/sglang-sota-humanize-loop) | First compares SGLang fairly against the requested open-source inference frameworks, then puts gap decision, profiling, patching, and revalidation into a Humanize/RLCR loop |
 
 These entries turn easy-to-miss steps into executable protocols so the workflow can run, resume, and be reviewed.
 
@@ -83,7 +83,7 @@ The following examples come from recently merged SGLang PRs. The table focuses o
 | --- | --- | --- |
 | Router long-context tokenization deduplication, [SGLang PR #28744](https://github.com/sgl-project/sglang/pull/28744) | On a DeepSeek-V4-Flash deployment, idle TTFT for 60k/125k-token prompts dropped by about `29%` / `41%`; under 60k-token load, TTFT dropped by `34%–49%` | The agent handled cache-aware routing, chat-encoder parity, engine-side `input_ids` fallback, and proxy body construction together, avoiding duplicate tokenization in the router and engine |
 | Qwen3-Next FlashInfer allreduce fusion, [SGLang PR #22664](https://github.com/sgl-project/sglang/pull/22664) | On H100 TP=4, request throughput improved from `5.49 req/s` to `9.41 req/s`, about `+71.4%`; mean TTFT dropped from `456.24 ms` to `167.54 ms` | This is a profile-driven LLM collective optimization: unfused cross-device reduce dominated prefill, and the fused allreduce path was validated with MMLU/GSM8K accuracy checks |
-| Cohere2Moe NVFP4 fused-MoE path, [SGLang PR #27401](https://github.com/sgl-project/sglang/pull/27401) | For `CohereLabs/command-a-plus-05-2026-w4a4` on 1x B300, request throughput improved over the previous SGLang default by `+26%` on chat and `+21%` on summarization, and beat vLLM in that setup by `+4.1%` / `+6.8%` | The change completed the routing semantics so the existing `flashinfer_trtllm` NVFP4 fused-MoE kernel could be used correctly in the real model path, with GSM8K/MMLU checks |
+| Cohere2Moe NVFP4 fused-MoE path, [SGLang PR #27401](https://github.com/sgl-project/sglang/pull/27401) | For `CohereLabs/command-a-plus-05-2026-w4a4` on 1x B300, request throughput improved over the previous SGLang default by `+26%` on chat and `+21%` on summarization, and beat another open-source inference framework in that setup by `+4.1%` / `+6.8%` | The change completed the routing semantics so the existing `flashinfer_trtllm` NVFP4 fused-MoE kernel could be used correctly in the real model path, with GSM8K/MMLU checks |
 | Kimi Delta Attention CuteDSL prefill kernel on SM100, [SGLang PR #27488](https://github.com/sgl-project/sglang/pull/27488) | For `moonshotai/Kimi-Linear-48B-A3B-Instruct`, Delta Attention prefill on B200 became `1.08x–1.52x` faster than Triton; GSM8K moved from `0.915` to `0.920`, with a new regression test for realistic gate magnitudes | This kernel task had to cover the model's gate distribution, numerical overflow, host overhead, real-model accuracy, and unit tests before the optimization was ready to merge |
 | Spectral Progressive Diffusion, [SGLang PR #27524](https://github.com/sgl-project/sglang/pull/27524) | Denoising speedups for FLUX.1, FLUX.2, Z-Image, Wan, and Qwen-Image reached `1.63x`, `1.77x`, `2.07x`, `2.32x`, and `1.6x` respectively in the reported RTX A6000 setup | This is a diffusion-side system optimization: early denoising runs at lower latent resolution, then GPU DCT upsampling restores full resolution when high-frequency details start to matter |
 | LTX-2 VAE decode channels-last-3d, [SGLang PR #27431](https://github.com/sgl-project/sglang/pull/27431) | The LTX-2 decode stage improved from `5.41 s` to `3.84 s`, about `1.41x`; peak reserved memory dropped from `71.81 GiB` to `62.12 GiB`, saving about `9.7 GiB` | The profile pointed to Conv3d and layout conversion, so the fix preserved memory format in causal padding and connected the loader policy to single-GPU LTX-2 |
@@ -98,9 +98,9 @@ In practice, two profiler skills are usually used together. `llm-torch-profiler-
 
 - `Kernel Table`: summarizes GPU time share, launch count, and kernel category by stage, and maps kernels back to Python source and CPU ops when possible.
 - `Overlap Opportunity Table`: uses exclusive/hidden time share, dependency risk, and kernel category to identify remaining overlap or headroom.
-- `Fuse Pattern Table`: compares the trace against a source-backed pattern catalog of fusion/overlap paths in SGLang, vLLM, FlashInfer, and TensorRT-LLM.
+- `Fuse Pattern Table`: compares the trace against a source-backed pattern catalog of fusion/overlap paths in SGLang, other open-source inference frameworks, and kernel libraries.
 
-These tables answer the first set of questions: which stage and which kernel take how much GPU time, which Python line they map to, and whether there is an existing fuse/overlap path to learn from. If SGLang trails vLLM, TensorRT-LLM, or TokenSpeed, the profiler table should explain the gap before any code change starts.
+These tables answer the first set of questions: which stage and which kernel take how much GPU time, which Python line they map to, and whether there is an existing fuse/overlap path to learn from. If SGLang trails another inference framework, the profiler table should explain the gap before any code change starts.
 
 The next step is `llm-pipeline-analysis`. Once global hotspots are known, we still need to know which forward pass, layer type, and kernel flow they belong to. This skill reads Chrome trace JSON and the model `config.json`, uses layer-boundary anchor kernels to split the trace into forward passes and layers, and then produces several tables for deeper analysis:
 
@@ -141,8 +141,8 @@ Figure 1: SGLang SOTA Performance Loop. A fixed fair benchmark first establishes
 
 A full SGLang SOTA Performance Loop contains the following stages:
 
-1. Define the target boundary. For example, `Qwen/Qwen3-Next-80B-A3B-Instruct-FP8`, single-node 2x B200, FP8, SGLang TP=2, and comparison against a requested framework set such as vLLM, TensorRT-LLM, and TokenSpeed under the same 2-GPU budget.
-2. Run fair search first. Before patching SGLang, search for the best reproducible commands for SGLang and each requested comparison framework under the same workload and resource budget.
+1. Define the target boundary. For example, `Qwen/Qwen3-Next-80B-A3B-Instruct-FP8`, single-node 2x B200, FP8, SGLang TP=2, and comparison against the requested open-source inference frameworks under the same 2-GPU budget.
+2. Run fair search first. Before patching SGLang, search for the best reproducible commands for SGLang and each requested open-source inference framework under the same workload and resource budget.
 3. Decide the gap. If SGLang already matches or leads, record completion evidence. If it is consistently behind by more than the threshold, move to profiling.
 4. Use profiles to explain the gap. Do not rush into code changes. First produce kernel tables, pipeline tables, overlap/fuse tables, and NCU reports when needed.
 5. Patch only evidence-supported paths, such as hybrid attention, Mamba/GDN, radix cache, target verify, CUDA graph, MoE/EP, quant kernels, or model wrappers.
@@ -177,7 +177,7 @@ Task:
 Optimize SGLang serving performance for Qwen/Qwen3-Next-80B-A3B-Instruct-FP8
 on a single node with 2 NVIDIA B200 GPUs, FP8 precision, and initial SGLang
 TP=2. SGLang should match or exceed the best reproducible result from the
-requested comparison frameworks under the same 2-GPU budget, workload, SLA,
+requested open-source inference frameworks under the same 2-GPU budget, workload, SLA,
 model, precision, and environment constraints.
 
 Required workflow:
@@ -188,7 +188,7 @@ Required workflow:
    Humanize workspace.
 
 Evidence and safety requirements:
-- Before patching, run a fair bounded search for SGLang and the requested comparison framework set, for example vLLM, TensorRT-LLM, and TokenSpeed.
+- Before patching, run a fair bounded search for SGLang and the requested open-source inference framework set.
 - Check relevant open PRs in sgl-project/sglang and BBuf/sglang before choosing
   the SGLang baseline.
 - If SGLang is behind by more than 1%, profile before patching.
@@ -210,7 +210,7 @@ Codex Goal version:
 /goal Keep optimizing SGLang serving for
 `Qwen/Qwen3-Next-80B-A3B-Instruct-FP8` on a single node with 2 NVIDIA B200
 GPUs until SGLang matches or exceeds the best reproducible result from the
-requested comparison frameworks under the same 2-GPU budget, FP8 precision,
+requested open-source inference frameworks under the same 2-GPU budget, FP8 precision,
 workload, SLA, model, and environment constraints. The current Codex Goal is the loop: fixed fair
 benchmarking, gap decision, profiling, pipeline analysis, evidence-backed
 patching, revalidation, final report, and optional PR preparation all happen
@@ -230,7 +230,7 @@ artifact_root:
 Requirements:
 - Use the current Codex Goal as the only persistent loop.
 - Before patching, run a fair bounded search for SGLang and the requested
-  comparison framework set under the same 2-GPU budget.
+  open-source inference frameworks under the same 2-GPU budget.
 - If SGLang is behind by more than 1%, profile in the same Goal, then use
   llm-torch-profiler-analysis, llm-pipeline-analysis, and ncu-report-skill when
   needed before patching.
@@ -297,7 +297,7 @@ Two rules from the KDA-Pilot experiments are worth keeping:
 ## 6. Practice Rules
 
 1. Define the task boundary before starting the agent.
-"Optimize SGLang" is too broad. "Match vLLM for `Qwen/Qwen3-Next-80B-A3B-Instruct-FP8` on 2x B200 under fixed `1000->1000` and `8000->1000` workloads" is an executable target.
+"Optimize SGLang" is too broad. "Match another open-source inference framework for `Qwen/Qwen3-Next-80B-A3B-Instruct-FP8` on 2x B200 under fixed `1000->1000` and `8000->1000` workloads" is an executable target.
 
 2. Fix the benchmark before reading profiles.
 If the workload can change after results are known, the agent may accidentally optimize an easier problem. Both the SOTA loop and KDA-Pilot put fixed workloads before patching.
