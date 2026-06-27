@@ -14,7 +14,7 @@ Around SGLang agent development, a set of skills has already emerged for both LL
 - [SGLang diffusion `.claude/skills`](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen/.claude/skills) focuses on diffusion-specific workflows, including adding new diffusion models, benchmarking and profiling denoise paths, tuning performance options, and validating quantized pipelines.
 - [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers workflows such as serving benchmarks, profile analysis, production incident triage, and SOTA loops.
 - [kernel-design-agents](https://github.com/mit-han-lab/kernel-design-agents) is the KDA project and the winning solution for the MLSys 2026 FlashInfer Kernel Contest.
-- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. Its B200 diffusion work currently covers seven SGLang kernel tasks with wall-geomean speedups from `1.1341x` to `2.7499x` on extracted production rows.
+- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. Its B200 diffusion work currently covers seven published SGLang kernel tasks with wall-geomean speedups from `1.1341x` to `2.7499x` on extracted production rows, and has now produced three merged SGLang integration PRs.
 
 Viewed together, these efforts point to the same direction: the value of agents comes from procedural engineering knowledge, including executable steps, reproducible experiments, and reviewable evidence.
 
@@ -258,9 +258,17 @@ KDA-Pilot separates kernel optimization into isolated tasks so the agent does no
 - Each iteration refreshes the task prompt, benchmark evidence, KernelWiki, and ncu-report-skill.
 - Shape-specialized dispatch is allowed, but each bucket must document its condition, path, latency, and fallback.
 
-A concrete snapshot makes the scale easier to see. KDA-Pilot has optimized seven B200 SGLang diffusion kernel tasks, with wall-geomean speedups ranging from `1.1341x` to `2.7499x` on extracted production rows.
+A concrete snapshot makes the scale easier to see. KDA-Pilot has optimized seven published B200 SGLang diffusion kernel tasks, with wall-geomean speedups ranging from `1.1341x` to `2.7499x` on extracted production rows.
 
-The first upstream result has landed. [SGLang PR #27392](https://github.com/sgl-project/sglang/pull/27392) merged a B200 native diffusion norm-scale-shift CUDA fast path for Qwen-Image-2512. On one B200, five interleaved runs per side showed `1.125x` full-request speedup and `1.130x` denoise-wall speedup; profiler attribution showed the target norm-scale-shift kernel group improving by `1.279x`.
+By June 27, 2026, three KDA-Pilot-derived optimizations have landed upstream in SGLang. The first was [SGLang PR #27392](https://github.com/sgl-project/sglang/pull/27392), a B200 native diffusion norm-scale-shift CUDA fast path for Qwen-Image-2512. Two more landed later that week: [SGLang PR #29281](https://github.com/sgl-project/sglang/pull/29281) for the Cosmos3 VAE causal Conv3D cat/pad copy path, and [SGLang PR #29361](https://github.com/sgl-project/sglang/pull/29361) for the LTX-2.3 residual-gate update path.
+
+| Upstream PR | Target path | Kernel-level evidence | Model-path evidence |
+| --- | --- | --- | --- |
+| [#27392](https://github.com/sgl-project/sglang/pull/27392) | Qwen-Image norm-scale-shift | Target kernel group improved by `1.279x` in profiler attribution | On one B200, five interleaved runs per side showed `1.125x` full-request speedup and `1.130x` denoise-wall speedup |
+| [#29281](https://github.com/sgl-project/sglang/pull/29281) | Cosmos3 causal Conv3D cat/pad | B200 weighted kernel group improved from `10.621 ms` to `5.240 ms`, or `2.03x`, across traced VAE decode calls | With `torch.compile` enabled on Cosmos3-Nano T2V, median E2E time improved from `181.521 ms` to `177.687 ms`, or `1.021x` |
+| [#29361](https://github.com/sgl-project/sglang/pull/29361) | LTX-2.3 residual-gate update | B200 traced residual-gate rows improved `1.108x` to `1.130x` over the existing Triton path on the large LTX-2.3 shapes, with neighboring diffusion rows up to `2.587x` | On LTX-2.3 HQ T2V, E2E time improved from `46644.08 ms` to `45198.37 ms`, or `1.032x` |
+
+The important pattern is not that every standalone kernel win becomes a large end-to-end win. It is that the same KDA-Pilot evidence package -- fixed production rows, correctness gates, same-ABI comparisons, profiler attribution, and real-model checks -- can move a kernel task from an isolated benchmark into a reviewable SGLang serving path.
 
 ![KDA-Pilot B200 diffusion kernel results](/images/blog/agent-assisted-sglang-development/kda-pilot-b200-speedups.svg)
 
