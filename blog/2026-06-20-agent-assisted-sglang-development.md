@@ -14,7 +14,7 @@ Around SGLang agent development, a set of skills has already emerged for both LL
 - [SGLang diffusion `.claude/skills`](https://github.com/sgl-project/sglang/tree/main/python/sglang/multimodal_gen/.claude/skills) focuses on diffusion-specific workflows, including adding new diffusion models, benchmarking and profiling denoise paths, tuning performance options, and validating quantized pipelines.
 - [BBuf/AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS) covers cross-framework serving benchmarks, capacity planning, profile and pipeline analysis, model compute simulation, SGLang human-style review, production incident triage, SOTA loops for SGLang and other open-source inference frameworks, and model PR history.
 - [kernel-design-agents](https://github.com/mit-han-lab/kernel-design-agents) is the KDA project and the winning solution for the MLSys 2026 FlashInfer Kernel Contest.
-- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. Its public B200 diffusion summary covers seven SGLang kernel tasks with wall-geomean speedups from `1.1341x` to `2.7499x` on extracted production rows, and KDA-Pilot-derived work has now landed in three SGLang integration PRs.
+- [BBuf/KDA-Pilot](https://github.com/BBuf/KDA-Pilot) applies KDA-style agent kernel workflows to SGLang. Its public B200 diffusion summary now tracks 10 SGLang kernel tasks: nine numeric B200 rows with speedup evidence from `1.1341x` to `2.7499x`, plus one review row for a task that turned into a SGLang-facing fast path after the baseline moved. KDA-Pilot-derived work has now landed in three SGLang integration PRs.
 
 Viewed together, these efforts point to the same direction: the value of agents comes from procedural engineering knowledge, including executable steps, reproducible experiments, and reviewable evidence.
 
@@ -261,7 +261,7 @@ KDA-Pilot separates kernel optimization into isolated tasks so the agent does no
 - Each iteration refreshes the task prompt, benchmark evidence, KernelWiki, and ncu-report-skill.
 - Shape-specialized dispatch is allowed, but each bucket must document its condition, path, latency, and fallback.
 
-A concrete snapshot makes the scale easier to see. The public KDA-Pilot B200 diffusion summary currently lists seven SGLang kernel tasks, with wall-geomean speedups ranging from `1.1341x` to `2.7499x` on extracted production rows.
+A concrete snapshot makes the scale easier to see. The public KDA-Pilot B200 diffusion summary currently lists 10 tracked SGLang kernel tasks. Nine have stable numeric B200 evidence, with wall-geomean speedups ranging from `1.1341x` to `2.7499x` on extracted production rows. The remaining `review` row is kept visible because the task became a SGLang-facing fast path after its original baseline moved.
 
 As of June 27, 2026, three KDA-Pilot-derived optimizations have landed upstream in SGLang. The first was [SGLang PR #27392](https://github.com/sgl-project/sglang/pull/27392), a B200 native diffusion norm-scale-shift CUDA fast path for Qwen-Image-2512. Two more landed later that week: [SGLang PR #29281](https://github.com/sgl-project/sglang/pull/29281) for the Cosmos3 VAE causal Conv3D cat/pad copy path, and [SGLang PR #29361](https://github.com/sgl-project/sglang/pull/29361) for the LTX-2.3 residual-gate update path.
 
@@ -275,9 +275,9 @@ The key takeaway is not that every standalone kernel win becomes a large end-to-
 
 ![KDA-Pilot B200 diffusion kernel results](/images/blog/agent-assisted-sglang-development/kda-pilot-b200-speedups.svg)
 
-Figure 2: Wall-geomean speedup for seven SGLang diffusion kernel tasks optimized by KDA-Pilot on B200. Wall time includes Python dispatch, wrapper overhead, kernel launch, and synchronization overhead visible through `cuda.synchronize()`, which is closer to the real call path than pure kernel device time.
+Figure 2: B200 evidence for 10 tracked SGLang diffusion kernel tasks optimized by KDA-Pilot. Numeric rows report wall-geomean speedup; wall time includes Python dispatch, wrapper overhead, kernel launch, and synchronization overhead visible through `cuda.synchronize()`, which is closer to the real call path than pure kernel device time. The review row records a SGLang-facing fast path after the original task baseline changed.
 
-| Kernel task | B200 wall geomean | Main optimization direction |
+| Kernel task | B200 evidence | Main optimization direction |
 | --- | ---: | --- |
 | `qknorm_rope` | `1.1341x` | Shared RoPE staging, Q/K reuse, large-row fast path |
 | `norm_infer` | `1.3523x` | Warp-row RMS, tiled persistent RMS, 8B/16B vector path |
@@ -286,6 +286,9 @@ Figure 2: Wall-geomean speedup for seven SGLang diffusion kernel tasks optimized
 | `cutedsl_norm_scale_shift` | `1.3201x` | Operand-class dispatch, 16B/32B vectors, two-pass variance |
 | `fuse_scale_shift` | `2.7499x` | rowgrid/flatvec/exact-C paths, cache hints, one-pass reduction |
 | `group_norm_silu` | `2.3118x` | Split-group stats, channels-last direct path, fallback for giant rows |
+| `attention_concat_copy` | `1.30x` | Single-launch region copy, pitched 16B block gather, strict layout/device rejection |
+| `causal_conv3d_cat_pad` | `2.06x` | Flat chunking, 16B vectorized stores, stride-aware fallback, bitwise-exact gate |
+| `residual_gate_add` | `review` | One-pass CUDA fusion, pinned-GPU correctness, explicit re-benchmark after the baseline swap |
 
 The chart and task table should be read with the experimental setting in mind: they report kernel-task speedups on extracted production rows, not full model end-to-end gains. They are still useful. Once baseline, workload, correctness, profiling, and review are fixed, agents can produce reviewable incremental improvements on real framework kernels.
 
