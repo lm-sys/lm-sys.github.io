@@ -70,7 +70,7 @@ How does the above TTFT reduction translate into improvements in end-to-end LLM 
 
 ![Figure 5](/images/blog/netpreme-xmem/figure5.png)
 
-The result demonstrates that Netpreme’s X-Mem™ provides 62% higher TPS/user (interactivity) in a medium-load case and 59% higher interactivity and 25% higher TPS (system capacity) in a high-load case. This is because the GPU is utilized more efficiently, spending less time waiting for data to be copied on prefix cache hits.
+The result demonstrates that Netpreme's X-Mem™ provides 33% higher TPS/user (interactivity) in a medium-load case and 50% higher interactivity and 30% higher TPS (system capacity) in a high-load case. This is because the GPU is utilized more efficiently, spending less time waiting for data to be copied on prefix cache hits.
 
 ## Looking Ahead
 
