@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1040" height="700" viewBox="0 0 1040 700" role="img" aria-labelledby="title desc">
   <title id="title">KDA-Pilot B200 diffusion kernel speedups</title>
-  <desc id="desc">A bar chart of B200 speedup evidence from KDA-Pilot diffusion kernel tasks, including the residual-gate speedup reported by SGLang PR 29361.</desc>
+  <desc id="desc">A bar chart of B200 speedup evidence from KDA-Pilot diffusion kernel tasks.</desc>
   <defs>
     <style>
       .bg { fill: #fbfbf7; }
@@ -20,7 +20,6 @@
   <rect class="bg" x="0" y="0" width="1040" height="700"/>
   <text class="title" x="56" y="50">KDA-Pilot B200 Diffusion Kernel Results</text>
   <text class="subtitle" x="56" y="78">B200 evidence over SGLang/Triton/CuTe-DSL baselines. Rows include dispatch, launch, and synchronization overhead when available.</text>
-  <text class="subtitle" x="56" y="98">residual_gate_add uses the B200 LTX-2.3 Triton-row result reported by merged SGLang PR #29361.</text>
 
   <line class="grid" x1="460" y1="112" x2="460" y2="592"/>
   <line class="grid" x1="660" y1="112" x2="660" y2="592"/>
@@ -71,5 +70,5 @@
   <rect class="bar1" x="260" y="526" width="222" height="25" rx="4"/>
   <text class="value" x="495" y="545">1.11x</text>
 
-  <text class="subtitle" x="56" y="664">Source: BBuf/KDA-Pilot README, task benchmark ledgers, and SGLang PR #29361, June 2026.</text>
+  <text class="subtitle" x="56" y="664">Source: BBuf/KDA-Pilot README and task benchmark ledgers, June 2026.</text>
 </svg>
