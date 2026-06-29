@@ -20,13 +20,13 @@ previewImg: /images/blog/netpreme-xmem/figure1.png
 
 Prefix caching is designed to reduce expensive prefill compute for workloads where requests repeatedly share long, token-identical prompts that only differ in the short last part. SGLang has already built a strong software foundation for prefix reuse with **RadixAttention** and **HiCache**. RadixAttention enables efficient prefix caching in GPU memory, while HiCache extends it into a hierarchy beyond GPU HBM.
 
-However, with GPUs getting fast, the speed of loading KV cache into the HBM becomes important. To estimate the bandwidth requirement for KV-cache offloading, we model a long-context coding-agent workload with 64K-token prompts and prefill concurrency of 8. As the prefix hit rate increases, residual computation drops quickly, but the amount of KV data fetched from secondary memory grows. When hit rate gets beyond 95%, scaling the bandwidth of KV-cache tiering can significantly reduce TTFT!
+However, as GPUs become faster, the speed of loading KV cache into the HBM becomes important. To estimate the bandwidth requirement for KV-cache offloading, we model a long-context coding-agent workload with 64K-token prompts and prefill concurrency of 8. As the prefix hit rate increases, residual computation drops quickly, but the amount of KV data fetched from secondary memory grows. When hit rate exceeds 95%, scaling the bandwidth of KV-cache tiering can significantly reduce TTFT!
 
 ![Figure 2](/images/blog/netpreme-xmem/figure2.png)
 
 But is 95% of prefix cache hit rate really practical? Let’s look at KV-cache reuse in coding agents — the largest market for AI applications as of today.
 
-To quantify this, we measure prefix-cache hit ratio using traces collected from Claude Code agent while running multi-turn coding workflows on SWE-bench. We observe that the cache-hit ratio consistently exceeds 95% in subsequent rounds for the same session, with the mean hit ratio being around 98%. In this regime, scaling KV-caching bandwidth beyond what is achievable with Host CPU offloading results in 3x performance boost!
+To quantify this, we [measure](https://github.com/netpreme/coding_agents) prefix-cache hit ratio using traces collected from [Claude Code agent](https://code.claude.com/docs/en/overview) while running multi-turn coding workflows on [SWE-bench](https://github.com/SWE-bench/SWE-bench). We observe that the cache-hit ratio consistently exceeds 95% in subsequent rounds for the same session, with the mean hit ratio being around 98%. In this regime, scaling KV-caching bandwidth beyond what is achievable with Host CPU offloading results in a 3x performance boost!
 
 ![Figure 3](/images/blog/netpreme-xmem/figure3.png)
 
@@ -34,7 +34,7 @@ This is where Netpreme X-Mem™ comes in!
 
 ## Netpreme X-Mem™: A Dedicated KV Tier for SGLang HiCache
 
-Netpreme X-Mem™ MPU is a purpose-built solution to expand GPU memory by tens of TB over fast network fabrics. Conceptually, X-Mem™ is a dedicated memory node in the AI rack, peer-to-peer to all other GPUs. A single memory node comes with up-to 24 TB of memory accessible by all GPUs in the same rack at 4 TB/s. There is no limit on how many memory nodes can be thrown in the rack, and the aggregate bandwidth is multiplied if several MPU nodes are used. On software side, X-Mem™’s address space is exposed as a part of the unified virtual memory, and semantically it is not any different from accessing a local HBM or remote GPU’s memory.
+Netpreme X-Mem™ MPU is a purpose-built solution to expand GPU memory by tens of TB over fast network fabrics. Conceptually, X-Mem™ is a dedicated memory node in the AI rack, peer-to-peer to all other GPUs. A single memory node comes with up to 24 TB of memory accessible by all GPUs in the same rack at 4 TB/s. There is no limit on how many memory nodes can be provisioned in the rack, and the aggregate bandwidth is multiplied if several MPU nodes are used. On the software side, X-Mem™'s address space is exposed as a part of the unified virtual memory, and semantically it is not any different from accessing a local HBM or remote GPU’s memory.
 
 When integrating with SGLang HiCache, Netpreme X-Mem™ performs as a dedicated memory tier for KV cache offload. Instead of using Host DRAM or RDMA as the primary L2 KV cache tier, MPU provides a purpose-built, accelerator-oriented memory tier optimized for KV movement.
 
@@ -44,9 +44,9 @@ This makes X-Mem™ especially useful for workloads with:
 - long shared prefixes / high-concurrency sessions;
 - repeated prefill-heavy requests.
 
-Netpreme X-Mem™ integrates SGLang via CUDA- and PyTorch-compatible APIs. These APIs allow any ML application tap into the high-bandwidth memory tier transparently and with minimal modification of the application code.
+Netpreme X-Mem™ integrates SGLang via CUDA- and PyTorch-compatible APIs. These APIs allow any ML application to tap into the high-bandwidth memory tier transparently and with minimal modification of the application code.
 
-If you'd like to try it out yourself, contact us to get access to our X-Mem™ pilot.
+If you'd like to try it out yourself, contact us to get access to our [X-Mem™ pilot](https://netpreme.com/developer/early-access).
 
 ## Benchmarking SGLang + Netpreme X-Mem™
 
@@ -97,11 +97,11 @@ Together, SGLang HiCache and Netpreme X-Mem™ make prefix caching faster and mo
 
 - SGLang Documentation: HiCache Design
 - SGLang Blog: HiCache: High-Performance KV Cache Storage with Hierarchical Caching for LLM Serving
-- Netpreme GitHub: SGLang X-Mem Integration
+- Netpreme SGLang X-Mem™ Integration: https://github.com/netpreme/sglang_xmem
 - LinkedIn Engineering Blog: Turbocharging LinkedIn’s Recommendation Systems with SGLang
 - Qwen3-235B-A22B-Thinking-2507: https://huggingface.co/Qwen/Qwen3-235B-A22B-Thinking-2507
 - SWE-bench: https://github.com/SWE-bench/SWE-bench
-- Netpreme Coding Agents Experiments: ****https://github.com/netpreme/coding_agents
+- Netpreme Coding Agents Experiments: https://github.com/netpreme/coding_agents
 
 ---
 
@@ -114,13 +114,13 @@ Together, SGLang HiCache and Netpreme X-Mem™ make prefix caching faster and mo
 - CUDA Version: 12.8
 - Attention backend: FlashAttention
 - GPU prefix caching: disabled (to evaluate a local KV cache miss that hits in the X-Mem™)
-- Model: Qwen3-30B-A3B-Instruct-2507-FP8
+- Model: [Qwen3-30B-A3B-Instruct-2507-FP8](https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507-FP8)
 - Workloads:
-    - single request TTFT benchmarking: used a benchmark script (link) that is a modified version of the vLLM KVConnector benchmarking script (blog, code).
-    - end-to-end throughput benchmarking: used AIPerf (link) from NVIDIA Dynamo team. Specifically, we used the following workload configuration that represent agentic AI use cases.
-        - Number of users: 15
-        - QPS across all users: [2.5,3.0,3.5,4.0,4.5,5.0]
-        - shared system prompt: 1000 tokens
-        - per-user context: 20000 tokens
-        - per-turn query: 26 tokens
-        - per-turn output length: 100 tokens
+  - single request TTFT benchmarking: used a benchmark [script](https://github.com/netpreme/sglang_xmem/blob/mtier-dev/kvcache_benchmark.py) that is a modified version of the vLLM KVConnector benchmarking script ([blog](https://vllm.ai/blog/2026-01-08-kv-offloading-connector), [code](https://github.com/orozery/playground/blob/kv-offloading-blog-dec-2025/kvcache/kv_offload_benchmark.py)).
+  - end-to-end throughput benchmarking: used [AIPerf](https://github.com/ai-dynamo/aiperf) from the NVIDIA Dynamo team. Specifically, we used the following workload configuration that represents agentic AI use cases.
+    - Number of users: 15
+    - QPS across all users: [2.5,3.0,3.5,4.0,4.5,5.0]
+    - shared system prompt: 1000 tokens
+    - per-user context: 20000 tokens
+    - per-turn query: 26 tokens
+    - per-turn output length: 100 tokens
