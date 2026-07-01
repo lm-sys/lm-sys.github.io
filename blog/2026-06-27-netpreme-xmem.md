@@ -46,8 +46,6 @@ This makes X-Mem™ especially useful for workloads with:
 
 Netpreme X-Mem™ integrates SGLang via CUDA- and PyTorch-compatible APIs. These APIs allow any ML application to tap into the high-bandwidth memory tier transparently and with minimal modification of the application code.
 
-If you'd like to try it out yourself, contact us to get access to our [X-Mem™ pilot](https://netpreme.com/developer/early-access).
-
 ## Benchmarking SGLang + Netpreme X-Mem™
 
 We run two experiments, one is a micro-benchmark that measures TTFT of a single request and the other is an end-to-end LLM inference experiment with agentic workloads. Throughout benchmarking, we compare three configurations:
