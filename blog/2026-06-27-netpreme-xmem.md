@@ -1,7 +1,7 @@
 ---
 title: "Accelerating SGLang HiCache with Netpreme X-Mem™ MPU"
-author: "Netpreme Team + SGLang Team"
-date: "June 27, 2026"
+author: "Netpreme Team"
+date: "July 8, 2026"
 previewImg: /images/blog/netpreme-xmem/figure1.png
 ---
 
@@ -45,8 +45,6 @@ This makes X-Mem™ especially useful for workloads with:
 - repeated prefill-heavy requests.
 
 Netpreme X-Mem™ integrates SGLang via CUDA- and PyTorch-compatible APIs. These APIs allow any ML application to tap into the high-bandwidth memory tier transparently and with minimal modification of the application code.
-
-If you'd like to try it out yourself, contact us to get access to our [X-Mem™ pilot](https://netpreme.com/developer/early-access).
 
 ## Benchmarking SGLang + Netpreme X-Mem™
 
@@ -93,6 +91,10 @@ Host DRAM-based offload increases capacity, but its PCIe-level bandwidth can bec
 
 Together, SGLang HiCache and Netpreme X-Mem™ make prefix caching faster and more scalable for the next generation of LLM workloads, including coding agents, long-context assistants, and recommendation systems.
 
+## Acknowledgments
+
+We thank the SGLang team for their constructive technical discussions and guidance throughout this integration.
+
 ## References
 
 - SGLang Documentation: HiCache Design
@@ -119,7 +121,7 @@ Together, SGLang HiCache and Netpreme X-Mem™ make prefix caching faster and mo
   - single request TTFT benchmarking: used a benchmark [script](https://github.com/netpreme/sglang_xmem/blob/mtier-dev/kvcache_benchmark.py) that is a modified version of the vLLM KVConnector benchmarking script ([blog](https://vllm.ai/blog/2026-01-08-kv-offloading-connector), [code](https://github.com/orozery/playground/blob/kv-offloading-blog-dec-2025/kvcache/kv_offload_benchmark.py)).
   - end-to-end throughput benchmarking: used [AIPerf](https://github.com/ai-dynamo/aiperf) from the NVIDIA Dynamo team. Specifically, we used the following workload configuration that represents agentic AI use cases.
     - Number of users: 15
-    - QPS across all users: [2.5,3.0,3.5,4.0,4.5,5.0]
+    - QPS across all users: [3.0,3.0,3.5,4.0,4.5,5.5]
     - shared system prompt: 1000 tokens
     - per-user context: 20000 tokens
     - per-turn query: 26 tokens
