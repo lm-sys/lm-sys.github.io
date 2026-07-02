@@ -1,8 +1,8 @@
 ---
 title: "Agent-Assisted SGLang Development: An Initial Exploration"
 author: "SGLang Team"
-date: "June 20, 2026"
-previewImg: /images/blog/agent-assisted-sglang-development/sglang-agent-cover.jpg
+date: "July 2, 2026"
+previewImg: /images/blog/agent-assisted-sglang-development/sglang-agent-cover.png
 type: blog
 ---
 
