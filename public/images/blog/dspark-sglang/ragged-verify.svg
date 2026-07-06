@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+<defs><pattern id="hatch" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#dde3ea"/><line x1="0" y1="0" x2="0" y2="6" stroke="#aab4bf" stroke-width="1.5"/></pattern><filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#12202f" flood-opacity="0.09"/></filter></defs>
+<rect x="0" y="0" width="1000" height="400" rx="0" fill="#eef1f5"/>
+<rect x="16" y="16" width="476" height="192" rx="11" fill="#ffffff" stroke="#d3dae2" stroke-width="1" filter="url(#sh)"/>
+<text x="38" y="48" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" fill="#12202f" font-weight="700" text-anchor="start">Fixed-shape graph</text>
+<text x="38" y="67" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="12" text-anchor="start"><tspan fill="#5a6b7b">key = </tspan><tspan fill="#6d5bd0" font-weight="600">batch size</tspan><tspan fill="#5a6b7b"> &#183; shape = N &#215; W rectangle</tspan></text>
+<text x="70" y="100" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11" fill="#5a6b7b" font-weight="normal" text-anchor="end">r0</text>
+<rect x="82" y="84" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="110" y="84" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="138" y="84" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="166" y="84" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="194" y="84" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="222" y="84" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="70" y="129" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11" fill="#5a6b7b" font-weight="normal" text-anchor="end">r1</text>
+<rect x="82" y="113" width="24" height="24" rx="4" fill="#3b7dd8"/>
+<rect x="110" y="113" width="24" height="24" rx="4" fill="#3b7dd8"/>
+<rect x="138" y="113" width="24" height="24" rx="4" fill="#3b7dd8"/>
+<rect x="166" y="113" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="194" y="113" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="222" y="113" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="70" y="158" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11" fill="#5a6b7b" font-weight="normal" text-anchor="end">r2</text>
+<rect x="82" y="142" width="24" height="24" rx="4" fill="#7161c9"/>
+<rect x="110" y="142" width="24" height="24" rx="4" fill="#7161c9"/>
+<rect x="138" y="142" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="166" y="142" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="194" y="142" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="222" y="142" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="38" y="194" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" text-anchor="start"><tspan fill="#5a6b7b">computes </tspan><tspan fill="#12202f" font-weight="700">18</tspan><tspan fill="#5a6b7b"> cells (N&#215;W = 3&#215;6) &#8212; </tspan><tspan fill="#c76a3a" font-weight="700">8</tspan><tspan fill="#5a6b7b"> padded to full width, still computed.</tspan></text>
+<rect x="508" y="16" width="476" height="192" rx="11" fill="#ffffff" stroke="#d3dae2" stroke-width="1" filter="url(#sh)"/>
+<text x="530" y="48" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" fill="#12202f" font-weight="700" text-anchor="start">Ragged compact graph</text>
+<text x="530" y="67" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="12" text-anchor="start"><tspan fill="#5a6b7b">key = </tspan><tspan fill="#6d5bd0" font-weight="600">total tokens</tspan><tspan fill="#5a6b7b"> &#183; front-packed, cu_seqlens varlen</tspan></text>
+<rect x="530" y="88" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="558" y="88" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="586" y="88" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="614" y="88" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<rect x="642" y="88" width="24" height="24" rx="4" fill="#1f9e8f"/>
+<line x1="670.0" y1="88" x2="670.0" y2="112" stroke="#12202f" stroke-width="2"/>
+<rect x="674" y="88" width="24" height="24" rx="4" fill="#3b7dd8"/>
+<rect x="702" y="88" width="24" height="24" rx="4" fill="#3b7dd8"/>
+<rect x="730" y="88" width="24" height="24" rx="4" fill="#3b7dd8"/>
+<line x1="758.0" y1="88" x2="758.0" y2="112" stroke="#12202f" stroke-width="2"/>
+<rect x="762" y="88" width="24" height="24" rx="4" fill="#7161c9"/>
+<rect x="790" y="88" width="24" height="24" rx="4" fill="#7161c9"/>
+<line x1="818.0" y1="88" x2="818.0" y2="112" stroke="#12202f" stroke-width="2"/>
+<rect x="822" y="88" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="850" y="88" width="24" height="24" rx="4" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="530" y="144" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11.5" text-anchor="start"><tspan fill="#5a6b7b">captured graph tiers:</tspan></text>
+<g opacity="0.38">
+<rect x="688" y="130" width="32" height="20" rx="10" fill="#e7ebf0" stroke="#d3dae2" stroke-width="1"/>
+<text x="704" y="144" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11" fill="#5a6b7b" font-weight="normal" text-anchor="middle">4</text>
+</g>
+<g opacity="0.38">
+<rect x="726" y="130" width="32" height="20" rx="10" fill="#e7ebf0" stroke="#d3dae2" stroke-width="1"/>
+<text x="742" y="144" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11" fill="#5a6b7b" font-weight="normal" text-anchor="middle">8</text>
+</g>
+<rect x="764" y="130" width="32" height="20" rx="10" fill="#ece8fb" stroke="#6d5bd0" stroke-width="1.5"/>
+<text x="780" y="144" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11" fill="#6d5bd0" font-weight="600" text-anchor="middle">12</text>
+<rect x="802" y="130" width="32" height="20" rx="10" fill="#e7ebf0" stroke="#d3dae2" stroke-width="1"/>
+<text x="818" y="144" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11" fill="#5a6b7b" font-weight="normal" text-anchor="middle">16</text>
+<rect x="840" y="130" width="32" height="20" rx="10" fill="#e7ebf0" stroke="#d3dae2" stroke-width="1"/>
+<text x="856" y="144" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="11" fill="#5a6b7b" font-weight="normal" text-anchor="middle">18</text>
+<text x="530" y="194" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" text-anchor="start"><tspan fill="#5a6b7b">computes </tspan><tspan fill="#12202f" font-weight="700">12</tspan><tspan fill="#5a6b7b"> cells (packed 10 &#8594; tier 12) &#8212; </tspan><tspan fill="#c76a3a" font-weight="700">2</tspan><tspan fill="#5a6b7b"> tier padding, still computed.</tspan></text>
+<rect x="16" y="220" width="13" height="13" rx="3" fill="#1f9e8f"/>
+<text x="36" y="230" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#5a6b7b" font-weight="normal" text-anchor="start">scheduled verify tokens (same color in both panels)</text>
+<rect x="470" y="220" width="13" height="13" rx="3" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="490" y="230" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#5a6b7b" font-weight="normal" text-anchor="start">padding &#8212; run through the forward, then discarded</text>
+<rect x="16" y="246" width="968" height="138" rx="11" fill="#ffffff" stroke="#d3dae2" stroke-width="1" filter="url(#sh)"/>
+<text x="38" y="274" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#12202f" font-weight="700" text-anchor="start">What each graph computes per step</text>
+<text x="38" y="302" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#12202f" font-weight="normal" text-anchor="start">Fixed-shape</text>
+<text x="38" y="317" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="10.5" fill="#5a6b7b" font-weight="normal" text-anchor="start">N &#215; W</text>
+<rect x="165" y="287" width="690" height="22" rx="6" fill="#e7ebf0" stroke="#d3dae2" stroke-width="1"/>
+<rect x="165" y="287" width="383.33333333333337" height="22" rx="6" fill="#1a897b"/>
+<rect x="548.3333333333334" y="287" width="306.6666666666667" height="22" rx="0" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1"/>
+<text x="871" y="302" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="12.5" text-anchor="start"><tspan fill="#12202f" font-weight="700">18</tspan></text>
+<text x="38" y="330" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#12202f" font-weight="normal" text-anchor="start">Ragged compact</text>
+<text x="38" y="345" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="10.5" fill="#5a6b7b" font-weight="normal" text-anchor="start">tier</text>
+<rect x="165" y="315" width="690" height="22" rx="6" fill="#e7ebf0" stroke="#d3dae2" stroke-width="1"/>
+<rect x="165" y="315" width="383.33333333333337" height="22" rx="6" fill="#1a897b"/>
+<rect x="548.3333333333334" y="315" width="76.66666666666667" height="22" rx="0" fill="url(#hatch)" stroke="#aab4bf" stroke-width="1"/>
+<text x="871" y="330" font-family="'SF Mono', Menlo, 'DejaVu Sans Mono', monospace" font-size="12.5" text-anchor="start"><tspan fill="#12202f" font-weight="700">12</tspan></text>
+<text x="38" y="368" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" text-anchor="start"><tspan fill="#5a6b7b">ragged pads only </tspan><tspan fill="#1f9e8f" font-weight="700">2</tspan><tspan fill="#5a6b7b"> (vs </tspan><tspan fill="#12202f" font-weight="700">8</tspan><tspan fill="#5a6b7b">) &#8212; computes </tspan><tspan fill="#1f9e8f" font-weight="700">6</tspan><tspan fill="#5a6b7b"> fewer cells, </tspan><tspan fill="#1f9e8f" font-weight="700">33%</tspan><tspan fill="#5a6b7b"> fewer attention / MLP rows this step, same accepted tokens.</tspan></text>
+</svg>
