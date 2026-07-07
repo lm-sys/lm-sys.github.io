@@ -2,7 +2,7 @@
 title: "DSpark in SGLang: Speculative Decoding with Confidence-Driven, Variable-Length Verification"
 author: "SGLang Team"
 date: "July 6, 2026"
-previewImg: /images/blog/dspark-sglang/frontier.png
+previewImg: /images/blog/dspark-sglang/perf-compare.png
 type: blog
 ---
 
@@ -15,7 +15,7 @@ driven by the draft model's own confidence, which stops verifying tokens the wor
 is unlikely to accept. The algorithm and its gains are from the DSpark paper.
 
 SGLang now supports DSpark on both dense and sparse models (e.g. Qwen3 and
-DeepSeek-V4). This post is about the integration. We reproduce the **shape** of the
+DeepSeek-V4). This post is about the integration ([sgl-project/sglang#30261](https://github.com/sgl-project/sglang/pull/30261)). We reproduce the **shape** of the
 paper's gains on an open serving engine — the per-user speedup, and the verify budget
 shrinking as load rises — and describe the **engineering** that turns that schedule
 into wall-clock time: full CUDA graphs over a ragged, per-request verify (so a
@@ -29,7 +29,7 @@ controls — identical except for the speculation config.
 
 ## The speedup over MTP and non-spec
 
-<p align="center"><img src="/images/blog/dspark-sglang/frontier.png" width="640" alt="Aggregate throughput vs. per-user decode speed on H200 dp4, one curve per arm: non-spec floor, MTP, and DSpark. Right-and-up is better; each marker is a batch size averaged over three rounds."></p>
+<p align="center"><img src="/images/blog/dspark-sglang/perf-compare.png" width="640" alt="Aggregate throughput vs. per-user decode speed on H200 dp4, one curve per arm: non-spec floor, MTP, and DSpark. Right-and-up is better; each marker is a batch size averaged over three rounds."></p>
 
 
 *Figure 1. Aggregate throughput (y) vs. per-user decode speed (x); each curve
@@ -127,8 +127,8 @@ SPS-argmax budget) against `no-trim` — the `static` full-block schedule run th
 the same ragged path — on two example workloads that differ in acceptance.
 
 <p align="center">
-<img src="/images/blog/dspark-sglang/dyn-gsm8k.png" width="49%">
-<img src="/images/blog/dspark-sglang/dyn-arena.png" width="49%">
+<img src="/images/blog/dspark-sglang/dyn-schedule-gsm8k.png" width="49%">
+<img src="/images/blog/dspark-sglang/dyn-schedule-arena.png" width="49%">
 </p>
 
 *Figure 3. compact (dynamic trim) vs. no-trim (full block), batch 1 to
@@ -158,7 +158,7 @@ Homogeneous sweeps hide the real point of confidence scheduling. Two requests in
 the same batch should not get the same verify window if one is far more
 predictable than the other. Mixed traffic is where that matters.
 
-![Per-dataset verify budget (left): ceiling/window/delivered tokens per verify step for gsm8k, arena-hard, and poetry under cap-accept; and per-step verify-length distribution (right) for the three workloads.](/images/blog/dspark-sglang/mixed-budget.png)
+![Per-dataset verify budget (left): ceiling/window/delivered tokens per verify step for gsm8k, arena-hard, and poetry under cap-accept; and per-step verify-length distribution (right) for the three workloads.](/images/blog/dspark-sglang/mixed-dataset.png)
 
 *Figure 4. Budget by workload (left) and per-step verify-length distribution
 (right).*
@@ -191,13 +191,13 @@ per-step host sync. The confidence relay uses the same channel, read two steps b
 The decode loop then runs with no per-step bubble — about 1.5x tighter than with the
 scheduler off.
 
-![Decode at batch size 1: overlap scheduler off (top) opens bubbles between run_batch iterations and between the draft-generate and target-verify phases; on (bottom) runs them all back-to-back.](/images/blog/dspark-sglang/zos-overlap.png)
+![Decode at batch size 1: overlap scheduler off (top) opens bubbles between run_batch iterations and between the draft-generate and target-verify phases; on (bottom) runs them all back-to-back.](/images/blog/dspark-sglang/zos.png)
 
 *Figure 5. Decode at batch size 1, overlap scheduler off (top) vs. on (bottom). With it on, there is no bubble between `run_batch` iterations or between the block-draft-generate and target-verify phases inside a step.*
 
 ## Profiling the cost table
 
-![Additive SPS cost-table fit — raw step time vs. fit (a) and throughput (b) — and SPS-predicted vs. measured decode-step time (c), DeepSeek-V4 on H200.](/images/blog/dspark-sglang/cost-table.png)
+![Additive SPS cost-table fit — raw step time vs. fit (a) and throughput (b) — and SPS-predicted vs. measured decode-step time (c), DeepSeek-V4 on H200.](/images/blog/dspark-sglang/sps-table.png)
 
 *Figure 6. Additive cost model — raw vs. fit (a) and throughput (b) — and
 predicted vs. measured step time (c).*
@@ -213,7 +213,7 @@ predictions against a live server.
 
 ## What's next
 
-DSpark is in SGLang today. What's next:
+DSpark is in SGLang today; we track the roadmap in [sgl-project/sglang#30344](https://github.com/sgl-project/sglang/issues/30344). What's next:
 
 - **Cost model and scheduling** — a stronger, increasingly online/adaptive cost
   model and further improvements to the dynamic scheduler.
@@ -227,6 +227,10 @@ DSpark is in SGLang today. What's next:
 Thanks to the DSpark authors and to DeepSeek for the algorithm and the models.
 
 ## Appendix: Reproduction
+
+All commands below run inside the prebuilt image (`docker pull lmsysorg/sglang:dev-dspark`), or
+build from source at [sgl-project/sglang#30261](https://github.com/sgl-project/sglang/pull/30261),
+pinned at commit [`692c5f7d`](https://github.com/sgl-project/sglang/commit/692c5f7d532f129424b57961c262bbd253b411dc).
 
 **Figures 1, 3, and 6 — the frontier server (DeepSeek-V4-Flash, H200, DP4).** Launch
 the DSpark arm:
