@@ -15,7 +15,7 @@ driven by the draft model's own confidence, which stops verifying tokens the wor
 is unlikely to accept. The algorithm and its gains are from the DSpark paper.
 
 SGLang now supports DSpark on both dense and sparse models (e.g. Qwen3 and
-DeepSeek-V4). This post is about the integration. We reproduce the **shape** of the
+DeepSeek-V4). This post is about the integration ([sgl-project/sglang#30261](https://github.com/sgl-project/sglang/pull/30261)). We reproduce the **shape** of the
 paper's gains on an open serving engine — the per-user speedup, and the verify budget
 shrinking as load rises — and describe the **engineering** that turns that schedule
 into wall-clock time: full CUDA graphs over a ragged, per-request verify (so a
@@ -213,7 +213,7 @@ predictions against a live server.
 
 ## What's next
 
-DSpark is in SGLang today. What's next:
+DSpark is in SGLang today; we track the roadmap in [sgl-project/sglang#30344](https://github.com/sgl-project/sglang/issues/30344). What's next:
 
 - **Cost model and scheduling** — a stronger, increasingly online/adaptive cost
   model and further improvements to the dynamic scheduler.
@@ -227,6 +227,8 @@ DSpark is in SGLang today. What's next:
 Thanks to the DSpark authors and to DeepSeek for the algorithm and the models.
 
 ## Appendix: Reproduction
+
+All commands below run inside the prebuilt image: `docker pull lmsysorg/sglang:dev-dspark`.
 
 **Figures 1, 3, and 6 — the frontier server (DeepSeek-V4-Flash, H200, DP4).** Launch
 the DSpark arm:
