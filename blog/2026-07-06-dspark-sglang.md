@@ -230,8 +230,7 @@ Thanks to the DSpark authors and to DeepSeek for the algorithm and the models.
 
 All commands below run inside the prebuilt image (`docker pull lmsysorg/sglang:dev-dspark`), or
 build from source at [sgl-project/sglang#30261](https://github.com/sgl-project/sglang/pull/30261),
-pinned at commit [`692c5f7d`](https://github.com/sgl-project/sglang/commit/692c5f7d532f129424b57961c262bbd253b411dc)
-(the PR still receives commits).
+pinned at commit [`692c5f7d`](https://github.com/sgl-project/sglang/commit/692c5f7d532f129424b57961c262bbd253b411dc).
 
 **Figures 1, 3, and 6 — the frontier server (DeepSeek-V4-Flash, H200, DP4).** Launch
 the DSpark arm:
