@@ -1,7 +1,7 @@
 ---
 title: "Bringing DeepSeek-V4 Flash RL Training to AMD Instinct MI355X GPUs with Miles"
 author: "AMD & Miles Team"
-date: "July 8, 2026"
+date: "July 10, 2026"
 previewImg: /images/blog/rocm-miles-dsv4/preview.png
 type: news
 ---
