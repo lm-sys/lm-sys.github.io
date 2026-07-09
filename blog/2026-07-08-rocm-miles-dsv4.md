@@ -171,7 +171,7 @@ In a four-node AMD Instinct MI355X validation, Miles coordinated FP8 rollout, BF
 
 This work builds on DeepSeek-V4 support from the SGLang and Miles communities. We thank the Miles team working with AMD, together with contributors to Megatron, AITER, Triton, TileLang, Transformer Engine, and ROCm whose software forms the end-to-end stack.
 
-**AMD contributors:** Xinyu Kang, Liz Li, Yuankai Chen, Zhiyao Jiang, Kailesh Gogineni, Yao Fu, Wen Xie, Gowtham Ramesh, Yao Chen, Xiaobo Chen, Shekhar Pandey, Sree Rohith Pulipaka, Wen Chen, Yuzhen Zhou, Xinyu Jiang, Hai Xiao, Andy Luo, Zhenyu Gu.
+**AMD contributors:** Xinyu Kang, Liz Li, Yuankai Chen, Zhiyao Jiang, Kailesh Gogineni, Yao Fu, Wen Xie, Gowtham Ramesh, Cheng Yao, Xiaobo Chen, Shekhar Pandey, Sree Rohith Pulipaka, Wen Chen, Yuzhen Zhou, Xinyu Jiang, Hai Xiao, Andy Luo, Zhenyu Gu.
 
 **Miles contributors:** Yusheng Su, Jiajun Li, Banghua Zhu, and miles team
 
