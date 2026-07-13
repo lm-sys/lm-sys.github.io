@@ -173,7 +173,7 @@ This work builds on DeepSeek-V4 support from the SGLang and Miles communities. W
 
 **AMD contributors:** Xinyu Kang, Liz Li, Yuankai Chen, Zhiyao Jiang, Kailesh Gogineni, Yao Fu, Wen Xie, Gowtham Ramesh, Cheng Yao, Xiaobo Chen, Shekhar Pandey, Sree Rohith Pulipaka, Wen Chen, Yuzhen Zhou, Xinyu Jiang, Hai Xiao, Andy Luo, Zhenyu Gu.
 
-**Miles contributors:** Yusheng Su, Jiajun Li, Banghua Zhu, and miles team
+**Miles contributors:** Yusheng Su, Jiajun Li, Banghua Zhu, Yueming Yuan, Mao Cheng, Zhichen Zeng, Shi Don, Yanbin Jiang, Ying Sheng, and miles team
 
 ## Appendix
 
