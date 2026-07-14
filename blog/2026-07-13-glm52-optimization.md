@@ -1,7 +1,7 @@
 ---
 title: "Serving GLM5.2 NVFP4 Agentic Workload with SGLang: Reaching 500 TPS in 2 Weeks"
 author: "SGLang Team"
-date: "July 13, 2026"
+date: "July 14, 2026"
 previewImg: /images/blog/glm52-optimization/glm52-nvfp4-day0-vs-v0515-tps.png
 type: blog
 ---
