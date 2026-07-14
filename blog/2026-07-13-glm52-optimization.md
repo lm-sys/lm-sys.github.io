@@ -55,11 +55,7 @@ Second, the top-k needs to be seeded from the right place, which in SGLang is th
 
 #### TopK-V2
 
-The DSA indexer turns each query into scores over historical KV
-
-positions, then selects the top candidates for sparse attention. Following our
-
-“Lightning-TopK” design introduced in [DeepSeek-V4 Blog](https://www.lmsys.org/blog/2026-04-25-deepseek-v4/), we upgraded the original DSA TopK-V1 kernel to TopK-V2, which treated TopK as a selection problem rather than a sorting problem.
+The DSA indexer turns each query into scores over historical KV positions, then selects the top candidates for sparse attention. Following our “Lightning-TopK” design introduced in [DeepSeek-V4 Blog](https://www.lmsys.org/blog/2026-04-25-deepseek-v4/), we upgraded the original DSA TopK-V1 kernel to TopK-V2, which treated TopK as a selection problem rather than a sorting problem.
 
 ![TopK-v2 cluster-of-eight radix-select design](/images/blog/glm52-optimization/topk-v2-cluster-radix-select.png)
 
