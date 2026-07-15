@@ -10,8 +10,8 @@ We're excited to partner with the Thinking Machines team to bring Day-0 support 
 
 **Highlights**
 - Inkling is a 975B-parameter multimodal model with a context window of up to 1M tokens, featuring short convolution, attention with relative positional embedding, and a novel MoE design with a shared-expert sink.
-- SGLang delivers up to 71.7k tok/s of input throughput and 171.0 tok/s of per-user decode speed, powered by dedicated optimizations for Inkling's architecture.
-- SGLang provides broad feature support for Inkling, including speculative decoding, PD disaggregation, NVIDIA / AMD GPU support, multi-LoRA serving, and HiCache.
+- SGLang delivers up to 71.7k tok/s of input throughput and 171.0 tok/s of per-user decode speed on Nvidia Blackwell GPU, powered by dedicated optimizations for Inkling's architecture.
+- SGLang provides broad feature support for Inkling, including speculative decoding, PD disaggregation, NVIDIA GPU support with bf16 + NVFP4 checkpoints, AMD GPU support with bf16 checkpoint, multi-LoRA serving, and HiCache.
 - SGLang supports speculative decoding with DFlash, using a draft model trained by Modal specifically for Inkling.
 - Miles implements Inkling in a customized Megatron backend with DP/PP/TP/SP/EP/CP support, enabling full-parameter and LoRA RL for text and vision-language tasks.
 - Miles ensures train–inference consistency through customized kernels, routing replay, and cross-runtime parameter synchronization, while delivering steady RL improvements with both LoRA and full-parameter training across text-only and multimodal reasoning tasks.
@@ -215,10 +215,8 @@ The result stays close to the no-LoRA baseline even when a batch contains severa
 | config | single-LoRA BS1 | single-LoRA BS4 | 4-LoRA BS4 |
 |---|---|---|---|
 | B200 W4A16 TP8 | 123.20 | 383.57 | 380.17 |
-| H200 W4A16 TP8 | 108.24 | 355.94 | 339.53 |
-| GB300 bf16 trtllm TP8 (2 nodes) | 105.97 | 328.05 | 324.72 |
 
-Moving from one distinct LoRA to four at BS4 costs 0.9% on B200 and 1.0% on GB300 bf16; H200 shows 4.6%.
+Moving from one distinct LoRA to four at BS4 costs 0.9% on B200.
 
 ### Radix Cache and HiCache
 
