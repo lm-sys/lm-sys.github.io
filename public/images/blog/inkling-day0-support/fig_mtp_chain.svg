@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="372" viewBox="0 0 1200 372" role="img" aria-labelledby="title desc">
+  <title id="title">Multi-layer MTP draft chain replayed as one CUDA graph</title>
+  <desc id="desc">One target-verify forward produces a hidden state and a root token. Eight MTP layers extend the sequence eight tokens deep in an EAGLE-style recurrence, with sampling, metadata, and token rotation captured inside a single CUDA graph. The nine-position block returns to the target for one verify forward.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#15803d"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 25px; font-weight: 700; fill: #172033; }
+      .subtitle { font-family: Arial, sans-serif; font-size: 14px; fill: #64748b; }
+      .box-title { font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #172033; }
+      .box-note { font-family: Arial, sans-serif; font-size: 12px; fill: #526174; }
+      .flow-label { font-family: Arial, sans-serif; font-size: 12.5px; font-weight: 600; fill: #475569; }
+      .graph-label { font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #b45309; }
+      .graph-note { font-family: Arial, sans-serif; font-size: 12px; fill: #b45309; }
+      .ellipsis { font-family: Arial, sans-serif; font-size: 26px; font-weight: 700; fill: #64748b; }
+      .target { fill: #f0fdf4; stroke: #15803d; stroke-width: 1.6; }
+      .draft { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.6; }
+      .graph-panel { fill: #fffdf7; stroke: #d97706; stroke-width: 1.6; stroke-dasharray: 7 5; }
+      .flow-blue { fill: none; stroke: #2563eb; stroke-width: 1.6; marker-end: url(#arrow-blue); }
+      .flow-green { fill: none; stroke: #15803d; stroke-width: 1.8; marker-end: url(#arrow-green); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="372" fill="#ffffff"/>
+  <text x="40" y="40" class="title">Eight MTP layers, one CUDA graph, one verify forward</text>
+  <text x="40" y="65" class="subtitle">Each decode round: the target's hidden state seeds an eight-deep draft recurrence; the nine-position block verifies in a single target forward.</text>
+
+  <rect x="46" y="128" width="190" height="128" rx="12" class="target"/>
+  <text x="141" y="163" text-anchor="middle" class="box-title">Target model</text>
+  <text x="141" y="184" text-anchor="middle" class="box-note">one forward verifies</text>
+  <text x="141" y="200" text-anchor="middle" class="box-note">all 9 positions</text>
+  <text x="141" y="222" text-anchor="middle" class="box-note">accept/resample per token</text>
+
+  <!-- single CUDA graph panel -->
+  <rect x="304" y="96" width="856" height="212" rx="14" class="graph-panel"/>
+  <text x="326" y="124" class="graph-label">one CUDA graph per batch-size bucket</text>
+  <text x="1140" y="124" text-anchor="end" class="graph-note">no Python between steps</text>
+
+  <rect x="336" y="150" width="150" height="82" rx="9" class="draft"/>
+  <text x="411" y="182" text-anchor="middle" class="box-title">MTP layer 1</text>
+  <text x="411" y="203" text-anchor="middle" class="box-note">own weights</text>
+
+  <rect x="558" y="150" width="150" height="82" rx="9" class="draft"/>
+  <text x="633" y="182" text-anchor="middle" class="box-title">MTP layer 2</text>
+  <text x="633" y="203" text-anchor="middle" class="box-note">own weights</text>
+
+  <text x="800" y="198" text-anchor="middle" class="ellipsis">⋯</text>
+
+  <rect x="892" y="150" width="150" height="82" rx="9" class="draft"/>
+  <text x="967" y="182" text-anchor="middle" class="box-title">MTP layer 8</text>
+  <text x="967" y="203" text-anchor="middle" class="box-note">own weights</text>
+
+  <path d="M486 191 H558" class="flow-blue"/>
+  <text x="522" y="181" text-anchor="middle" class="flow-label">h₁, x₁</text>
+  <path d="M708 191 H770" class="flow-blue"/>
+  <text x="739" y="181" text-anchor="middle" class="flow-label">h₂, x₂</text>
+  <path d="M830 191 H892" class="flow-blue"/>
+  <text x="861" y="181" text-anchor="middle" class="flow-label">h₇, x₇</text>
+
+  <text x="700" y="266" text-anchor="middle" class="graph-note">captured per step: draft forward · attention metadata · sampling · token rotation</text>
+  <text x="700" y="286" text-anchor="middle" class="graph-note">one fused kernel feeds the graph from the verify output</text>
+
+  <!-- target -> chain -->
+  <path d="M236 191 H336" class="flow-green"/>
+  <text x="286" y="166" text-anchor="middle" class="flow-label">hidden h₀</text>
+  <text x="286" y="182" text-anchor="middle" class="flow-label">root token x₀</text>
+
+  <!-- chain -> target (return path) -->
+  <path d="M1042 191 H1102 V338 H141 V256" class="flow-green"/>
+  <text x="554" y="330" text-anchor="middle" class="flow-label">root token + 8 draft tokens = 9-position verify block</text>
+</svg>
