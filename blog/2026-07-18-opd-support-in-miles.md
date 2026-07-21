@@ -1,6 +1,6 @@
 ---
 title: "OPD Support in Miles"
-author: "Miles Team"
+author: "Kaixi Hou and the Miles Team"
 date: "July 18, 2026"
 previewImg: /images/blog/opd-support-in-miles/figure-1.png
 ---
@@ -131,3 +131,7 @@ Miles now supports OPD as a first-class training and rollout feature. The implem
 In an initial Qwen3.5-35B-A3B self-distillation experiment on a single 8×NVIDIA B200 node, pure OPD transferred shorter-reasoning behavior from an RLVR teacher to a base student. Held-out DAPO performance improved from **0.8457** to **0.8945**, sampled rollout length dropped from roughly **18.6k tokens** to mostly **5.5k–6.7k tokens**, and per-token OPD reverse-KL decreased from about **0.045** to **0.010**.
 
 These initial results show that pure OPD can transfer a useful behavioral property—in this case, substantially shorter reasoning—while preserving strong held-out task performance. Broader experiments are still needed to validate the result across models, tasks, and teacher–student configurations.
+
+## Acknowledgments
+
+We are especially grateful to Hunter Carlisle and Priya Sethuraman at NVIDIA for their generous help and support in bringing this work together.
