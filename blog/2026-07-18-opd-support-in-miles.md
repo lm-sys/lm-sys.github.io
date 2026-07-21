@@ -9,7 +9,7 @@ We recently implemented **On-Policy Distillation (OPD) as an important feature i
 
 In this post, we describe the OPD implementation in Miles, the sparse teacher-scoring workflow we added to avoid unnecessary dense logprob payloads, and an initial Qwen3.5-35B-A3B self-distillation experiment validated on a single **8×NVIDIA B200** node. The experiment shows that without any task-specific reward, OPD can transfer a teacher model’s shorter-reasoning behavior to a base student model while preserving the student model’s performance.
 
-![](/images/blog/opd-support-in-miles/figure-1.png)
+<img src="/images/blog/opd-support-in-miles/figure-1.png" alt="Miles and OPD workflow" style="display:block; margin-left:auto; margin-right:auto; width:70%;"></img>
 
 ## OPD as a Miles Primitive
 
@@ -80,15 +80,15 @@ The three learning curves tell the same story from different angles.
 
 **Held-out DAPO performance increases**, indicating that the student does not regress on task performance after OPD.
 
-![](/images/blog/opd-support-in-miles/figure-2.png)
+<img src="/images/blog/opd-support-in-miles/figure-2.png" alt="Held-out DAPO performance over evaluation steps" style="display:block; margin-left:auto; margin-right:auto; width:60%;"></img>
 
 **Sampled rollout length drops quickly**, showing that the student adopts the teacher’s shorter-response behavior.
 
-![](/images/blog/opd-support-in-miles/figure-3.png)
+<img src="/images/blog/opd-support-in-miles/figure-3.png" alt="Sampled rollout length over rollout steps" style="display:block; margin-left:auto; margin-right:auto; width:60%;"></img>
 
 **Per-token OPD reverse-KL decreases**, confirming that the student distribution is moving closer to the teacher distribution.
 
-![](/images/blog/opd-support-in-miles/figure-4.png)
+<img src="/images/blog/opd-support-in-miles/figure-4.png" alt="Per-token OPD reverse-KL over rollout steps" style="display:block; margin-left:auto; margin-right:auto; width:60%;"></img>
 
 Because raw task reward is zero in this experiment, the behavior change is solely driven by the OPD teacher signal. The central result is that **pure OPD transfers the teacher’s efficient-reasoning behavior to the base student while held-out DAPO performance improves rather than degrades**.
 
