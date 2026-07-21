@@ -1,6 +1,6 @@
 ---
 title: "OPD Support in Miles"
-author: "Kaixi Hou and the Miles Team"
+author: "Kaixi Hou & Miles Team"
 date: "July 18, 2026"
 previewImg: /images/blog/opd-support-in-miles/figure-1.png
 ---
