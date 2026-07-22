@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="540" viewBox="0 0 1200 540" role="img" aria-labelledby="title desc">
+  <title id="title">Shared-expert fusion and the linearized weight layout</title>
+  <desc id="desc">A before-and-after comparison. The expert-batched path replicates tokens, performs batched gate-up and down matrix multiplications, materializes per-expert outputs, and sums them. Expert fusion stacks gate-up weights and concatenates down weights so two dense matrix multiplications perform the same computation without replicated inputs or an explicit expert sum.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 25px; font-weight: 700; fill: #172033; }
+      .subtitle { font-family: Arial, sans-serif; font-size: 14px; fill: #64748b; }
+      .panel-title { font-family: Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #172033; }
+      .box-title { font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #172033; }
+      .box-note { font-family: Arial, sans-serif; font-size: 12px; fill: #526174; }
+      .footnote { font-family: Arial, sans-serif; font-size: 13px; font-weight: 600; fill: #475569; }
+      .panel-old { fill: #fff; stroke: #cbd5e1; stroke-width: 1.2; }
+      .panel-new { fill: #fbfefc; stroke: #86b99a; stroke-width: 1.5; }
+      .input { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.4; }
+      .old { fill: #fff7ed; stroke: #d97706; stroke-width: 1.4; }
+      .new { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.5; }
+      .activation { fill: #f5f3ff; stroke: #7c3aed; stroke-width: 1.4; }
+      .output { fill: #f0fdf4; stroke: #15803d; stroke-width: 1.4; }
+      .flow { fill: none; stroke: #64748b; stroke-width: 1.5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="540" fill="#ffffff"/>
+  <text x="40" y="40" class="title">Shared-expert fusion folds the expert axis into two dense GEMMs</text>
+  <text x="40" y="65" class="subtitle">Every token visits every shared expert, so the expert batch can be represented directly in the weight dimensions.</text>
+
+  <rect x="30" y="88" width="550" height="390" rx="14" class="panel-old"/>
+  <text x="55" y="120" class="panel-title">Expert-batched path</text>
+  <text x="55" y="143" class="subtitle">Replicate → materialize per expert → reduce</text>
+
+  <rect x="165" y="158" width="280" height="42" rx="8" class="input"/>
+  <text x="305" y="184" text-anchor="middle" class="box-title">tokens x  [T, D]</text>
+
+  <rect x="165" y="216" width="280" height="42" rx="8" class="old"/>
+  <text x="305" y="236" text-anchor="middle" class="box-title">replicate x across E experts</text>
+  <text x="305" y="251" text-anchor="middle" class="box-note">materialize [E, T, D]</text>
+
+  <rect x="165" y="274" width="280" height="42" rx="8" class="old"/>
+  <text x="305" y="294" text-anchor="middle" class="box-title">batched gate/up GEMM</text>
+  <text x="305" y="309" text-anchor="middle" class="box-note">one matrix multiply per expert</text>
+
+  <rect x="165" y="332" width="280" height="42" rx="8" class="activation"/>
+  <text x="305" y="352" text-anchor="middle" class="box-title">weighted SwiGLU</text>
+  <text x="305" y="367" text-anchor="middle" class="box-note">retain the expert dimension</text>
+
+  <rect x="165" y="390" width="180" height="42" rx="8" class="old"/>
+  <text x="255" y="410" text-anchor="middle" class="box-title">batched down GEMM</text>
+  <text x="255" y="425" text-anchor="middle" class="box-note">E outputs</text>
+  <rect x="365" y="390" width="160" height="42" rx="8" class="old"/>
+  <text x="445" y="410" text-anchor="middle" class="box-title">sum over E</text>
+  <text x="445" y="425" text-anchor="middle" class="box-note">explicit reduction</text>
+
+  <path d="M305 200 V216" class="flow"/>
+  <path d="M305 258 V274" class="flow"/>
+  <path d="M305 316 V332" class="flow"/>
+  <path d="M305 374 V390" class="flow"/>
+  <path d="M345 411 H365" class="flow"/>
+
+  <rect x="620" y="88" width="550" height="390" rx="14" class="panel-new"/>
+  <text x="645" y="120" class="panel-title">Expert fusion: linearized layout</text>
+  <text x="645" y="143" class="subtitle">Stack weights → compute once → reduce inside GEMM</text>
+
+  <rect x="755" y="158" width="280" height="42" rx="8" class="input"/>
+  <text x="895" y="184" text-anchor="middle" class="box-title">tokens x  [T, D]</text>
+
+  <rect x="755" y="216" width="280" height="42" rx="8" class="new"/>
+  <text x="895" y="236" text-anchor="middle" class="box-title">one dense gate/up GEMM</text>
+  <text x="895" y="251" text-anchor="middle" class="box-note">W₁₃ weights stacked on output rows</text>
+
+  <rect x="755" y="274" width="280" height="42" rx="8" class="activation"/>
+  <text x="895" y="294" text-anchor="middle" class="box-title">reshape + weighted SwiGLU</text>
+  <text x="895" y="309" text-anchor="middle" class="box-note">the nonlinear math is unchanged</text>
+
+  <rect x="755" y="332" width="280" height="42" rx="8" class="new"/>
+  <text x="895" y="352" text-anchor="middle" class="box-title">flatten the expert features</text>
+  <text x="895" y="367" text-anchor="middle" class="box-note">[T, E, F] → [T, E·F]</text>
+
+  <rect x="755" y="390" width="280" height="42" rx="8" class="output"/>
+  <text x="895" y="410" text-anchor="middle" class="box-title">one dense down GEMM → output y</text>
+  <text x="895" y="425" text-anchor="middle" class="box-note">W₂ inputs concatenated; K reduction sums experts</text>
+
+  <path d="M895 200 V216" class="flow"/>
+  <path d="M895 258 V274" class="flow"/>
+  <path d="M895 316 V332" class="flow"/>
+  <path d="M895 374 V390" class="flow"/>
+
+  <text x="600" y="512" text-anchor="middle" class="footnote">“Linearized” names the 2-D weight layout; expert fusion names the optimization.</text>
+</svg>

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="510" viewBox="0 0 1200 510" role="img" aria-labelledby="title desc">
+  <title id="title">Two-stream LoRA serving schedule</title>
+  <desc id="desc">The main CUDA stream runs the base gate-up and down matrix multiplications. A LoRA side stream selects factors using each token's adapter ID and computes low-rank shrink work. Fused joins expand and add the low-rank deltas at the activation and output dependencies.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#d97706"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 25px; font-weight: 700; fill: #172033; }
+      .subtitle { font-family: Arial, sans-serif; font-size: 14px; fill: #64748b; }
+      .lane { font-family: Arial, sans-serif; font-size: 17px; font-weight: 700; fill: #172033; }
+      .box-title { font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #172033; }
+      .box-note { font-family: Arial, sans-serif; font-size: 12px; fill: #526174; }
+      .legend { font-family: Arial, sans-serif; font-size: 12px; font-weight: 500; fill: #526174; }
+      .base { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.6; }
+      .lora { fill: #fff7ed; stroke: #d97706; stroke-width: 1.6; }
+      .join { fill: #f5f3ff; stroke: #7c3aed; stroke-width: 1.6; }
+      .meta { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.4; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.2; }
+      .overlap { fill: none; stroke: #f59e0b; stroke-width: 1; stroke-dasharray: 5 4; }
+      .flow { fill: none; stroke: #64748b; stroke-width: 1.6; marker-end: url(#arrow); }
+      .flow-lora { fill: none; stroke: #d97706; stroke-width: 1.6; marker-end: url(#arrow-amber); }
+      .event { fill: none; stroke: #7c3aed; stroke-width: 1.4; stroke-dasharray: 4 3; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="510" fill="#ffffff"/>
+  <text x="40" y="40" class="title">LoRA runs beside the base model, not after it</text>
+  <text x="40" y="65" class="subtitle">Per-token adapter selection keeps different LoRAs in one batch and one CUDA-graph schedule.</text>
+
+  <rect x="40" y="82" width="18" height="12" rx="2" class="base"/>
+  <text x="65" y="93" class="legend">base computation</text>
+  <rect x="185" y="82" width="18" height="12" rx="2" class="lora"/>
+  <text x="210" y="93" class="legend">low-rank work</text>
+  <rect x="315" y="82" width="18" height="12" rx="2" class="join"/>
+  <text x="340" y="93" class="legend">fused dependency join</text>
+
+  <rect x="28" y="112" width="1144" height="342" rx="14" class="panel"/>
+  <text x="50" y="148" class="lane">Main CUDA stream</text>
+  <text x="50" y="305" class="lane">LoRA side stream</text>
+
+  <rect x="177" y="166" width="200" height="66" rx="9" class="base"/>
+  <text x="277" y="191" text-anchor="middle" class="box-title">base gate/up GEMM</text>
+  <text x="277" y="211" text-anchor="middle" class="box-note">unchanged base weights</text>
+
+  <rect x="436" y="166" width="220" height="66" rx="9" class="join"/>
+  <text x="546" y="190" text-anchor="middle" class="box-title">B₁ expand + add + activation</text>
+  <text x="546" y="211" text-anchor="middle" class="box-note">SiLU(g + Δg) × (u + Δu)</text>
+
+  <rect x="716" y="166" width="190" height="66" rx="9" class="base"/>
+  <text x="811" y="191" text-anchor="middle" class="box-title">base down GEMM</text>
+  <text x="811" y="211" text-anchor="middle" class="box-note">consumes joined activation</text>
+
+  <rect x="966" y="166" width="170" height="66" rx="9" class="join"/>
+  <text x="1051" y="190" text-anchor="middle" class="box-title">B₂ expand + add</text>
+  <text x="1051" y="211" text-anchor="middle" class="box-note">combined block output</text>
+
+  <rect x="177" y="319" width="200" height="66" rx="9" class="lora"/>
+  <text x="277" y="344" text-anchor="middle" class="box-title">A₁ shrink</text>
+  <text x="277" y="364" text-anchor="middle" class="box-note">model dimension → rank r</text>
+
+  <rect x="716" y="319" width="190" height="66" rx="9" class="lora"/>
+  <text x="811" y="344" text-anchor="middle" class="box-title">A₂ shrink</text>
+  <text x="811" y="364" text-anchor="middle" class="box-note">hidden features → rank r</text>
+
+  <rect x="40" y="393" width="110" height="43" rx="8" class="meta"/>
+  <text x="95" y="411" text-anchor="middle" class="box-title">adapter ID</text>
+  <text x="95" y="427" text-anchor="middle" class="box-note">for each token</text>
+
+  <rect x="160" y="155" width="233" height="242" rx="12" class="overlap" opacity="0.28"/>
+  <rect x="699" y="155" width="223" height="242" rx="12" class="overlap" opacity="0.28"/>
+
+  <path d="M377 199 H436" class="flow"/>
+  <path d="M656 199 H716" class="flow"/>
+  <path d="M906 199 H966" class="flow"/>
+  <path d="M377 352 C415 352 405 232 452 216" class="flow-lora"/>
+  <path d="M546 232 C546 284 681 288 732 326" class="flow"/>
+  <path d="M906 352 C945 352 934 232 982 216" class="flow-lora"/>
+  <path d="M150 414 C164 414 155 352 177 352" class="flow-lora"/>
+  <path d="M150 414 H670 C690 414 690 352 716 352" class="flow-lora"/>
+
+  <path d="M420 145 V249" class="event"/>
+  <path d="M950 145 V249" class="event"/>
+  <text x="420" y="265" text-anchor="middle" class="box-note">join only when Δ is consumed</text>
+  <text x="950" y="265" text-anchor="middle" class="box-note">join only when Δ is consumed</text>
+
+  <text x="600" y="484" text-anchor="middle" class="subtitle">Expert layers reuse the base route map; multiple adapter IDs select factors inside the same launches.</text>
+</svg>
