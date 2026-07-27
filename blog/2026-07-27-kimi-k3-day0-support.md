@@ -413,19 +413,20 @@ the memory section above takes that on.
 ### Combining all strategies together
 
 How the pieces compose is ultimately a measurement. Putting PD disaggregation in the
-loop, with chunked PP8 prefill throughout and the decode topology and prefill:decode
-ratio varying, gives the serving frontier:
+loop, with the prefill topology, decode topology and prefill:decode ratio varying, gives
+the serving frontier:
 
 <p align="center">
-  <img src="/images/blog/kimi-k3-day0-support/fig-pareto-pd.svg" width="98%" alt="K3 serving frontier under PD disaggregation: total throughput per GPU versus per-user decode speed for chunked PP8 prefill feeding TP8, DCP8, EP and multi-instance TP8 decode arms; the frontier runs from PP8 to TP8 at the throughput end out to PP8 feeding four TP8 instances at the interactive end.">
+  <img src="/images/blog/kimi-k3-day0-support/fig-pareto-pd.svg" width="98%" alt="K3 serving frontier under PD disaggregation: total throughput per GPU versus per-user decode speed for PP8 and TP8 prefill feeding TP8, DCP8, EP and multi-instance TP8 decode arms; the frontier runs from PP8 to TP8 at the throughput end out to TP8 feeding three TP8 instances at the interactive end.">
 </p>
 
 <p align="center">
-  <em><b>The serving frontier.</b> At the throughput end the DCP composition, two PP8
-  prefill workers feeding two DCP8 decode nodes, delivers 2,633 tok/s per GPU, level with
-  the best TP8 arm. Moving right is the prefill:decode knob at work: one PP8 prefill
-  worker feeding two, three, then four independent TP8 decode instances trades aggregate
-  throughput for per-user speed, out past 86 tok/s per user.</em>
+  <em><b>The serving frontier.</b> At the throughput end one PP8 prefill worker feeding
+  one TP8 decode node delivers 2,808 tok/s per GPU on the fp4 arm, with the DCP
+  composition, two PP8 prefill workers feeding two DCP8 decode nodes, just behind at
+  2,633. Moving right is the prefill:decode knob at work: one prefill worker feeding two,
+  three, then four independent decode instances trades aggregate throughput for per-user
+  speed, out past 116 tok/s per user.</em>
 </p>
 
 ## RL: LoRA Training on the Native MXFP4 Base
