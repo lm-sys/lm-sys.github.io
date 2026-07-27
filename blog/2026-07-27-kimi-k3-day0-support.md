@@ -23,7 +23,7 @@ it took.
   overwrites itself in place, with prefix caching, overlap scheduling and paging rebuilt
   on top, and a unified pool design that removes the last sizing guess.
 - **A kernel ladder** reaching ~113 tok/s at batch 1, before speculation.
-- **DSpark speculative decoding, with a draft model we trained for K3**: batch-1 decode
+- **DSpark speculative decoding, with [a draft model we trained for K3](https://huggingface.co/RadixArk/Kimi-K3-DSpark)**: batch-1 decode
   reaches ~423 tok/s. ReplaySSM handles the KDA state, replaying raw inputs instead of
   snapshotting per step, a roughly 32x cut in draft-window memory.
 - **Parallelism split by phase**: chunked pipeline-parallel prefill and context-parallel
