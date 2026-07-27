@@ -147,8 +147,9 @@ implementation in detail.
 
 ## Speculative decoding with DSpark
 
-K3 ships with DSpark block speculative decoding, driven by a draft model we trained for
-K3. Two parts of the integration deserve their own story: spending the verification budget
+K3 ships with DSpark block speculative decoding, driven by
+[a draft model we trained for K3](https://huggingface.co/RadixArk/Kimi-K3-DSpark).
+Two parts of the integration deserve their own story: spending the verification budget
 only where it pays, and making K3's recurrent KDA state survive speculation at all.
 
 ### Verify only what is worth verifying
