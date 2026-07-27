@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 716" width="1000" height="716" role="img" aria-label="Top: a radix tree drawn paper-style, small nodes with token spans labelling the edges; only a few nodes carry a KDA checkpoint tag, one is a tombstone. Bottom: before and after a branch, both trees rooted. Before, request B diverges mid-edge and replays from the checkpoint above. After, a checkpoint is planted at the chunk-aligned fork.">
+<style>
+svg{
+  --paper:#ffffff; --ink:#22211e; --cap:#8f8b83;
+  --node:#8a99ab; --node-ink:#4d5d70;
+  --stt:#b39548; --stt-bg:#f6efdc; --stt-ink:#79601f;
+  --snap:#2e8c80;
+  --don:#a05a92;
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  svg{
+    --paper:#16171a; --ink:#e8e7e3; --cap:#9a978f;
+    --node:#93a5ba; --node-ink:#b9c8da;
+    --stt:#cfa952; --stt-bg:#332c17; --stt-ink:#e6cf8f;
+    --snap:#66c6b6;
+    --don:#d59cc6;
+  }
+}
+.band{fill:var(--ink);opacity:.035;}
+.rowlab{fill:var(--ink);font-size:13px;font-weight:650;}
+.rowsub{fill:var(--cap);font-size:10.5px;}
+.ptitle{fill:var(--cap);font-size:10.5px;font-weight:650;text-anchor:middle;letter-spacing:.02em;}
+.nd{fill:var(--paper);stroke:var(--node);stroke-width:1.5;}
+.t-root{fill:var(--cap);font-size:10px;font-weight:600;text-anchor:end;}
+.elab{fill:var(--node-ink);font-size:9.5px;font-weight:500;font-family:ui-monospace,Menlo,monospace;}
+.elab-e{fill:var(--node-ink);font-size:9.5px;font-weight:500;font-family:ui-monospace,Menlo,monospace;text-anchor:end;}
+.tedge{stroke:var(--node);stroke-width:1.4;fill:none;opacity:.55;stroke-linejoin:round;stroke-linecap:round;}
+.tag{fill:var(--stt-bg);stroke:var(--stt);stroke-width:1.4;}
+.tag-new{fill:var(--paper);stroke:var(--stt);stroke-width:1.4;stroke-dasharray:4 2.5;}
+.tag-dead{fill:var(--paper);stroke:var(--cap);stroke-width:1.2;stroke-dasharray:3 3;}
+.t-tag{fill:var(--stt-ink);font-size:8.5px;font-weight:700;text-anchor:middle;}
+.t-tagd{fill:var(--cap);font-size:9px;font-weight:600;text-anchor:middle;}
+.an{fill:var(--ink);font-size:12px;}
+.an-h{font-weight:700;}
+.an-s{fill:var(--cap);font-size:10.5px;}
+.snote{fill:var(--cap);font-size:9.5px;font-style:italic;}
+.nlabel{fill:var(--cap);font-size:9.5px;font-style:italic;text-anchor:middle;}
+.a-replay{stroke:var(--snap);stroke-width:1.8;fill:none;}
+.t-replay{fill:var(--snap);font-size:9.5px;font-weight:600;text-anchor:end;}
+.t-plant{fill:var(--don);font-size:10.5px;font-weight:700;}
+.t-plants{fill:var(--cap);font-size:9.5px;}
+.stub{stroke:var(--node);stroke-width:1.4;fill:none;stroke-dasharray:4 3;opacity:.8;}
+.t-div{fill:var(--ink);font-size:10px;font-weight:600;}
+.caption{fill:var(--cap);font-size:11.5px;font-style:italic;text-anchor:middle;}
+</style>
+<defs>
+  <marker id="hR" markerWidth="8" markerHeight="8" refX="6" refY="2.8" orient="auto"><path d="M0,0 L6,2.8 L0,5.6 Z" fill="var(--snap)"/></marker>
+  <marker id="hE" markerWidth="8" markerHeight="8" refX="6" refY="2.8" orient="auto"><path d="M0,0 L6,2.8 L0,5.6 Z" fill="var(--node)" opacity=".8"/></marker>
+</defs>
+
+<rect x="0" y="0" width="1000" height="716" fill="var(--paper)"/>
+
+<!-- ================= part A · the sparse overlay ================= -->
+<rect class="band" x="16" y="40" width="974" height="372" rx="10"/>
+<text class="rowlab" x="24" y="74">radix tree</text>
+<text class="rowsub" x="24" y="90">edges carry token spans</text>
+<text class="rowsub" x="24" y="104">checkpoints on a few nodes</text>
+
+<text class="t-root" x="278" y="71">root</text>
+<rect class="nd" x="287" y="56" width="26" height="22" rx="6"/>
+<path class="tedge" d="M300,78 V116"/>
+<text class="elab" x="310" y="100">sys prompt · 1024</text>
+<rect class="nd" x="287" y="116" width="26" height="22" rx="6"/>
+<rect class="tag" x="320" y="119" width="40" height="16" rx="8"/><text class="t-tag" x="340" y="130.5">ckpt</text>
+
+<path class="tedge" d="M300,138 V150 H150 V176"/>
+<text class="elab" x="158" y="170">another chat · 512</text>
+<rect class="nd" x="137" y="176" width="26" height="22" rx="6"/>
+<path class="tedge" d="M150,198 V210"/>
+<text class="t-root" x="154" y="226" style="text-anchor:middle;font-size:11px;">⋮</text>
+
+<path class="tedge" d="M300,138 V176"/>
+<text class="elab" x="310" y="160">turn 1 · 2048</text>
+<rect class="nd" x="287" y="176" width="26" height="22" rx="6"/>
+<rect class="tag-dead" x="320" y="179" width="40" height="16" rx="8"/><text class="t-tagd" x="340" y="190.5">✕</text>
+<text class="snote" x="370" y="191">ckpt evicted · node and KV stay</text>
+<path class="tedge" d="M300,198 V236"/>
+<text class="elab" x="310" y="220">turn 2 · 1536</text>
+<rect class="nd" x="287" y="236" width="26" height="22" rx="6"/>
+<text class="snote" x="322" y="251">no ckpt · kept sparse (per-path cap)</text>
+<path class="tedge" d="M300,258 V296"/>
+<text class="elab" x="310" y="280">turn 3 · 768</text>
+<rect class="nd" x="287" y="296" width="26" height="22" rx="6"/>
+<rect class="tag" x="320" y="299" width="40" height="16" rx="8"/><text class="t-tag" x="340" y="310.5">ckpt</text>
+<text class="snote" x="370" y="311">kept · a fork, shared by the branches below</text>
+
+<path class="tedge" d="M300,318 V330 H210 V352"/>
+<path class="tedge" d="M300,318 V330 H390 V352"/>
+<text class="elab-e" x="202" y="347">req A · 448</text>
+<text class="elab" x="398" y="347">req B · 192</text>
+<rect class="nd" x="197" y="352" width="26" height="22" rx="6"/>
+<rect class="tag" x="228" y="355" width="40" height="16" rx="8"/><text class="t-tag" x="248" y="366.5">ckpt</text>
+<rect class="nd" x="377" y="352" width="26" height="22" rx="6"/>
+<rect class="tag" x="410" y="355" width="40" height="16" rx="8"/><text class="t-tag" x="430" y="366.5">ckpt</text>
+<text class="nlabel" x="232" y="392">finished · ckpt kept</text>
+<text class="nlabel" x="414" y="392">the live tip · kept</text>
+
+<!-- legend -->
+<rect class="nd" x="646" y="96" width="26" height="22" rx="6"/>
+<text class="an" x="710" y="106"><tspan class="an-h">a node</tspan> · a position in the tree</text>
+<text class="an-s" x="710" y="122">each edge carries a span of tokens and its KV</text>
+<text class="an-s" x="710" y="136">· N = tokens in the span · page size 64</text>
+<rect class="tag" x="640" y="170" width="40" height="16" rx="8"/><text class="t-tag" x="660" y="181.5">ckpt</text>
+<text class="an" x="710" y="180"><tspan class="an-h" style="fill:var(--stt-ink);">a KDA checkpoint, pinned to a node</tspan></text>
+<text class="an-s" x="710" y="196">chunk-aligned nodes only · kept sparse</text>
+<text class="an-s" x="710" y="210">per-path cap + LRU · copy-on-write on a hit</text>
+<text class="an-s" x="710" y="224">evicted independently of KV</text>
+<rect class="tag-dead" x="640" y="256" width="40" height="16" rx="8"/><text class="t-tagd" x="660" y="267.5">✕</text>
+<text class="an" x="710" y="266"><tspan class="an-h" style="fill:var(--cap);">tombstone</tspan></text>
+<text class="an-s" x="710" y="282">checkpoint evicted, the node and its KV stay</text>
+
+<!-- ================= part B · branching point ================= -->
+<rect class="band" x="16" y="424" width="974" height="248" rx="10"/>
+<text class="rowlab" x="24" y="456">branching point</text>
+<text class="rowsub" x="24" y="472">a fork is a prefix every</text>
+<text class="rowsub" x="24" y="486">future branch shares</text>
+
+<!-- before -->
+<text class="ptitle" x="230" y="448">BEFORE · REQ B DIVERGES</text>
+<rect class="nd" x="217" y="456" width="26" height="22" rx="6"/>
+<text class="t-root" x="208" y="471">root</text>
+<path class="tedge" d="M230,478 V510"/>
+<text class="elab" x="238" y="498">shared prefix · 1024</text>
+<rect class="nd" x="217" y="510" width="26" height="22" rx="6"/>
+<rect class="tag" x="248" y="513" width="40" height="16" rx="8"/><text class="t-tag" x="268" y="524.5">ckpt</text>
+<path class="tedge" d="M230,532 V616"/>
+<circle cx="230" cy="570" r="3" fill="var(--node)"/>
+<path class="stub" d="M233,570 H272" marker-end="url(#hE)"/>
+<text class="t-div" x="280" y="566">req B diverges here</text>
+<text class="an-s" x="280" y="580" style="font-size:9.5px;">mid-edge · no checkpoint at this point</text>
+<path class="a-replay" d="M218,536 V566" marker-end="url(#hR)"/>
+<text class="t-replay" x="210" y="548">replay from the</text>
+<text class="t-replay" x="210" y="560">checkpoint above</text>
+<text class="elab" x="238" y="606">req A tail · 960</text>
+<rect class="nd" x="217" y="616" width="26" height="22" rx="6"/>
+<rect class="tag" x="248" y="619" width="40" height="16" rx="8"/><text class="t-tag" x="268" y="630.5">ckpt</text>
+<text class="nlabel" x="244" y="658">deeper checkpoint · a state can't run backwards</text>
+
+<!-- after -->
+<text class="ptitle" x="690" y="448">AFTER · A CHECKPOINT IS PLANTED</text>
+<rect class="nd" x="677" y="456" width="26" height="22" rx="6"/>
+<text class="t-root" x="668" y="471">root</text>
+<path class="tedge" d="M690,478 V510"/>
+<text class="elab" x="698" y="498">shared prefix · 1024</text>
+<rect class="nd" x="677" y="510" width="26" height="22" rx="6"/>
+<rect class="tag" x="708" y="513" width="40" height="16" rx="8"/><text class="t-tag" x="728" y="524.5">ckpt</text>
+<path class="tedge" d="M690,532 V564"/>
+<text class="elab" x="698" y="552">…to the fork · 640</text>
+<rect class="nd" x="677" y="564" width="26" height="22" rx="6"/>
+<rect class="tag-new" x="708" y="567" width="40" height="16" rx="8"/><text class="t-tag" x="728" y="578.5">ckpt</text>
+<text class="t-plant" x="758" y="574">planted at the fork</text>
+<text class="t-plants" x="758" y="588">by req B's replay, then donated</text>
+<path class="tedge" d="M690,586 V598 H610 V614"/>
+<path class="tedge" d="M690,586 V598 H770 V614"/>
+<text class="elab-e" x="602" y="610">req A tail · 320</text>
+<text class="elab" x="778" y="610">req B tail · …</text>
+<rect class="nd" x="597" y="614" width="26" height="22" rx="6"/>
+<rect class="nd" x="757" y="614" width="26" height="22" rx="6"/>
+<text class="nlabel" x="690" y="658">the next branch restores here, no replay</text>
+
+<!-- ================= caption ================= -->
+<text class="caption" x="500" y="700">KV can branch at any page boundary. A recurrent state cannot be split, so on divergence the request replays from the last checkpoint and plants a new one at the chunk-aligned fork.</text>
+</svg>
