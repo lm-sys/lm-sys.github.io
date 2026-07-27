@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 548" width="1000" height="548" role="img" aria-label="Space-time diagram in three lanes. Top: radix tree checkpoints. Middle: the request's extra buffer (keep and next) and its working slot. Bottom: the serial forward stream with extend chunks and decode steps; a snapshot follows every extend chunk and every decode track interval. Solid arrows are state copies on the stream; dashed arrows move only an index.">
+<style>
+svg{
+  --paper:#ffffff; --ink:#22211e; --cap:#8f8b83;
+  --st:#bd9358; --st-bg:#f4ecdc; --st-ink:#6d5222;
+  --cow:#4c5fa8; --cow-bg:#e5e9f7;
+  --snap:#2e8c80; --snap-bg:#dcefeb;
+  --don:#a05a92;
+  --fwdl:#7f9c92; --fwd-ink:#56766b;
+  --tick:#adbfb8;
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  svg{
+    --paper:#16171a; --ink:#e8e7e3; --cap:#9a978f;
+    --st:#d3ad67; --st-bg:#34301f; --st-ink:#e9d5a4;
+    --cow:#97a7ef; --cow-bg:#252c4e;
+    --snap:#66c6b6; --snap-bg:#123230;
+    --don:#d59cc6;
+    --fwdl:#8fb2a6; --fwd-ink:#a9cfc2;
+    --tick:#4d5c55;
+  }
+}
+.band{fill:var(--ink);opacity:.03;}
+.rowlab{fill:var(--ink);font-size:13px;font-weight:650;}
+.rowsub{fill:var(--cap);font-size:10.5px;}
+.cell{fill:var(--st-bg);stroke:var(--st);stroke-width:1.6;}
+.cell-new{fill:var(--paper);stroke:var(--st);stroke-width:1.5;stroke-dasharray:5 3;}
+.t-cell{fill:var(--st-ink);font-size:12px;font-weight:650;text-anchor:middle;}
+.t-cells{fill:var(--st-ink);font-size:9.5px;font-weight:400;text-anchor:middle;opacity:.85;}
+.grp{fill:none;stroke:var(--cap);stroke-width:1.2;stroke-dasharray:4 4;opacity:.75;}
+.lifeline{stroke:var(--st);stroke-width:1.2;stroke-dasharray:2 4;opacity:.7;}
+.k-fwd{fill:var(--paper);stroke:var(--fwdl);stroke-width:1.5;}
+.t-fwd{fill:var(--fwd-ink);font-size:11px;font-weight:600;text-anchor:middle;}
+.k-cow{fill:var(--cow-bg);stroke:var(--cow);stroke-width:1.6;}
+.t-cow{fill:var(--cow);font-size:11.5px;font-weight:700;text-anchor:middle;}
+.k-snap{fill:var(--snap-bg);stroke:var(--snap);stroke-width:1.6;}
+.t-snap{fill:var(--snap);font-size:10.5px;font-weight:700;text-anchor:middle;}
+.stream{stroke:var(--fwdl);stroke-width:1.3;opacity:.65;}
+.grpline{stroke:var(--cap);stroke-width:1.1;opacity:.8;fill:none;}
+.grptext{fill:var(--cap);font-size:10.5px;text-anchor:middle;}
+.a-cow{stroke:var(--cow);stroke-width:2.1;fill:none;}
+.a-snap{stroke:var(--snap);stroke-width:2.1;fill:none;}
+.a-don{stroke:var(--don);stroke-width:2.1;fill:none;stroke-dasharray:6 4;}
+.a-swap{stroke:var(--st);stroke-width:1.4;fill:none;stroke-dasharray:5.5 3.5;}
+.tick{stroke:var(--tick);stroke-width:1.3;}
+.ph-cow{fill:var(--cow);font-size:12px;font-weight:700;text-anchor:middle;}
+.ph-snap{fill:var(--snap);font-size:12px;font-weight:700;text-anchor:middle;}
+.ph-don{fill:var(--don);font-size:12px;font-weight:700;}
+.sub{fill:var(--cap);font-size:10.5px;text-anchor:middle;}
+.sub-s{fill:var(--cap);font-size:10.5px;}
+.bufcap{fill:var(--st-ink);font-size:10.5px;font-weight:650;}
+.caption{fill:var(--cap);font-size:11.5px;font-style:italic;text-anchor:middle;}
+.lgl{stroke:var(--cap);stroke-width:1.6;}
+.lgl-d{stroke:var(--cap);stroke-width:1.6;stroke-dasharray:5 3;}
+.lgt{fill:var(--cap);font-size:10.5px;}
+.taxis{fill:var(--cap);font-size:11px;font-style:italic;}
+</style>
+<defs>
+  <marker id="hC" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--cow)"/></marker>
+  <marker id="hS" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--snap)"/></marker>
+  <marker id="hD" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--don)"/></marker>
+  <marker id="hT" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto-start-reverse"><path d="M0,0 L5.5,2.5 L0,5 Z" fill="var(--tick)"/></marker>
+  <marker id="hG" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5.5,2.5 L0,5 Z" fill="var(--fwdl)" opacity=".7"/></marker>
+  <marker id="hW" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5.5,2.5 L0,5 Z" fill="var(--st)"/></marker>
+  <marker id="hLs" markerWidth="6" markerHeight="6" refX="4.2" refY="2" orient="auto"><path d="M0,0 L4.5,2 L0,4 Z" fill="var(--cap)"/></marker>
+</defs>
+
+<rect x="0" y="0" width="1000" height="548" fill="var(--paper)"/>
+
+<!-- lane bands -->
+<rect class="band" x="16" y="50"  width="974" height="74"  rx="10"/>
+<rect class="band" x="16" y="140" width="974" height="164" rx="10"/>
+<rect class="band" x="16" y="340" width="974" height="68"  rx="10"/>
+
+<!-- row labels -->
+<text class="rowlab" x="24" y="76">radix tree</text>
+<text class="rowsub" x="24" y="92">shared · frozen copies</text>
+<text class="rowsub" x="24" y="106">evictable</text>
+<text class="rowlab" x="24" y="204">request</text>
+<text class="rowsub" x="24" y="220">private · live state</text>
+<text class="rowlab" x="24" y="370">forward stream</text>
+<text class="rowsub" x="24" y="386">GPU · one serial line</text>
+
+<!-- row 1 · tree -->
+<rect class="cell" x="170" y="62" width="128" height="46" rx="9"/>
+<text class="t-cell" x="234" y="90">KDA checkpoint</text>
+<rect class="cell-new" x="600" y="62" width="150" height="46" rx="9"/>
+<text class="t-cell" x="675" y="90">new KDA checkpoint</text>
+
+<!-- ③ donate labels -->
+<text class="ph-don" x="756" y="74">③ donate</text>
+<text class="sub-s" x="756" y="90">after each prefill chunk / at finish</text>
+<text class="sub-s" x="756" y="106">index only · no bytes · no kernel</text>
+
+<!-- row 2a · extra buffer (lazy: next is transient) -->
+<rect class="grp" x="564" y="150" width="296" height="64" rx="11"/>
+<rect class="cell-new" x="576" y="158" width="116" height="46" rx="9"/>
+<text class="t-cell" x="634" y="178">next</text>
+<text class="t-cells" x="634" y="194">boundary write target</text>
+<rect class="cell" x="732" y="158" width="116" height="46" rx="9"/>
+<text class="t-cell" x="790" y="178">keep</text>
+<text class="t-cells" x="790" y="194">latest snapshot</text>
+<path class="a-swap" d="M696,170 C704,163 720,163 728,170" marker-end="url(#hW)"/>
+<path class="a-swap" d="M728,192 C720,199 704,199 696,192" marker-end="url(#hW)"/>
+<text class="t-cells" x="712" y="185" style="font-size:8.5px;">swap</text>
+<text class="bufcap" x="624" y="240">extra buffer · ping-pong</text>
+<text class="sub-s" x="624" y="256">lazy: next is allocated only at a boundary, freed after</text>
+
+<!-- row 2b · working slot + lifeline -->
+<rect class="cell" x="262" y="246" width="116" height="46" rx="9"/>
+<text class="t-cell" x="320" y="266">working slot</text>
+<text class="t-cells" x="320" y="282">read · write, every step</text>
+<line class="lifeline" x1="378" y1="269" x2="884" y2="269"/>
+
+<!-- row 3 · the serial stream: extend chunks, then decode -->
+<rect class="k-cow" x="170" y="352" width="70" height="42" rx="8"/><text class="t-cow" x="205" y="378">COW</text>
+<rect class="k-fwd" x="248" y="352" width="66" height="42" rx="8"/><text class="t-fwd" x="281" y="378">extend</text>
+<rect class="k-snap" x="322" y="352" width="72" height="42" rx="8"/><text class="t-snap" x="358" y="378">snapshot</text>
+<rect class="k-fwd" x="402" y="352" width="66" height="42" rx="8"/><text class="t-fwd" x="435" y="378">extend</text>
+<rect class="k-snap" x="476" y="352" width="72" height="42" rx="8"/><text class="t-snap" x="512" y="378">snapshot</text>
+<rect class="k-fwd" x="556" y="352" width="64" height="42" rx="8"/><text class="t-fwd" x="588" y="378">decode</text>
+<rect class="k-fwd" x="628" y="352" width="64" height="42" rx="8"/><text class="t-fwd" x="660" y="378">decode</text>
+<rect class="k-snap" x="700" y="352" width="72" height="42" rx="8"/><text class="t-snap" x="736" y="378">snapshot</text>
+<rect class="k-fwd" x="780" y="352" width="64" height="42" rx="8"/><text class="t-fwd" x="812" y="378">decode</text>
+<line class="stream" x1="852" y1="373" x2="922" y2="373" marker-end="url(#hG)"/>
+<text class="taxis" x="932" y="377">time</text>
+
+<!-- representative read/write ticks -->
+<line class="tick" x1="281" y1="349" x2="281" y2="297" marker-start="url(#hT)" marker-end="url(#hT)"/>
+<line class="tick" x1="660" y1="349" x2="660" y2="274" marker-start="url(#hT)" marker-end="url(#hT)"/>
+
+<!-- ① COW -->
+<path class="a-cow" d="M205,110 L205,346" marker-end="url(#hC)"/>
+<path class="a-cow" d="M234,349 C252,326 254,302 259,284" marker-end="url(#hC)"/>
+
+<!-- ② snapshot -->
+<path class="a-snap" d="M512,267 L512,347" marker-end="url(#hS)"/>
+<path class="a-snap" d="M534,349 C548,300 560,252 608,212" marker-end="url(#hS)"/>
+
+<!-- ③ donate -->
+<path class="a-don" d="M790,156 C784,138 754,120 726,112" marker-end="url(#hD)"/>
+
+<!-- phase labels -->
+<text class="ph-cow" x="205" y="424">① copy-on-write</text>
+<text class="sub" x="205" y="440">cache hit · tree → request</text>
+<text class="ph-snap" x="512" y="424">② snapshot</text>
+<text class="sub" x="512" y="440">chunk boundary · working → next</text>
+
+<!-- stream groups: extend vs decode -->
+<path class="grpline" d="M248,456 V460 H548 V456"/>
+<text class="grptext" x="398" y="474">extend · chunked prefill, a snapshot per chunk</text>
+<path class="grpline" d="M556,456 V460 H844 V456"/>
+<text class="grptext" x="700" y="474">decode · a snapshot every track interval</text>
+
+<!-- style legend, one line -->
+<line class="lgl"   x1="171" y1="497" x2="195" y2="497" marker-end="url(#hLs)"/>
+<text class="lgt" x="205" y="501">state copy</text>
+<line class="lgl-d" x1="290" y1="497" x2="314" y2="497" marker-end="url(#hLs)"/>
+<text class="lgt" x="324" y="501">index only</text>
+<line class="tick" x1="406" y1="497" x2="430" y2="497" marker-start="url(#hT)" marker-end="url(#hT)"/>
+<text class="lgt" x="440" y="501">in-place read/write</text>
+<rect class="cell" x="565" y="490" width="26" height="14" rx="4"/>
+<text class="lgt" x="599" y="501">a state slot</text>
+<rect class="cell-new" x="687" y="490" width="26" height="14" rx="4"/>
+<text class="lgt" x="721" y="501">transient or future</text>
+
+<!-- invariant -->
+<text class="caption" x="500" y="530">Every state copy is a kernel on the one serial stream, fenced by the writes around it. The only move that leaves the request moves no bytes.</text>
+</svg>
