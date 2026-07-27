@@ -5,6 +5,8 @@ date: "July 27, 2026"
 previewImg: /images/blog/kimi-k3-day0-support/cover-kimi-k3.png
 type: blog
 ---
+
+
 We are excited to announce Day-0 support for **[Kimi K3](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart)**
 in SGLang and Miles. K3 is the first open-source model in the 3-trillion-parameter class,
 and its hybrid architecture departs from convention in almost every place a serving stack
@@ -25,9 +27,13 @@ it took.
   reaches ~423 tok/s. ReplaySSM handles the KDA state, replaying raw inputs instead of
   snapshotting per step, a roughly 32x cut in draft-window memory.
 - **Parallelism split by phase**: chunked pipeline-parallel prefill and context-parallel
-  decode, composing under PD disaggregation to 2,633 tok/s per GPU.
+  decode, composing under PD disaggregation to **2,633** tok/s per GPU.
 - **LoRA RL with Miles on the native MXFP4 checkpoint**, colocated trainer and rollout
-  on the same GPUs.
+  on the same GPUs: AIME-2024 43.3% to 76.7% over a 12-hour run.
+
+Launch commands and per-workload configuration guidance live in the
+[Kimi K3 cookbook](https://docs.sglang.io/cookbook/autoregressive/Moonshotai/Kimi-K3).
+
 
 ## Bringing up Kimi K3
 
@@ -60,9 +66,17 @@ below all build on this bring-up.
 
 Attention KV is append-only. Once a token's KV is computed it never changes, which is what lets the scheduler share one physical copy across every request that shares a prefix, keep it in a radix tree, and pipeline it across iterations without a second thought. A KDA layer's state is the opposite, one fixed-size recurrent buffer that is **overwritten in place at every token**. So everything the scheduler hands KV for free, from prefix caching to the overlap scheduler to speculative decoding to paging, has to be rebuilt for a value that mutates as it is read. K3 interleaves 69 KDA layers with 24 MLA layers, so this is not a corner case. It is most of the model. What follows is that rebuild, and its one satisfying property is that every piece is forced by the overwrite-in-place fact. None of it is a bolt-on.
 
-**One request path, every feature.** The same path serves the overlap scheduler, speculative decoding, and `page_size > 1` at once, combinations that were previously mutually exclusive for recurrent-state models. A request can hit a cached prefix, restore the recurrent state, run a multi-token draft, verify it, and commit, all while the scheduler prepares the next batch one step ahead.
+### A single request path
 
-**Race-free by construction.** A request's live state sits in a single working slot, read and overwritten in place by every forward. Caching it means copying out of memory the GPU is actively mutating, and that creates two races. A restore can collide with the forward that is writing the slot. And the snapshot that refreshes the cache can collide with a donate that is still reading the previous one. Both close with no device-wide synchronization and no lock on the hot path. First, every state copy is a kernel on the serial forward stream. The copy-on-write that restores a cached checkpoint into the working slot, and the snapshot that captures the state at a track boundary, are enqueued between the forwards that produce and consume that state, so same-stream ordering provides the happens-before for free. A snapshot is taken once per prefill chunk and once every track interval during decode. Second, the only move that leaves the request transfers no bytes. Snapshots land in a ping-pong pair we call the extra buffer, where one slot holds the latest snapshot while the other takes the next one, and that second slot is allocated only at the boundary that needs it and freed right after. Caching donates the latest snapshot's slot index to the tree, after each prefill chunk, at the handover from prefill to decode, and when the request finishes. A fresh slot backfills the buffer, so the snapshot's write target and the donate's read source are never the same physical slot.
+The same path serves the overlap scheduler, speculative decoding, and `page_size > 1` at once, combinations that were previously mutually exclusive for recurrent-state models. A request can hit a cached prefix, restore the recurrent state, run a multi-token draft, verify it, and commit, all while the scheduler prepares the next batch one step ahead.
+
+### Three state moves on the forward stream
+
+A request's live state sits in a single working slot, read and overwritten in place by every forward. Caching it means copying out of memory the GPU is actively mutating, and that creates two races. A restore can collide with the forward that is writing the slot. And the snapshot that refreshes the cache can collide with a donate that is still reading the previous one. Both close with no device-wide synchronization and no lock on the hot path.
+
+First, every state copy is a kernel on the serial forward stream. The copy-on-write that restores a cached checkpoint into the working slot, and the snapshot that captures the state at a track boundary, are enqueued between the forwards that produce and consume that state, so same-stream ordering provides the happens-before for free. A snapshot is taken once per prefill chunk and once every track interval during decode.
+
+Second, the only move that leaves the request transfers no bytes. Snapshots land in a ping-pong pair we call the extra buffer, where one slot holds the latest snapshot while the other takes the next one, and that second slot is allocated only at the boundary that needs it and freed right after. Caching donates the latest snapshot's slot index to the tree, after each prefill chunk, at the handover from prefill to decode, and when the request finishes. A fresh slot backfills the buffer, so the snapshot's write target and the donate's read source are never the same physical slot.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig1-state-flow.svg" width="98%" alt="The three KDA state moves, copy-on-write, snapshot and donate, and where each sits relative to the serial forward stream.">
@@ -73,9 +87,13 @@ Attention KV is append-only. Once a token's KV is computed it never changes, whi
   one sits relative to the serial forward stream.</em>
 </p>
 
-**A frugal slot budget.** Because the reusable prefix checkpoints live in the shared, evictable radix tree, a running request reserves only a handful of transient slots, as few as four. That is its working slot, one extra-buffer slot for snapshots, and two slots of retention headroom, one for the committed prefix state that has to stay resident and one for the copy a diverging branch needs. The bulk of cached state is amortized across the whole tree rather than charged per request, so the state pool does not have to grow with how much history each request keeps warm.
+### Per-request slots, shared checkpoints
 
-**Prefix reuse for a recurrent state.** A recurrent state cannot be sliced at an arbitrary token, since you cannot run it backwards to an earlier position, so it is checkpointed only at chunk boundaries, and sparsely even there. A per-path cap and LRU keep just a few checkpoints alive on each path, and a checkpoint can be evicted independently of the KV it annotates, leaving the node as a tombstone. Branch points get special treatment, an idea from [Marconi](https://arxiv.org/abs/2411.19379). A fork is the one prefix every future branch is guaranteed to share, so when a request diverges mid-edge it replays from the nearest checkpoint above and plants a new checkpoint at the chunk-aligned fork. The next branch restores there directly, no replay.
+Because the reusable prefix checkpoints live in the shared, evictable radix tree, a running request reserves only a handful of transient slots, as few as four. That is its working slot, one extra-buffer slot for snapshots, and two slots of retention headroom, one for the committed prefix state that has to stay resident and one for the copy a diverging branch needs. The bulk of cached state is amortized across the whole tree rather than charged per request, so the state pool does not have to grow with how much history each request keeps warm.
+
+### Prefix caching for a recurrent state
+
+A recurrent state cannot be sliced at an arbitrary token, since you cannot run it backwards to an earlier position, so it is checkpointed only at chunk boundaries, and sparsely even there. A per-path cap and LRU keep just a few checkpoints alive on each path, and a checkpoint can be evicted independently of the KV it annotates, leaving the node as a tombstone. Branch points get special treatment, an idea from [Marconi](https://arxiv.org/abs/2411.19379). A fork is the one prefix every future branch is guaranteed to share, so when a request diverges mid-edge it replays from the nearest checkpoint above and plants a new checkpoint at the chunk-aligned fork. The next branch restores there directly, no replay.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig2-radix-branching.svg" width="98%" alt="Sparse KDA state checkpoints overlaid on the radix tree, and the branching point where a new request diverges from a cached prefix.">
@@ -127,30 +145,13 @@ and neither case needs anything reconfigured.
 Unified memory ships opt-in behind `--enable-unified-memory`. A follow-up post will go through the
 implementation in detail.
 
-## ReplaySSM: raw-input replay for the KDA state
+## Speculative decoding with DSpark
 
-Speculative decoding verifies γ+1 draft tokens at once and may accept only a prefix. For MLA that is free, since KV is append-only and a rejected draft just releases its slots. A KDA layer's state overwrites itself every token, as the previous section covered, so the baseline buys reversibility by brute force and snapshots the whole K×V state after every draft step. At K=V=128 that is 64 KB per request, layer and head, times γ+1 steps. Across K3's 69 KDA layers and a full batch it outgrows the persistent state pool it is competing with, and because it is reserved per running request, it caps concurrency.
+K3 ships with DSpark block speculative decoding, driven by a draft model we trained for
+K3. Two parts of the integration deserve their own story: spending the verification budget
+only where it pays, and making K3's recurrent KDA state survive speculation at all.
 
-**Store the inputs, not the state.** [ReplaySSM](https://tridao.me/blog/2026/replayssm/) drops the snapshots. The verify kernel reads the committed checkpoint and never writes it, and on the way through it also stores each step's raw inputs `Sᵢ = (vᵢ, kᵢ, gkᵢ, βᵢ)`, about 1 KB against the 64 KB a snapshot costs. Once the sampler fixes the accepted length, a single fold kernel covering every layer and head replays just the accepted prefix from the checkpoint and advances it in place. Rejected drafts are never replayed, so rollback costs nothing. The draft window goes from 512 KB to 16 KB, roughly 32×.
-
-**Exact, not approximate.** The fold is a verbatim clone of the verify recurrence, same tiles and same reduction order, and it consumes the gate values the verify kernel itself stored rather than recomputing them. That second half is not optional. An early version recomputed the gate on the torch side with a subtly different formula, which left every output looking correct while the state quietly drifted underneath. The rebuilt state is now bit-identical to what the recurrent baseline would have committed.
-
-The payoff is capacity rather than speed. Per-step decode time is unchanged, since this is a memory-for-recompute trade and not a faster kernel. The snapshot scratch was a spec-only fixed cost growing with both batch size and γ, so it squeezed the state pool hardest exactly when γ was large enough to be worth using. Handing that memory back lifts the concurrency ceiling several-fold. Below the old ceiling the two paths are a wash, with ReplaySSM paying a little for the fold and the buffer writes; above it the baseline queues while ReplaySSM keeps admitting requests, and that is where the gap opens.
-
-<p align="center">
-  <img src="/images/blog/kimi-k3-day0-support/fig-replayssm-kda.svg" width="98%" alt="KDA ReplaySSM: the verify kernel reads the committed checkpoint and stores each draft step's raw inputs in a small per-slot buffer; after acceptance a single fold kernel replays only the accepted prefix and advances the state in place.">
-</p>
-
-<p align="center">
-  <em><b>KDA ReplaySSM.</b> Verify (one fused launch per layer) reads the checkpoint h₀
-  without writing it and stores each draft step's raw inputs into a per-slot buffer, one
-  per layer and head. After the sampler fixes the accepted length, the fold kernel (one
-  launch for all layers and heads) replays only the accepted prefix and overwrites the
-  slot in place, running the verbatim recurrence with the verify kernel's own stored gate
-  values, so the rebuilt state is bit-identical to the recurrent baseline.</em>
-</p>
-
-## Verify only what is worth verifying
+### Verify only what is worth verifying
 
 DSpark proposes a block of draft tokens per step, and the target verifies the whole block
 in one forward. At batch size 1 the extra verify positions are essentially free: the step
@@ -190,6 +191,29 @@ is surfing real hardware shelves, not noise.
 
 Below batch size 8 there is little pressure to relieve, so trimming is break-even to
 mildly negative there; a small-batch early-exit in the planner is the known follow-up.
+
+### ReplaySSM: raw-input replay for the KDA state
+
+Speculative decoding verifies γ+1 draft tokens at once and may accept only a prefix. For MLA that is free, since KV is append-only and a rejected draft just releases its slots. A KDA layer's state overwrites itself every token, as the previous section covered, so the baseline buys reversibility by brute force and snapshots the whole K×V state after every draft step. At K=V=128 that is 64 KB per request, layer and head, times γ+1 steps. Across K3's 69 KDA layers and a full batch it outgrows the persistent state pool it is competing with, and because it is reserved per running request, it caps concurrency.
+
+**Store the inputs, not the state.** [ReplaySSM](https://tridao.me/blog/2026/replayssm/) drops the snapshots. The verify kernel reads the committed checkpoint and never writes it, and on the way through it also stores each step's raw inputs `Sᵢ = (vᵢ, kᵢ, gkᵢ, βᵢ)`, about 1 KB against the 64 KB a snapshot costs. Once the sampler fixes the accepted length, a single fold kernel covering every layer and head replays just the accepted prefix from the checkpoint and advances it in place. Rejected drafts are never replayed, so rollback costs nothing. The draft window goes from 512 KB to 16 KB, roughly 32×.
+
+**Exact, not approximate.** The fold is a verbatim clone of the verify recurrence, same tiles and same reduction order, and it consumes the gate values the verify kernel itself stored rather than recomputing them. That second half is not optional. An early version recomputed the gate on the torch side with a subtly different formula, which left every output looking correct while the state quietly drifted underneath. The rebuilt state is now bit-identical to what the recurrent baseline would have committed.
+
+The payoff is capacity rather than speed. Per-step decode time is unchanged, since this is a memory-for-recompute trade and not a faster kernel. The snapshot scratch was a spec-only fixed cost growing with both batch size and γ, so it squeezed the state pool hardest exactly when γ was large enough to be worth using. Handing that memory back lifts the concurrency ceiling several-fold. Below the old ceiling the two paths are a wash, with ReplaySSM paying a little for the fold and the buffer writes; above it the baseline queues while ReplaySSM keeps admitting requests, and that is where the gap opens.
+
+<p align="center">
+  <img src="/images/blog/kimi-k3-day0-support/fig-replayssm-kda.svg" width="98%" alt="KDA ReplaySSM: the verify kernel reads the committed checkpoint and stores each draft step's raw inputs in a small per-slot buffer; after acceptance a single fold kernel replays only the accepted prefix and advances the state in place.">
+</p>
+
+<p align="center">
+  <em><b>KDA ReplaySSM.</b> Verify (one fused launch per layer) reads the checkpoint h₀
+  without writing it and stores each draft step's raw inputs into a per-slot buffer, one
+  per layer and head. After the sampler fixes the accepted length, the fold kernel (one
+  launch for all layers and heads) replays only the accepted prefix and overwrites the
+  slot in place, running the verbatim recurrence with the verify kernel's own stored gate
+  values, so the rebuilt state is bit-identical to the recurrent baseline.</em>
+</p>
 
 ## Kernels
 
@@ -406,58 +430,61 @@ ratio varying, gives the serving frontier:
 ## RL: LoRA Training on the Native MXFP4 Base
 
 Day-0 RL for K3 is colocated LoRA training with Miles: a BF16 trainer on Miles's Megatron backend and native packed MXFP4 SGLang rollout engines sharing the same 64 GB300s. The backend covers KDA, NoPE-MLA, the attention-residual bank and the latent MoE, with TP/SP/PP/CP/EP.
+
 ### LoRA serving and weight sync
 
 The engines serve the checkpoint as shipped and never rewrite it. Each step transfers only BF16 LoRA adapters, and the engine applies the delta as a separate BF16 `B(Ax)` term on top of the quantized base GEMM, so the policy update reaches inference at full precision over 4-bit base weights. Dense projections go through SGLang's Triton LoRA backend, the 896 routed experts through a fused MoE-LoRA kernel on the Marlin path, and the shared-expert delta is folded into the fused MoE front GEMM. Adapters live in a GPU memory pool that each sync replaces in place, so there is no resident BF16 copy on the rollout side, no full-weight resync, and no requantization step in the loop.
 
 ### Parallelism
 
-**Pipeline.** K3's attention-residual snapshot bank has to cross stage boundaries, but Megatron's point-to-point carries one hidden-states tensor, so the stage boundary packs `[prefix_sum, bank]` into that tensor and unpacks it on entry. Megatron is untouched.
+**Pipeline parallelism.** K3's attention-residual snapshot bank has to cross stage boundaries, but Megatron's point-to-point carries one hidden-states tensor, so the stage boundary packs `[prefix_sum, bank]` into it and unpacks on entry. Megatron is untouched.
 
-**Context parallelism.** The bank itself shards for free, since every attention-residual operation is per-token. MLA needs no K3-specific CP code either: K3 applies no rotary embedding, which is the only CP-aware work in Megatron's MLA, so keeping K3's projections over the stock TE attention core inherits ring and all-to-all CP. KDA is the part that needs work, and runs through fla's CP context, which carries the recurrent state and the short convolution's halo across ranks. The two want opposite token layouts, Megatron the zigzag order ring attention expects and fla a contiguous rank-local chunk, so the relayout runs only around KDA.
+**Context parallelism.** The bank shards for free, since every attention-residual operation is per-token. MLA needs no K3-specific code either: rotary-table slicing is the only CP-aware work in Megatron's MLA and K3 has no rotary embedding, so its projections sit on the stock TE attention core and inherit CP. KDA is the part that needs work, going through fla's CP context for the recurrent state and the convolution halo. It wants a contiguous rank-local chunk where Megatron stores the zigzag order ring attention expects, so the relayout runs only around KDA.
 
-**Expert parallelism.** Each routed-expert weight has one side on the shared latent dimension and one on its own intermediate dimension; the adapter shares the latent-side factor across all 896 experts and keeps the other per-expert, matching the engine's fused MoE-LoRA contract. That shared factor is replicated across EP but tagged expert-parallel, so DDP reduces it only over expert-DP, and the EP sum is the one gradient reduction the release adds itself.
+**Expert parallelism.** The adapter shares its latent-side factor across all 896 routed experts and keeps the other per-expert, matching the engine's fused MoE-LoRA contract. That shared factor is replicated across EP but tagged expert-parallel, so DDP reduces it only over expert-DP, and the EP sum is the one gradient reduction the release adds itself.
 
 ### Memory
 
 A native-MXFP4 rollout peaks near 225 GiB/GPU and the BF16 trainer near 155 at initialization, on a 277 GiB card, so the two are never both resident: each sleeps while the other runs, and colocation depends on every handoff leaving nothing behind.
 
-- The engines keep their base weights resident on the GPU for the whole run; only the KV cache and CUDA graphs are released while the trainer works. Since the base is never released, it is never restored either, and the LoRA path ships no base bytes at all: base sync is skipped entirely.
-- The trainer's process groups are retained across the sleep/wake cycle rather than destroyed and rebuilt, which removes the per-cycle rebuild and its EP warmup at the cost of the communicator buffers staying resident.
-- The adapter is about 2,800 tensors. Each chunk ships as one flattened CUDA IPC bucket, 278 in total, and is collected as soon as the receiver acknowledges it and every producer rank has crossed an engine-group barrier. This bounds transient IPC memory per chunk instead of letting it integrate across the transfer, worth about 48 GiB/GPU at the peak.
-- The engine releases each adapter's CPU copy once it is installed into the GPU pool, which takes scheduler RSS from 76–88 GiB to about 17. An adapter whose CPU copy is gone cannot be reinstalled, so pool eviction is refused with an error rather than silently serving a stale slot.
-- LoRA splits the trainer's DDP buffers by lifetime. Adapter parameter buffers stay in the CPU-backed region so the weight update can read them while the trainer sleeps; gradient buffers are rebuildable and go to a no-backup region that sleep discards.
+**The base never moves.** The engines keep their base weights resident on the GPU for the whole run, and only the KV cache and CUDA graphs are released while the trainer works. Since the base is never released it is never restored either, and the LoRA path ships no base bytes at all: base sync is skipped entirely.
+
+**The process groups stay up.** The trainer's NCCL communicator buffers are not torch-allocator memory, so offloading cannot release them, and the obvious answer is to destroy the groups on sleep and rebuild them on wake. That trades a resident few GiB for a per-cycle rebuild and EP warmup, which is only worth paying when the engines need those bytes back — and they do not here, because no base weights cross the update path. The groups stay up.
+
+**Adapter transfer is bounded per chunk.** The adapter is about 2,800 tensors. Each chunk ships as one flattened CUDA IPC bucket, 278 in total, and is collected as soon as the receiver acknowledges it and every producer rank has crossed an engine-group barrier. That bounds transient IPC memory per chunk instead of letting it integrate across the transfer, worth about 48 GiB/GPU at the peak.
+
+**Host copies exist only where something reads them.** The engine releases each adapter's CPU copy once it is installed into the GPU pool, taking scheduler RSS from 76–88 GiB to about 17; an adapter whose CPU copy is gone cannot be reinstalled, so pool eviction is refused with an error rather than silently serving a stale slot. On the trainer side the DDP buffers split by lifetime: adapter parameter buffers stay in the CPU-backed region because the weight update reads them while the trainer sleeps, while gradient buffers are rebuildable and go to a no-backup region that sleep discards.
 
 ### Validation
 
 Training correctness is the most important part of an RL support stack. We built these checks before the recipe work.
 
-- **Train/rollout KL**, logged every rollout: a Schulman k3 estimate of KL(rollout ‖ train) over the sampled tokens, computed from the log-probabilities the engine returned and the trainer's recomputed ones. It is a diagnostic, not part of the objective, which carries no KL penalty. Its floor is about 2e-3, set by serving the base in MXFP4; growth with step count is the divergence signature.
-- **Canary lockstep probe.** One trajectory is pinned from the first rollout and scored every step by both the engine, under the live adapter, and the trainer, at the same policy version. Co-movement of the two curves is what proves the trained adapter reaches inference: a transfer checksum proves the bytes arrived, not that anything reads them.
-- **Tensor-level dump comparison.** The same tokens run through two builds or two parallel layouts, dumping every forward activation and every parameter gradient, compared by relative L2 and cosine against a measured noise floor. Bit-exactness is not the bar, since the same arithmetic on two different GPU sets already differs at the ulp level. This is how the pipeline boundary and the context-parallel layout were validated: where CP=2 and CP=1 build the identical call the two are bit-identical, and a forward-kernel swap lands at cosine median 0.996.
-- **Weight-sync assertions.** Per-tensor SHA256 manifests between trainer and engine, a validator that errors if an adapter update changes no exported tensor, a check that every `B` factor is zero at version 1, and adapter gradient and optimizer-step checks.
+**Train/rollout KL**, logged every rollout, is a Schulman k3 estimate of KL(rollout ‖ train) over the sampled tokens, computed from the log-probabilities the engine returned and the trainer's recomputed ones. It is a diagnostic, not part of the objective, which carries no KL penalty. Its floor is about 2e-3, set by serving the base in MXFP4; growth with step count is the divergence signature.
+
+**A canary lockstep probe.** One trajectory is pinned from the first rollout and scored every step by both the engine, under the live adapter, and the trainer, at the same policy version. Co-movement of the two curves is what proves the trained adapter reaches inference: a transfer checksum proves the bytes arrived, not that anything reads them.
+
+**Tensor-level dump comparison.** The same tokens run through two builds or two parallel layouts, dumping every forward activation and every parameter gradient, compared by relative L2 and cosine against a measured noise floor. Bit-exactness is not the bar, since the same arithmetic on two different GPU sets already differs at the ulp level. This is how the pipeline boundary and the context-parallel layout were validated: where CP=2 and CP=1 build the identical call the two are bit-identical, and a forward-kernel swap lands at cosine median 0.996.
+
+**Weight-sync assertions.** Per-tensor SHA256 manifests between trainer and engine, a validator that errors if an adapter update changes no exported tensor, a check that every `B` factor is zero at version 1, and adapter gradient and optimizer-step checks.
 
 ### Training result
 
-The reported run is DAPO math on 16 nodes × 4 GB300: BF16 trainer at TP8 / PP8 / EP8 colocated with native MXFP4 rollout engines, 4096-token responses, 64 samples per rollout, one optimizer step per rollout, rank-32 / α-64 LoRA at lr 1e-5, GRPO with no KL term, run to a 12 h wall-clock limit.
+The reported run is DAPO math on 16 nodes × 4 GB300: BF16 trainer at TP8 / PP8 / EP8 colocated with native MXFP4 rollout engines, 4096-token responses, 64 samples per rollout, one optimizer step per rollout, rank-32 / α-64 LoRA at lr 1e-5, GRPO with no KL term, run to a 12 h wall-clock limit. AIME-2024 greedy eval climbs 43.3% to 76.7% over 60 steps, 13 of 30 problems to 23, and is still rising at the cutoff, while train/rollout KL holds flat at the ~2e-3 MXFP4 floor for the whole run.
 
 <p align="center">
-  <img src="/images/blog/kimi-k3-day0-support/rollout-raw-reward.svg" width="98%" alt="Mean rollout reward per training step, trending upward with per-step noise.">
+  <img src="/images/blog/kimi-k3-day0-support/rl-training-curves.svg" width="100%" alt="Three RL training curves side by side: rollout raw reward trending upward, AIME-2024 eval accuracy climbing, and train/rollout KL flat at the MXFP4 quantization floor.">
 </p>
-
-**Rollout raw reward.** Mean reward over the 64 sampled responses per rollout, DAPO math graded on the response channel. Each rollout draws a different prompt batch, so the per-step value is noisy by construction and the trend is the signal.
 
 <p align="center">
-  <img src="/images/blog/kimi-k3-day0-support/eval-aime.svg" width="98%" alt="AIME-2024 greedy pass rate evaluated every 10 rollouts.">
+  <em><b>The 12-hour DAPO run.</b> Left: mean reward over the 64 sampled responses per
+  rollout, graded on the response channel; each rollout draws a different prompt batch, so
+  the trend is the signal and the per-step value is noise. Middle: AIME-2024 greedy pass
+  rate, evaluated every 10 rollouts under the same 4096-token limit as training, so a
+  correct solution that runs past the limit scores as a miss. Right: a Schulman k3 estimate
+  of KL(rollout ‖ train) at the sampled tokens, reported only and never added to the loss;
+  flat at the quantization floor is the target, and monotonic growth is the divergence
+  signature.</em>
 </p>
-
-**AIME-2024 eval accuracy.** Greedy (temperature 0) pass rate over the 30 AIME-2024 problems, evaluated every 10 rollouts under the same 4096-token response limit as training, so a correct solution that runs past the limit scores as a miss.
-
-<p align="center">
-  <img src="/images/blog/kimi-k3-day0-support/train-rollout-kl.svg" width="98%" alt="Train/rollout KL per rollout, flat at the MXFP4 quantization floor.">
-</p>
-
-**Train/rollout KL.** Schulman k3 low-variance estimate of KL(rollout ‖ train) at the sampled tokens, per rollout, from the engine's returned log-probabilities against the trainer's recomputed ones. Flat at the quantization floor is the target; monotonic growth is the train/rollout divergence signature. It is reported only, never added to the loss.
 
 ## Acknowledgments
 
