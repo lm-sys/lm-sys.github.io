@@ -490,8 +490,6 @@ The reported run is DAPO math on 16 nodes × 4 GB300: BF16 trainer at TP8 / PP8 
 
 This work was a collaboration between the SGLang & Miles team at RadixArk and the Moonshot AI team, together with NVIDIA, AMD, Approaching AI, Baseten, and Modal.
 
-**NVIDIA**: Aichen Feng, Ran Zhang (KDA prefill), Jinyan Chen (KDA decode), Xuting Zhou (KDA decode with MTP), Zeyu Wang (attention residual), Anthony Chang, Nikita Korobov, Ran Zhang (TRTLLM-Gen with SituV2 activation)
-
 **AMD**: Wun-guo Huang, Xinyi Song, Hai Xiao, Soga Lin, Duyi Wang
 
 **Approaching AI**: Huanming Shen, Xiaohao Zhang, Nan Li, Mingxing Zhang
