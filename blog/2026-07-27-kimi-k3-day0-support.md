@@ -147,8 +147,9 @@ implementation in detail.
 
 ## Speculative decoding with DSpark
 
-K3 ships with DSpark block speculative decoding, driven by a draft model we trained for
-K3. Two parts of the integration deserve their own story: spending the verification budget
+K3 ships with DSpark block speculative decoding, driven by
+[a draft model we trained for K3](https://huggingface.co/RadixArk/Kimi-K3-DSpark).
+Two parts of the integration deserve their own story: spending the verification budget
 only where it pays, and making K3's recurrent KDA state survive speculation at all.
 
 ### Verify only what is worth verifying
@@ -489,8 +490,6 @@ The reported run is DAPO math on 16 nodes × 4 GB300: BF16 trainer at TP8 / PP8 
 ## Acknowledgments
 
 This work was a collaboration between the SGLang & Miles team at RadixArk and the Moonshot AI team, together with NVIDIA, AMD, Approaching AI, Baseten, and Modal.
-
-**NVIDIA**: Aichen Feng, Ran Zhang (KDA prefill), Jinyan Chen (KDA decode), Xuting Zhou (KDA decode with MTP), Zeyu Wang (attention residual), Anthony Chang, Nikita Korobov, Ran Zhang (TRTLLM-Gen with SituV2 activation)
 
 **AMD**: Wun-guo Huang, Xinyi Song, Hai Xiao, Soga Lin, Duyi Wang
 
