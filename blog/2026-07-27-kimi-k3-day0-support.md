@@ -27,7 +27,7 @@ it took.
   reaches ~423 tok/s. ReplaySSM handles the KDA state, replaying raw inputs instead of
   snapshotting per step, a roughly 32x cut in draft-window memory.
 - **Parallelism split by phase**: chunked pipeline-parallel prefill and context-parallel
-  decode, composing under PD disaggregation to 2,633 tok/s per GPU.
+  decode, composing under PD disaggregation to **2,633** tok/s per GPU.
 - **LoRA RL with Miles on the native MXFP4 checkpoint**, colocated trainer and rollout
   on the same GPUs: AIME-2024 43.3% to 76.7% over a 12-hour run.
 
