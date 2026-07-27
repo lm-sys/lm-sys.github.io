@@ -488,7 +488,7 @@ The reported run is DAPO math on 16 nodes × 4 GB300: BF16 trainer at TP8 / PP8 
 
 This work was a collaboration between the SGLang & Miles team at RadixArk and the Moonshot AI team, together with NVIDIA, AMD, Approaching AI, Baseten, and Modal.
 
-**AMD**: Wun-guo Huang, Xinyi Song, Hai Xiao, Soga Lin, Duyi Wang
+**AMD**: Wun-guo Huang, Xinyi Song, Hai Xiao, Soga Lin, Duyi Wang, Thomas Wang
 
 **Approaching AI**: Huanming Shen, Xiaohao Zhang, Nan Li, Mingxing Zhang
 
