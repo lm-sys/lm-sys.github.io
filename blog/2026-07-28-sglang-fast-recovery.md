@@ -179,6 +179,8 @@ This achieves near-zero-downtime failover **without dedicating a full set of GPU
 
 ### Weight Loading: Disk vs IPC Zero-Copy
 
+GPU-internal copy bandwidth: ~500–900 GB/s (H20 HBM). IPC handle mapping: ~10k handles/ms.
+
 #### Single Node
 
 | Model | Weight Size | Disk Load (s) | IPC Zero-copy (s) | Speedup |
@@ -191,7 +193,7 @@ This achieves near-zero-downtime failover **without dedicating a full set of GPU
 
 **PLACEHOLDER**
 
-GPU-internal copy bandwidth: ~500–900 GB/s (H20 HBM). IPC handle mapping: ~10k handles/ms.
+#### Performance Chart
 
 **PLACEHOLDER Performance benchmark picture**
 
