@@ -66,7 +66,7 @@ below all build on this bring-up.
 
 K3's hybrid KDA and MLA architecture creates two memory management challenges. The first is making prefix caching safe and efficient for mutable KDA recurrent state. The second is dynamically sharing capacity between KDA state and MLA KV.
 
-### Efficient prefix caching for KDA state
+### Prefix caching for KDA state
 
 Attention KV is append-only. Once computed, it never changes, so the scheduler can safely share cached prefixes across requests in the radix tree. KDA state is different. Each layer maintains a fixed-size recurrent buffer that is **overwritten in place at every token**, so prefix caching must manage mutable state rather than immutable KV.
 
@@ -81,9 +81,9 @@ In SGLang, we use three explicit state moves between the radix tree and a reques
   one sits relative to the serial forward stream.</em>
 </p>
 
-The design is race-free by construction. Restore and snapshot copies are enqueued on the forward stream between the operations that produce and consume the state, so stream ordering prevents races with in-place updates. Snapshots alternate between the two slots of the ping-pong extra buffer, so the next snapshot cannot overwrite state being attached to the tree. Donate transfers only a slot index and copies no state. The second slot is allocated lazily at a boundary and released immediately afterward, avoiding a permanent slot per request. This requires neither device-wide synchronization nor a lock on the hot path.
+The design is **race-free by construction**. Restore and snapshot copies are enqueued on the forward stream between the operations that produce and consume the state, so stream ordering prevents races with in-place updates. Snapshots alternate between the two slots of the ping-pong extra buffer, so the next snapshot cannot overwrite state being attached to the tree. Donate transfers only a slot index and copies no state. The second slot is allocated lazily at a boundary and released immediately afterward, avoiding a permanent slot per request. This requires neither device-wide synchronization nor a lock on the hot path.
 
-Checkpoint placement determines the cache hit rate. A recurrent state cannot run backwards and must be replayed forward from an earlier checkpoint. We take checkpoints only at aligned radix tree nodes, at chunk boundaries during prefill and at a fixed token interval during decode, and keep a sparse set under a per-path cap and LRU. Inspired by [Marconi](https://arxiv.org/abs/2411.19379), we prioritize branching points because their prefixes are shared by all child branches. When a request diverges mid-edge, it replays from the nearest checkpoint above and plants one at the aligned fork, allowing later branches to restore there directly.
+Checkpoint placement determines the cache hit rate. A recurrent state cannot run backwards and must be replayed forward from an earlier checkpoint. We take checkpoints only at aligned radix tree nodes, at chunk boundaries during prefill and at a fixed token interval during decode, and keep a sparse set under a per-path cap and LRU. Inspired by [Marconi](https://arxiv.org/abs/2411.19379), we prioritize **branching points** because their prefixes are shared by all child branches. When a request diverges mid-edge, it replays from the nearest checkpoint above and plants one at the aligned fork, allowing later branches to restore there directly.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig2-radix-branching.svg" width="98%" alt="Sparse KDA state checkpoints overlaid on the radix tree, and the branching point where a new request diverges from a cached prefix.">
