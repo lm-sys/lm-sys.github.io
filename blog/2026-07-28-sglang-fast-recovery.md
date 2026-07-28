@@ -7,13 +7,15 @@ previewImg: /images/blog/sglang-fast-recovery/preview.png
 
 ## TL;DR
 
-We introduce the **Weight Cache Daemon**, a persistent GPU process that holds post-quantized model weights in GPU memory and serves them to new SGLang engine instances via CUDA IPC zero-copy mapping. This reduces weight loading from **minutes to sub-second**, and total engine restart time from **6.5 minutes to 1.3 minutes** on Qwen3-235B FP8.
+Nowadays, SOTA models are getting much bigger. For example, the Ling-2.6-1T model released by the Bailing Team has 1T parameters, and reloading the model service after a crash is very expensive.
+Therefore, we introduce the **Weight Cache Daemon**, a persistent GPU process that holds post-quantized model weights in GPU memory and serves them to new SGLang engine instances via CUDA IPC zero-copy mapping.
+This reduces weight loading from minutes to sub-second times, and total engine restart time from xx minutes to xx minutes on Ling-2.6-1T.
 
 The Weight Cache Daemon is the first phase of our **Fast Recovery Framework**, which targets **< 10 seconds warm restarts** and **< 1 second warm standby switches** for production LLM serving.
 
 Key results:
 
-1. **Weight loading: ~310s → ~0.63s** — a **~500× speedup**, eliminating 79% of startup time based on qwen3-235B model.
+1. **Weight loading: ~xxxs → ~0.xxs** — a **~500× speedup**, eliminating 79% of startup time based on Ling-2.6-1T model.
 2. **Total startup: 6.5min → 1.3min** — an **80% reduction** in end-to-end engine boot time.
 3. **Multi-instance weight sharing** — multiple engine instances on the same GPU map to the same IPC handles, eliminating redundant disk I/O and post-quantization transforms.
 4. **Active-standby failover in < 1 second** — standby engines share weights via zero-copy, enabling near-zero-downtime failover without dedicating full GPUs to idle replicas.
@@ -21,7 +23,7 @@ Key results:
 
 ## Background
 
-As LLM models grow larger — 235B, 1T, and 2.8T of newerly released Kimi K3 — the cold-start time of serving engines has become a critical bottleneck for production efficiency. A Qwen3-235B FP8 instance on 4×H20 GPUs takes **~6.5 minutes** just to become ready to serve. In production, this means:
+As LLM models grow larger — Qwen 235B, Ling-2.6-1T, and 2.8T of newerly released Kimi K3 — the cold-start time of serving engines has become a critical bottleneck for production efficiency. A Qwen3-235B FP8 instance on 4×H20 GPUs takes **~6.5 minutes** just to become ready to serve. In production, this means:
 
 - **P99 tail latency spikes** during restarts — all in-flight requests fail or queue indefinitely.
 - **Reduced availability** — multi-minute recovery windows violate SLA targets.
