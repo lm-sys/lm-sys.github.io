@@ -64,11 +64,13 @@ below all build on this bring-up.
 
 ## Hybrid KDA Memory Management
 
-Attention KV is append-only. Once a token's KV is computed it never changes, which is what lets the scheduler share one physical copy across every request that shares a prefix, keep it in a radix tree, and pipeline it across iterations. A KDA layer's state is the opposite, one fixed-size recurrent buffer that is **overwritten in place at every token**. So everything the scheduler hands KV for free, from prefix caching to the overlap scheduler to speculative decoding to paging, has to be rebuilt for a value that mutates as it is read. K3 interleaves 69 KDA layers with 24 MLA layers, so this is not a corner case. It is most of the model.
+Kimi-K3's hybrid KDA–MLA architecture creates two memory management challenges. The first is making prefix caching safe and efficient for mutable KDA recurrent state. The second is efficiently sharing capacity between KDA state and MLA KV.
 
 ### Prefix caching with KDA state
 
-Prefix caching needs the state parked where a later request can pick it up, so three moves carry it between the radix tree and the request's working slot, around the forwards that overwrite it in place. A copy-on-write restores a cached checkpoint into the slot, a snapshot captures the state once the forwards have advanced it, and a donate hands that snapshot to the tree.
+Attention KV is append-only. Once computed, it never changes, so the scheduler can safely share cached prefixes across requests in the radix tree. KDA state is different. Each layer maintains a fixed-size recurrent buffer that is **overwritten in place at every token**, so prefix caching must manage mutable state rather than immutable KV.
+
+To cache a mutable KDA state safely, we use three explicit state moves between the radix tree and a request's working slot. **Copy-on-write** restores a shared checkpoint into a private slot before the forward mutates it. **Snapshot** captures the advanced state, and **donate** transfers that snapshot to the tree.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig1-state-flow.svg" width="98%" alt="The three KDA state moves, copy-on-write, snapshot and donate, and where each sits relative to the serial forward stream.">
@@ -79,9 +81,9 @@ Prefix caching needs the state parked where a later request can pick it up, so t
   one sits relative to the serial forward stream.</em>
 </p>
 
-Two of those moves copy bytes into or out of memory the GPU is actively overwriting, so each carries a race. A restore can collide with the forward that is writing the slot, and a new snapshot can overwrite the previous one while it is still being handed to the tree. Both close by construction, with no device-wide synchronization and no lock on the hot path. The first closes by placing every state copy on the forward stream itself rather than a side copy stream, enqueued between the forwards that produce and consume the state, so same-stream ordering alone orders it and no completion event is needed. The second closes on the extra buffer, a ping-pong pair the snapshots alternate between, so the slot being handed to the tree is never the one the next snapshot writes, and the donate itself copies nothing, passing a slot index instead. State can therefore be captured safely at any chunk boundary, which is what lets prefix caching, the overlap scheduler, paged KV and speculative decoding work together on recurrent state.
+The design is race-free by construction. Every restore and snapshot copy runs on the same CUDA stream as the forwards that produce and consume the state, so stream ordering prevents a copy from racing with an in-place update. Snapshots alternate between a ping-pong buffer, while donate passes ownership of a slot index without copying, so a new snapshot never overwrites one being attached to the tree. This needs neither device-wide synchronization nor a lock on the hot path.
 
-Where the state gets parked is the other half of the problem. A recurrent state cannot be sliced at an arbitrary token, since you cannot run it backwards, so a prefix is reusable only where a checkpoint was actually taken. Each checkpoint holds a full state, so only a few stay alive on each path under a cap and LRU. Placement therefore decides the hit rate, and the highest-value position is a branching point, an idea from [Marconi](https://arxiv.org/abs/2411.19379). A fork is the one prefix every future branch is guaranteed to share, so a request diverging mid-edge replays from the nearest checkpoint above and plants a new one at the chunk-aligned fork, for the next branch to restore from directly.
+Checkpoint placement determines the cache hit rate. A recurrent state cannot be sliced or reconstructed at an arbitrary token, so a prefix is reusable only where a checkpoint exists. Inspired by [Marconi](https://arxiv.org/abs/2411.19379), we prioritize radix tree branching points under a per-path cap and LRU. A fork is the shared prefix most likely to be reused by its future branches. When a request diverges mid-edge, it replays from the nearest checkpoint above and places a new checkpoint at the chunk-aligned fork, allowing later branches to restore there directly. This concentrates a limited checkpoint budget on the highest-value prefixes.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig2-radix-branching.svg" width="98%" alt="Sparse KDA state checkpoints overlaid on the radix tree, and the branching point where a new request diverges from a cached prefix.">
@@ -92,7 +94,7 @@ Where the state gets parked is the other half of the problem. A recurrent state 
   branching point.</em>
 </p>
 
-The price is a constant slot budget. A running request holds four transient slots against the single slot it needs with prefix caching off, its working slot, one extra-buffer slot for snapshots, and two slots of headroom, for the committed prefix state and for a diverging branch's copy. The extra buffer is a pair, but its second slot is allocated lazily, only at the boundary that needs it and freed right after, which holds the budget at four instead of five and lets the same state pool admit a quarter more running requests. Because the reusable checkpoints live in the shared, evictable tree, the pool does not have to grow with how much history each request keeps warm.
+Race-free state movement and branch-aware checkpoint placement provide high-reuse KDA prefix caching that composes cleanly with the overlap scheduler, speculative decoding, and paged KV.
 
 ### Unified memory: one pool for both kinds of state
 
