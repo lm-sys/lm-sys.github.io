@@ -7,11 +7,11 @@ previewImg: /images/blog/sglang-fast-recovery/preview.png
 
 ## TL;DR
 
-Nowadays, SOTA models are getting much bigger. For example, the Ling-2.6-1T model released by the Bailing Team has 1T parameters, and reloading the model service after a crash is very expensive.
+Nowadays, SOTA models are getting much bigger. For example, the **Ling-2.6-1T** model released by the Bailing Team has 1T parameters, and reloading the model service after a crash is very expensive.
 Therefore, we introduce the **Weight Cache Daemon**, a persistent GPU process that holds post-quantized model weights in GPU memory and serves them to new SGLang engine instances via CUDA IPC zero-copy mapping.
 This reduces weight loading from minutes to sub-second times, and total engine restart time from xx minutes to xx minutes on Ling-2.6-1T.
 
-The Weight Cache Daemon is the first phase of our **Fast Recovery Framework**, which targets **< 10 seconds warm restarts** and **< 1 second warm standby switches** for production LLM serving.
+The Weight Cache Daemon is the first phase of our **Fast Egnine Recovery Framework**, which targets **< 10 seconds warm restarts** and **< 1 second warm standby switches** for production LLM serving.
 
 Key results:
 
