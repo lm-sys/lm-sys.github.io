@@ -64,15 +64,13 @@ below all build on this bring-up.
 
 ## Hybrid KDA Memory Management
 
-Attention KV is append-only. Once a token's KV is computed it never changes, which is what lets the scheduler share one physical copy across every request that shares a prefix, keep it in a radix tree, and pipeline it across iterations without a second thought. A KDA layer's state is the opposite, one fixed-size recurrent buffer that is **overwritten in place at every token**. So everything the scheduler hands KV for free, from prefix caching to the overlap scheduler to speculative decoding to paging, has to be rebuilt for a value that mutates as it is read. K3 interleaves 69 KDA layers with 24 MLA layers, so this is not a corner case. It is most of the model. What follows is that rebuild, and its one satisfying property is that every piece is forced by the overwrite-in-place fact. None of it is a bolt-on.
+K3's hybrid KDA and MLA architecture creates two memory management challenges. The first is making prefix caching safe and efficient for mutable KDA recurrent state. The second is dynamically sharing capacity between KDA state and MLA KV.
 
-### Race-free state movement
+### Safe and efficient state reuse
 
-A request's live state sits in a single working slot, read and overwritten in place by every forward. Caching it means copying out of memory the GPU is actively mutating, and that creates two races. A restore can collide with the forward that is writing the slot. And the snapshot that refreshes the cache can overwrite the previous snapshot while it is being handed to the tree. Both close with no device-wide synchronization and no lock on the hot path.
+Attention KV is append-only. Once computed, it never changes, so the scheduler can safely share cached prefixes across requests in the radix tree. KDA state is different. Each layer maintains a fixed-size recurrent buffer that is **overwritten in place at every token**, so prefix caching must manage mutable state rather than immutable KV.
 
-First, every state copy is a kernel on the serial forward stream. The copy-on-write that restores a cached checkpoint into the working slot, and the snapshot that captures the state at a track boundary, are enqueued between the forwards that produce and consume that state, so same-stream ordering provides the happens-before for free. A snapshot is taken once per prefill chunk and once every track interval during decode.
-
-Second, the only move that leaves the request transfers no bytes. Snapshots land in a ping-pong pair we call the extra buffer, where one slot holds the latest snapshot while the other takes the next one, and that second slot is allocated only at the boundary that needs it and freed right after. Caching donates the latest snapshot's slot index to the tree, after each prefill chunk, at the handover from prefill to decode, and when the request finishes. A fresh slot backfills the buffer, so the snapshot's write target and the donate's read source are never the same physical slot.
+In SGLang, we use three explicit state moves between the radix tree and a request's working slot to cache and reuse mutable KDA state safely. **Copy-on-write** restores a shared checkpoint into a private slot before the forward mutates it. **Snapshot** captures the advanced state, and **donate** transfers that snapshot to the tree.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig1-state-flow.svg" width="98%" alt="The three KDA state moves, copy-on-write, snapshot and donate, and where each sits relative to the serial forward stream.">
@@ -83,11 +81,9 @@ Second, the only move that leaves the request transfers no bytes. Snapshots land
   one sits relative to the serial forward stream.</em>
 </p>
 
-With this design, the state can be captured safely and efficiently at any point, so features like prefix caching, overlap scheduler, paged KV and speculative decoding all work smoothly with recurrent state.
+The design is **race-free by construction**. Restore and snapshot copies are enqueued on the forward stream between the operations that produce and consume the state, so stream ordering prevents races with in-place updates. Snapshots alternate between the two slots of the ping-pong extra buffer, so the next snapshot cannot overwrite state being attached to the tree. Donate transfers only a slot index and copies no state. The second slot is allocated lazily at a boundary and released immediately afterward, avoiding a permanent slot per request. This requires neither device-wide synchronization nor a lock on the hot path.
 
-### Prefix caching for recurrent state
-
-A recurrent state cannot be sliced at an arbitrary token, since you cannot run it backwards to an earlier position, so it is checkpointed only at chunk boundaries, and sparsely even there. A per-path cap and LRU keep just a few checkpoints alive on each path, and a checkpoint can be evicted independently of the KV it annotates, leaving the node as a tombstone. Branch points get special treatment, an idea from [Marconi](https://arxiv.org/abs/2411.19379). A fork is the one prefix every future branch is guaranteed to share, so when a request diverges mid-edge it replays from the nearest checkpoint above and plants a new checkpoint at the chunk-aligned fork. The next branch restores there directly, no replay.
+Checkpoint placement determines the cache hit rate. A recurrent state cannot run backwards and must be replayed forward from an earlier checkpoint. We take checkpoints only at aligned radix tree nodes, at chunk boundaries during prefill and at a fixed token interval during decode, and keep a sparse set under a per-path cap and LRU. Inspired by [Marconi](https://arxiv.org/abs/2411.19379), we prioritize **branching points** because their prefixes are shared by all child branches. When a request diverges mid-edge, it replays from the nearest checkpoint above and plants one at the aligned fork, allowing later branches to restore there directly.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig2-radix-branching.svg" width="98%" alt="Sparse KDA state checkpoints overlaid on the radix tree, and the branching point where a new request diverges from a cached prefix.">
@@ -98,9 +94,7 @@ A recurrent state cannot be sliced at an arbitrary token, since you cannot run i
   branching point.</em>
 </p>
 
-### Constant state slots per request
-
-Because the reusable prefix checkpoints live in the shared, evictable radix tree, a running request reserves only a handful of transient slots, as few as four. That is its working slot, one extra-buffer slot for snapshots, and two slots of retention headroom, one for the committed prefix state that has to stay resident and one for the copy a diverging branch needs. The bulk of cached state is amortized across the whole tree rather than charged per request, so the state pool does not have to grow with how much history each request keeps warm.
+Race-free state movement and branch-aware checkpoint placement provide high-reuse KDA prefix caching that composes cleanly with the overlap scheduler, speculative decoding, and paged KV.
 
 ### Unified memory: one pool for both kinds of state
 
@@ -191,25 +185,21 @@ mildly negative there; a small-batch early-exit in the planner is the known foll
 
 ### ReplaySSM: raw-input replay for the KDA state
 
-Speculative decoding verifies γ+1 draft tokens at once and may accept only a prefix. For MLA that is free, since KV is append-only and a rejected draft just releases its slots. A KDA layer's state overwrites itself every token, so the baseline buys reversibility by brute force and snapshots the whole K×V state after every draft step. At K=V=128 that is 64 KB per request, layer and head, times γ+1 steps. Across K3's 69 KDA layers and a full batch it outgrows the persistent state pool it is competing with, and because it is reserved per running request, it caps concurrency.
+Speculative decoding verifies γ+1 draft tokens at once and may accept only a prefix, so the state has to be rewindable. A KDA layer's state overwrites itself every token, so the baseline snapshots the whole K×V state after every draft step, 64 KB per request, layer and head at K=V=128, times γ+1 steps. Across K3's 69 KDA layers that scratch is reserved per running request, so it competes with the persistent state pool and caps concurrency.
 
-**Store the inputs, not the state.** [ReplaySSM](https://tridao.me/blog/2026/replayssm/) drops the snapshots. The verify kernel reads the committed checkpoint and never writes it, and on the way through it also stores each step's raw inputs `Sᵢ = (vᵢ, kᵢ, gkᵢ, βᵢ)`, about 1 KB against the 64 KB a snapshot costs. Once the sampler fixes the accepted length, a single fold kernel covering every layer and head replays just the accepted prefix from the checkpoint and advances it in place. Rejected drafts are never replayed, so rollback costs nothing. The draft window goes from 512 KB to 16 KB, roughly 32×.
+[ReplaySSM](https://tridao.me/blog/2026/replayssm/) keeps each draft step's raw inputs `Sᵢ = (vᵢ, kᵢ, gkᵢ, βᵢ)` instead, about 1 KB, written by the verify kernel on its way through. Once the sampler fixes the accepted length, one fold kernel covering every layer and head replays just the accepted prefix from the committed checkpoint and advances it in place. The fold is a verbatim clone of the verify recurrence and consumes the gate values the verify kernel stored rather than recomputing them, so the rebuilt state is bit-identical to what the recurrent baseline would have committed.
 
-**Exact, not approximate.** The fold is a verbatim clone of the verify recurrence, same tiles and same reduction order, and it consumes the gate values the verify kernel itself stored rather than recomputing them. That second half is not optional. An early version recomputed the gate on the torch side with a subtly different formula, which left every output looking correct while the state quietly drifted underneath. The rebuilt state is now bit-identical to what the recurrent baseline would have committed.
-
-This optimization pays off at both small and large batch sizes. At small batch sizes, storing raw inputs instead of snapshots cuts the verify kernel's memory access, and the replay itself is one fused kernel to reduce launch overhead, so per-step time already improves. At large batch sizes the effect is much larger. The snapshot scratch was pure speculation overhead, growing with both batch size and γ, so it squeezed the state pool hardest exactly when γ was large enough to be worth using. Handing that memory back lifts the concurrency ceiling several-fold. Once the baseline starts queueing requests, ReplaySSM keeps admitting them, and that is where the gap opens.
+- **Memory**: the draft window goes from 512 KB to 16 KB, roughly 32×. Handing that memory back to the state pool lifts the concurrency ceiling several-fold.
+- **Speed**: the verify kernel no longer writes a snapshot per step, which cuts its memory access, and the replay is one fused launch for all layers and heads, so per-step time improves even at small batch sizes.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig-replayssm-kda.svg" width="98%" alt="KDA ReplaySSM: the verify kernel reads the committed checkpoint and stores each draft step's raw inputs in a small per-slot buffer; after acceptance a single fold kernel replays only the accepted prefix and advances the state in place.">
 </p>
 
 <p align="center">
-  <em><b>KDA ReplaySSM.</b> Verify (one fused launch per layer) reads the checkpoint h₀
-  without writing it and stores each draft step's raw inputs into a per-slot buffer, one
-  per layer and head. After the sampler fixes the accepted length, the fold kernel (one
-  launch for all layers and heads) replays only the accepted prefix and overwrites the
-  slot in place, running the verbatim recurrence with the verify kernel's own stored gate
-  values, so the rebuilt state is bit-identical to the recurrent baseline.</em>
+  <em><b>KDA ReplaySSM.</b> Verify reads the checkpoint h₀ without writing it and stores
+  each draft step's raw inputs into a per-slot buffer, one per layer and head. The fold
+  kernel then replays only the accepted prefix and overwrites the slot in place.</em>
 </p>
 
 ## Kernels
@@ -384,8 +374,7 @@ rides the same replicated-Q, one-all-to-all path; under PD disaggregation the pr
 side stays DCP-unaware and each decode rank simply pulls the positions it owns at the
 transfer boundary, which is what lets PP or TP prefill feed DCP decode. The remaining
 ceiling is KDA: its per-request state cannot be position-sharded, so once DCP lifts the
-MLA wall the running-request cap becomes the binding limit; the unified-memory design in
-the memory section above takes that on.
+MLA wall the running-request cap becomes the binding limit; the unified-memory design in the memory section above takes that on.
 
 ### Combining all strategies together
 
