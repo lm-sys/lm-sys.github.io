@@ -64,13 +64,13 @@ below all build on this bring-up.
 
 ## Hybrid KDA Memory Management
 
-Kimi-K3's hybrid KDA–MLA architecture creates two memory management challenges. The first is making prefix caching safe and efficient for mutable KDA recurrent state. The second is efficiently sharing capacity between KDA state and MLA KV.
+K3's hybrid KDA and MLA architecture creates two memory management challenges. The first is making prefix caching safe and efficient for mutable KDA recurrent state. The second is dynamically sharing capacity between KDA state and MLA KV.
 
-### Prefix caching with KDA state
+### Efficient prefix caching for KDA state
 
 Attention KV is append-only. Once computed, it never changes, so the scheduler can safely share cached prefixes across requests in the radix tree. KDA state is different. Each layer maintains a fixed-size recurrent buffer that is **overwritten in place at every token**, so prefix caching must manage mutable state rather than immutable KV.
 
-To cache a mutable KDA state safely, we use three explicit state moves between the radix tree and a request's working slot. **Copy-on-write** restores a shared checkpoint into a private slot before the forward mutates it. **Snapshot** captures the advanced state, and **donate** transfers that snapshot to the tree.
+In SGLang, we use three explicit state moves between the radix tree and a request's working slot to cache and reuse mutable KDA state safely. **Copy-on-write** restores a shared checkpoint into a private slot before the forward mutates it. **Snapshot** captures the advanced state, and **donate** transfers that snapshot to the tree.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig1-state-flow.svg" width="98%" alt="The three KDA state moves, copy-on-write, snapshot and donate, and where each sits relative to the serial forward stream.">
@@ -81,9 +81,9 @@ To cache a mutable KDA state safely, we use three explicit state moves between t
   one sits relative to the serial forward stream.</em>
 </p>
 
-The design is race-free by construction. Every restore and snapshot copy runs on the same CUDA stream as the forwards that produce and consume the state, so stream ordering prevents a copy from racing with an in-place update. Snapshots alternate between a ping-pong buffer, while donate passes ownership of a slot index without copying, so a new snapshot never overwrites one being attached to the tree. This needs neither device-wide synchronization nor a lock on the hot path.
+The design is race-free by construction. Restore and snapshot copies are enqueued on the forward stream between the operations that produce and consume the state, so stream ordering prevents races with in-place updates. Snapshots alternate between the two slots of the ping-pong extra buffer, so the next snapshot cannot overwrite state being attached to the tree. Donate transfers only a slot index and copies no state. The second slot is allocated lazily at a boundary and released immediately afterward, avoiding a permanent slot per request. This requires neither device-wide synchronization nor a lock on the hot path.
 
-Checkpoint placement determines the cache hit rate. A recurrent state cannot be sliced or reconstructed at an arbitrary token, so a prefix is reusable only where a checkpoint exists. Inspired by [Marconi](https://arxiv.org/abs/2411.19379), we prioritize radix tree branching points under a per-path cap and LRU. A fork is the shared prefix most likely to be reused by its future branches. When a request diverges mid-edge, it replays from the nearest checkpoint above and places a new checkpoint at the chunk-aligned fork, allowing later branches to restore there directly. This concentrates a limited checkpoint budget on the highest-value prefixes.
+Checkpoint placement determines the cache hit rate. A recurrent state cannot run backwards and must be replayed forward from an earlier checkpoint. We take checkpoints only at aligned radix tree nodes, at chunk boundaries during prefill and at a fixed token interval during decode, and keep a sparse set under a per-path cap and LRU. Inspired by [Marconi](https://arxiv.org/abs/2411.19379), we prioritize branching points because their prefixes are shared by all child branches. When a request diverges mid-edge, it replays from the nearest checkpoint above and plants one at the aligned fork, allowing later branches to restore there directly.
 
 <p align="center">
   <img src="/images/blog/kimi-k3-day0-support/fig2-radix-branching.svg" width="98%" alt="Sparse KDA state checkpoints overlaid on the radix tree, and the branching point where a new request diverges from a cached prefix.">
