@@ -251,6 +251,6 @@ More models support are also on the way.
 
 **AntGroup Bailing Infra Team**: Michael Qiu qiudayu.qdy@antgroup.com
 
-**Alibaba** Siyu Liu liusy58@smail.nju.edu.cn
+**Alibaba**: Siyu Liu liusy58@smail.nju.edu.cn
 
 **SGLang Team**
