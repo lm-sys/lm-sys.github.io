@@ -7,9 +7,9 @@ previewImg: /images/blog/sglang-fast-recovery/preview.png
 
 ## TL;DR
 
-> We introduce the **Weight Cache Daemon**, a persistent GPU process that holds post-quantized model weights in GPU memory and serves them to new SGLang engine instances via CUDA IPC zero-copy mapping. This reduces weight loading from **minutes to sub-second**, and total engine restart time from **6.5 minutes to 1.3 minutes** on Qwen3-235B FP8.
->
-> The Weight Cache Daemon is the first phase of our **Fast Recovery Framework**, which targets **< 10 seconds warm restarts** and **< 1 second warm standby switches** for production LLM serving.
+We introduce the **Weight Cache Daemon**, a persistent GPU process that holds post-quantized model weights in GPU memory and serves them to new SGLang engine instances via CUDA IPC zero-copy mapping. This reduces weight loading from **minutes to sub-second**, and total engine restart time from **6.5 minutes to 1.3 minutes** on Qwen3-235B FP8.
+
+The Weight Cache Daemon is the first phase of our **Fast Recovery Framework**, which targets **< 10 seconds warm restarts** and **< 1 second warm standby switches** for production LLM serving.
 
 Key results:
 
@@ -187,11 +187,11 @@ This achieves near-zero-downtime failover **without dedicating a full set of GPU
 
 # Multi-Node
 
-<PLACEHOLDER>
+**PLACEHOLDER**
 
-> GPU-internal copy bandwidth: ~500–900 GB/s (H20 HBM). IPC handle mapping: ~10k handles/ms.
+GPU-internal copy bandwidth: ~500–900 GB/s (H20 HBM). IPC handle mapping: ~10k handles/ms.
 
-<PLACEHOLDER Performance benchmark picture>
+**PLACEHOLDER Performance benchmark picture**
 
 ## How to Use
 
