@@ -2,7 +2,7 @@
 title: "Toward a Cleaner Quantization Stack in SGLang"
 author: "SGLang X Ascend Team"
 date: "July 28, 2026"
-previewImg: /images/blog/2026-07-28-cleaner-quantization-stack/01-cover.png
+previewImg: /images/blog/2026-07-31-cleaner-quantization-stack/01-cover.png
 type: blog
 ---
 
@@ -17,7 +17,7 @@ Production serving engines can no longer rely on a single low-bit kernel. They m
 When format parsing, parameter registration, weight loading, post-processing, platform checks, and kernel execution are all placed in one class, each new format or backend increases coupling. The result becomes harder to review, test, reuse, and extend.
 
 <div align="center">
-  <img src="/images/blog/2026-07-28-cleaner-quantization-stack/02-diff-diagram.png" alt="Before and after quantization architecture" />
+  <img src="/images/blog/2026-07-31-cleaner-quantization-stack/02-diff-diagram.png" alt="Before and after quantization architecture" />
   <br>
   <em>Figure 1: The refactor separates format-specific weight handling from platform-specific processing and kernel execution.</em>
 </div>
@@ -51,7 +51,7 @@ The refactoring started in [#15194](https://github.com/sgl-project/sglang/issues
 4. **Kernel:** performs backend-specific weight transformations and execution.
 
 <div align="center">
-  <img src="/images/blog/2026-07-28-cleaner-quantization-stack/03-main_scheme.png" alt="Scheme-based quantization architecture" />
+  <img src="/images/blog/2026-07-31-cleaner-quantization-stack/03-main_scheme.png" alt="Scheme-based quantization architecture" />
   <br>
   <em>Figure 2: The scheme-based architecture separates checkpoint semantics from hardware execution.</em>
 </div>
@@ -77,7 +77,7 @@ This separation provides several practical advantages:
 * **A clearer path beyond linear layers:** The same structure can be extended to MoE experts, attention projections, KV caches, and communication operators.
 
 <div align="center">
-  <img src="/images/blog/2026-07-28-cleaner-quantization-stack/04-kernel_reusing_Diagram.png" alt="Multiple quantization schemes reusing shared hardware kernels" />
+  <img src="/images/blog/2026-07-31-cleaner-quantization-stack/04-kernel_reusing_Diagram.png" alt="Multiple quantization schemes reusing shared hardware kernels" />
   <br>
   <em>Figure 3: Multiple checkpoint formats can share the same backend kernel.</em>
 </div>
