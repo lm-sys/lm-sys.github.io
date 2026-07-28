@@ -66,7 +66,7 @@ below all build on this bring-up.
 
 K3's hybrid KDA and MLA architecture creates two memory management challenges. The first is making prefix caching safe and efficient for mutable KDA recurrent state. The second is dynamically sharing capacity between KDA state and MLA KV.
 
-### Prefix caching for KDA state
+### Safe and efficient state reuse
 
 Attention KV is append-only. Once computed, it never changes, so the scheduler can safely share cached prefixes across requests in the radix tree. KDA state is different. Each layer maintains a fixed-size recurrent buffer that is **overwritten in place at every token**, so prefix caching must manage mutable state rather than immutable KV.
 
