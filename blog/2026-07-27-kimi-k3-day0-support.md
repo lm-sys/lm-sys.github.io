@@ -254,25 +254,6 @@ The chronological ladder behind the four bars:
 
 ![bs=1 decode throughput ladder](/images/blog/kimi-k3-day0-support/fig1-bs1-throughput-ladder.svg)
 
-| Stage | Optimization | tok/s | Basis |
-|---|---|---:|---|
-| P0 | bring-up baseline (Marlin W4A16 MoE) | 44.3 | measured |
-| P1 | MoE-Front GEMM + KDA GEMV Merge ³ | 53.2 | itl-rescaled |
-| P2 | Launch/Copy Elimination + O-Gate Fusion ³ | 61.9 | itl-rescaled |
-| P3 | Fused Mamba Track + Batched Router | 62.4 | measured |
-| P4 | Radix-Select Router | 64.2 | measured |
-| P5 | Conv + KDA + Onorm Fusion (NVIDIA kernel) ¹ | 65.3 | measured |
-| P6 | W4A8 SiTU MoE Cubins (NVIDIA) + Routing Bypass | 71.0 | measured |
-| P7 | TMA Attn-Residual Aggregation (NVIDIA kernel) | 72.0 | measured |
-| P8 | CuTeDSL TGV Dense GEMM (NVIDIA kernels) | 74.5 | measured |
-| P9 | NVLS AR + RMSNorm Fusion | 84.3 | measured |
-| P10 | Zero-Copy MXFP8 Quant | 85.2 | measured |
-| P11 | Res-Write Fusion + Multi-Stream | 90.2 | measured |
-| P12 | LL AR Fusion (MoE finalize in-collective) | 92.0 | measured |
-| P13 | Column-Parallel GEMM + Multicast AG ² | 108.0 | measured |
-| P14 | KDA GEMV Side-Stream Overlap | 111.4 | measured |
-| P15 | KV-Scatter + Q-Concat Fusion (+PDL) | 112.5 | measured |
-
 **The lesson that generalizes.** All-reduce is a synchronization point, so a
 microsecond saved there converts one-for-one into step time; a kernel sitting
 in another stream's overlap slack converts at roughly one-tenth. Checking
