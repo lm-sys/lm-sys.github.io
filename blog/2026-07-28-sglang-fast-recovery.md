@@ -1,6 +1,6 @@
 ---
 title: "Fast Engine Recovery: Sub-Second Engine Restart for SGLang via Weight Cache Daemon"
-author: "AntGroup Bailing Infra Team, Ailibaba xxx Team, SGLang Team"
+author: "AntGroup AntLing Infra Team, Ailibaba xxx Team, SGLang Team"
 date: "July 28, 2026"
 previewImg: /images/blog/sglang-fast-recovery/preview.png
 ---
@@ -251,7 +251,7 @@ More models support are also on the way.
 
 ## Acknowledgements
 
-**AntGroup Bailing Infra Team**: Michael Qiu qiudayu.qdy@antgroup.com
+**AntLing Infra Team, AntGroup**: Michael Qiu qiudayu.qdy@antgroup.com
 
 **Alibaba**: Siyu Liu liusy58@smail.nju.edu.cn
 
