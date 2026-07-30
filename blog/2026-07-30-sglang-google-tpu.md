@@ -1,21 +1,21 @@
 ---
-title: "RadixArk Joins Forces with Google Cloud to Bring Full SGLang Features to TPUs"
-author: "RadixArk & Google Cloud"
+title: "RadixArk Joins Forces with Google to Bring Full SGLang Features to TPUs"
+author: "RadixArk & Google"
 date: "July 30, 2026"
-previewImg: /images/blog/2026-07-30-sglang-google-cloud-tpus/cover.png
+previewImg: /images/blog/2026-07-30-sglang-google-tpu/cover.png
 type: news
 excerpt: "RadixArk and Google Cloud are partnering to bring SGLang to TPUs, giving developers ultimate flexibility for running workloads on their choice of hardware."
 ---
 
 RadixArk and Google Cloud are partnering to bring [SGLang](https://github.com/sgl-project/sglang) to TPUs, giving developers ultimate flexibility for running workloads on their choice of hardware.
 
-SGLang is an open source inference framework built for high throughput and low latency at production scale. With more than 30,000 GitHub stars and over 1,700 contributors, it runs on hundreds of thousands of GPUs worldwide and generates trillions of tokens in production every day. [RadixArk](https://www.radixark.com) is a contributor to the SGLang project.
+SGLang is an open source inference framework built for high throughput and low latency at production scale. With more than 30,000 GitHub stars and over 1,700 contributors, it runs on hundreds of thousands of GPUs worldwide and generates trillions of tokens in production every day. [RadixArk](https://www.radixark.com) is a maintainer of the SGLang project.
 
-Currently, developers can run SGLang on the latest TPU generations through [SGL-JAX](https://github.com/sgl-project/sglang-jax), with support for major large language model and multimodal families including Gemma, Qwen, DeepSeek, GLM, Mimo, Kimi, Ling, MiniMax, and Grok, as well as diffusion models for video and image generation including Wan and Flux. Later this year, RadixArk will roll out <span style="color: var(--orange);">SGL-torchtpu</span> as an additional <span style="text-decoration: underline; text-decoration-color: var(--orange); text-decoration-thickness: 1.5px; text-underline-offset: 3px;">PyTorch-native TPU backend</span>, featuring eager execution, PyTorch ecosystem compatibility, and MPMD support. It will enable any AI researcher and engineer in the industry to use native PyTorch toolchain and run LLM models on Google's TPUs via SGLang inference framework with high performance, scalability and state-of-the-art features, including: the leading open models at full size on multi-host TPUs with quality matched to published baselines, plus parallelism (data, tensor, expert, context, and pipeline), Radix Cache, HiCache, quantization, and speculative decoding, powered by TPU Pallas kernels built by RadixArk, Google, and the SGLang community.
+Currently, developers can run SGLang on the latest TPU generations through [SGL-JAX](https://github.com/sgl-project/sglang-jax), with support for major large language model and multimodal families including Gemma, Qwen, DeepSeek, GLM, Mimo, Kimi, Ling, MiniMax, and Grok, as well as diffusion models for video and image generation including Wan and Flux. Later this year, RadixArk will roll out <span style="color: var(--orange);">SGL-torchtpu</span> as an additional <span style="text-decoration: underline; text-decoration-color: var(--orange); text-decoration-thickness: 1.5px; text-underline-offset: 3px;">PyTorch-native TPU backend</span>, featuring eager execution, PyTorch ecosystem compatibility, and MPMD support. It will let any AI researcher or engineer in the industry run LLMs with SGLang on Google's TPUs using standard PyTorch tooling, with high performance, scalability, and state-of-the-art features. These include the leading open models at full size on multi-host TPUs, with quality matched to published baselines, plus parallelism (data, tensor, expert, context, and pipeline), Radix Cache, HiCache, quantization, and speculative decoding — powered by TPU Pallas kernels built by RadixArk, Google, and the SGLang community.
 
 Going forward, SGLang will enable new open models to run on TPU the same day they run on GPU, with that Day 0 support extending to every new TPU generation.
 
-These make TPUs a drop-in, cost-efficient path to frontier inference. Teams run the same SGLang API and features they use on GPUs, with the freedom to choose hardware based on workload needs and price-performance, rather than software lock-in.
+These make TPUs a drop-in, cost-efficient path to frontier inference. Teams run the same SGLang API and features they use on GPUs, with the freedom to choose hardware based on workload needs and price-performance.
 
 <p style="margin: 2.6em 0; padding-left: 1.5em; border-left: 2px solid var(--orange); font-size: 1.125em; line-height: 1.6; font-style: normal;">"RadixArk's mission is to make frontier AI infrastructure open and accessible to every builder. SGLang embodies that, and we're excited to work with Google Cloud to bring its performance and flexibility to the TPU ecosystem," said <strong>Ying Sheng</strong>, CEO of RadixArk.</p>
 
