@@ -104,7 +104,7 @@ The live plan is tracked in the [SGLang Quantization Roadmap - 2026 H2 (#31783)]
 
 - Huawei Ascend Team
 
-  We thank the Huawei Ascend NPU team for its continued collaboration on quantization architecture, kernel integration, and model enablement. In particular, we recognize Zhen Liang (@[ping1jing2](https://github.com/ping1jing2)), Han Yaochen (@[Alisehen](https://github.com/Alisehen)), Tamir Baydasov (@[TamirBaydasov](https://github.com/TamirBaydasov)), Yechang Guo (@[YChange01](https://github.com/YChange01)), Artem Savkin (@[OrangeRedeng](https://github.com/OrangeRedeng)), and Junlin Wu (@[TallMessiWu](https://github.com/TallMessiWu)) for their contributions to GPTQ, ModelSlim, Compressed-Tensors, INT8, MXFP8, MXFP4, MoE, KV cache, and communication quantization support on Ascend hardware.
+  We thank the Huawei Ascend NPU team for its continued collaboration on quantization architecture, kernel integration, and model enablement. In particular, we recognize Liang Zhen (@[ping1jing2](https://github.com/ping1jing2)), Yaochen Han (@[Alisehen](https://github.com/Alisehen)), Tamir Baydasov (@[TamirBaydasov](https://github.com/TamirBaydasov)), Yechang Guo (@[YChange01](https://github.com/YChange01)), Artem Savkin (@[OrangeRedeng](https://github.com/OrangeRedeng)), and Junlin Wu (@[TallMessiWu](https://github.com/TallMessiWu)) for their contributions to GPTQ, ModelSlim, Compressed-Tensors, INT8, MXFP8, MXFP4, MoE, KV cache, and communication quantization support on Ascend hardware.
 
 - SGLang Community
 
