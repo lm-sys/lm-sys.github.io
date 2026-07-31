@@ -112,10 +112,6 @@ The live plan is tracked in the [SGLang Quantization Roadmap - 2026 H2 (#31783)]
 
   Special thanks to the Intel Neural Compressor and AutoRound contributors for their collaboration on AutoRound integration, and to the NVIDIA, AMD, ModelOpt, Compressed-Tensors, Quark, GGUF, and hardware-backend communities whose work continues to expand the range of efficient inference formats available to SGLang.
 
-- vLLM Community
-
-  SGLang's Compressed-Tensors integration was adapted from the vLLM Compressed-Tensors implementation. We thank the vLLM contributors who designed and extended this work, especially @dsikka, @mgoin, @dbogunowicz, @kylesayrs, and @robertgshaw2-redhat, as well as the broader vLLM and llm-compressor communities.
-
 Finally, we thank everyone contributing to the SGLang quantization roadmap - from researchers proposing new numerical formats to maintainers building production kernels, tests, and deployment recipes.
 
 ## 6. Appendix
