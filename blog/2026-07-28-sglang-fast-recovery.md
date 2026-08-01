@@ -1,21 +1,19 @@
 ---
 title: "Fast Engine Recovery: Sub-Second Engine Restart for SGLang via Weight Cache Daemon"
-author: "Ant Ling Infra Team, Ailibaba xxx Team, SGLang Team"
+author: "Ant Ling Infra Team (Ant Group), Alibaba, SGLang Team"
 date: "July 28, 2026"
 previewImg: /images/blog/sglang-fast-recovery/preview.png
 ---
 
 ## TL;DR
 
-Nowadays, SOTA models are getting much bigger. For example, the **Ling-2.6-1T** model released by the Bailing Team has 1T parameters, and reloading the model service after a crash is very expensive.
-Therefore, we introduce the **Weight Cache Daemon**, a persistent GPU process that holds post-quantized model weights in GPU memory and serves them to new SGLang engine instances via CUDA IPC zero-copy mapping.
-This reduces weight loading from minutes to sub-second times, and total engine restart time from xx minutes to xx minutes on Ling-2.6-1T.
+Nowadays, SOTA models are getting much bigger and reloading the model service after a crash is very expensive. Therefore, we introduce the **Weight Cache Daemon**, a persistent GPU process that holds post-quantized model weights in GPU memory and serves them to new SGLang engine instances via CUDA IPC zero-copy mapping. This reduces weight loading from minutes to sub-second times.
 
-The Weight Cache Daemon is the first phase of our **Fast Egnine Recovery Framework**, which targets **< 10 seconds warm restarts** and **< 1 second warm standby switches** for production LLM serving.
+The Weight Cache Daemon is the first phase of our **Fast Engine Recovery Framework**, which targets **< 10 second cold restarts** and **< 1 second warm standby switches** for production LLM serving.
 
 Key results:
 
-1. **Weight loading: ~xxxs → ~0.xxs** — a **~500× speedup**, eliminating 79% of startup time based on Ling-2.6-1T model.
+1. **Weight loading: ~306–327s → ~0.63s** — a **~500× speedup**, eliminating 79% of startup time based on the Qwen3-235B FP8 model.
 2. **Total startup: 6.5min → 1.3min** — an **80% reduction** in end-to-end engine boot time.
 3. **Multi-instance weight sharing** — multiple engine instances on the same GPU map to the same IPC handles, eliminating redundant disk I/O and post-quantization transforms.
 4. **Active-standby failover in < 1 second** — standby engines share weights via zero-copy, enabling near-zero-downtime failover without dedicating full GPUs to idle replicas.
@@ -23,7 +21,7 @@ Key results:
 
 ## Background
 
-As LLM models grow larger — Qwen 235B, Ling-2.6-1T, and 2.8T of newerly released Kimi K3 — the cold-start time of serving engines has become a critical bottleneck for production efficiency. A Qwen3-235B FP8 instance on 4×H20 GPUs takes **~6.5 minutes** just to become ready to serve. In production, this means:
+As LLM models grow larger — Qwen3-235B, Ling-2.6-1T, and the newly released 2.8T Kimi K3 — the cold-start time of serving engines has become a critical bottleneck for production efficiency. A Qwen3-235B FP8 instance on 4×H20 GPUs takes **~6.5 minutes** just to become ready to serve. In production, this means:
 
 - **P99 tail latency spikes** during restarts — all in-flight requests fail or queue indefinitely.
 - **Reduced availability** — multi-minute recovery windows violate SLA targets.
@@ -71,7 +69,8 @@ The Weight Cache Daemon is a persistent GPU process that holds post-quantized, T
 │                                                            │
 └────────────────────────────────────────────────────────────┘
 
-Coordination: Unix Socket /tmp/sglang_weight_cache_gpu{i}.sock
+Coordination: Unix Socket /tmp/sglang_weight_cache_rank{i}.sock
+(global rank = tp_size × pp_rank + tp_rank, unique across PP stages and nodes)
 ```
 
 Each GPU runs **one daemon process** for its TP rank. The daemon:
@@ -97,15 +96,21 @@ Any mismatch between the engine's config and the daemon's cached config triggers
 
 | Field | Mismatch Example | Consequence |
 |-------|-----------------|-------------|
-| `model_path` + `model_arch` | Different model | Wrong weights entirely |
+| `model_path` + `model_arch` + `revision` | Different model or revision | Wrong weights entirely |
 | `tp_size` + `tp_rank` | Different TP sharding | Wrong shard for this rank |
-| `dp_size` | Different DP strategy | Incorrect weight distribution |
+| `pp_size` + `pp_rank` | Different PP partitioning | Wrong layers for this pipeline stage |
+| `dp_size` + `ep_size` | Different DP/EP strategy | Incorrect weight distribution |
 | `quant_method` + `quant_config_hash` | Different quantization | Unquantized vs FP8 mismatch |
 | `dtype` | float16 vs bfloat16 | Type mismatch |
+| `device_capability` + `torch_version` | Different GPU arch or torch version | Weights map cleanly but serve wrong numerics |
 
-This is critical for production safety: if an operator changes the model or quantization config, the daemon will detect the mismatch and fall back to disk loading rather than serving incompatible weights.
+The last two fields form an **environment stamp**: a daemon and a client that ran different post-processing branches (different compute capability or torch/kernel version) can produce weights that map cleanly over IPC yet serve garbage — stamping the environment into `CacheConfig` turns that into a clean mismatch.
 
-### Two Modes: daemon and client
+This is critical for production safety: if an operator changes the model or quantization config, the engine will detect the mismatch and fall back to disk loading rather than mapping incompatible weights.
+
+On top of config validation, quantization methods are gated by an **IPC allowlist**. CUDA IPC zero-copy exports only raw tensor data, so it is correct only when the entire effect of `process_weights_after_loading()` is captured by that data. Methods that stamp Python-side metadata or repack/transpose weights (per-tensor FP8, Marlin, AWQ/GPTQ) would silently serve wrong numerics — they raise a hard error instead. Currently verified: **unquantized** and **block-wise FP8** (`weight_block_size` set); more methods will be added after end-to-end verification.
+
+### Three Modes: daemon, client, and off
 
 | Mode | Flow | Weight Load Time | GPU Memory | Use Case |
 |------|------|-----------------|------------|----------|
@@ -139,11 +144,11 @@ A single daemon per GPU holds weights in memory; multiple engine instances (e.g.
 │                                                    │
 │  ┌──────────────┐   cudaIpcMemHandle    ┌────────┐ │
 │  │              │ ────────────────────► │Engine A│ │
-│  │  Weight      │ ────────────────────► │(S = 0) │ │
+│  │  Weight      │ ────────────────────► │(inst 0)│ │
 │  │  Cache       │                       └────────┘ │
 │  │  Daemon      │   cudaIpcMemHandle    ┌────────┐ │
 │  │              │ ────────────────────► │Engine B│ │
-│  │              │ ────────────────────► │(S = 1) │ │
+│  │              │ ────────────────────► │(inst 1)│ │
 │  └──────────────┘                       └────────┘ │
 │                                                    │
 └────────────────────────────────────────────────────┘
@@ -185,9 +190,9 @@ GPU-internal copy bandwidth: ~500–900 GB/s (H20 HBM). IPC handle mapping: ~10k
 
 | Model | Weight Size | Disk Load (s) | IPC Zero-copy (s) | Speedup |
 |-------|-------------|---------------|-------------------|---------|
-| ** 235B FP8 ** | **~235 GB** | **~306–327** | **<1** | **~300–500×** |
-| ** Ling-2.6-1T ** | ** 1TB ** | **~yyy–yyy** | **<1** | **~yyy–yyy×** |
-| ** Kimi K3 ** | ** 1.56 TB** | **~xxx–xxx** | **<1** | **~yyy–yyy×** |
+| **Qwen3-235B FP8** | **~235 GB** | **~306–327** | **<1** | **~500×** |
+| **Ling-2.6-1T** | **~1 TB** | **~yyy–yyy** | **<1** | **~yyy–yyy×** |
+| **Kimi K3** | **~1.56 TB** | **~xxx–xxx** | **<1** | **~yyy–yyy×** |
 
 #### Multi-Node
 
@@ -210,11 +215,11 @@ python -m sglang.srt.weight_cache.daemon \
     --load-format auto --dtype auto --quantization fp8
 ```
 
-Wait for daemons to become ready (they write a `.ready` file per GPU):
+Wait for daemons to become ready (they write a `.ready` file per rank):
 
 ```bash
 # Check readiness:
-ls /tmp/sglang_weight_cache_gpu*.ready
+ls /tmp/sglang_weight_cache_rank*.ready
 ```
 
 ### Start Engine with Weight Cache
@@ -247,7 +252,7 @@ The Weight Cache Daemon is Phase 1 of a broader **Fast Recovery Framework** targ
 | Server ready | ~3.4 | < 1 | Skip warmup requests on restart | Planned |
 | **Total (single-node)** | **~390** | **< 10** | | |
 
-More models support are also on the way.
+Support for more models is also on the way.
 
 ## Acknowledgements
 
