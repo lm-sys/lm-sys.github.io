@@ -233,8 +233,43 @@ python -m sglang.launch_server \
 
 ### Launch Weight Cache Daemons - multi-node
 
-```bash
+In a multi-node deployment, each node runs its own daemon for its local TP ranks. All daemons
+join the same distributed group, so `--nnodes`, `--node-rank`, and `--dist-init-method` must be
+consistent across nodes, with `$MASTER_ADDR` pointing at node 0:
 
+```bash
+# Daemon on node 0:
+python -m sglang.srt.weight_cache.daemon \
+    --model-path /path/to/model --tp-size 2 \
+    --load-format auto --dtype auto --quantization fp8 \
+    --nnodes 2 --node-rank 0 \
+    --dist-init-method tcp://$MASTER_ADDR:29500
+
+# Daemon on node 1:
+python -m sglang.srt.weight_cache.daemon \
+    --model-path /path/to/model --tp-size 2 \
+    --load-format auto --dtype auto --quantization fp8 \
+    --nnodes 2 --node-rank 1 \
+    --dist-init-method tcp://$MASTER_ADDR:29500
+```
+
+Once every node reports its daemons ready, start the engine clients. They use a separate
+rendezvous port (`29600`) from the daemons (`29500`):
+
+```bash
+# Engine client on node 0:
+python -m sglang.launch_server \
+    --model-path /path/to/model --tp-size 2 \
+    --weight-cache-mode client \
+    --nnodes 2 --node-rank 0 \
+    --dist-init-addr $MASTER_ADDR:29600 --port 34000
+
+# Engine client on node 1:
+python -m sglang.launch_server \
+    --model-path /path/to/model --tp-size 2 \
+    --weight-cache-mode client \
+    --nnodes 2 --node-rank 1 \
+    --dist-init-addr $MASTER_ADDR:29600
 ```
 
 ## Fast Engine Recovery Framework: Roadmap
