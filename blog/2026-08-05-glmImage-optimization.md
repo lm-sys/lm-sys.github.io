@@ -10,10 +10,10 @@ type: blog
 
 - Replaces the HF backend with SRT to accelerate AR modeling and resolve parallelism conflicts, with dedicated TP for AR and SP for DiT
 - Boosts hardware utilization via dynamic batching and enables early return for completed images
-- Implements one-denoiser-per-device parallel DiT execution and overlaps AR & DiT workflows via cached AR results
+- Implements one-denoiser-per-device parallel DiT execution and overlaps AR & DiT workflows via buffered AR results
 
 <div align="center">
-  <img src="/images/blog/2026-08-05-glmImage-optimization/02-peformance_result.png" alt="performance result" />
+  <img src="/images/blog/2026-08-05-glmImage-optimization/02-performance_result.png" alt="performance result" />
   <br>
   <em>Figure 1: Performance comparison.</em>
 </div>
@@ -50,18 +50,21 @@ The AR vision-language encoder is spun up as a standard SGLang SRT service, invo
 
 **Performance gains** (please refer to [PR #25381 description](https://github.com/sgl-project/sglang/pull/25381) for reproducing):
 
-| Configuration                               | E2E latency (s)   | AR stage (s)      | Denoising (s) | Decoding (s) |
-| ------------------------------------------- | ----------------- | ----------------- | ------------- | ------------ |
-| Monolithic baseline (1 NPU, HF AR backend)  | 154.6             | 122.8             | 31.6          | 0.046        |
-| **Decoupled SRT AR (1 NPU, DiT unchanged)** | **78.3 (−49.4%)** | **46.6 (−62.1%)** | 31.6          | 0.035        |
-| **4-NPU heterogeneous (TP=4 AR, SP=4 DiT)** | **35.2 (−77.2%)** | **26.1 (−78.8%)** | 9.0           | 0.009        |
-> **Note:** Prior to PR #25381, because AR and DiT were constrained to share the same parallelism strategy, data is only available for the 4-NPU heterogeneous configuration (TP=4 AR, SP=4 DiT).
+| Configuration                               | NPUs | E2E latency (s)   | AR stage (s)      | Denoising (s) | Decoding (s) |
+| ------------------------------------------- | ---- | ----------------- | ----------------- | ------------- | ------------ |
+| Monolithic baseline (HF AR backend)         | 1    | 154.6             | 122.8             | 31.6          | 0.046        |
+| **Decoupled SRT AR (DiT unchanged)**        | 1    | **78.3 (−49.4%)** | **46.6 (−62.1%)** | 31.6          | 0.035        |
+| **4-NPU heterogeneous (TP=4 AR, SP=4 DiT)** | 4    | **35.2 (−77.2%)** | **26.1 (−78.8%)** | 9.0           | 0.009        |
 
-The AR stage sees the most dramatic speedup: single-card 122.8 s → 26.1 s, a 78.8% reduction on 4 cards. Even at TP=1, SRT's CUDA Graph, continuous batching, and memory reuse deliver a −62.1% gain over the naive transformers `generate`. Notably, the baseline 2-NPU setup uses SP to cut denoising by 46.7%, but AR actually slows by 4.1% — under the old path AR gets zero benefit from SP and even regresses due to communication overhead; only the SRT path lets AR truly leverage multi-card TP.
+> **Resource-matched comparison:** The `Decoupled SRT AR (DiT unchanged)` row shows the **software-only** speedup over the `monolithic baseline (HF AR backend)`.  
+> **Combined scaling:** The `4-NPU heterogeneous (TP=4 AR, SP=4 DiT)` row shows the **combined software and hardware-scaling** result (software decoupling + 4× NPU parallelism) over the same `1-NPU monolithic baseline`.  
+> Prior to PR #25381, because AR and DiT were constrained to share the same parallelism strategy, data is only available for the 4-NPU heterogeneous configuration.
+
+The AR stage sees the most dramatic speedup: single-card 122.8 s → 26.1 s, a 78.8% reduction on 4 cards. Even at TP=1, SRT's graph execution, continuous batching, and memory reuse deliver a −62.1% gain over the naive transformers `generate`. Notably, the baseline 2-NPU setup uses SP to cut denoising by 46.7%, but AR actually slows by 4.1% — under the old path AR gets zero benefit from SP and even regresses due to communication overhead; only the SRT path lets AR truly leverage multi-card TP.
 
 ## 3. Dynamic Batching Adaptation and Early Return Support (PR #30683)
 
-After the separation, AR and DiT still execute one request at a time, so latency grows linearly under high concurrency (issue #30634). To boost throughput in multi-input scenarios, we followed up with PR #30683.。It packs concurrent requests into single forward passes, eliminating the idle compute caused by serial execution.
+After the separation, AR and DiT still execute one request at a time, so latency grows linearly under high concurrency (issue #30634). To boost throughput in multi-input scenarios, we followed up with PR #30683. It packs concurrent requests into single forward passes, eliminating the idle compute caused by serial execution.
 
 1. **Dynamic batching adaptation**: SGL-Diffusion already includes a generic dynamic batching infrastructure (introduced in [PR #18764](https://github.com/sgl-project/sglang/pull/18764)); our work extends this capability to GLM-Image by implementing the `supports_dynamic_batching` and `supports_native_grouped_requests` interfaces and associated pipeline logic. After evaluation, we apply batching only to the AR stage, as DiT per-step latency scales proportionally with batch size and yields no net throughput benefit.
 2. **Support early return**: we add the `supports_sequential_dit_inference` variable and related functions to support early return when each output image is ready, instead of waiting for the entire batch to finish.
@@ -161,7 +164,7 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
       --tp-size 1 \
       --host 127.0.0.1 \
       --port 3828 \
-      --mem-fraction-static 0.4 # (0.25 in 2/8 devices)
+      --mem-fraction-static 0.4
       
     export SGLANG_CACHE_DIT_FN=2
     export SGLANG_CACHE_DIT_BN=1
@@ -201,9 +204,9 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
       --model-path zai-org/GLM-Image/vision_language_encoder/ \
       --tokenizer-path zai-org/GLM-Image/processor/ \
       --enable-multimodal \
-      --cuda-graph-max-bs 28 \ # or less bs
+      --cuda-graph-max-bs 28 \
       --disable-fast-image-processor \
-      --tp-size 8 \ # or less devices
+      --tp-size 8 \
       --host 127.0.0.1 \
       --port 3828 \
       --mem-fraction-static 0.25
@@ -219,8 +222,8 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
       
     sglang serve \
       --model-path zai-org/GLM-Image/ \
-      --num-gpus 8 \ # or less devices
-      --sp-degree 8 \ # or less devices
+      --num-gpus 8 \
+      --sp-degree 8 \
       --srt-encoder-url http://127.0.0.1:3828 \
       --srt-encoder-timeout 300 \
       --batching-mode dynamic \
@@ -234,7 +237,7 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
       --base-url http://127.0.0.1:30088/v1 \
       --model GLM-image \
       --output-dir generated_images \
-      --max-concurrency 28 # or less bs
+      --max-concurrency 28
     ```
     </details>
 
@@ -257,7 +260,7 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
     export SGLANG_CACHE_DIT_TS_ORDER=2
     export SGLANG_CACHE_DIT_ENABLED=true
 
-    for i in $(seq 1 7); do # or 14 denoisers
+    for i in $(seq 1 7); do
         scheduler_port=$((19000 + i))
         master_port=$((BASE_MASTER_PORT + i))
 
@@ -463,9 +466,9 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
     # 7 denoisers, each on 2 GPUs → pairs (2,3), (4,5), …, (14,15)
     # NPUs 0 and 1 are occupied by AR part.
     for i in $(seq 0 6); do
-        base_gpu=$((2 + i * 2))          # 2,4,6,8,10,12,14
-        scheduler_port=$((19001 + i))    # 19001…19007
-        master_port=$((BASE_MASTER_PORT + i))  # 29005…29011
+        base_gpu=$((2 + i * 2))
+        scheduler_port=$((19001 + i))
+        master_port=$((BASE_MASTER_PORT + i))
 
         sglang serve \
             --model-path "$MODEL_PATH" \
@@ -508,7 +511,7 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
       --host 0.0.0.0 \
       --port 30052 \
       --scheduler-port 19655 \
-      --output-path ./outputs | tee -a 8_devices_7_denoisers.log
+      --output-path ./outputs
 
     python fetch_images.py \
       --base-url http://127.0.0.1:30052/v1 \
