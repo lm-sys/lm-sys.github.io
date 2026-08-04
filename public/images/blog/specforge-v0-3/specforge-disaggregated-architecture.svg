@@ -46,6 +46,8 @@
       .card-text { font-size: 15px; fill: #64748B; }
       .small-title { font-size: 15px; font-weight: 700; }
       .small-text { font-size: 13px; fill: #64748B; }
+      .capture-title { font-size: 14px; font-weight: 700; }
+      .capture-caption { font-size: 12px; fill: #64748B; }
       .edge-label { font-size: 14px; font-weight: 650; }
       .legend { font-size: 14px; fill: #475569; }
     </style>
@@ -62,12 +64,12 @@
     <rect x="932" y="135" width="620" height="600" rx="28" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="2"/>
 
     <g>
-      <rect x="76" y="158" width="260" height="38" rx="19" fill="#DBEAFE"/>
+      <rect x="76" y="158" width="300" height="38" rx="19" fill="#DBEAFE"/>
       <circle cx="98" cy="177" r="7" fill="#2563EB"/>
       <text x="116" y="183" class="pool-title" fill="#1E40AF">Inference / Producer Pool</text>
     </g>
     <g>
-      <rect x="960" y="158" width="258" height="38" rx="19" fill="#EDE9FE"/>
+      <rect x="960" y="158" width="310" height="38" rx="19" fill="#EDE9FE"/>
       <circle cx="982" cy="177" r="7" fill="#7C3AED"/>
       <text x="1000" y="183" class="pool-title" fill="#5B21B6">Training / Consumer Pool</text>
     </g>
@@ -92,7 +94,7 @@
 
     <g filter="url(#shadow)">
       <rect x="488" y="228" width="150" height="278" rx="22" fill="#FFFFFF" stroke="#67E8F9" stroke-width="2"/>
-      <text x="563" y="260" text-anchor="middle" class="small-title" fill="#0E7490">SGLang capture pool</text>
+      <text x="563" y="260" text-anchor="middle" class="capture-title" fill="#0E7490">SGLang capture pool</text>
 
       <rect x="509" y="280" width="108" height="54" rx="13" fill="#ECFEFF" stroke="#A5F3FC"/>
       <circle cx="530" cy="307" r="8" fill="#06B6D4"/>
@@ -106,7 +108,7 @@
       <circle cx="530" cy="441" r="8" fill="#06B6D4"/>
       <text x="547" y="446" class="small-title" fill="#155E75">Server N</text>
 
-      <text x="563" y="490" text-anchor="middle" class="small-text">target feature capture</text>
+      <text x="563" y="490" text-anchor="middle" class="capture-caption">target feature capture</text>
     </g>
 
     <!-- Bridge cards -->
@@ -128,7 +130,7 @@
 
     <!-- Consumer-side cards -->
     <g filter="url(#shadow)">
-      <rect x="964" y="222" width="222" height="154" rx="22" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="2"/>
+      <rect x="964" y="222" width="250" height="154" rx="22" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="2"/>
       <rect x="988" y="245" width="44" height="44" rx="13" fill="#EDE9FE"/>
       <path d="M999 256h22v22h-22zM1004 263h12M1004 270h8" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
       <text x="988" y="319" class="card-title" fill="#4C1D95">Consumer coordinator</text>
