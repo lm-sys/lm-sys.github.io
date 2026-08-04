@@ -1,6 +1,6 @@
 ---
 title: "Humming Is Now Integrated into SGLang: Flexible Low-Bit GEMM for High-Performance MoE Inference"
-author: "Ant Group Venus Team and SCT Team and the SGLang Team"
+author: "Ant Group Venus and SCT Teams, and the SGLang Team"
 date: "August 3, 2026"
 previewImg: /images/blog/humming-sglang/humming_sgl_preview.png
 type: blog
@@ -47,12 +47,12 @@ The MXFP4AFP8 configuration in the H20 benchmarks uses MXFP4 weights and FP8 act
 </p>
 
 <p align="center">
-  <em>Figure 1. Humming factors E8M0 scales at load time, reconstructs FP8 operands in registers, and runs FP8 WGMMA without materializing an 8-bit weight tensor in memory.</em>
+  <em>Figure 1. Humming factors UE8M0 scales at load time, reconstructs FP8 operands in registers, and runs FP8 WGMMA without materializing an 8-bit weight tensor in memory.</em>
 </p>
 
 The key ideas are:
 
-1. **Factor E8M0 scales at load time.** Humming rewrites each group scale as `s_g = s_base × 2^Δg`, keeping one base scale per expert and sublayer and a residual exponent code for each weight group. If the exponent span is too wide for FP8 E4M3, the affected FP4 values are adjusted and requantized during layer preparation. This moves group-wise scaling out of the FP32 accumulator path and into register-side FP8 reconstruction.
+1. **Factor UE8M0 scales at load time.** Humming rewrites each group scale as `s_g = s_base × 2^Δg`, keeping one base scale per expert and sublayer and a residual exponent code for each weight group. If the exponent span is too wide for FP8 E4M3, the affected FP4 values are adjusted and requantized during layer preparation. This moves group-wise scaling out of the FP32 accumulator path and into register-side FP8 reconstruction.
 2. **Reconstruct FP8 weights only in registers.** Activations are quantized per token to FP8, while expert weights remain packed at 4 bits in global and shared memory. Immediately before MMA, Humming combines the FP4 nibbles and residual exponent codes with `__byte_perm` and `LOP3` to synthesize FP8 E4M3 weight values in registers. A transposed operand mapping places these weight registers in WGMMA's A operand and the shared-memory activation tile in its B operand, so no 8-bit weight tensor is materialized in memory.
 3. **Compute with FP8 WGMMA and restore scales in the epilogue.** FP8 × FP8 WGMMA accumulates into FP32, after which the epilogue applies the per-token activation scale and per-expert base scale. Folding each residual exponent into the register-side FP8 value avoids a separate FP32 multiply and scaled accumulator for every weight group, reducing mainloop arithmetic and register pressure. Humming then selects H20-specific tile sizes and pipeline stages; TMA is enabled only for eligible shapes rather than being required by the design.
 
@@ -90,25 +90,28 @@ Selecting Humming does not automatically turn a W4A16 workload into W4A8. SGLang
 
 ```bash
 export SGLANG_HUMMING_INPUT_QUANT_CONFIG='{"dtype":"float8e4m3"}'
+
+sglang serve \
+  --model-path /path/to/compatible-moe-checkpoint \
+  --quantization humming \
+  --moe-runner-backend humming
 ```
-
-### Online Quantization
-
-For unquantized FP16/BF16 checkpoints, an environment variable can specify the target weight format. The following example converts compatible linear and MoE weights into group-wise INT4 during model loading:
-
-```bash
-export SGLANG_HUMMING_ONLINE_QUANT_CONFIG='{"dtype":"int4","group_size":128}'
-```
-
-The conversion runs only during model loading, not on every request. If a checkpoint already uses another quantization format that Humming can convert, add `"force_requant": true` to requantize it into the target Humming schema during loading.
-
-The online quantization configuration determines how weights are quantized and packed. To obtain W4A8, it must be combined with the `SGLANG_HUMMING_INPUT_QUANT_CONFIG` setting described above to enable FP8 activation quantization.
 
 ## 4. Performance Evaluation
 
 ### End-to-End Performance Evaluation
 
 We evaluate Humming end to end in SGLang on NVIDIA H20 GPUs using Kimi-K2.6 and DeepSeek-V4-Flash. The benchmarks cover TTFT and TPOT across text and image inputs, context lengths, and batch sizes.
+
+All benchmarks use the following software and hardware environment:
+
+| Component | Version or specification |
+| --- | --- |
+| GPU | 8 × NVIDIA H20-3e |
+| NVIDIA Driver | `570.133.20` |
+| CUDA | `13.0` |
+| SGLang | Commit [`d6ef68881e263812d4901f632786015005c4d050`](https://github.com/sgl-project/sglang/commit/d6ef68881e263812d4901f632786015005c4d050) |
+| Humming | `humming-kernels[cu13]==0.1.11` |
 
 #### Kimi-K2.6: Text Input
 
@@ -124,8 +127,6 @@ The benchmark sweeps TTFT from 4K to 256K input tokens and measures TPOT at 1K, 
   <em>Figure 2. Kimi-K2.6 text-input TTFT and TPOT speedup over Marlin WINT4A16 under TP8.</em>
 </p>
 
-Both Humming configurations outperform Marlin WINT4A16 across the tested text workloads. WINT4AFP8 delivers the largest TTFT gains at short and medium input lengths and the strongest TPOT gains at batch size 8.
-
 #### Kimi-K2.6: Image Input
 
 The image-input evaluation compares the same three configurations under TP8 across requests containing 4 to 20 synthetic 1080p images.
@@ -138,7 +139,7 @@ The image-input evaluation compares the same three configurations under TP8 acro
   <em>Figure 3. Kimi-K2.6 image-input TTFT speedup over Marlin WINT4A16 across 4 to 20 synthetic 1080p images.</em>
 </p>
 
-Both Humming configurations improve image-input TTFT across all tested image counts, with WINT4AFP8 consistently delivering the larger speedup.
+Across the text- and image-input benchmarks, both Humming configurations reduce latency relative to Marlin WINT4A16, with WINT4AFP8 generally delivering the larger speedup.
 
 #### DeepSeek-V4-Flash: TTFT and TPOT Latency
 
@@ -156,7 +157,7 @@ Each bar reports latency speedup relative to the FP8 baseline, which is normaliz
 
 ### Agentic Pareto Curves
 
-Following the agentic replay methodology used in [SGLang GLM-5.2 NVFP4 Optimization](https://www.lmsys.org/blog/2026-07-13-glm52-optimization), we benchmark Humming on Kimi-K2.6, DeepSeek-V4-Flash, and GLM-5.2. The workload replays 13-turn OpenHands coding conversations. A conversation begins with roughly 75K–80K input tokens and generates 220 tokens per turn. We evaluate concurrency levels 1, 2, 4, and 8, repeat every point three times, and plot total token throughput per GPU against user-level interactivity, defined as `1000 / TPOT (ms)`. Higher values are better on both axes, and error bars span the observed minimum-to-maximum range.
+Following the agentic replay methodology used in [SGLang GLM-5.2 NVFP4 Optimization](https://www.lmsys.org/blog/2026-07-13-glm52-optimization), we benchmark Humming on Kimi-K2.6, DeepSeek-V4-Flash, and GLM-5.2. The workload replays 13-turn OpenHands coding conversations. A conversation begins with roughly 75K–80K input tokens and generates 220 tokens per turn. We evaluate concurrency levels 1, 2, 4, and 8. Every point is the arithmetic mean of three independent server rounds; error bars span the observed minimum and maximum.
 
 #### Kimi-K2.6
 
@@ -167,10 +168,10 @@ The Kimi-K2.6 comparison uses group-size-32 INT4 weights and evaluates Marlin WI
 </p>
 
 <p align="center">
-  <em>Figure 5. Kimi-K2.6 Agentic Pareto curve across concurrency levels 1, 2, 4, and 8.</em>
+  <em>Figure 5. Kimi-K2.6 Agentic Pareto curve for Marlin WINT4A16, Humming WINT4A16, and Humming WINT4AFP8 across concurrency levels 1, 2, 4, and 8.</em>
 </p>
 
-At concurrency levels 2, 4, and 8, both Humming WINT4A16 and WINT4AFP8 improve interactivity and per-GPU throughput over Marlin WINT4A16. Humming WINT4AFP8 reaches its knee at C=4 with 35.19 tok/s/user and 3,928.20 tok/s/GPU, improving the two metrics by 9.35% and 18.06%, respectively.
+At concurrency levels 2, 4, and 8, both Humming WINT4A16 and WINT4AFP8 improve interactivity and per-GPU throughput over Marlin WINT4A16. At C=4, Humming WINT4AFP8 reaches 35.19 tok/s/user and 3,928.20 tok/s/GPU, improving the two metrics by 9.35% and 18.06%, respectively.
 
 #### DeepSeek-V4-Flash
 
@@ -181,10 +182,10 @@ The DeepSeek-V4-Flash comparison runs under TP8 and covers Marlin MXFP4A16, Humm
 </p>
 
 <p align="center">
-  <em>Figure 6. DeepSeek-V4-Flash Agentic Pareto curve across concurrency levels 1, 2, 4, and 8.</em>
+  <em>Figure 6. DeepSeek-V4-Flash Agentic Pareto curve for Marlin MXFP4A16, Humming MXFP4A16, and Humming MXFP4AFP8 across concurrency levels 1, 2, 4, and 8.</em>
 </p>
 
-At every tested concurrency, both Humming configurations move the Pareto curve above and to the right of Marlin MXFP4A16. Humming MXFP4A16 improves interactivity by 5.79%–13.54% and per-GPU throughput by 8.65%–14.46%. Humming MXFP4AFP8 extends the interactivity gains to 11.04%–21.74% and the per-GPU throughput gains to 14.91%–26.22%.
+The 36 measurements cover three backends, four concurrency levels, and three rounds. Pairing each Humming run with the Marlin run at the same round and concurrency, Humming MXFP4A16 improves interactivity by 5.81%–13.62% and per-GPU throughput by 8.67%–14.46%; Humming MXFP4AFP8 improves the two metrics by 11.11%–21.86% and 14.93%–26.22%.
 
 #### GLM-5.2 W4AFP8
 
@@ -195,10 +196,10 @@ The GLM-5.2 comparison evaluates SGLang CUTLASS WINT4AFP8 and Humming WINT4AFP8,
 </p>
 
 <p align="center">
-  <em>Figure 7. GLM-5.2 W4AFP8 Agentic Pareto curve comparing SGLang CUTLASS and Humming under TP8.</em>
+  <em>Figure 7. GLM-5.2 Agentic Pareto curve comparing SGLang CUTLASS WINT4AFP8 and Humming WINT4AFP8 under TP8.</em>
 </p>
 
-At every tested concurrency, Humming WINT4AFP8 moves the Pareto curve above and to the right of SGLang CUTLASS WINT4AFP8. Across concurrency levels 1, 2, 4, and 8, Humming improves interactivity by 11.45%–23.23% and per-GPU throughput by 7.25%–11.26%.
+At every tested concurrency, Humming WINT4AFP8 moves the Pareto curve above and to the right of SGLang CUTLASS WINT4AFP8. Using the same round-and-concurrency pairing, Humming improves interactivity by 11.48%–23.23% and per-GPU throughput by 7.25%–11.26%.
 
 ## 5. Roadmap
 
@@ -208,7 +209,7 @@ This SGLang integration establishes a complete path from checkpoint schemas to l
 - Improve automatic detection of checkpoint activation-quantization types, including static input quantization.
 - Continue optimizing performance on Hopper and Blackwell for short-context, long-context, and high-concurrency workloads.
 - Support the Blackwell UMMA instruction path, with corresponding kernels and tuning strategies for low-bit dense and MoE GEMM.
-- Publish reproducible benchmarks with repeated measurements and complete environment information.
+- Publish reproducible benchmarks with repeated measurements, quality suites, and complete environment records.
 
 ## 6. Acknowledgments
 
@@ -219,3 +220,9 @@ This work was jointly developed by members of the Ant Group Venus and SCT teams 
 - **SGLang Team:** Peng Zhang, Xiaoyu Zhang
 
 We thank the SGLang maintainers and reviewers who helped bring the quantization, MoE, and DeepEP integrations to production. We also thank Jiang Shao and the NVIDIA team for adapting Humming's MXFP4 × FP8 scale-fusion approach in [FlashInfer PR #3738](https://github.com/flashinfer-ai/flashinfer/pull/3738).
+
+## Appendix
+
+### Reproduction
+
+The complete server launch, GSM8K accuracy, and agentic performance reproduction commands are maintained in [`benchmark/humming_blog/README.md`](https://github.com/huangzhilin-hzl/sglang/blob/benchmark/humming_blog/benchmark/humming_blog/README.md).
