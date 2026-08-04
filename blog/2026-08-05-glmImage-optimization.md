@@ -509,7 +509,7 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
     --port 30020 \
     --mem-fraction-static 0.8
 
-    serve sglang serve \
+    sglang serve \
       --model-path zai-org/GLM-Image/ \
       --disagg-role server \
       --srt-encoder-url http://127.0.0.1:30020 \
