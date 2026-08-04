@@ -180,10 +180,10 @@
     <path d="M638 448C668 448 674 527 698 527" fill="none" stroke="#10B981" stroke-width="4" marker-end="url(#arrowGreen)"/>
     <text x="666" y="477" text-anchor="middle" class="edge-label" fill="#047857">tensors</text>
     <path d="M886 527H954" fill="none" stroke="#10B981" stroke-width="4" marker-end="url(#arrowGreen)"/>
-    <text x="920" y="512" text-anchor="middle" class="edge-label" fill="#047857">fetch</text>
+    <text x="920" y="504" text-anchor="middle" class="edge-label" fill="#047857">fetch</text>
 
     <path d="M1075 376V445" fill="none" stroke="#7C3AED" stroke-width="4" marker-end="url(#arrowPurple)"/>
-    <text x="1090" y="415" class="edge-label" fill="#6D28D9">refs</text>
+    <text x="1100" y="407" class="edge-label" fill="#6D28D9">refs</text>
     <path d="M1186 524H1210C1227 524 1222 410 1232 410" fill="none" stroke="#7C3AED" stroke-width="4" marker-end="url(#arrowPurple)"/>
     <path d="M1377 522V555" fill="none" stroke="#EC4899" stroke-width="4" marker-end="url(#arrowPink)"/>
 
