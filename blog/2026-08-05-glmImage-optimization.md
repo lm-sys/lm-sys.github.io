@@ -29,6 +29,7 @@ Yet serving such hybrid pipelines efficiently in SGLang exposes a fundamental te
 3. **Mismatched resource allocation.** DiT achieves its best per-request latency at batch=1 per device, but bundling all devices into a single monolithic pipeline forces DiT to run in a multi-card spatial-parallel configuration even when throughput is the priority, resulting in underutilized hardware capacity.
 
 To resolve these issues, we contributed three progressively staged PRs that evolve the system from a monolith to a fully decoupled, heterogeneous distributed architecture:
+> Note: PR #31320 has not been merged yet. The commit SHA we adopt here is [4e520bd](https://github.com/sgl-project/sglang/pull/31320/changes/4e520bdeb14c72e3e80ac97a2d0b8169bb9268f1)
 
 <div align="center">
   <img src="/images/blog/2026-08-05-glmImage-optimization/03-whole-pipeline.png" alt="the whole pipeline" />
