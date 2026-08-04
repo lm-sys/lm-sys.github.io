@@ -71,19 +71,30 @@ After the separation, AR and DiT still execute one request at a time, so latency
 
 **Performance gains** (please refer to [PR #30683 description](https://github.com/sgl-project/sglang/pull/30683) for reproducing):
 
-| Metric                              | BS1    | BS4                 | BS8                     | BS16         |
-| ----------------------------------- | ------ | ------------------- | ----------------------- | ------------ |
-| **Throughput (img/s)**              | 0.0291 | 0.0519              | 0.0596                  | 0.0648       |
-| Per‑request processing latency (s)¹ | 33.6   | 36 → 49 → 61 → 77.2 | 38.5 → 51.7 → … → 127.5 | 42 → … → 247 |
-| AR stage per request (s)            | 20.17  | 5.65                | 3.20                    | 1.85         |
-| Peak NPU memory (MB)                | 28 163 | 28 046              | 28 052                  | 28 062       |
+| Metric                              | BS1    | BS4                       | BS8                      | BS16                |
+| ----------------------------------- | ------ | ------------------------- | ------------------------ | ------------------- |
+| **Throughput (img/s)**              | 0.0388 | 0.0896                    | 0.1171                   | 0.1368              |
+| Per‑request processing latency (s)¹ | 25.9   | 28.3 → 33.3 → 39.3 → 44.7 | 30.0 → 35.3 → ... → 68.3 | 33 → 39 → ... → 117 |
+| AR stage per request (s)            | 20.17  | 5.65                      | 3.20                     | 1.85                |
+| Peak NPU memory (MB)                | 28 163 | 28 046                    | 28 052                   | 28 062              |
 
 **Notes:**  
 ¹ Processing latency is measured from batch dispatch to individual request completion. For BS4/BS8/BS16, the values represent a latency range across the batch: the first number corresponds to the fastest-finishing request, and the last to the slowest. Additional queueing wait time (≤14 ms in this test) is negligible.
 
 ## 4. Disaggregation and AR-to-DiT Fan-Out Architecture (PR #31320)
 
-Fully decouple the two stages so AR and DiT each adopt the parallelism and deployment strategy that suits them best. The AR encoder favors large batch + TP (throughput-oriented); DiT denoising is optimal at batch=1 on a single NPU for both latency and throughput. Then #31320 introduces a heterogeneous topology: one batched AR server + a pool of independent batch=1 denoisers. This achieves optimal system-wide hardware utilization in single-node scenarios.
+Fully decouple the two stages so AR and DiT each adopt the parallelism and deployment strategy that suits them best. The AR encoder favors large batch + TP (throughput-oriented); DiT denoising is optimal at batch=1 on a single NPU for both latency and throughput.
+
+| Batch size | AR (s)       | Denoising, 30 step (s) | Denoising, 30 steps (s) |
+| ---------- | ------------ | ---------------------- | ----------------------- |
+| 1          | 20.4         | 0.407                  | 12.2                    |
+| 2          | 21.3 (+4.4%) | 0.854 (+110%)          | 25.6 (+110%)            |
+| 4          | 22.8 (+12%)  | 1.98 (+386%)           | 59.6 (+389%)            |
+| 8          | 25.9 (+27%)  | 3.73 (+816%)           | 112.2 (+820%)           |
+| 16         | 29.4 (+44%)  | 7.24 (+1679%)          | 217.3 (+1681%)          |
+| 32         | 33.2 (+63%)  | 14.0 (+3339%)          | 420.6 (+3348%)          |
+
+Then #31320 introduces a heterogeneous topology: one batched AR server + a pool of independent batch=1 denoisers. This achieves optimal system-wide hardware utilization in single-node scenarios.
 
 <div align="center">
   <img src="/images/blog/2026-08-05-glmImage-optimization/05-fanout.png" alt="Disaggregated" />
@@ -92,7 +103,7 @@ Fully decouple the two stages so AR and DiT each adopt the parallelism and deplo
 </div>
 
 
-SGL-Diffusion provides a generic disaggregation framework; PR #31320 adapts this framework to GLM-Image’s two-stage topology, enabling parallel DiT execution and pipeline overlap between AR generation and denoising. A key design choice is that only request metadata and CPU-side prior token IDs are transferred over ZMQ — no large tensors, latents, embeddings, or GPU buffers are sent across nodes — keeping communication overhead extremely low.
+SGL-Diffusion provides a generic disaggregation framework; PR #31320 adapts this framework to GLM-Image’s two-stage topology, enabling parallel DiT execution and pipeline overlap between AR generation and denoising. A key design choice is that only request metadata and CPU-side prior token IDs are transferred over ZMQ — no large tensors, latents, embeddings, or GPU buffers are sent across nodes — designed to keep communication overhead low.
 
 **Performance gains** (please refer to [PR #31320 description](https://github.com/sgl-project/sglang/pull/31320) for reproducing):
 
@@ -141,7 +152,8 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
       --port 30052 \
       --scheduler-port 19655 \
       --output-path ./outputs
-      
+
+    # you can get fetch_images.py from https://github.com/user-attachments/files/29779516/longtext-bench.zip
     python fetch_images.py \
       --base-url http://127.0.0.1:30052/v1 \
       --model GLM-image \
@@ -156,16 +168,16 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
 
     ```shell
     sglang serve \
-      --model-path zai-org/GLM-Image/vision_language_encoder/ \
-      --tokenizer-path zai-org/GLM-Image/processor/ \
-      --enable-multimodal \
-      --cuda-graph-max-bs 1 \
-      --disable-fast-image-processor \
-      --tp-size 1 \
-      --host 127.0.0.1 \
-      --port 3828 \
-      --mem-fraction-static 0.4
-      
+    --model-path zai-org/GLM-Image/vision_language_encoder/ \
+    --tokenizer-path zai-org/GLM-Image/processor/ \
+    --enable-multimodal \
+    --cuda-graph-max-bs 1 \
+    --disable-fast-image-processor \
+    --tp-size 8 \
+    --host 127.0.0.1 \
+    --port 3828 \
+    --mem-fraction-static 0.4
+
     export SGLANG_CACHE_DIT_FN=2
     export SGLANG_CACHE_DIT_BN=1
     export SGLANG_CACHE_DIT_WARMUP=4
@@ -174,22 +186,23 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
     export SGLANG_CACHE_DIT_TAYLORSEER=true
     export SGLANG_CACHE_DIT_TS_ORDER=2
     export SGLANG_CACHE_DIT_ENABLED=true
-      
+
     sglang serve \
-      --model-path zai-org/GLM-Image/ \
-      --num-gpus 1 \
-      --sp-degree 1 \
-      --srt-encoder-url http://127.0.0.1:3828 \
-      --srt-encoder-timeout 100 \
-      --enable-batching-metrics \
-      --host 127.0.0.1 \
-      --port 30088
-      
+    --model-path zai-org/GLM-Image/ \
+    --num-gpus 8 \
+    --sp-degree 8 \
+    --srt-encoder-url http://127.0.0.1:3828 \
+    --srt-encoder-timeout 100 \
+    --enable-batching-metrics \
+    --host 127.0.0.1 \
+    --port 30088
+
     python fetch_images.py \
-      --base-url http://127.0.0.1:30088/v1 \
-      --model GLM-image \
-      --output-dir generated_images \
-      --max-concurrency 1
+    --base-url http://127.0.0.1:30088/v1 \
+    --model GLM-image \
+    --output-dir generated_images \
+    --max-concurrency 1
+
     ```
     </details>
 
@@ -463,10 +476,7 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
     export SGLANG_CACHE_DIT_TS_ORDER=2
     export SGLANG_CACHE_DIT_ENABLED=true
 
-    # 7 denoisers, each on 2 GPUs → pairs (2,3), (4,5), …, (14,15)
-    # NPUs 0 and 1 are occupied by AR part.
-    for i in $(seq 0 6); do
-        base_gpu=$((2 + i * 2))
+    for i in $(seq 2 15); do
         scheduler_port=$((19001 + i))
         master_port=$((BASE_MASTER_PORT + i))
 
@@ -476,9 +486,9 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
             --disagg-server-addr "$DISAGG_SERVER" \
             --scheduler-port "$scheduler_port" \
             --master-port "$master_port" \
-            --num-gpus 2 \
-            --base-gpu-id "$base_gpu" \
-            --sp-degree 2 \
+            --num-gpus 1 \
+            --base-gpu-id "$i" \
+            --denoiser-sp 1 \
             --cfg-parallel-size 1 \
             --batching-max-size 1 \
             --attention-backend fa \
@@ -486,24 +496,24 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
     done
 
     sglang serve \
-      --model-path zai-org/GLM-Image/vision_language_encoder/ \
-      --tokenizer-path zai-org/GLM-Image/processor/ \
-      --enable-multimodal \
-      --device npu \
-      --attention-backend ascend \
-      --cuda-graph-max-bs 28 \
-      --disable-fast-image-processor \
-      --tp-size 2 \
-      --host 0.0.0.0 \
-      --port 30020 \
-      --mem-fraction-static 0.8
+    --model-path zai-org/GLM-Image/vision_language_encoder/ \
+    --tokenizer-path zai-org/GLM-Image/processor/ \
+    --enable-multimodal \
+    --device npu \
+    --attention-backend ascend \
+    --cuda-graph-max-bs 28 \
+    --disable-fast-image-processor \
+    --tp-size 2 \
+    --host 0.0.0.0 \
+    --port 30020 \
+    --mem-fraction-static 0.8
 
-    sglang serve \
+    serve sglang serve \
       --model-path zai-org/GLM-Image/ \
       --disagg-role server \
       --srt-encoder-url http://127.0.0.1:30020 \
       --srt-encoder-timeout 300 \
-      --denoiser-urls "tcp://127.0.0.1:19001;tcp://127.0.0.1:19002;tcp://127.0.0.1:19003;tcp://127.0.0.1:19004;tcp://127.0.0.1:19005;tcp://127.0.0.1:19006;tcp://127.0.0.1:19007" \
+      --denoiser-urls "tcp://127.0.0.1:19003;tcp://127.0.0.1:19004;tcp://127.0.0.1:19005;tcp://127.0.0.1:19006;tcp://127.0.0.1:19007;tcp://127.0.0.1:19008;tcp://127.0.0.1:19009;tcp://127.0.0.1:19010;tcp://127.0.0.1:19011;tcp://127.0.0.1:19012;tcp://127.0.0.1:19013;tcp://127.0.0.1:19014;tcp://127.0.0.1:19015;tcp://127.0.0.1:19016" \
       --batching-mode dynamic \
       --batching-max-size 28 \
       --batching-delay-ms 30 \
@@ -514,10 +524,9 @@ Finally, we thank the SGLang maintainers and reviewers for their careful guidanc
       --output-path ./outputs
 
     python fetch_images.py \
-      --base-url http://127.0.0.1:30052/v1 \
-      --model GLM-image \
-      --output-dir generated_images \
-      --max-concurrency 28
-
+    --base-url http://127.0.0.1:30052/v1 \
+    --model GLM-image \
+    --output-dir generated_images \
+    --max-concurrency 56
     ```
     </details>
