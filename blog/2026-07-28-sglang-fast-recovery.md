@@ -13,8 +13,8 @@ The Weight Cache Daemon is the first phase of our **Fast Engine Recovery Framewo
 
 Key results:
 
-1. **Weight loading: ~495s → ~0.63s** — a **~785× speedup**, eliminating 93.2% of startup time based on the Ling-2.6-1T FP8 model.
-2. **Total startup: 8.8min → 1.3min** — an **80% reduction** in end-to-end engine boot time.
+1. **Weight loading: ~495s → ~0.63s** — a **~785× speedup**, based on the Ling-2.6-1T FP8 model.
+2. **Total startup: 8.8min → 0.528min** — an **93.9% reduction** in end-to-end engine boot time.
 3. **Multi-instance weight sharing** — multiple engine instances on the same GPU map to the same IPC handles, eliminating redundant disk I/O and post-quantization transforms.
 4. **Active-standby failover in < 1 second** — standby engines share weights via zero-copy, enabling near-zero-downtime failover without dedicating full GPUs to idle replicas.
 5. **Multi-node-instance weight sharing** - support multi-node mode for large models
@@ -35,11 +35,11 @@ Where does the time go? We profiled a complete SGLang engine startup for Ling-2.
 | Pre-init & ServerArgs | ~1 | 0.2% | Pre-init and ServerArgs parsing |
 | Tokenizer init | ~13 | 2.4% | load and init tokenizer |
 | Init torch distributed | ~5 | 0.9% | NCCL 2.28.9,8 卡 H20,NVLink mesh 370.8 GB/s,P2P/IPC;slowest rank TP1=5.19s |
-| Load weight (disk) | ~495 | 93.2% | 161 shard,W8A8 FP8 (CompressedTensorsW8A8Fp8MoE),slowest rank=495.3s, 120GB per card; Disk I/O bound |
+| Load weight (disk) | ~495 | 93.9% | 161 shard,W8A8 FP8 (CompressedTensorsW8A8Fp8MoE),slowest rank=495.3s, 120GB per card; Disk I/O bound |
 | Cache allocation (KV+Mamba) | ~1 | 0.2% | KV:553,599 tokens/5.94GB bf16;Mamba SSM state:5.33GB,max_mamba_cache_size=155 |
 | Capture CUDA graph | ~7.7 | 1.5% | only 3 decode BS [1,2,4] |
 | Server ready | ~4 | 0.8% | Unified RadixTree init, HTTP/uvicorn startup, warmup requests |
-| **Total** | **~531** | | **~8.8 minutes** 
+| **Total** | **~527** | | **~8.8 minutes** 
 
 The bottleneck is clear: **weight loading from disk accounts for 93.2% of startup time**. For Ling-2.6-1T FP8 model, each TP rank reads ~120GB of safetensors from disk, deserializes, applies TP sharding, and runs post-quantization transforms (FP8 quantization, weight repacking). This work is **repeated identically on every restart**, even though the resulting GPU tensors are deterministic and often already present in GPU memory.
 
