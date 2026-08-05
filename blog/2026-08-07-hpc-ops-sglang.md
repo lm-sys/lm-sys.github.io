@@ -2,7 +2,7 @@
 title: "HPC-Ops × SGLang: High-Performance Attention, Router GEMM, and MoE Kernels from Tencent Hunyuan"
 author: "Tencent Hunyuan AI Infra and the SGLang Team"
 date: "August 7, 2026"
-previewImg: /images/blog/hpc-ops-sglang/hpc-ops-sglang-cover.png
+previewImg: /images/blog/hpc-ops-sglang/hpc-ops-sglang-cover.webp
 type: blog
 ---
 
