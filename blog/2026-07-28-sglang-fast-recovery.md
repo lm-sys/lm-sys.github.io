@@ -13,35 +13,35 @@ The Weight Cache Daemon is the first phase of our **Fast Engine Recovery Framewo
 
 Key results:
 
-1. **Weight loading: ~306–327s → ~0.63s** — a **~500× speedup**, eliminating 79% of startup time based on the Qwen3-235B FP8 model.
-2. **Total startup: 6.5min → 1.3min** — an **80% reduction** in end-to-end engine boot time.
+1. **Weight loading: ~495s → ~0.63s** — a **~785× speedup**, eliminating 93.2% of startup time based on the Ling-2.6-1T FP8 model.
+2. **Total startup: 8.8min → 1.3min** — an **80% reduction** in end-to-end engine boot time.
 3. **Multi-instance weight sharing** — multiple engine instances on the same GPU map to the same IPC handles, eliminating redundant disk I/O and post-quantization transforms.
 4. **Active-standby failover in < 1 second** — standby engines share weights via zero-copy, enabling near-zero-downtime failover without dedicating full GPUs to idle replicas.
 5. **Multi-node-instance weight sharing** - support multi-node mode for large models
 
 ## Background
 
-As LLM models grow larger — Qwen3-235B, Ling-2.6-1T, and the newly released 2.8T Kimi K3 — the cold-start time of serving engines has become a critical bottleneck for production efficiency. A Qwen3-235B FP8 instance on 4×H20 GPUs takes **~6.5 minutes** just to become ready to serve. In production, this means:
+As LLM models grow larger — Qwen3-235B, Ling-2.6-1T, and the newly released 2.8T Kimi K3 — the cold-start time of serving engines has become a critical bottleneck for production efficiency. A Ling-2.6-1T FP8 instance on 8×H20-3e GPUs takes **~8.52 minutes** just to become ready to serve, weights stay in 3.5T NVME SSD. In production, this means:
 
 - **P99 tail latency spikes** during restarts — all in-flight requests fail or queue indefinitely.
 - **Reduced availability** — multi-minute recovery windows violate SLA targets.
 - **Operational friction** — rolling updates, config changes, and failure recovery are all bottlenecked by the restart cycle.
 - **GPU resource waste** — traditional active-standby deployments dedicate a full set of GPUs to idle replicas, doubling hardware cost for failover.
 
-Where does the time go? We profiled a complete SGLang engine startup for Qwen3-235B FP8:
+Where does the time go? We profiled a complete SGLang engine startup for Ling-2.6-1T FP8:
 
 | Phase | Time (s) | Percentage | Notes |
 |-------|----------|------------|-------|
-| Server init & Tokenizer | ~17.3 | 4.4% | ServerArgs parsing, tokenizer loading |
-| Init torch distributed | ~4.7 | 1.2% | NCCL init, 4-card |
-| **Load weight (disk)** | **~306–327** | **79%** | Disk I/O bound; slowest TP rank = 327s |
-| KV Cache allocation | ~0.5 | 0.1% | 194,510 tokens |
-| DeepGEMM JIT warmup | ~23.1 | 5.9% | Two rounds of FP8 GEMM kernel JIT |
-| Capture CUDA graph | ~34.9 | 8.9% | 12 batch sizes |
-| Server ready | ~3.4 | 0.9% | Tree cache init, warmup requests |
-| **Total** | **~390** | | **~6.5 minutes** |
+| Pre-init & ServerArgs | ~1 | 0.2% | Pre-init and ServerArgs parsing |
+| Tokenizer init | ~13 | 2.4% | load and init tokenizer |
+| Init torch distributed | ~5 | 0.9% | NCCL 2.28.9,8 卡 H20,NVLink mesh 370.8 GB/s,P2P/IPC;slowest rank TP1=5.19s |
+| Load weight (disk) | ~495 | 93.2% | 161 shard,W8A8 FP8 (CompressedTensorsW8A8Fp8MoE),slowest rank=495.3s, 120GB per card; Disk I/O bound |
+| Cache allocation (KV+Mamba) | ~1 | 0.2% | KV:553,599 tokens/5.94GB bf16;Mamba SSM state:5.33GB,max_mamba_cache_size=155 |
+| Capture CUDA graph | ~7.7 | 1.5% | only 3 decode BS [1,2,4] |
+| Server ready | ~4 | 0.8% | Unified RadixTree init, HTTP/uvicorn startup, warmup requests |
+| **Total** | **~531** | | **~8.8 minutes** 
 
-The bottleneck is clear: **weight loading from disk accounts for 79% of startup time**. For a 235B FP8 model, each TP rank reads ~60GB of safetensors from disk, deserializes, applies TP sharding, and runs post-quantization transforms (FP8 quantization, weight repacking). This work is **repeated identically on every restart**, even though the resulting GPU tensors are deterministic and often already present in GPU memory.
+The bottleneck is clear: **weight loading from disk accounts for 93.2% of startup time**. For Ling-2.6-1T FP8 model, each TP rank reads ~120GB of safetensors from disk, deserializes, applies TP sharding, and runs post-quantization transforms (FP8 quantization, weight repacking). This work is **repeated identically on every restart**, even though the resulting GPU tensors are deterministic and often already present in GPU memory.
 
 Can we avoid reloading from disk every time? The answer is **yes** — by keeping weights in GPU memory across engine restarts.
 
@@ -116,7 +116,7 @@ On top of config validation, quantization methods are gated by an **IPC allowlis
 |------|------|-----------------|------------|----------|
 | **daemon** | Engine launches daemon → daemon loads from disk → engine maps IPC | < 1s (after daemon ready) | 1× (shared) | First start; engine manages daemon lifecycle |
 | **client** | Connect to pre-running daemon → map IPC | < 1s | 1× (shared) | Engine restart; daemon pre-running |
-| **off** | Normal disk loading | 306–327s (235B FP8) | 1× | Default; no cache |
+| **off** | Normal disk loading | 405–411s (Ling-2.6-1T FP8) | 1× | Default; no cache |
 
 In **daemon** mode, the engine spawns daemon processes during startup and waits for them to load weights from disk. The first start is still slow (daemons must load from disk), but subsequent restarts are instant.
 
@@ -184,15 +184,12 @@ This achieves near-zero-downtime failover **without dedicating a full set of GPU
 
 ### Weight Loading: Disk vs IPC Zero-Copy
 
-GPU-internal copy bandwidth: ~500–900 GB/s (H20 HBM). IPC handle mapping: ~10k handles/ms.
-
 #### Single Node
 
 | Model | Weight Size | Disk Load (s) | IPC Zero-copy (s) | Speedup |
 |-------|-------------|---------------|-------------------|---------|
 | **Qwen3-235B FP8** | **~235 GB** | **~306–327** | **<1** | **~500×** |
-| **Ling-2.6-1T** | **~1 TB** | **~yyy–yyy** | **<1** | **~yyy–yyy×** |
-| **Kimi K3** | **~1.56 TB** | **~xxx–xxx** | **<1** | **~yyy–yyy×** |
+| **Ling-2.6-1T** | **~1 TB** | **~405–411** | **<1** | **~780×** |
 
 #### Multi-Node
 
