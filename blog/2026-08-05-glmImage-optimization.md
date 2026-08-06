@@ -2,7 +2,7 @@
 title: "Full-Stack Performance Optimization of AR+DiT in SGL-Diffusion"
 author: "Ascend Team"
 date: "August 05, 2026"
-previewImg: /images/blog/2026-08-05-glmImage-optimization/01-cover.jpg
+previewImg: /images/blog/2026-08-05-glmImage-optimization/05-fanout.png
 type: blog
 ---
 
