@@ -144,9 +144,6 @@ This achieves near-zero-downtime failover **without dedicating a full set of GPU
 | **Qwen3-235B FP8** | **~235 GB** | **~306–327** | **<1** | **~500×** |
 | **Ling-2.6-1T** | **~1 TB** | **~405–411** | **<1** | **~780×** |
 
-#### Multi-Node
-
-**PLACEHOLDER**
 
 #### Performance Chart
 
