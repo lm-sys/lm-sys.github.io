@@ -286,6 +286,20 @@ The Weight Cache Daemon is Phase 1 of a broader **Fast Recovery Framework** targ
 
 Support for more models is also on the way.
 
+## Public Roadmap
+
+The Weight Cache Daemon is just the **first step** — there is still a lot to build, and we are excited about the road ahead. Phase 1 today covers TP + PP, single- and multi-node launch, per-GPU zero-copy CUDA IPC, and unquantized plus block-wise FP8. Beyond that, many high-impact directions remain open:
+
+- **More models & quantization**: extend the IPC allowlist beyond block-wise FP8 (per-tensor FP8, INT8, MXFP8, NVFP4, AWQ/GPTQ, ...) and cover more architectures, including multimodal and LoRA base weights.
+- **DP/EP & multi-node**: DP/EP shard keying and cross-node daemon coordination, lifecycle management, and failover.
+- **Weight update without reload**: in-place weight refresh for RL / online updates, with the daemon as the delivery agent.
+- **Cross-GPU & fleet sharing**: peer-copy and fleet-fill so a cluster cold start pays roughly one disk read per shard group.
+- **KV cache restore**: preserve and remap KV cache across restarts / failover (KV reuse, handoff to standby) so in-flight context survives recovery instead of being recomputed from scratch.
+- **Rest of the startup path**: CUDA graph serialization, kernel-warmup persistence, and faster server / distributed init to reach the **< 10s** cold-restart goal.
+- **Ops & reliability**: metrics, status tooling, security hardening, and CI coverage.
+
+This is very much a community effort. The full plan is tracked publicly in [sgl-project/sglang#33522](https://github.com/sgl-project/sglang/issues/33522) — **contributions and feedback are very welcome**, and there is plenty of impactful work to pick up.
+
 ## Acknowledgements
 
 **Ant Ling Infra Team, Ant Group**: Michael Qiu qiudayu.qdy@antgroup.com
