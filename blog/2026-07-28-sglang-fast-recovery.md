@@ -51,27 +51,7 @@ Can we avoid reloading from disk every time? The answer is **yes** — by keepin
 
 The Weight Cache Daemon is a persistent GPU process that holds post-quantized, TP-sharded weights in GPU memory. On engine restart, the new engine process maps weights from the daemon via **CUDA IPC zero-copy** — no disk I/O, no deserialization, no quantization.
 
-```
-┌─ GPU i ────────────────────────────────────────────────────┐
-│                                                            │
-│  ┌───────────────────┐    cudaIpcMemHandle     ┌─────────┐ │
-│  │ Weight Cache      │ ──────────────────────► │ Engine  │ │
-│  │ Daemon (rank i)   │    (zero-copy)          │ Rank i  │ │
-│  │                   │                         │         │ │
-│  │ Holds:            │                         │         │ │
-│  │ • TP-sharded      │                         │         │ │
-│  │   weights (fp8)   │                         │         │ │
-│  │ • weight_scale    │                         │         │ │
-│  │ • workspace       │                         │         │ │
-│  │ • all post-quant  │                         │         │ │
-│  │   params/buffers  │                         │         │ │
-│  └───────────────────┘                         └─────────┘ │
-│                                                            │
-└────────────────────────────────────────────────────────────┘
-
-Coordination: Unix Socket /tmp/sglang_weight_cache_rank{i}.sock
-(global rank = tp_size × pp_rank + tp_rank, unique across PP stages and nodes)
-```
+<img src="/images/blog/sglang-fast-recovery/architecture.svg" style="display:block; margin-left: auto; margin-right: auto; width: 92%;">
 
 Each GPU runs **one daemon process** for its TP rank. The daemon:
 
@@ -139,20 +119,7 @@ The Weight Cache Daemon unlocks production patterns that are impractical with tr
 
 A single daemon per GPU holds weights in memory; multiple engine instances (e.g., independent services) map to the same IPC handles via zero-copy. Weights are loaded from disk and quantized **exactly once per GPU**, regardless of how many instances consume them.
 
-```
-┌─ GPU 0 ────────────────────────────────────────────┐
-│                                                    │
-│  ┌──────────────┐   cudaIpcMemHandle    ┌────────┐ │
-│  │              │ ────────────────────► │Engine A│ │
-│  │  Weight      │ ────────────────────► │(inst 0)│ │
-│  │  Cache       │                       └────────┘ │
-│  │  Daemon      │   cudaIpcMemHandle    ┌────────┐ │
-│  │              │ ────────────────────► │Engine B│ │
-│  │              │ ────────────────────► │(inst 1)│ │
-│  └──────────────┘                       └────────┘ │
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
+<img src="/images/blog/sglang-fast-recovery/multi-instance.svg" style="display:block; margin-left: auto; margin-right: auto; width: 82%;">
 
 ### Priority Co-Serving
 
@@ -164,21 +131,7 @@ Deploy a standby engine alongside the primary, both backed by the same weight ca
 
 This achieves near-zero-downtime failover **without dedicating a full set of GPUs to an idle replica**, avoiding the expensive GPU resource waste of traditional hot-standby deployments.
 
-```
-┌─ GPU ─────────────────────────────────────────────────────┐
-│                                                           │
-│  ┌──────────────┐                                         │
-│  │              │   cudaIpcMemHandle  ┌───────────────┐   │
-│  │  Weight      │ ──────────────────► │ Primary Engine│   │
-│  │  Cache       │                     │ (serving)     │   │
-│  │  Daemon      │   cudaIpcMemHandle  └───────────────┘   │
-│  │              │ ──────────────────► ┌───────────────┐   │
-│  │              │                     │ Standby Engine│   │
-│  └──────────────┘                     │ (warm)        │   │
-│                                       └───────────────┘   │
-│                                                           │
-└───────────────────────────────────────────────────────────┘
-```
+<img src="/images/blog/sglang-fast-recovery/active-standby.svg" style="display:block; margin-left: auto; margin-right: auto; width: 82%;">
 
 ## Performance
 
@@ -197,7 +150,7 @@ This achieves near-zero-downtime failover **without dedicating a full set of GPU
 
 #### Performance Chart
 
-**PLACEHOLDER Performance benchmark picture**
+<img src="/images/blog/sglang-fast-recovery/results.svg" style="display:block; margin-left: auto; margin-right: auto; width: 88%;">
 
 ## How to Use
 
@@ -302,8 +255,8 @@ This is very much a community effort. The full plan is tracked publicly in [sgl-
 
 ## Acknowledgements
 
-**Ant Ling Infra Team, Ant Group**: Michael Qiu qiudayu.qdy@antgroup.com
+**Ant Ling Infra Team, Ant Group**: [Michael Qiu](https://github.com/QiuMike) qiudayu.qdy@antgroup.com
 
-**Alibaba**: Siyu Liu liusy58@smail.nju.edu.cn
+**Alibaba**: [Siyu Liu](https://github.com/liusy58) liusy58@smail.nju.edu.cn
 
-**SGLang Team**
+**SGLang Team**: [Alex Nails](https://github.com/alexnails)
