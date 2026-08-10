@@ -6,7 +6,7 @@ previewImg: /images/blog/2026-08-10-meta-muse-glimmer/cover-muse-glimmer.png
 type: blog
 ---
 
-We're excited to partner with Meta Superintelligence Labs to bring Day-0 support for [Muse Glimmer](https://ai.meta.com/) to SGLang, with dedicated optimizations tailored for high-performance inference of agentic workflows on local hardware.
+We're excited to partner with Meta Superintelligence Labs to bring Day-0 support for [Muse Glimmer](https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model) to SGLang, with dedicated optimizations tailored for high-performance inference of agentic workflows on local hardware.
 
 ## Highlights
 
