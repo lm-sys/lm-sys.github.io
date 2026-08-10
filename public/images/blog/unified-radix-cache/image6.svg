@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Session-aware eviction adds a soft reuse signal</title>
+  <desc id="desc">Three open sessions share one radix tree. Session B is highlighted only as the current turn. Reference counts are component-local. FULL eviction sorts by exact session reference count before its configured base policy. SWA and MAMBA evict unreferenced regions first and use referenced regions only as fallback. References change priority but do not pin cache entries. Closing a session releases its references without deleting cache entries, and generation checks reject stale completions.</desc>
+
+  <defs>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #303236; }
+      .title { font-size: 30px; font-weight: 720; letter-spacing: -0.35px; }
+      .subtitle { font-size: 18px; font-weight: 480; fill: #74777c; }
+      .section { font-size: 22px; font-weight: 720; }
+      .body { font-size: 19px; font-weight: 520; }
+      .small { font-size: 17px; font-weight: 480; fill: #74777c; }
+      .tiny { font-size: 16px; font-weight: 520; fill: #74777c; }
+      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+      .strong { font-weight: 720; }
+      .blue { fill: #0072b2; }
+      .teal { fill: #008f69; }
+      .orange { fill: #d88b00; }
+      .purple { fill: #a35c89; }
+      .tree { fill: none; stroke: #a8adb2; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .active { fill: none; stroke: #0072b2; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .branch { fill: none; stroke: #78b9db; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="680" fill="#ffffff"/>
+
+  <text x="38" y="46" class="title">Session-aware eviction adds a soft reuse signal</text>
+  <text x="38" y="75" class="subtitle">Open sessions contribute a reuse hint; the cache remains free to evict every entry.</text>
+
+  <rect x="32" y="103" width="1136" height="430" rx="22" fill="#fafafa" stroke="#dfe2e5" stroke-width="1.5"/>
+  <line x1="695" y1="128" x2="695" y2="507" stroke="#e0e3e5" stroke-width="1.5"/>
+
+  <!-- Shared tree -->
+  <text x="54" y="141" class="section">SESSION REFERENCES</text>
+  <text x="54" y="168" class="small mono">ref = open-session count for this component and node</text>
+
+  <path d="M76 267 H176 H286 H396 H440" class="tree"/>
+  <path d="M286 267 V212 H440" class="tree"/>
+  <path d="M176 267 V326 H440" class="tree"/>
+  <path d="M76 267 H176 H286 H396 H440" class="active"/>
+  <path d="M286 267 V212 H440" class="branch"/>
+  <path d="M176 267 V326 H440" class="branch"/>
+
+  <g fill="#ffffff" stroke="#0072b2" stroke-width="2.1">
+    <circle cx="76" cy="267" r="10"/>
+    <circle cx="176" cy="267" r="10"/>
+    <circle cx="286" cy="267" r="10"/>
+    <circle cx="396" cy="267" r="10"/>
+    <circle cx="440" cy="267" r="12" fill="#e6f4fb"/>
+  </g>
+  <g fill="#ffffff" stroke="#78b9db" stroke-width="2">
+    <circle cx="440" cy="212" r="10"/>
+    <circle cx="440" cy="326" r="10"/>
+  </g>
+  <circle cx="440" cy="267" r="17" fill="none" stroke="#d88b00" stroke-width="3"/>
+
+  <!-- Ref labels sit above the paths instead of on them -->
+  <g text-anchor="middle" class="tiny mono blue strong">
+    <rect x="143" y="224" width="66" height="27" rx="9" fill="#eef7fc" stroke="#8bc2df"/>
+    <text x="176" y="243">ref=3</text>
+    <rect x="253" y="224" width="66" height="27" rx="9" fill="#eef7fc" stroke="#8bc2df"/>
+    <text x="286" y="243">ref=2</text>
+    <rect x="363" y="224" width="66" height="27" rx="9" fill="#eef7fc" stroke="#8bc2df"/>
+    <text x="396" y="243">ref=1</text>
+    <rect x="337" y="176" width="66" height="27" rx="9" fill="#f4f8fb" stroke="#a7cddd"/>
+    <text x="370" y="195">ref=1</text>
+    <rect x="273" y="290" width="66" height="27" rx="9" fill="#f4f8fb" stroke="#a7cddd"/>
+    <text x="306" y="309">ref=1</text>
+  </g>
+
+  <!-- Session cards are separated from the leaf nodes -->
+  <rect x="472" y="188" width="164" height="48" rx="13" fill="#ffffff" stroke="#b9bec3" stroke-width="1.4"/>
+  <circle cx="494" cy="212" r="6" fill="#78b9db"/>
+  <text x="511" y="219" class="body strong">A · OPEN</text>
+
+  <rect x="472" y="240" width="176" height="56" rx="14" fill="#eef7fc" stroke="#0072b2" stroke-width="1.6"/>
+  <circle cx="494" cy="268" r="7" fill="#0072b2"/>
+  <text x="511" y="263" class="body blue strong">B · OPEN</text>
+  <text x="511" y="285" class="tiny blue">current turn</text>
+
+  <rect x="472" y="302" width="164" height="48" rx="13" fill="#ffffff" stroke="#b9bec3" stroke-width="1.4"/>
+  <circle cx="494" cy="326" r="6" fill="#78b9db"/>
+  <text x="511" y="333" class="body strong">C · OPEN</text>
+
+  <!-- Component-local coverage -->
+  <text x="54" y="392" class="tiny strong">CURRENT B · COMPONENT-LOCAL COVERAGE</text>
+
+  <rect x="54" y="410" width="184" height="76" rx="14" fill="#ffffff" stroke="#b8d9eb" stroke-width="1.4"/>
+  <path d="M72 443 H111" class="active"/>
+  <text x="125" y="441" class="body blue strong">FULL</text>
+  <text x="72" y="469" class="tiny">prefix path</text>
+
+  <rect x="250" y="410" width="194" height="76" rx="14" fill="#ffffff" stroke="#a7dac7" stroke-width="1.4"/>
+  <path d="M268 432 C274 432 274 444 282 444 H312 C320 444 320 432 326 432" fill="none" stroke="#009e73" stroke-width="2.2"/>
+  <text x="340" y="441" class="body teal strong">SWA</text>
+  <text x="268" y="469" class="tiny">trailing window</text>
+
+  <rect x="456" y="410" width="204" height="76" rx="14" fill="#ffffff" stroke="#e6c376" stroke-width="1.4"/>
+  <circle cx="476" cy="440" r="10" fill="#fff8e8" stroke="#d88b00" stroke-width="2.4"/>
+  <text x="495" y="441" class="body orange strong">MAMBA</text>
+  <text x="476" y="469" class="tiny">reusable frontier</text>
+
+  <!-- Eviction rules -->
+  <text x="720" y="141" class="section">EVICTION ORDER</text>
+  <text x="720" y="168" class="small">References change priority, not eligibility.</text>
+  <rect x="1002" y="121" width="66" height="32" rx="10" fill="#e7f3fa" stroke="#7eb9da"/>
+  <text x="1035" y="143" text-anchor="middle" class="tiny blue strong">GPU L1</text>
+  <rect x="1078" y="121" width="66" height="32" rx="10" fill="#f2f0ea" stroke="#aaa59b"/>
+  <text x="1111" y="143" text-anchor="middle" class="tiny strong">Host L2</text>
+
+  <rect x="720" y="190" width="424" height="142" rx="16" fill="#ffffff" stroke="#d9dcdf" stroke-width="1.4"/>
+  <text x="742" y="221" class="body blue strong">FULL</text>
+  <text x="742" y="248" class="tiny">Evict lower reference counts first</text>
+  <g text-anchor="middle" class="tiny mono strong">
+    <rect x="742" y="263" width="66" height="32" rx="9" fill="#ffffff" stroke="#aeb3b8"/>
+    <text x="775" y="285">ref=0</text>
+    <text x="822" y="285">→</text>
+    <rect x="838" y="263" width="66" height="32" rx="9" fill="#eef7fc" stroke="#7eb9da"/>
+    <text x="871" y="285" class="blue">ref=1</text>
+    <text x="918" y="285">→</text>
+    <rect x="934" y="263" width="66" height="32" rx="9" fill="#e2f0f8" stroke="#5fa7cf"/>
+    <text x="967" y="285" class="blue">ref=2</text>
+    <text x="1027" y="285">→ …</text>
+  </g>
+  <text x="742" y="317" class="tiny">Tie → configured base eviction policy</text>
+
+  <rect x="720" y="346" width="424" height="90" rx="16" fill="#ffffff" stroke="#d9dcdf" stroke-width="1.4"/>
+  <text x="742" y="376" class="body teal strong">SWA / MAMBA</text>
+  <rect x="742" y="390" width="148" height="30" rx="9" fill="#ffffff" stroke="#aeb3b8"/>
+  <text x="816" y="411" text-anchor="middle" class="tiny">unreferenced LRU</text>
+  <text x="909" y="411" text-anchor="middle" class="body">→</text>
+  <rect x="928" y="390" width="188" height="30" rx="9" fill="#e8f7f2" stroke="#75c7aa"/>
+  <text x="1022" y="411" text-anchor="middle" class="tiny teal strong">referenced fallback</text>
+
+  <rect x="720" y="452" width="424" height="44" rx="12" fill="#f3f4f5" stroke="#d6d9dc"/>
+  <text x="932" y="480" text-anchor="middle" class="small strong">soft priority · never a pin · fallback stays evictable</text>
+
+  <!-- Lifecycle notes use independent cards -->
+  <rect x="32" y="551" width="548" height="96" rx="18" fill="#fafafa" stroke="#dfe2e5" stroke-width="1.5"/>
+  <text x="56" y="584" class="body strong">CLOSE</text>
+  <text x="56" y="612" class="small">Release references; do not delete cache entries.</text>
+  <text x="56" y="635" class="tiny">The cached data remains reusable and evictable.</text>
+
+  <rect x="600" y="551" width="568" height="96" rx="18" fill="#fafafa" stroke="#dfe2e5" stroke-width="1.5"/>
+  <text x="624" y="584" class="body purple strong">GENERATION</text>
+  <text x="624" y="612" class="small">A stale completion cannot restore released references.</text>
+  <text x="624" y="635" class="tiny">A generation mismatch rejects stale registration.</text>
+</svg>
