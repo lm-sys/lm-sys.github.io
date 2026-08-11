@@ -157,28 +157,20 @@ python3 -m sglang.launch_server \
 If you are running locally on DGX Spark, the following should provide a starting configuration for single-user local development:
 
 ```py
-python3 -m sglang.launch_server \
+sglang serve \
   --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-  --trust-remote-code \
-  --quantization modelopt_mixed \
-  --context-length 8192 \
-  --kv-cache-dtype fp8_e4m3 \
-  --chunked-prefill-size 4096 \
-  --max-prefill-tokens 4096 \
-  --max-running-requests 64 \
-  --fp4-gemm-backend marlin \
-  --moe-runner-backend marlin \
+  --mamba-ssm-dtype float16 \
+  --mem-fraction-static 0.78 \
+  --cuda-graph-max-bs-decode 4 \
   --speculative-algorithm EAGLE \
   --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-  --speculative-num-steps 2 \
+  --speculative-num-steps 5 \
   --speculative-eagle-topk 1 \
-  --speculative-num-draft-tokens 3 \
-  --speculative-moe-runner-backend flashinfer_cutlass \
-  --mamba-backend flashinfer \
-  --mamba-ssm-dtype float16 \
-  --enable-mamba-cache-stochastic-rounding \
-  --mamba-cache-philox-rounds 5 \
-  --enable-cache-report
+  --speculative-num-draft-tokens 6 \
+  --reasoning-parser nemotron_3 \
+  --tool-call-parser qwen3_coder \
+  --host 0.0.0.0 \
+  --port 30000
 ```
 
 <!-- TODO(reviewer): add the DGX Spark inference pareto chart here -->
@@ -189,23 +181,19 @@ If you are running on the NVIDIA H100, the following should provide a starting c
 
 ```py
 sglang serve \
-    --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-    --max-running-requests 256 \
-    --trust-remote-code \
-    --chunked-prefill-size 32768 \
-    --mem-fraction-static 0.9 \
-    --speculative-algorithm EAGLE \
-    --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-    --speculative-num-steps 3 \
-    --speculative-eagle-topk 1 \
-    --speculative-num-draft-tokens 4 \
-    --mamba-backend flashinfer \
-    --mamba-ssm-dtype float16 \
-    --enable-mamba-cache-stochastic-rounding \
-    --mamba-cache-philox-rounds 5 \
-    --mamba-radix-cache-strategy extra_buffer \
-    --reasoning-parser nemotron_3 \
-    --tool-call-parser qwen3_coder
+  --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
+  --mamba-ssm-dtype float16 \
+  --mem-fraction-static 0.85 \
+  --cuda-graph-max-bs-decode 16 \
+  --speculative-algorithm EAGLE \
+  --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
+  --speculative-num-steps 5 \
+  --speculative-eagle-topk 1 \
+  --speculative-num-draft-tokens 6 \
+  --reasoning-parser nemotron_3 \
+  --tool-call-parser qwen3_coder \
+  --host 0.0.0.0 \
+  --port 30000
 ```
 
 <!-- TODO(reviewer): add the H100 inference pareto chart here -->
