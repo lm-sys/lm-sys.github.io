@@ -181,7 +181,9 @@ For systems that route work across multiple models, Nemotron 3.5 Lightning gives
 
 ## Acknowledgements
 
-Nirmal Kumar Juluru, Anusha Pant, Amir Klein, Faradawn Yang, Nave Assaf, Ryan Stewart, Alex Steiner, Bita Rouhani, Seong Hee Lee
+**NVIDIA:** Nirmal Kumar Juluru, Anusha Pant, Amir Klein, Faradawn Yang, Nave Assaf, Ryan Stewart, Alex Steiner, Bita Rouhani, Seong Hee Lee
+
+**SGLang Team**
 
 ## FAQs
 
