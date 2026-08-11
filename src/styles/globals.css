@@ -225,6 +225,69 @@ pre > code {
   padding-right: 0em;
 }
 
+/* Copy button on fenced code blocks */
+.code-block {
+  position: relative;
+}
+
+.code-block > pre {
+  padding-right: 2.75em;
+}
+
+.code-copy {
+  position: absolute;
+  top: 0.4em;
+  right: 0.4em;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35em;
+  color: #57606a;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.code-block:hover > .code-copy,
+.code-copy:focus-visible {
+  opacity: 1;
+}
+
+.code-copy:hover {
+  color: #1d1d1f;
+}
+
+/* No hover on touch devices, so the button has to stay visible. */
+@media (hover: none) {
+  .code-copy {
+    opacity: 1;
+  }
+}
+
+.code-copy svg {
+  pointer-events: none;
+}
+
+.code-copy .code-copy-icon-done {
+  display: none;
+}
+
+.code-copy[data-copied="true"] {
+  color: #1a7f37;
+}
+
+.code-copy[data-copied="true"] .code-copy-icon {
+  display: none;
+}
+
+.code-copy[data-copied="true"] .code-copy-icon-done {
+  display: block;
+}
+
 .article img {
   margin-left: auto;
   width: 100%;
