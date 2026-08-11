@@ -94,24 +94,7 @@ For low-latency serving, use DSpark across H100, H200, and DGX Spark; for maximu
 
 Nemotron 3.5 Lightning includes multi-token prediction. SGLang exposes MTP through its speculative-decoding path, where the model's built-in prediction heads draft future tokens and the target model verifies them.
 
-The standard SGLang MTP interface uses the EAGLE speculative algorithm:
-
-```py
-sglang serve \
-    --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-    --max-running-requests 256 \
-    --trust-remote-code \
-    --chunked-prefill-size 32768 \
-    --speculative-algorithm EAGLE \
-    --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-    --speculative-num-steps 3 \
-    --speculative-eagle-topk 1 \
-    --speculative-num-draft-tokens 4 \
-    --mamba-backend flashinfer \
-    --mamba-radix-cache-strategy extra_buffer \
-    --reasoning-parser nemotron_3 \
-    --tool-call-parser qwen3_coder
-```
+The standard SGLang MTP interface uses the EAGLE speculative algorithm. See the [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Lightning) for the exact per-hardware command.
 
 ### Run Nemotron 3.5 Lightning with DFlash
 
@@ -125,65 +108,17 @@ DSpark is a hybrid speculator that combines autoregressive and parallel diffusio
 
 ## Edge Deployment on NVIDIA Jetson
 
-If you are running locally on NVIDIA Jetson, the following should provide a starting configuration for single-user local development:
-
-```py
-python3 -m sglang.launch_server \
-  --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-  --served-model-name nemotron35 \
-  --trust-remote-code \
-  --reasoning-parser nemotron_3 \
-  --tool-call-parser qwen3_coder \
-  --quantization modelopt_mixed \
-  --context-length 8192 \
-  --max-running-requests 8 \
-  --speculative-algorithm EAGLE \
-  --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-  --speculative-num-steps 2 \
-  --speculative-eagle-topk 1 \
-  --speculative-num-draft-tokens 3 \
-  --speculative-moe-runner-backend flashinfer_cutlass \
-  --mamba-backend flashinfer \
-  --mamba-ssm-dtype float16 \
-  --enable-mamba-cache-stochastic-rounding \
-  --mamba-cache-philox-rounds 5
-```
+If you are running locally on NVIDIA Jetson, refer to the [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Lightning) for a starting configuration for single-user local development.
 
 ## Deploy locally on DGX Spark
 
-If you are running locally on DGX Spark, the following should provide a starting configuration for single-user local development:
-
-```py
-sglang serve \
-  --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-  --mamba-ssm-dtype float16 \
-  --speculative-algorithm EAGLE \
-  --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-  --speculative-num-steps 5 \
-  --speculative-eagle-topk 1 \
-  --speculative-num-draft-tokens 6 \
-  --reasoning-parser nemotron_3 \
-  --tool-call-parser qwen3_coder
-```
+If you are running locally on DGX Spark, refer to the [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Lightning) for a starting configuration for single-user local development.
 
 <!-- TODO(reviewer): add the DGX Spark inference pareto chart here -->
 
 ## Deploy on H100
 
-If you are running on the NVIDIA H100, the following should provide a starting configuration for single-user local development:
-
-```py
-sglang serve \
-  --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-  --mamba-ssm-dtype float16 \
-  --speculative-algorithm EAGLE \
-  --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
-  --speculative-num-steps 5 \
-  --speculative-eagle-topk 1 \
-  --speculative-num-draft-tokens 6 \
-  --reasoning-parser nemotron_3 \
-  --tool-call-parser qwen3_coder
-```
+If you are running on the NVIDIA H100, refer to the [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Lightning) for a starting configuration for single-user local development.
 
 <!-- TODO(reviewer): add the H100 inference pareto chart here -->
 
