@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="790" viewBox="0 0 1440 790" role="img" aria-labelledby="title desc">
+  <title id="title">Unified Radix Cache architecture</title>
+  <desc id="desc">One canonical radix topology supports FULL prefix paths, SWA trailing windows, and MAMBA checkpoints. HiCache residency is an orthogonal concern spanning GPU L1, Host L2, and an external L3 tier. Sidecars reuse a declared source index without changing tree semantics.</desc>
+
+  <defs>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #303236; }
+      .title { font-size: 38px; font-weight: 700; letter-spacing: -0.6px; }
+      .subtitle { font-size: 20px; font-weight: 430; fill: #74777c; }
+      .section { font-size: 22px; font-weight: 700; letter-spacing: 0.35px; }
+      .body { font-size: 20px; font-weight: 480; }
+      .small { font-size: 20px; font-weight: 480; fill: #76797e; }
+      .tiny { font-size: 18.5px; font-weight: 520; fill: #76797e; }
+      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+      .blue { fill: #0072b2; }
+      .teal { fill: #009e73; }
+      .orange { fill: #c88a00; }
+      .purple { fill: #a35c89; }
+      .gray { fill: #74777c; }
+      .strong { font-weight: 700; }
+      .edge { fill: none; stroke: #aeb3b8; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .edge-active { fill: none; stroke: #565d63; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+      .node { fill: #fff; stroke: #9da4aa; stroke-width: 2; }
+      .node-active { fill: #f5f6f7; stroke: #565d63; stroke-width: 3; }
+      .node-selected { fill: #fff; stroke: #565d63; stroke-width: 3; }
+      .node-ring { fill: none; stroke: #565d63; stroke-width: 2; opacity: 0.38; }
+    </style>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b9095"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a35c89"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="790" fill="#ffffff"/>
+
+  <text x="54" y="55" class="title">Unified Radix Cache</text>
+  <text x="54" y="88" class="subtitle">one canonical token topology · component-defined reuse · orthogonal cache residency</text>
+
+  <rect x="40" y="116" width="1360" height="650" rx="24" fill="#fafafa" stroke="#e5e6e8" stroke-width="1.5"/>
+  <line x1="1028" y1="148" x2="1028" y2="738" stroke="#e2e4e6" stroke-width="1.5"/>
+
+  <!-- Canonical topology -->
+  <text x="76" y="164" class="section">CANONICAL TOKEN TOPOLOGY</text>
+  <text x="76" y="193" class="small">edges carry token spans · nodes provide one shared prefix coordinate</text>
+
+  <path class="edge-active" d="M130 278 H250 H424 H500 V236 H590 H756 H922"/>
+  <path class="edge" d="M500 278 V326 H590 H770"/>
+
+  <text x="171" y="260" class="tiny mono">system</text>
+  <text x="290" y="260" class="tiny mono">shared span</text>
+  <text x="630" y="216" class="tiny mono">next span</text>
+  <text x="650" y="311" class="tiny mono">branch</text>
+
+  <rect x="112" y="260" width="36" height="36" rx="10" class="node-active"/>
+  <rect x="242" y="260" width="36" height="36" rx="10" class="node-active"/>
+  <rect x="406" y="260" width="36" height="36" rx="10" class="node-active"/>
+  <rect x="572" y="218" width="36" height="36" rx="10" class="node-active"/>
+  <rect x="738" y="218" width="36" height="36" rx="10" class="node-active"/>
+  <rect x="904" y="218" width="36" height="36" rx="10" class="node-selected"/>
+  <rect x="897" y="211" width="50" height="50" rx="15" class="node-ring"/>
+  <rect x="572" y="308" width="36" height="36" rx="10" class="node"/>
+  <rect x="752" y="308" width="36" height="36" rx="10" class="node"/>
+
+  <text x="114" y="322" class="small">root</text>
+  <text x="866" y="286" class="small strong">selected prefix</text>
+
+  <!-- Component views -->
+  <text x="76" y="413" class="section">COMPONENT SEMANTICS ATTACHED TO THE SHARED TOPOLOGY</text>
+  <text x="76" y="443" class="small">one prefix coordinate · different correctness and protection rules</text>
+
+  <!-- FULL card -->
+  <rect x="76" y="464" width="286" height="218" rx="17" fill="#f5fbfe" stroke="#0072b2" stroke-width="2"/>
+  <text x="98" y="501" class="section blue">FULL</text>
+  <text x="337" y="500" text-anchor="end" class="tiny blue strong">prefix path</text>
+  <path d="M107 542 H321" stroke="#0072b2" stroke-width="3" stroke-linecap="round"/>
+  <g fill="#e3f3fb" stroke="#0072b2" stroke-width="2">
+    <circle cx="107" cy="542" r="9"/><circle cx="160" cy="542" r="9"/><circle cx="214" cy="542" r="9"/><circle cx="267" cy="542" r="9"/><circle cx="321" cy="542" r="9"/>
+  </g>
+  <text x="98" y="603" class="body strong">Reuse the matched path</text>
+  <text x="98" y="640" class="small">ancestors remain reusable</text>
+
+  <!-- SWA card -->
+  <rect x="381" y="464" width="286" height="218" rx="17" fill="#f3fbf8" stroke="#009e73" stroke-width="2"/>
+  <text x="403" y="501" class="section teal">SWA</text>
+  <text x="642" y="500" text-anchor="end" class="tiny teal strong">trailing window</text>
+  <g stroke-width="2">
+    <rect x="404" y="530" width="36" height="25" rx="7" fill="#fff" stroke="#b6babc"/>
+    <rect x="450" y="530" width="36" height="25" rx="7" fill="#fff" stroke="#b6babc"/>
+    <rect x="496" y="530" width="36" height="25" rx="7" fill="#fff" stroke="#b6babc"/>
+    <rect x="542" y="530" width="36" height="25" rx="7" fill="#dff5ed" stroke="#009e73"/>
+    <rect x="588" y="530" width="36" height="25" rx="7" fill="#dff5ed" stroke="#009e73"/>
+  </g>
+  <path d="M542 562 v8 h82 v-8" fill="none" stroke="#009e73" stroke-width="2"/>
+  <text x="403" y="603" class="body strong">Reuse the trailing window</text>
+  <text x="403" y="640" class="small">older entries may be empty</text>
+
+  <!-- MAMBA card -->
+  <rect x="686" y="464" width="292" height="218" rx="17" fill="#fffaf0" stroke="#e69f00" stroke-width="2"/>
+  <text x="708" y="501" class="section orange">MAMBA</text>
+  <text x="953" y="500" text-anchor="end" class="tiny orange strong">exact checkpoint</text>
+  <path d="M716 542 H907" stroke="#b6babc" stroke-width="2" stroke-linecap="round"/>
+  <g fill="#fff" stroke="#b6babc" stroke-width="2">
+    <circle cx="716" cy="542" r="8"/><circle cx="761" cy="542" r="8"/><circle cx="806" cy="542" r="8"/><circle cx="851" cy="542" r="8"/>
+  </g>
+  <circle cx="907" cy="542" r="14" fill="#fff3d3" stroke="#e69f00" stroke-width="3"/>
+  <circle cx="907" cy="542" r="5" fill="#e69f00"/>
+  <text x="708" y="603" class="body strong">Reuse one exact checkpoint</text>
+  <text x="708" y="640" class="small">copy before local mutation</text>
+
+  <!-- HiCache residency -->
+  <text x="1060" y="164" class="section purple">HICACHE RESIDENCY</text>
+  <text x="1060" y="193" class="small">prefix identity persists across tiers</text>
+
+  <rect x="1060" y="218" width="302" height="82" rx="15" fill="#fbf5f9" stroke="#a35c89" stroke-width="2"/>
+  <rect x="1076" y="235" width="46" height="46" rx="12" fill="#ead7e3"/>
+  <text x="1099" y="264" text-anchor="middle" class="body purple strong">L1</text>
+  <text x="1141" y="251" class="body strong">GPU</text>
+  <text x="1141" y="277" class="small mono">device pool</text>
+
+  <path d="M1202 304 V334" fill="none" stroke="#a35c89" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+  <path d="M1218 336 V306" fill="none" stroke="#a35c89" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+  <text x="1240" y="326" class="tiny purple">backup / load</text>
+
+  <rect x="1060" y="340" width="302" height="82" rx="15" fill="#fbf5f9" stroke="#a35c89" stroke-width="2"/>
+  <rect x="1076" y="357" width="46" height="46" rx="12" fill="#ead7e3"/>
+  <text x="1099" y="386" text-anchor="middle" class="body purple strong">L2</text>
+  <text x="1141" y="373" class="body strong">Host</text>
+  <text x="1141" y="399" class="small mono">host pool</text>
+
+  <path d="M1202 426 V456" fill="none" stroke="#a35c89" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+  <path d="M1218 458 V428" fill="none" stroke="#a35c89" stroke-width="1.8" marker-end="url(#arrow-purple)"/>
+  <text x="1240" y="448" class="tiny purple">write / prefetch</text>
+
+  <rect x="1060" y="462" width="302" height="82" rx="15" fill="#fbf5f9" stroke="#a35c89" stroke-width="2"/>
+  <rect x="1076" y="479" width="46" height="46" rx="12" fill="#ead7e3"/>
+  <text x="1099" y="508" text-anchor="middle" class="body purple strong">L3</text>
+  <text x="1141" y="495" class="body strong">External tier</text>
+  <text x="1141" y="521" class="small">pool records</text>
+
+  <!-- Sidecar follower -->
+  <rect x="1060" y="558" width="302" height="182" rx="15" fill="#ffffff" stroke="#c7c9cc" stroke-width="1.8"/>
+  <text x="1080" y="592" class="body purple strong">SIDECAR POOL</text>
+  <text x="1080" y="619" class="tiny">declared source · exact index</text>
+  <rect x="1080" y="636" width="118" height="34" rx="10" fill="#f5f6f7" stroke="#aeb3b8"/>
+  <text x="1139" y="659" text-anchor="middle" class="tiny strong">KV source i</text>
+  <path d="M1139 674 V690" fill="none" stroke="#a35c89" stroke-width="2.4" stroke-dasharray="4 3" marker-end="url(#arrow-purple)"/>
+  <rect x="1080" y="696" width="118" height="34" rx="10" fill="#fbf5f9" stroke="#a35c89"/>
+  <text x="1139" y="719" text-anchor="middle" class="tiny purple strong">aux pool i</text>
+  <text x="1212" y="650" class="tiny purple strong">same index</text>
+  <text x="1212" y="677" class="tiny">separate bytes</text>
+  <text x="1212" y="704" class="tiny">no tree slot</text>
+  <text x="1212" y="728" class="tiny">no match vote</text>
+
+</svg>
