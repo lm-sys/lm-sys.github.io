@@ -48,8 +48,6 @@ docker run --rm -it \
 ```py
 sglang serve \
     --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16 \
-    --max-running-requests 256 \
-    --trust-remote-code \
     --mamba-backend flashinfer \
     --mamba-radix-cache-strategy extra_buffer \
     --reasoning-parser nemotron_3 \
@@ -62,8 +60,8 @@ After the server starts, send a request with any OpenAI-compatible client:
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://127.0.0.1:8000/v1",
-    api_key="null",
+    base_url="http://127.0.0.1:30000/v1",
+    api_key="EMPTY",
 )
 
 response = client.chat.completions.create(
@@ -164,8 +162,6 @@ As shown in Figure 1, higher inference throughput and token efficiency places Ne
 
 Figure 1: Nemotron 3.5 Lightning leads the efficiency frontier by completing agentic tasks up to 30% faster at comparable accuracies.
 
-Alt text: Line chart comparing PinchBench accuracy with time to complete 10,000 tasks. Nemotron 3.5 Lightning reaches similar accuracy as Qwen3.6 35B 30% faster.
-
 ## Summary
 
 NVIDIA Nemotron 3.5 Lightning brings fast, customizable agentic intelligence to local systems, the edge, the datacenter, and the cloud. With SGLang Day-0 support, developers can serve the model through a high-performance, OpenAI-compatible stack; control reasoning per agent step; manage memory for local deployments such as DGX Spark; and accelerate generation with multi-token prediction, DFlash, or DSpark.
@@ -179,11 +175,13 @@ For systems that route work across multiple models, Nemotron 3.5 Lightning gives
 
 *Stay up to date on [NVIDIA Nemotron](https://developer.nvidia.com/nemotron) by subscribing to NVIDIA news and following NVIDIA AI on [LinkedIn](https://www.linkedin.com/showcase/nvidia-ai/posts/?feedView=all), [X](https://x.com/NVIDIAAIDev), [YouTube](https://www.youtube.com/@NVIDIADeveloper), and the [Nemotron channel](https://discord.com/channels/1019361803752456192/1407781691698708682) on [Discord](https://discord.com/invite/nvidiadeveloper).*
 
-## Acknowledgements
+## Acknowledgement
 
-**NVIDIA:** Nirmal Kumar Juluru, Anusha Pant, Amir Klein, Faradawn Yang, Nave Assaf, Ryan Stewart, Alex Steiner, Bita Rouhani, Seong Hee Lee
+Thanks to everyone who contributed to bringing NVIDIA Nemotron 3.5 Lightning to SGLang.
 
-**SGLang Team**
+NVIDIA: Nirmal Kumar Juluru, Anusha Pant, Amir Klein, Faradawn Yang, Nave Assaf, Ryan Stewart, Alex Steiner, Bita Rouhani, Seong Hee Lee
+
+SGLang Team
 
 ## FAQs
 
