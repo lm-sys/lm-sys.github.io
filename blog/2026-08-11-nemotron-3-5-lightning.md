@@ -42,7 +42,7 @@ docker run --rm -it \
   --ipc=host \
   --network=host \
   --entrypoint /bin/bash \
-  lmsysorg/sglang:dev-nemotron3-5-lighting
+  lmsysorg/sglang:dev-nemotron3-5-lightning
 ```
 
 ```py
