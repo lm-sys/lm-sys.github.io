@@ -106,22 +106,6 @@ SGLang's DFlash implementation does not support data-parallel attention and requ
 
 DSpark is a hybrid speculator that combines autoregressive and parallel diffusion-style drafting, sitting between MTP's fully autoregressive approach and DFlash's fully diffusion-based one, and delivers the best performance of the three on DGX Spark.
 
-## Edge Deployment on NVIDIA Jetson
-
-If you are running locally on NVIDIA Jetson, refer to the [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Lightning) for a starting configuration for single-user local development.
-
-## Deploy locally on DGX Spark
-
-If you are running locally on DGX Spark, refer to the [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Lightning) for a starting configuration for single-user local development.
-
-<!-- TODO(reviewer): add the DGX Spark inference pareto chart here -->
-
-## Deploy on H100
-
-If you are running on the NVIDIA H100, refer to the [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Lightning) for a starting configuration for single-user local development.
-
-<!-- TODO(reviewer): add the H100 inference pareto chart here -->
-
 ## Control Reasoning for Each Agent Step
 
 Nemotron 3.5 Lightning supports reasoning on or off, allowing a router or agent harness to use deeper reasoning for difficult steps and direct answers for routine work.
