@@ -1,7 +1,7 @@
 ---
 title: "SGLang Adds Day-0 Support for NVIDIA Nemotron 3.5 Lightning"
 author: "NVIDIA Nemotron Team and SGLang Team"
-date: "August 10, 2026"
+date: "August 11, 2026"
 previewImg: /images/blog/nemotron-3-5-lightning/pinchbench-accuracy-vs-time.png
 type: blog
 ---
