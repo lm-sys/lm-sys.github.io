@@ -50,7 +50,6 @@ sglang serve \
     --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16 \
     --max-running-requests 256 \
     --trust-remote-code \
-    --chunked-prefill-size 32768 \
     --mamba-backend flashinfer \
     --mamba-radix-cache-strategy extra_buffer \
     --reasoning-parser nemotron_3 \
