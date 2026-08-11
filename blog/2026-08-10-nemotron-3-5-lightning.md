@@ -51,7 +51,6 @@ sglang serve \
     --max-running-requests 256 \
     --trust-remote-code \
     --chunked-prefill-size 32768 \
-    --mem-fraction-static 0.9 \
     --mamba-backend flashinfer \
     --mamba-radix-cache-strategy extra_buffer \
     --reasoning-parser nemotron_3 \
@@ -103,7 +102,6 @@ sglang serve \
     --max-running-requests 256 \
     --trust-remote-code \
     --chunked-prefill-size 32768 \
-    --mem-fraction-static 0.9 \
     --speculative-algorithm EAGLE \
     --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
     --speculative-num-steps 3 \
@@ -138,7 +136,6 @@ python3 -m sglang.launch_server \
   --tool-call-parser qwen3_coder \
   --quantization modelopt_mixed \
   --context-length 8192 \
-  --mem-fraction-static 0.70 \
   --max-running-requests 8 \
   --speculative-algorithm EAGLE \
   --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
@@ -160,17 +157,13 @@ If you are running locally on DGX Spark, the following should provide a starting
 sglang serve \
   --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
   --mamba-ssm-dtype float16 \
-  --mem-fraction-static 0.78 \
-  --cuda-graph-max-bs-decode 4 \
   --speculative-algorithm EAGLE \
   --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
   --speculative-num-steps 5 \
   --speculative-eagle-topk 1 \
   --speculative-num-draft-tokens 6 \
   --reasoning-parser nemotron_3 \
-  --tool-call-parser qwen3_coder \
-  --host 0.0.0.0 \
-  --port 30000
+  --tool-call-parser qwen3_coder
 ```
 
 <!-- TODO(reviewer): add the DGX Spark inference pareto chart here -->
@@ -183,17 +176,13 @@ If you are running on the NVIDIA H100, the following should provide a starting c
 sglang serve \
   --model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
   --mamba-ssm-dtype float16 \
-  --mem-fraction-static 0.85 \
-  --cuda-graph-max-bs-decode 16 \
   --speculative-algorithm EAGLE \
   --speculative-draft-model-path nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 \
   --speculative-num-steps 5 \
   --speculative-eagle-topk 1 \
   --speculative-num-draft-tokens 6 \
   --reasoning-parser nemotron_3 \
-  --tool-call-parser qwen3_coder \
-  --host 0.0.0.0 \
-  --port 30000
+  --tool-call-parser qwen3_coder
 ```
 
 <!-- TODO(reviewer): add the H100 inference pareto chart here -->
@@ -244,7 +233,6 @@ Nemotron 3.5 Lightning is architecturally identical to Nemotron 3 apart from the
 * **DSpark integration.** We wired DSpark—a hybrid speculator that blends autoregressive and diffusion-style drafting—into SGLang and the Nemotron model definition, giving you three speculators to choose from alongside MTP and DFlash.
 * **Quantized DSpark draft head.** Quantizing the draft head to W4A16 cuts its memory footprint and per-step latency without hurting acceptance rate, which matters most on memory-constrained parts like DGX Spark.
 * **Removal of syncs and async scheduling.** We eliminated host-device syncs in the draft-and-verify loop and enabled async scheduling, so the next batch is prepared while the current one is still executing.
-* **MoE and linear backend for W4A16.** We replaced SGLang's default Marlin backend—not tuned for Hopper—with the Hopper-optimized Humming backend, using W4A16 GEMM kernels for Nemotron's non-gated ReLU² MoE, worth roughly 20% throughput, and extended the same recipe to the dense linear layers.
 
 ## Nemotron 3.5 Lightning offers Leading Accuracy and Efficiency for Specialized AI
 
