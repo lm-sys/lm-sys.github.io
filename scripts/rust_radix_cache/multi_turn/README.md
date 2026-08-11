@@ -1,7 +1,7 @@
 # Multi-turn TTFT: Rust vs Python unified radix cache
 
 Reproduction scripts for the multi-turn Time-to-First-Token (TTFT) comparison in the
-[Unified Radix Cache blog post](../../../blog/2026-08-10-unified-radix-cache.md) (the
+[Unified Radix Cache blog post](../../../blog/2026-08-11-unified-radix-cache.md) (the
 *Toward a Rust Tree Core* section, Figure 7).
 
 We drive a synthetic multi-turn conversation (100-token input, 100-token output per

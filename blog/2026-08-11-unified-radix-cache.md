@@ -1,7 +1,7 @@
 ---
 title: "Unified Radix Cache: One Tree for Hybrid Model Prefix Caching"
 author: "Zhangheng Huang, Ke Bao, Yi Zhang, Jialin Ouyang, Sicheng Pan"
-date: "August 10, 2026"
+date: "August 11, 2026"
 previewImg: /images/blog/unified-radix-cache/image1.svg
 type: blog
 ---
