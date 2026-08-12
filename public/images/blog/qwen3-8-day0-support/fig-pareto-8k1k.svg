@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 400" width="740" height="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<style>.gr{stroke:#eee;stroke-width:1}.ax{stroke:#bbb;stroke-width:1}.t{font-size:10px;fill:#888}.al{font-size:11px;fill:#444}.lg{font-size:11.5px;fill:#333}.ttl{font-size:13px;font-weight:600;fill:#1a1a1a}</style>
+<text class="ttl" x="64" y="18">Pareto frontiers, 8,192 input / 1,024 output, forced accept length 3.3</text>
+<line class="gr" x1="64" y1="350.0" x2="724" y2="350.0"/>
+<text class="t" x="58" y="353.0" text-anchor="end">0</text>
+<line class="gr" x1="64" y1="294.6" x2="724" y2="294.6"/>
+<text class="t" x="58" y="297.6" text-anchor="end">1000</text>
+<line class="gr" x1="64" y1="239.3" x2="724" y2="239.3"/>
+<text class="t" x="58" y="242.3" text-anchor="end">2000</text>
+<line class="gr" x1="64" y1="183.9" x2="724" y2="183.9"/>
+<text class="t" x="58" y="186.9" text-anchor="end">3000</text>
+<line class="gr" x1="64" y1="128.6" x2="724" y2="128.6"/>
+<text class="t" x="58" y="131.6" text-anchor="end">4000</text>
+<line class="gr" x1="64" y1="73.2" x2="724" y2="73.2"/>
+<text class="t" x="58" y="76.2" text-anchor="end">5000</text>
+<line class="gr" x1="64.0" y1="40" x2="64.0" y2="350"/>
+<text class="t" x="64.0" y="365" text-anchor="middle">25</text>
+<line class="gr" x1="226.1" y1="40" x2="226.1" y2="350"/>
+<text class="t" x="226.1" y="365" text-anchor="middle">50</text>
+<line class="gr" x1="388.3" y1="40" x2="388.3" y2="350"/>
+<text class="t" x="388.3" y="365" text-anchor="middle">100</text>
+<line class="gr" x1="550.4" y1="40" x2="550.4" y2="350"/>
+<text class="t" x="550.4" y="365" text-anchor="middle">200</text>
+<line class="gr" x1="712.6" y1="40" x2="712.6" y2="350"/>
+<text class="t" x="712.6" y="365" text-anchor="middle">400</text>
+<line class="ax" x1="64" y1="350" x2="724" y2="350"/><line class="ax" x1="64" y1="40" x2="64" y2="350"/>
+<text class="al" x="394.0" y="388" text-anchor="middle">output tok/s per user  (log scale)</text>
+<text class="al" x="15" y="195.0" text-anchor="middle" transform="rotate(-90 15 195.0)">total tok/s per GPU</text>
+<path d="M107.1,154.5 L168.3,164.6 L226.1,198.0 L226.8,200.7 L278.5,246.4 L309.8,275.8 L376.8,319.0 L484.5,334.4 L550.6,338.7 L614.7,341.9 L665.0,344.2 L671.0,346.8" fill="none" stroke="#5b9bd5" stroke-width="2.1"/>
+<circle cx="107.1" cy="154.5" r="3.4" fill="#5b9bd5"/>
+<circle cx="168.3" cy="164.6" r="3.4" fill="#5b9bd5"/>
+<circle cx="226.1" cy="198.0" r="3.4" fill="#5b9bd5"/>
+<circle cx="226.8" cy="200.7" r="3.4" fill="#5b9bd5"/>
+<circle cx="278.5" cy="246.4" r="3.4" fill="#5b9bd5"/>
+<circle cx="309.8" cy="275.8" r="3.4" fill="#5b9bd5"/>
+<circle cx="376.8" cy="319.0" r="3.4" fill="#5b9bd5"/>
+<circle cx="484.5" cy="334.4" r="3.4" fill="#5b9bd5"/>
+<circle cx="550.6" cy="338.7" r="3.4" fill="#5b9bd5"/>
+<circle cx="614.7" cy="341.9" r="3.4" fill="#5b9bd5"/>
+<circle cx="665.0" cy="344.2" r="3.4" fill="#5b9bd5"/>
+<circle cx="671.0" cy="346.8" r="3.4" fill="#5b9bd5"/>
+<path d="M141.6,68.4 L340.1,144.9 L393.4,190.8 L480.0,237.7 L562.2,309.5 L615.2,335.9 L670.3,344.0" fill="none" stroke="#e8a33d" stroke-width="2.1"/>
+<circle cx="141.6" cy="68.4" r="3.8" fill="#e8a33d"/>
+<circle cx="340.1" cy="144.9" r="3.8" fill="#e8a33d"/>
+<circle cx="393.4" cy="190.8" r="3.8" fill="#e8a33d"/>
+<circle cx="480.0" cy="237.7" r="3.8" fill="#e8a33d"/>
+<circle cx="562.2" cy="309.5" r="3.8" fill="#e8a33d"/>
+<circle cx="615.2" cy="335.9" r="3.8" fill="#e8a33d"/>
+<circle cx="670.3" cy="344.0" r="3.8" fill="#e8a33d"/>
+<text class="t" x="150.6" y="72.4" fill="#8a5a10">5088</text>
+<text class="t" x="116.1" y="158.5" fill="#356a9c">3532</text>
+<line x1="474" y1="50" x2="498" y2="50" stroke="#e8a33d" stroke-width="2.1"/><circle cx="486" cy="50" r="3.8" fill="#e8a33d"/><text class="lg" x="506" y="54">NVFP4 + MTP</text>
+<line x1="474" y1="70" x2="498" y2="70" stroke="#5b9bd5" stroke-width="2.1"/><circle cx="486" cy="70" r="3.4" fill="#5b9bd5"/><text class="lg" x="506" y="74">FP8 + MTP</text>
+</svg>
