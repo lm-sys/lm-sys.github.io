@@ -26,7 +26,7 @@ model in full on launch day. This post covers what it took.
   for batch size 1 with MTP at an accept length of 3.3, and at **378** tok/s with DSpark at
   an accept length of 4. Both rates include the bonus token.
 - **Parallelism split by phase**: chunked pipeline-parallel prefill and a
-  data-and-expert-parallel decode worker, composing under PD disaggregation to **5,088**
+  data-and-expert-parallel decode worker, composing under PD disaggregation to **5,126**
   tok/s per GPU on 8k/1k, with a staging buffer that lets the two sides be sized and
   parallelized independently.
 - **Day-0 RL with Miles**: colocated LoRA training on the native NVFP4 base, with a
@@ -173,31 +173,37 @@ EP width become independent knobs. The same path carries draft KV.
 
 ## Performance
 
-### Pareto Frontiers at 8K/1K with MTP
+### Pareto Curve on 8K/1K
 
-All measurements use requests with 8,192 input tokens and 1,024 output tokens on
-GB300 GPUs. Each deployment uses a 2P1D topology under PD disaggregation, with two
-chunked pipeline-parallel prefill workers feeding one data-and-expert-parallel decode
-worker. Throughput includes both input and output tokens and is normalized across all
-prefill and decode GPUs. Per-user speed measures output tokens per second for each
-request.
+All numbers below are 8,192-input / 1,024-output on GB300. The figure includes
+PD-disaggregated results for NVFP4 and FP8, plus aggregate TP results for FP8.
+Throughput is total (input + output) tokens per second per active model-serving GPU;
+per-user speed is output tokens per second per request.
 
-<img src="/images/blog/qwen3-8-day0-support/fig-pareto-8k1k.svg" alt="Pareto frontiers at 8,192 input and 1,024 output tokens for the FP8 and NVFP4 checkpoints, total tok/s per GPU against per-user output speed" width="740">
+<img src="/images/blog/qwen3-8-day0-support/fig-pareto-8k1k.svg" alt="Aggregate and PD-disaggregated serving results at 8,192 input and 1,024 output tokens for the FP8 and NVFP4 checkpoints, total tok/s per GPU against per-user output speed" width="100%">
 
-To compare the FP8 and NVFP4 checkpoints under the same speculative-decoding behavior,
-both frontiers use a forced accept length of 3.3. This is below the 3.56 observed in
-practice, making the per-user speed comparison conservative. The endpoints:
+The representative endpoint labels report active/allocated GPU counts; `P` and `D`
+show the active prefill/decode split. The PP6 maximum uses 20 active GPUs
+(`12P + 8D`) from 24 allocated, and TPS/GPU is divided by active model-serving GPUs.
 
-| Checkpoint | Throughput-optimized point | Latency-optimized point |
+The PD-disaggregated points shown here use a forced accept length of 3.3. The FP8
+aggregate points report the TPOT measured in their respective runs. The endpoints are:
+
+| Checkpoint | Max throughput (PD disagg) | Low-latency endpoint |
 |---|---|---|
-| NVFP4, 2P1D (PP6 prefill, DP2×TP4×EP8 decode) | **5,088** tok/s/GPU @ 35 tok/s/user | 108 tok/s/GPU @ **334** tok/s/user |
-| FP8, 2P1D (PP16 prefill, DP4×TP16×EP16 decode) | **3,532** tok/s/GPU @ 30 tok/s/user | 59 tok/s/GPU @ **335** tok/s/user |
+| NVFP4 (2×PP6 prefill, DP2-attn / TP4 / EP8 decode) | **5,126** tok/s/GPU @ 36 tok/s/user | PD: **108** tok/s/GPU @ **334** tok/s/user |
+| FP8 (2×PP16 prefill, DP4-attn / TP4 / EP16 decode) | **3,532** tok/s/GPU @ 30 tok/s/user | Aggregate CC1: **220** tok/s/GPU @ **362** tok/s/user |
 
-Relative to the same NVFP4 2P1D topology without MTP, MTP increases maximum throughput
-by 10.0% and raises the highest per-user speed to 2.33× the baseline. Under saturation,
-the decode worker's per-step token budget is constrained by memory. MTP uses that budget
-to accept multiple output tokens per target-model forward, so it improves per-user speed
-more than aggregate throughput.
+The NVFP4 peak uses two PP6 prefill workers feeding a DP2-attn / TP4 / EP8 decode
+worker. At the low-latency end, NVFP4 uses a PD-disaggregated PP2×TP4 prefill worker
+with a TP16 decode worker (334 tok/s/user), while FP8 uses a TP16 aggregate worker at
+concurrency 1 (362 tok/s/user).
+
+On the matched dual-PP6 NVFP4 backbone, adding MTP moves throughput +10.0% and per-user
+speed 2.33×. The updated 5,126 point is not used for that matched comparison.
+The asymmetry is the expected shape: in a saturated decode worker the tokens per step are
+roughly `running_requests × draft_tokens` and fixed by the memory budget, so speculative
+decoding mostly converts a fixed step budget into fewer, longer steps per request.
 
 ### Kernel Optimizations
 
