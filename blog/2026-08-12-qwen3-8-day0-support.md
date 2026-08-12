@@ -115,8 +115,8 @@ HiCache to compose with MTP and PD disaggregation.
 
 ## Chunked Pipeline-Parallel Prefill
 
-Going wide on experts means sharding all 512 experts, enabling EPLB, and paying for an
-all-to-all per MoE layer. This is the right answer for decode, which is memory-bound and
+Going wide on experts means sharding all 512 experts, enabling EPLB, and paying for two
+all-to-alls per MoE layer. This is the right answer for decode, which is memory-bound and
 needs the weights read once and shared. Prefill is compute-bound and already arrives with thousands of tokens per step,
 so wide EP adds no parallelism it needs; it adds two all-to-alls per MoE layer to a
 critical path that had no communication in it. Under PD disaggregation the two phases
