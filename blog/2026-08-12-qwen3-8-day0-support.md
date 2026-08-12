@@ -117,9 +117,10 @@ HiCache to compose with MTP and PD disaggregation.
 
 Decode and prefill favor different parallel layouts in the configurations measured
 here. For decode, we use wide expert parallelism to shard all 512 experts across ranks.
-At the measured 8K prefill operating points, the wide-EP configurations, which include
-dispatch and combine collectives, showed lower throughput than pure PP. PD
-disaggregation lets the two phases run on separate workers and use different layouts.
+Both wide-EP configurations below have EPLB enabled. At the measured 8K prefill
+operating points, the wide-EP configurations, which include dispatch and combine
+collectives, showed lower throughput than pure PP. PD disaggregation lets the two
+phases run on separate workers and use different layouts.
 
 With pure pipeline-parallel prefill, each stage owns a contiguous slice of the 92 layers
 and executes that slice on one rank, using full-width GEMMs without MoE dispatch,
@@ -127,7 +128,7 @@ combine, or EPLB. The main inter-stage communication is the activation transfer 
 stage boundary. Splitting a request into chunks allows the hand-off for chunk *i* to
 overlap the compute of chunk *i+1* as the chunks flow through the stages back to back.
 
-<img src="/images/blog/qwen3-8-day0-support/fig-chunked-pp-prefill.svg" alt="Chunked pipeline-parallel prefill: chunks flow through stages back to back, so each hand-off overlaps the next chunk's compute" width="720">
+<img src="/images/blog/qwen3-8-day0-support/fig-chunked-pp-prefill.svg" alt="Chunked pipeline-parallel prefill: chunks flow through stages back to back, so each hand-off overlaps the next chunk's compute" width="100%">
 
 Measured on 8K prefill at the operating points shown, in input tokens per second per GPU:
 
@@ -135,11 +136,6 @@ Measured on 8K prefill at the operating points shown, in input tokens per second
 |---|---:|---:|---:|
 | FP8, 16 GPUs | **5231** (PP16) | 3421 | **1.53×** |
 | NVFP4, 8 GPUs | **8363** (PP8) | 5151 | **1.62×** |
-
-The FP8 row comes from two dedicated prefill-only runs (8192 in, 1 out). The NVFP4 row
-reports the median prefill-batch rate observed during full 8192/1024 serving runs for
-each topology; this is distinct from end-to-end input throughput. Both wide-EP
-configurations have EPLB enabled.
 
 ### Pipeline-Parallel Prefill with MTP
 
