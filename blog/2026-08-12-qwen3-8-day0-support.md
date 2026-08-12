@@ -29,6 +29,9 @@ model in full on launch day. This post covers what it took.
   data-and-expert-parallel decode worker, composing under PD disaggregation to **5,088**
   tok/s per GPU on 8k/1k, with a staging buffer that lets the two sides be sized and
   parallelized independently.
+- **Day-0 RL with Miles**: colocated LoRA training on the native NVFP4 base, with a
+  BF16 Megatron trainer and NVFP4 SGLang rollout engines sharing the same 64 GB300s,
+  and a GRPO run on GSM8K verifying stable reward and flat train/rollout KL.
 
 Launch commands and per-workload configuration guidance live in the
 [Qwen3.8 cookbook](https://docs.sglang.io/cookbook/autoregressive/Qwen/Qwen3.8).
