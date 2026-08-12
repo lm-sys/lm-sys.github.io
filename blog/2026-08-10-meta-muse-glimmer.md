@@ -55,14 +55,14 @@ We measured Muse Glimmer with SGLang across seven platforms, sweeping batch size
 
 | Platform | Precision | Decoding | tok/s/user (batch 1) | Output tok/s (batch 8) |
 | ----- | ----- | ----- | ----- | ----- |
-| NVIDIA B300 | bf16 | Standard | 91.77 | 21 |
-| NVIDIA B300 | bf16 | DFlash | 308.51 | 261 |
-| NVIDIA B300 | nvfp4 | Standard | 83.98 | 41 |
-| NVIDIA B300 | nvfp4 | DFlash | 290.01 | 295 |
+| NVIDIA B300 | bf16 | Standard | 91.77 | 721 |
+| NVIDIA B300 | bf16 | DFlash | 308.51 | 1261 |
+| NVIDIA B300 | nvfp4 | Standard | 83.98 | 841 |
+| NVIDIA B300 | nvfp4 | DFlash | 290.01 | 1295 |
 | NVIDIA RTX PRO 6000 | bf16 | Standard | 25.7 | 200 |
-| NVIDIA RTX PRO 6000 | bf16 | DFlash | 108.08 | 33 |
-| NVIDIA RTX PRO 6000 | nvfp4 | Standard | 58.04 | 51 |
-| NVIDIA RTX PRO 6000 | nvfp4 | DFlash | 214.11 | 403 |
+| NVIDIA RTX PRO 6000 | bf16 | DFlash | 108.08 | 833 |
+| NVIDIA RTX PRO 6000 | nvfp4 | Standard | 58.04 | 451 |
+| NVIDIA RTX PRO 6000 | nvfp4 | DFlash | 214.11 | 1403 |
 | NVIDIA DGX Spark | bf16 | Standard | 4.4 | 35 |
 | NVIDIA DGX Spark | bf16 | DFlash | 19.1 | 134 |
 | NVIDIA DGX Spark | nvfp4 | Standard | 12.1 | 92 |
