@@ -115,37 +115,31 @@ HiCache to compose with MTP and PD disaggregation.
 
 ## Chunked Pipeline-Parallel Prefill
 
-Going wide on experts means sharding all 512 experts, enabling EPLB, and paying for two
-all-to-alls per MoE layer. This is the right answer for decode, which is memory-bound and
-needs the weights read once and shared. Prefill is compute-bound and already arrives with thousands of tokens per step,
-so wide EP adds no parallelism it needs; it adds two all-to-alls per MoE layer to a
-critical path that had no communication in it. Under PD disaggregation the two phases
-run on separate workers and are free to disagree.
+Decode and prefill favor different parallel layouts in the configurations measured
+here. For decode, we use wide expert parallelism to shard all 512 experts across ranks.
+At the measured 8K prefill operating points, the wide-EP configurations, which include
+dispatch and combine collectives, showed lower throughput than pure PP. PD
+disaggregation lets the two phases run on separate workers and use different layouts.
 
-Pipeline parallelism inverts every term. Each stage owns a contiguous slice of the 92
-layers and runs them to completion inside one rank. This requires no dispatch, combine,
-or EPLB, and it preserves full-width GEMMs. The only communication left is one activation per stage boundary,
-which chunked prefill hides: a request is split into chunks that flow through the
-stages back to back, so the hand-off for chunk *i* overlaps the compute of chunk *i+1*.
-And the cost EP pays grows with the expert count while the cost PP pays does not.
+With pure pipeline-parallel prefill, each stage owns a contiguous slice of the 92 layers
+and executes that slice on one rank, using full-width GEMMs without MoE dispatch,
+combine, or EPLB. The main inter-stage communication is the activation transfer at each
+stage boundary. Splitting a request into chunks allows the hand-off for chunk *i* to
+overlap the compute of chunk *i+1* as the chunks flow through the stages back to back.
 
 <img src="/images/blog/qwen3-8-day0-support/fig-chunked-pp-prefill.svg" alt="Chunked pipeline-parallel prefill: chunks flow through stages back to back, so each hand-off overlaps the next chunk's compute" width="720">
 
-Measured on 8K prefill, at each arm's own best operating point, in input tokens per
-second per GPU:
+Measured on 8K prefill at the operating points shown, in input tokens per second per GPU:
 
 | Checkpoint | Chunked PP prefill | Wide EP + EPLB | Speedup |
 |---|---:|---:|---:|
 | FP8, 16 GPUs | **5231** (PP16) | 3421 | **1.53×** |
 | NVFP4, 8 GPUs | **8363** (PP8) | 5151 | **1.62×** |
 
-The FP8 row is two dedicated prefill-only runs (8192 in, 1 out). The NVFP4 row is the
-median prefill-batch rate taken from inside full 8192/1024 serving runs on both arms, so
-it measures each one while it is actually prefilling and excludes the decode work
-sharing the GPUs. Comparing the wide-EP arm's *end-to-end* input rate against a
-prefill-only PP worker would read 2.3× and would be flattering rather than accurate.
-Both wide-EP arms have EPLB enabled; it fixes routing imbalance, which is not what is
-costing them the throughput.
+The FP8 row comes from two dedicated prefill-only runs (8192 in, 1 out). The NVFP4 row
+reports the median prefill-batch rate observed during full 8192/1024 serving runs for
+each topology; this is distinct from end-to-end input throughput. Both wide-EP
+configurations have EPLB enabled.
 
 ### Pipeline-Parallel Prefill with MTP
 
@@ -167,9 +161,9 @@ forfeit everything above.
 The staging buffer changes what the two sides agree on. Prefill writes completed chunks
 into staging buffers and publishes a per-peer watermark; decode scatters out of them into
 whatever layout it uses, prefetching chunk by chunk. The contract is a chunk index and a
-watermark rather than a partitioning, so the transfer overlaps the remaining prefill
-instead of following it, and the prefill:decode ratio, the pipeline depth and the decode
-EP width become independent knobs. The same path carries draft KV.
+watermark rather than a partitioning, allowing transfer to overlap the remaining
+prefill. The prefill:decode ratio, pipeline depth, and decode EP width can therefore be
+tuned separately. The same path carries draft KV.
 
 ## Performance
 
