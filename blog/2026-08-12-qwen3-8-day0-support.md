@@ -9,7 +9,7 @@ type: blog
 We are excited to announce Day-0 support for **[Qwen3.8-2.4T-A95B](https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B)** in SGLang and Miles.
 It is Qwen's largest open-source model, with 2.4T total parameters and 95B active per token,
 and its hybrid attention architecture puts pressure on most of the assumptions a serving stack
-makes about state. In collaboration with the Qwen, NVIDIA, and AMD teams, SGLang covers the
+makes about state. In collaboration with the Qwen, Alibaba Bailian, NVIDIA, and AMD teams, SGLang covers the
 model in full on launch day. This post covers what it took.
 
 **Highlights**
@@ -237,13 +237,13 @@ train/rollout KL stays flat.
 ## Acknowledgments
 
 This work was a collaboration among the SGLang & Miles team at RadixArk, Qwen,
-Alibaba Cloud, NVIDIA, and AMD.
+Alibaba Bailian, NVIDIA, and AMD.
 
 **SGLang Community**: Qiaolin Yu, Yuhao Yang, Xinyuan Tong, Ke Bao, Zijie Xia, Yi Sun, Mao Cheng, Yueming Yuan, Mingyi Lu, Haoguang Cai, Banghua Zhu, Ying Sheng
 
 **Qwen**: Yi Zhang, Zheng Li
 
-**Alibaba Cloud**: Tao Lan and colleagues
+**Alibaba Bailian**: Tao Lan and colleagues
 
 **AMD**: Jacky Cheng, Zijie Chen, Hai Xiao
 
