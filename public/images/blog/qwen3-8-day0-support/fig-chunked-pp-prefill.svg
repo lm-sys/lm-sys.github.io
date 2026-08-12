@@ -17,12 +17,14 @@
     </marker>
   </defs>
 
+  <g transform="translate(10 10)">
+
   <!-- ================= top: wide EP ================= -->
   <text class="ttl" x="0" y="14">Wide expert parallelism — one all-to-all pair per MoE layer</text>
   <text class="sub" x="0" y="30">every rank holds a slice of the 512 experts, so each layer must dispatch and combine</text>
 
   <line class="ax" x1="0" y1="96" x2="700" y2="96"/>
-  <text class="tiny" x="702" y="99">time</text>
+  <text class="tiny" x="698" y="92" text-anchor="end">time</text>
 
   <!-- layer 1 -->
   <rect class="cmp" x="0"   y="46" width="70" height="42" rx="2"/>
@@ -59,19 +61,19 @@
 
   <!-- axes -->
   <line class="ax" x1="66" y1="378" x2="700" y2="378"/>
-  <text class="tiny" x="702" y="381">time</text>
+  <text class="tiny" x="698" y="374" text-anchor="end">time</text>
 
   <!-- stage rows: 4 stages x 6 chunk slots, diagonal schedule -->
   <!-- row y positions -->
   <!-- stage 0 -->
-  <text class="lbl" x="60" y="216" text-anchor="end">stage 0</text>
-  <text class="tiny" x="60" y="228" text-anchor="end">layers 1–23</text>
-  <text class="lbl" x="60" y="256" text-anchor="end">stage 1</text>
-  <text class="tiny" x="60" y="268" text-anchor="end">layers 24–46</text>
-  <text class="lbl" x="60" y="296" text-anchor="end">stage 2</text>
-  <text class="tiny" x="60" y="308" text-anchor="end">layers 47–69</text>
-  <text class="lbl" x="60" y="336" text-anchor="end">stage 3</text>
-  <text class="tiny" x="60" y="348" text-anchor="end">layers 70–92</text>
+  <text class="lbl" x="66" y="216" text-anchor="end">stage 0</text>
+  <text class="tiny" x="66" y="228" text-anchor="end">layers 1–23</text>
+  <text class="lbl" x="66" y="256" text-anchor="end">stage 1</text>
+  <text class="tiny" x="66" y="268" text-anchor="end">layers 24–46</text>
+  <text class="lbl" x="66" y="296" text-anchor="end">stage 2</text>
+  <text class="tiny" x="66" y="308" text-anchor="end">layers 47–69</text>
+  <text class="lbl" x="66" y="336" text-anchor="end">stage 3</text>
+  <text class="tiny" x="66" y="348" text-anchor="end">layers 70–92</text>
 
   <!-- chunk blocks: c = chunk index, s = stage; x = 70 + (c+s)*96 -->
   <!-- stage 0: chunks 1..4 -->
@@ -109,4 +111,5 @@
   <path class="hand" d="M354,295 L356,318"/>
 
   <text class="tiny" x="70" y="398">the hand-off for chunk i overlaps the compute of chunk i+1 — the only wire traffic is one activation per boundary</text>
+  </g>
 </svg>
