@@ -243,9 +243,9 @@ Alibaba Bailian, NVIDIA, and AMD.
 
 **Qwen**: Yi Zhang, Zheng Li
 
-**AMD**: Jacky Cheng, Zijie Chen, Hai Xiao
-
 **Alibaba Bailian**: Tao Lan and colleagues
+
+**AMD**: Jacky Cheng, Zijie Chen, Hai Xiao
 
 **NVIDIA**: NVIDIA and SGLang collaborated on kernels for GDN, GEMMs, GQA, and MoE
 communication, including the communication fusions described above. The teams also worked on the parallel configurations used in the Qwen3.8 performance results.
