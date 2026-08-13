@@ -16,12 +16,28 @@ type: blog
 
 **Project-scale work exceeds the boundary of one Task.** Multiple Tasks must proceed in parallel, exchange Deliverables, share state, trigger Rework, and change direction as evidence accumulates. **Graph Engineering** organizes independently convergent Task Loops into an evolving **Task Graph**. The graph keeps released and rejected paths connected to their dependencies, constraints, and evidence, so project decisions remain explainable<sup>[10](#ref-10),[11](#ref-11),[12](#ref-12),[13](#ref-13)</sup>.
 
-**Infer-forge is our implementation of this progression for inference engineering around SGLang.** Its scope follows an engineering change through the inference stack: from kernels and communication libraries, through engine integration and deployment, to Evaluation and online diagnosis. One shared workspace and three accumulating execution structures keep that end-to-end path coherent:
+**Infer-forge applies this progression to inference engineering around SGLang.** Its scope follows an engineering change through the inference stack: from kernels and communication libraries, through engine integration and deployment, to Evaluation and online diagnosis. One shared workspace and three accumulating execution structures keep that end-to-end path coherent:
 
 - **MonoRepo** establishes a reproducible workspace for cross-repository engineering.
 - **Harness** supplies reusable execution capabilities, memory, Verification, and safety boundaries.
 - **Task Loop** keeps one long-running Task moving until it reaches its Exit Criteria.
 - **Task Graph** connects independently convergent Tasks into larger objectives, including project delivery and capability evolution.
+
+### 1.1 Implementation Status and Availability
+
+**Infer-forge is an internal engineering system developed independently around SGLang; it is not an official SGLang or LMSYS component.**
+
+| Scope | Current status |
+|---|---|
+| MonoRepo workspace, Task and Journal records, and Task/Graph schemas, CLIs, and validators | Implemented and used internally |
+| Task Loop lifecycle transitions and Handoffs | Partially automated and tool-supported |
+| Task generation and adaptive Task Graph evolution | Implemented and used internally; infer-forge derives Tasks from user goals, connects them into a Task Graph, and updates the Graph during execution as Tasks are accepted, abandoned, or redirected |
+| Capability trigger inputs and lifecycle operations | Implemented and explicitly invoked |
+| Task acceptance or abandonment, Human Gates, and release decisions | Human-directed; these decisions feed back into Task Graph evolution |
+
+**Infer-forge is not currently open source because its core components are deeply coupled to our internal repositories, infrastructure, workflows, and safety controls. The current codebase would therefore have limited portability outside our environment.**
+
+**Instead, this article makes the construction methodology public.** Our goal is for teams and individuals to give it to an AI coding tool, add the context of their own systems, and rapidly build an infer-forge implementation adapted to their environment.
 
 **Infer-forge has moved from workflow design into sustained engineering use.** Across one engineer's April–July record, the observed peak number of **Tasks in flight** rose from **2 to 9**. In one DeepSeek-V4-Pro serving project, **38 independently verifiable Task nodes across seven Task Types** were coordinated as a Task Graph. Together, these records show infer-forge in sustained use across both a four-month engineering record and a project-scale Task Graph.
 
