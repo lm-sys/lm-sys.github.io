@@ -231,19 +231,18 @@ If model-tier selection or subagents are unavailable, the Loop Block proceeds wi
 #### 4.4.1 Node Registry
 
 <div align="center">
-  <img src="/images/blog/infer-forge-loop/fig-06-node-registry.svg" alt="Node Registry records Task-to-Node claims in a Git Ledger, compares them with DCGM Observation, and uses Idle Reclaim to clean up stale records" />
+  <img src="/images/blog/infer-forge-loop/fig-06-node-registry.svg" alt="Node Registry combines periodic runtime and GPU observations to determine claim cleanup eligibility" />
   <br>
   <em>Figure 6: Node Registry.</em>
 </div>
 
-**Resource autonomy cannot begin from a guess about Node ownership.** The **Node Registry** is a Git-backed repository that reconciles declared occupancy with observed machine activity:
+**Resource autonomy must begin with provable ownership, not guesswork.** The **Node Registry** is a Git-backed ledger that records every Task-to-Node claim. Collectors periodically write runtime-process and GPU-activity observations into the Registry, creating a continuous, auditable history. GPU telemetry is one signal; no single sample can establish that a Task has finished.
 
-- **Git Ledger** records which Task claims each Node. Every claim, release, and correction remains versioned and auditable.
-- **DCGM Observation** reports whether a workload is actually running on the machine.
+**Cleanup fails closed.** A claim becomes eligible only when fresh, gap-free observations show both runtime and GPU activity continuously idle for a configurable policy window. Missing, stale, gapped, or conflicting evidence blocks cleanup; runtime-active/GPU-idle Nodes require review.
 
-Reconciliation distinguishes **Held by Task**, **Idle < 6h**, and **Idle ≥ 6h → reclaim**. Under the current **Idle Reclaim** policy, a claim observed idle for six continuous hours is removed and the Node becomes available again. The interval is a governance parameter, not a scheduling guarantee.
+**Eligibility is not execution, and cleanup is not reuse.** Cleanup must be triggered explicitly and removes only the Registry claim. It does not stop the workload or establish Task completion. Before a Node is reused, its current machine state must be validated again.
 
-**The Node Registry does not select Nodes, queue work, or launch workloads. It gives those actions a trustworthy and auditable starting point.**
+**The Node Registry is not a scheduler and does not launch workloads. Its role is narrower—and foundational: maintain an auditable resource state on which cleanup, allocation, and deployment decisions can rely.**
 
 #### 4.4.2 Skills & Tools
 
