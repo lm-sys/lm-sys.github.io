@@ -23,7 +23,7 @@ type: blog
 - **Task Loop** keeps one long-running Task moving until it reaches its Exit Criteria.
 - **Task Graph** connects independently convergent Tasks into larger objectives, including project delivery and capability evolution.
 
-**Infer-forge has moved from workflow design into sustained engineering use.** Across one engineer's April–July record, the peak number of **Tasks in flight** rose from **2 to 9**—an observed **4.5× increase in engineering concurrency**. In one DeepSeek-V4-Pro serving project, **38 independently verifiable Task nodes across seven Task Types** were coordinated as a Task Graph. Together, these records show infer-forge operating at both concurrent-Task and project scale in real inference engineering.
+**Infer-forge has moved from workflow design into sustained engineering use.** Across one engineer's April–July record, the observed peak number of **Tasks in flight** rose from **2 to 9**. In one DeepSeek-V4-Pro serving project, **38 independently verifiable Task nodes across seven Task Types** were coordinated as a Task Graph. Together, these records show infer-forge in sustained use across both a four-month engineering record and a project-scale Task Graph.
 
 **A capable Agent can make one execution succeed; an engineering system is designed to make successful work reproducible.** Infer-forge does not promise that every Task will finish faster. It provides the structure to preserve the provenance of each deployment point, sustain verifiable work over long-running Tasks, and coordinate evidence across Task boundaries.
 
@@ -353,7 +353,7 @@ Figure 13 shows the resulting working mode. While one Task Loop is still executi
 
 **One engineer can therefore direct multiple sustained Task Loops without blurring the boundary of each Task.** The Harness carries execution forward; the engineer concentrates attention where it changes the project's direction.
 
-### 6.2 Measured Operating Capacity
+### 6.2 Observed Tasks in Flight
 
 <div align="center">
   <img src="/images/blog/infer-forge-loop/fig-14-task-activity.svg" alt="Archived Task Lifetimes plots each of the 86 archived Tasks as one horizontal bar running from its creation to its archive time, between April 7 and July 30, 2026. Bars are packed into nine lanes by earliest free lane, and are coloured across all nine Task Types—Plan, Research, Code, Integration, Evaluation, Release, Online Diagnosis, Capability and + Custom. A dark slate dashed line at July 6, drawn over a white underlay so it stays legible where it crosses coloured bars, marks the peak, where nine Tasks are in flight; its label reads Peak in flight: 9. Three cards below the timeline give the summary statistics: 90 Tasks created, 86 valid archived lifetimes, and 91% in flight with others — the last one filled solid because it is the conclusion the other two support" />
@@ -361,13 +361,9 @@ Figure 13 shows the resulting working mode. While one Task Loop is still executi
   <em>Figure 14: Tasks in Flight, April–July 2026.</em>
 </div>
 
-**Figure 14 shows how the engineer's Tasks in flight changed over four months.** Each bar runs from Task creation to archive. The chart describes work-in-progress capacity, not instantaneous Agent utilization, GPU utilization, or per-Task execution speed.
+**Figure 14 shows how the engineer's Tasks in flight changed over four months.** Each bar spans from a Task's creation timestamp to its archive timestamp, and the peak is the maximum number of these intervals that overlap at any instant. Of the 90 Tasks created during the observation window, 86 archived Tasks had valid timestamps and are included; three were still open at the cutoff, and one record was excluded because its archive timestamp preceded its creation timestamp.
 
-Across the April–July record, the median time a Task remained in flight increased from approximately **10 hours in April**, to **14 hours in May**, **20 hours in June**, and **28 hours in July**. The peak number of **Tasks in flight** rose from **2** in April and **2** in May to **6** in June and **9** in July. **Observed peak engineering concurrency therefore increased by 4.5×**, from two Tasks in April to nine in July.
-
-More Tasks in flight are useful only when each remains bounded and verifiable. These figures come from one engineer's Task records over four months. They are a longitudinal observation of operating capacity, not an estimate of infer-forge's causal effect on productivity.
-
-**In day-to-day operation, the binding constraint increasingly shifted from the engineer's next instruction to available GPU capacity.** Token budget was the next practical ceiling. Sustained Task Loops did not eliminate resource limits; they made it possible for one engineer to keep more resource-ready work moving until those limits became visible.
+Across the April–July record, the median archived lifetime increased from approximately **10 hours in April**, to **14 hours in May**, **20 hours in June**, and **28 hours in July**. The monthly peak number of **Tasks in flight** was **2**, **2**, **6**, and **9**, respectively.
 
 ### 6.3 Project-Scale Coordination
 
@@ -427,7 +423,7 @@ A downstream Task may be planned earlier, but it must not import an upstream res
 
 **Infer-forge does not reduce the complexity of inference engineering; it makes work across that complexity inspectable, resumable, and verifiable.** It keeps each change tied to its deployment point, code provenance, and evidence across repositories, execution rounds, and Follow-up Handoffs, so verified Deliverables and documented rejections can be reproduced, revisited, and carried forward.
 
-**Infer-forge supports an operating model in which one AI infrastructure engineer can direct multiple sustained Task Loops.** Our four-month record shows higher observed concurrency; whether this translates into productivity gains remains to be established through controlled measurement. We are exploring increasingly autonomous Task Graph coordination while preserving Verification boundaries, Human Gates, and engineering judgment. We hope the practices embodied in infer-forge help teams and individuals apply Harness, Loop, and Graph Engineering to large-scale, complex systems.
+**Infer-forge supports an operating model in which one AI infrastructure engineer can direct multiple sustained Task Loops.** Our four-month record shows the observed peak number of **Tasks in flight** increasing from **2 to 9**. We are exploring increasingly autonomous Task Graph coordination while preserving Verification boundaries, Human Gates, and engineering judgment. We hope the practices embodied in infer-forge help teams and individuals apply Harness, Loop, and Graph Engineering to large-scale, complex systems.
 
 ## Acknowledgments
 
