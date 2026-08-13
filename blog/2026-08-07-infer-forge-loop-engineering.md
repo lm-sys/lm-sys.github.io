@@ -269,7 +269,7 @@ A Playbook selects the relevant subset for the current Task Type. Skills narrow 
 
 **Evidence compounds only when the next Task can find and reuse it.** Task Memory preserves the execution state of one Task; the **Journal** carries evidence across Tasks. **LLM-wiki** connects Task records into a knowledge network, while **Multi-dim Index** organizes them by dimensions such as model, Task Type, and GPU. Together, they support Retrieve, Compare, and Filter without forcing each Task to rediscover the same facts.
 
-In one benchmark Task, the Journal surfaced an earlier record showing that `bench_serving.py` did not count `delta.reasoning_content` for reasoning models. That bug invalidated the apparent TTFT and throughput baseline. Reusing the record prevented the next Task from treating a measurement error as an engine regression.
+In an earlier version of SGLang's OpenAI-compatible chat benchmark handler, streamed `delta.reasoning_content` was not included in TTFT and output accounting ([fixed in sgl-project/sglang#23954](https://github.com/sgl-project/sglang/pull/23954)); non-stream handling was addressed separately in [#25298](https://github.com/sgl-project/sglang/pull/25298). The Journal surfaced this historical record in a later Task, preventing a measurement error from being mistaken for an engine regression.
 
 **The Journal preserves evidence; it cannot promote evidence directly into executable capability.** Any change to the Skills & Tools baseline must pass through a Capability Task and Verification.
 
@@ -429,7 +429,7 @@ A downstream Task may be planned earlier, but it must not import an upstream res
 
 ### 8.3 Evidence Integrity
 
-**Evidence is only as trustworthy as the Harness that produces it.** In one benchmark Task, `bench_serving.py` ignored `delta.reasoning_content`, invalidating the apparent TTFT and throughput baseline. The Journal prevented the next Task from treating that measurement error as an engine regression, but the broader lesson is that evaluation tools, configurations, and data paths are part of the result. They require the same versioning, review, and Verification as the code under test.
+**Evidence is only as trustworthy as the Harness that produces it.** Evaluation tools, configurations, and data paths are part of the result. They require the same versioning, review, and Verification as the code under test.
 
 **A Deliverable must preserve a reproduction path, not just a conclusion.** For inference work, it should contain enough information to recreate the deployment point and compare the baseline with the candidate: exact code and runtime versions, image, deployment and workload configurations, commands, results, and failed attempts. A Follow-up Handoff states what is complete, where the evidence lives, which judgments still hold, and where the next Task should begin. Once that package is verified and imported, it becomes Imported Context.
 
