@@ -18,7 +18,7 @@ Hardware constraints do not relax serving requirements. Long-context prefill mus
 - **Optimize the prefill path.** We optimize `Attention-CP8 → MoE-TP8` and context-parallel communication, then tune for the real routing shapes produced by long- and short-context workloads.
 - **Optimize the decode path.** We optimize the DSpark speculative-decoding path, refine execution, expert routing, and communication–computation overlap for distinct decode SLOs.
 
-**Push the latency frontier.** At batch size 1, the single-node H20-141GB reference reaches **271 output tokens/s**, compared with the **383.7 tokens/s** [reported on B300](https://www.lmsys.org/blog/2026-07-06-dspark-sglang/). Despite the substantial hardware gap, workload-specific system optimization narrows the observed decode performance ratio to **1.42×**.
+**Push the latency frontier.** At batch size 1, the single-node H20-141GB reference reaches **271 output tokens/s**, compared with the **383.7 tokens/s** [reported on B300](https://www.lmsys.org/blog/2026-07-06-dspark-sglang/). Despite the substantial hardware gap, workload-specific system optimization narrows the observed decode performance ratio to **1.42×**. Detailed benchmark settings and the log-based throughput extraction methodology are provided in [Appendix B.3](#b3-benchmark-settings).
 
 **Cover the serving envelope.** The latency result represents only one edge of the system. Across the broader profile family, optimized prefill reaches **8.45k input tokens/s per node** and processes a **1M-token prompt in 43.7 seconds**. For throughput-oriented decode, the DP16-EP16 efficiency reference reaches **4.67k output tokens/s per node**, corresponding to an average TPOT of **27.4 ms**. These results intentionally come from different profiles, each selected and optimized for a different combination of context length, latency, throughput, and capacity constraints.
 
@@ -44,7 +44,7 @@ Serving capacity ultimately comes from a shared HBM budget: model weights and pe
 
 #### Reducing Weight Footprint with Humming MXFP4AFP8
 
-**Reduce the weight footprint first.** [Humming MXFP4AFP8](https://github.com/inclusionAI/humming) uses MXFP4 expert weights with online FP8 activations to reduce weight footprint and memory traffic on H20 GPUs, which lack native FP4 Tensor Cores. The SGLang integration is available in [sglang#23754](https://github.com/sgl-project/sglang/pull/23754). We will cover the Humming/SGLang integration in a dedicated follow-up post.
+**Reduce the weight footprint first.** [Humming MXFP4AFP8](https://github.com/inclusionAI/humming) uses MXFP4 expert weights with online FP8 activations to reduce weight footprint and memory traffic on H20 GPUs, which lack native FP4 Tensor Cores. The SGLang integration is available in [sglang#23754](https://github.com/sgl-project/sglang/pull/23754). We will cover the Humming/SGLang integration in a dedicated follow-up post. Model-level accuracy results and public reference measurements are provided in [Appendix D.2](#d2-humming-accuracy-validation).
 
 #### Expanding KV Capacity with Online C128
 
@@ -309,6 +309,48 @@ We would like to thank the **SGLang Team and Community** for their outstanding w
 | 512K | 38 | 157 | 254 |
 | 1M | 38 | 150 | 183 |
 
+### B.3 Benchmark Settings
+
+Hardware: one 8× H20-141GB decode node.
+
+**Decode server**
+
+```bash
+--tp-size 8 \
+--mem-fraction-static 0.91 \
+--max-running-requests 1 \
+--cuda-graph-max-bs 1 \
+--cuda-graph-bs 1 \
+--moe-runner-backend humming \
+--moe-a2a-backend none \
+--speculative-algorithm DSPARK \
+--speculative-num-draft-tokens 7 \
+--speculative-dspark-block-size 7 \
+--speculative-moe-runner-backend triton \
+--speculative-moe-a2a-backend none
+```
+
+**Client benchmark**
+
+```bash
+python3 -m sglang.bench_serving \
+  --backend sglang-oai-chat \
+  --host 127.0.0.1 \
+  --port 8000 \
+  --model <MODEL_PATH> \
+  --dataset-name random \
+  --dataset-path <DATASET_PATH> \
+  --random-input-len 262144 \
+  --random-output-len 4096 \
+  --random-range-ratio 1.0 \
+  --num-prompts 10 \
+  --max-concurrency 1 \
+  --warmup-requests 0 \
+  --seed 1
+```
+
+Output throughput is extracted from the server's TP0 `Decode batch` log lines; we discard the highest and lowest 20% of samples and average the remainder. The B300 number follows the setup reported in the linked source.
+
 ## Appendix C. High-Throughput Decode Results
 
 ### C.1 DP32-EP32 with FP8 + MTP (3, 1, 4)
@@ -393,3 +435,18 @@ We would like to thank the **SGLang Team and Community** for their outstanding w
 | PP2-TP8 | Baseline FP8 + Offline C128 | 1,089,024 | - | 1.00× |
 |  | Humming MXFP4AFP8 + Offline C128 | 4,869,888 | 4.47× | 4.47× |
 |  | Humming MXFP4AFP8 + Online C128 | 11,044,906 | 2.268× | 10.14× |
+
+### D.2 Humming Accuracy Validation
+
+We evaluated the DP16-EP16 Humming MXFP4AFP8 + Online C128 + DSpark profile on GSM8K1000. The profile achieves **95.5% exact-match accuracy**, with one invalid response and zero system errors, passing our **95.0% acceptance threshold**.
+
+As a public reference, the upstream [SGLang Humming integration](https://github.com/sgl-project/sglang/pull/23754) reports the following results on a 200-example GSM8K evaluation of DeepSeek-V4-Flash:
+
+| Backend | GSM8K Accuracy |
+|---|---:|
+| Marlin MXFP4A16 | 96.5%–97.0% |
+| FlashInfer MXFP4 | 96.5%–97.0% |
+| Humming MXFP4A16 | 96.5%–97.5% |
+| Humming MXFP4AFP8 | 97.0% |
+
+No accuracy degradation is visible for Humming MXFP4AFP8 in this public comparison. Because it uses DeepSeek-V4-Flash rather than DeepSeek-V4-Pro, we treat it as an external reference rather than a matched accuracy-loss measurement for our serving profile.
