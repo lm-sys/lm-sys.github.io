@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 452" width="980" height="452"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="980" height="452" fill="#ffffff"/>
+
+  <text x="40" y="38" font-size="16" font-weight="700" fill="#111827">Prefill memory above the no-graph resident baseline</text>
+  <text x="40" y="59" font-size="12" fill="#6b7280">after one prefill at exactly the chunked-prefill size</text>
+
+  <g font-size="12">
+    <rect x="612" y="30" width="12" height="12" rx="2" fill="#4e79a7"/>
+    <text x="630" y="40" fill="#374151">captured graphs (resident)</text>
+    <rect x="612" y="50" width="12" height="12" rx="2" fill="#f0a02a"/>
+    <text x="630" y="60" fill="#374151">activation peak (per request)</text>
+  </g>
+
+  <!-- shared y scale: 200 px per GB, baseline y=350, ticks every 0.25 GB -->
+  <g font-size="10.5" fill="#c8ccd2">
+    <line x1="88" y1="350" x2="460" y2="350"/><line x1="88" y1="300" x2="460" y2="300" stroke="#f1f3f5"/>
+    <line x1="88" y1="250" x2="460" y2="250" stroke="#f1f3f5"/><line x1="88" y1="200" x2="460" y2="200" stroke="#f1f3f5"/>
+    <line x1="88" y1="150" x2="460" y2="150" stroke="#f1f3f5"/><line x1="88" y1="100" x2="460" y2="100" stroke="#f1f3f5"/>
+    <line x1="588" y1="350" x2="960" y2="350"/><line x1="588" y1="300" x2="960" y2="300" stroke="#f1f3f5"/>
+    <line x1="588" y1="250" x2="960" y2="250" stroke="#f1f3f5"/><line x1="588" y1="200" x2="960" y2="200" stroke="#f1f3f5"/>
+    <line x1="588" y1="150" x2="960" y2="150" stroke="#f1f3f5"/><line x1="588" y1="100" x2="960" y2="100" stroke="#f1f3f5"/>
+  </g>
+  <g font-size="10.5" fill="#9ca3af" text-anchor="end">
+    <text x="82" y="354">0</text><text x="82" y="304">0.25</text><text x="82" y="254">0.50</text>
+    <text x="82" y="204">0.75</text><text x="82" y="154">1.00</text><text x="82" y="104">1.25 GB</text>
+    <text x="582" y="354">0</text><text x="582" y="304">0.25</text><text x="582" y="254">0.50</text>
+    <text x="582" y="204">0.75</text><text x="582" y="154">1.00</text><text x="582" y="104">1.25 GB</text>
+  </g>
+
+  <!-- ══════ Llama-3.3-70B ══════ -->
+  <text x="100" y="90" font-size="13" font-weight="700" fill="#111827">Llama-3.3-70B · TP4 · chunk 8192</text>
+
+  <rect x="104" y="184" width="46" height="166" fill="#f0a02a"/>
+  <text x="127" y="366" font-size="11" fill="#374151" text-anchor="middle">none</text>
+  <text x="127" y="176" font-size="10.5" fill="#6b7280" text-anchor="middle">0.83</text>
+
+  <rect x="172" y="179" width="46" height="166" fill="#f0a02a"/>
+  <rect x="172" y="345" width="46" height="5" fill="#4e79a7"/>
+  <text x="195" y="366" font-size="11" fill="#374151" text-anchor="middle">1024</text>
+  <text x="195" y="166" font-size="10.5" fill="#6b7280" text-anchor="middle">0.85</text>
+
+  <rect x="240" y="176" width="46" height="166" fill="#f0a02a"/>
+  <rect x="240" y="342" width="46" height="8" fill="#4e79a7"/>
+  <text x="263" y="366" font-size="11" fill="#374151" text-anchor="middle">2048</text>
+  <text x="263" y="168" font-size="10.5" fill="#6b7280" text-anchor="middle">0.87</text>
+
+  <rect x="308" y="170" width="46" height="166" fill="#f0a02a"/>
+  <rect x="308" y="336" width="46" height="14" fill="#4e79a7"/>
+  <text x="331" y="366" font-size="11" fill="#374151" text-anchor="middle">4096</text>
+  <text x="331" y="162" font-size="10.5" fill="#6b7280" text-anchor="middle">0.90</text>
+
+  <rect x="376" y="322" width="46" height="1" fill="#f0a02a"/>
+  <rect x="376" y="323" width="46" height="27" fill="#4e79a7"/>
+  <text x="399" y="366" font-size="11" font-weight="700" fill="#111827" text-anchor="middle">8192</text>
+  <text x="399" y="380" font-size="10" fill="#9ca3af" text-anchor="middle">= chunk</text>
+  <text x="399" y="314" font-size="10.5" font-weight="600" fill="#166534" text-anchor="middle">0.14</text>
+
+  <!-- ══════ gpt-oss-120b ══════ -->
+  <text x="600" y="90" font-size="13" font-weight="700" fill="#111827">gpt-oss-120b · TP2 · chunk 16384</text>
+
+  <rect x="604" y="151" width="46" height="199" fill="#f0a02a"/>
+  <text x="627" y="366" font-size="11" fill="#374151" text-anchor="middle">none</text>
+  <text x="627" y="143" font-size="10.5" fill="#6b7280" text-anchor="middle">1.00</text>
+
+  <rect x="672" y="147" width="46" height="199" fill="#f0a02a"/>
+  <rect x="672" y="346" width="46" height="4" fill="#4e79a7"/>
+  <text x="695" y="366" font-size="11" fill="#374151" text-anchor="middle">2048</text>
+  <text x="695" y="139" font-size="10.5" fill="#6b7280" text-anchor="middle">1.02</text>
+
+  <rect x="740" y="145" width="46" height="199" fill="#f0a02a"/>
+  <rect x="740" y="344" width="46" height="6" fill="#4e79a7"/>
+  <text x="763" y="366" font-size="11" fill="#374151" text-anchor="middle">4096</text>
+  <text x="763" y="137" font-size="10.5" fill="#6b7280" text-anchor="middle">1.03</text>
+
+  <rect x="808" y="140" width="46" height="199" fill="#f0a02a"/>
+  <rect x="808" y="339" width="46" height="11" fill="#4e79a7"/>
+  <text x="831" y="366" font-size="11" fill="#374151" text-anchor="middle">8192</text>
+  <text x="831" y="132" font-size="10.5" fill="#6b7280" text-anchor="middle">1.05</text>
+
+  <rect x="876" y="330" width="46" height="1" fill="#f0a02a"/>
+  <rect x="876" y="331" width="46" height="19" fill="#4e79a7"/>
+  <text x="899" y="366" font-size="11" font-weight="700" fill="#111827" text-anchor="middle">16384</text>
+  <text x="899" y="380" font-size="10" fill="#9ca3af" text-anchor="middle">= chunk</text>
+  <text x="899" y="322" font-size="10.5" font-weight="600" fill="#166534" text-anchor="middle">0.10</text>
+
+  <text x="40" y="414" font-size="12" fill="#6b7280">The no-graph bar is not zero: it is the activation peak every prefill pays. Capturing below the chunk size adds resident graphs without removing that peak.</text>
+  <text x="40" y="434" font-size="12" fill="#6b7280">Once the largest captured shape covers the chunk size, the peak disappears and total memory drops below the no-graph baseline.</text>
+</svg>

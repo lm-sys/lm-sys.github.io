@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 358" width="920" height="358"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="920" height="358" fill="#ffffff"/>
+
+  <text x="40" y="40" font-size="16" font-weight="700" fill="#111827">Cold-start time to build prefill CUDA Graphs</text>
+  <text x="40" y="61" font-size="12" fill="#6b7280">TP4 on 4×GB300 · 42 captured shapes per configuration · weight loading and kernel JIT excluded</text>
+
+  <g font-size="12">
+    <rect x="662" y="30" width="12" height="12" rx="2" fill="#e15759"/>
+    <text x="680" y="40" fill="#374151">compile</text>
+    <rect x="742" y="30" width="12" height="12" rx="2" fill="#4e79a7"/>
+    <text x="760" y="40" fill="#374151">capture</text>
+  </g>
+
+  <!-- scale: 2.2 px per second, bars start at x=270 -->
+
+  <!-- ═══ Qwen3-235B-A22B ═══ -->
+  <text x="40" y="112" font-size="13" font-weight="700" fill="#111827">Qwen3-235B-A22B</text>
+  <text x="182" y="112" font-size="11.5" fill="#9ca3af">94-layer MoE</text>
+
+  <text x="256" y="140" font-size="12" fill="#374151" text-anchor="end">BCG</text>
+  <rect x="270" y="126" width="61" height="21" rx="2" fill="#4e79a7"/>
+  <text x="300" y="141" font-size="10.5" fill="#ffffff" text-anchor="middle">27.7</text>
+  <text x="700" y="141" font-size="12.5" font-weight="600" fill="#111827">27.7 s</text>
+
+  <text x="256" y="172" font-size="12" fill="#374151" text-anchor="end">TC piecewise</text>
+  <rect x="270" y="158" width="199" height="21" rx="2" fill="#e15759"/>
+  <text x="369" y="173" font-size="10.5" fill="#ffffff" text-anchor="middle">90.4</text>
+  <rect x="469" y="158" width="36" height="21" rx="2" fill="#4e79a7"/>
+  <text x="487" y="173" font-size="10.5" fill="#ffffff" text-anchor="middle">16.2</text>
+  <text x="700" y="173" font-size="12.5" font-weight="600" fill="#111827">106.6 s</text>
+  <text x="772" y="173" font-size="12" fill="#9ca3af">3.8× slower</text>
+
+  <!-- ═══ GLM-5.2 ═══ -->
+  <text x="40" y="230" font-size="13" font-weight="700" fill="#111827">GLM-5.2</text>
+  <text x="122" y="230" font-size="11.5" fill="#9ca3af">78-layer MoE + DSA</text>
+
+  <text x="256" y="258" font-size="12" fill="#374151" text-anchor="end">BCG</text>
+  <rect x="270" y="244" width="77" height="21" rx="2" fill="#4e79a7"/>
+  <text x="308" y="259" font-size="10.5" fill="#ffffff" text-anchor="middle">35.2</text>
+  <text x="700" y="259" font-size="12.5" font-weight="600" fill="#111827">35.2 s</text>
+
+  <text x="256" y="290" font-size="12" fill="#374151" text-anchor="end">TC piecewise</text>
+  <rect x="270" y="276" width="348" height="21" rx="2" fill="#e15759"/>
+  <text x="444" y="291" font-size="10.5" fill="#ffffff" text-anchor="middle">158.2</text>
+  <rect x="618" y="276" width="55" height="21" rx="2" fill="#4e79a7"/>
+  <text x="645" y="291" font-size="10.5" fill="#ffffff" text-anchor="middle">24.9</text>
+  <text x="700" y="291" font-size="12.5" font-weight="600" fill="#111827">183.1 s</text>
+  <text x="772" y="291" font-size="12" fill="#9ca3af">5.2× slower</text>
+
+  <text x="40" y="338" font-size="12" fill="#6b7280">BCG removes the compiler phase; its graph capture alone is slightly slower than TC piecewise capture.</text>
+</svg>
