@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400"
      font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <rect width="900" height="400" fill="#ffffff"/>
+  <rect width="760" height="400" fill="#ffffff"/>
   <text x="40" y="38" font-size="16" font-weight="700" fill="#111827">Prefill latency by capture strategy</text>
   <text x="40" y="59" font-size="12" fill="#6b7280">gpt-oss-120b · TP4 · 4×GB300 · median TTFT, one request at a time, fixed input length and one output token</text>
   <line x1="40" y1="86" x2="62" y2="86" stroke="#9ca3af" stroke-width="2.5"/>
@@ -32,7 +32,6 @@
   <circle cx="456" cy="199.3" r="3.2" fill="#9ca3af"/>
   <circle cx="568" cy="167.0" r="3.2" fill="#9ca3af"/>
   <circle cx="680" cy="162.5" r="3.2" fill="#9ca3af"/>
-  <text x="692" y="166.5" font-size="11.5" font-weight="600" fill="#9ca3af">no graph</text>
   <polyline points="120,226.0 232,216.2 344,221.9 456,238.2 568,229.2 680,218.8" fill="none" stroke="#f0a02a" stroke-width="2.5"/>
   <circle cx="120" cy="226.0" r="3.2" fill="#f0a02a"/>
   <circle cx="232" cy="216.2" r="3.2" fill="#f0a02a"/>
@@ -40,7 +39,6 @@
   <circle cx="456" cy="238.2" r="3.2" fill="#f0a02a"/>
   <circle cx="568" cy="229.2" r="3.2" fill="#f0a02a"/>
   <circle cx="680" cy="218.8" r="3.2" fill="#f0a02a"/>
-  <text x="692" y="222.8" font-size="11.5" font-weight="600" fill="#f0a02a">tc_piecewise  1.39×</text>
   <polyline points="120,245.8 232,240.1 344,241.5 456,245.8 568,241.8 680,241.9" fill="none" stroke="#4e79a7" stroke-width="2.5"/>
   <circle cx="120" cy="245.8" r="3.2" fill="#4e79a7"/>
   <circle cx="232" cy="240.1" r="3.2" fill="#4e79a7"/>
@@ -48,7 +46,6 @@
   <circle cx="456" cy="245.8" r="3.2" fill="#4e79a7"/>
   <circle cx="568" cy="241.8" r="3.2" fill="#4e79a7"/>
   <circle cx="680" cy="241.9" r="3.2" fill="#4e79a7"/>
-  <text x="692" y="245.9" font-size="11.5" font-weight="600" fill="#4e79a7">breakable  1.62×</text>
   <polyline points="120,255.3 232,257.0 344,256.9 456,261.4 568,249.1 680,253.5" fill="none" stroke="#166534" stroke-width="2.5"/>
   <circle cx="120" cy="255.3" r="3.2" fill="#166534"/>
   <circle cx="232" cy="257.0" r="3.2" fill="#166534"/>
@@ -56,7 +53,6 @@
   <circle cx="456" cy="261.4" r="3.2" fill="#166534"/>
   <circle cx="568" cy="249.1" r="3.2" fill="#166534"/>
   <circle cx="680" cy="253.5" r="3.2" fill="#166534"/>
-  <text x="692" y="257.5" font-size="11.5" font-weight="600" fill="#166534">full  1.85×</text>
   <text x="120" y="368" font-size="10.5" fill="#374151" text-anchor="middle">64</text>
   <text x="232" y="368" font-size="10.5" fill="#374151" text-anchor="middle">128</text>
   <text x="344" y="368" font-size="10.5" fill="#374151" text-anchor="middle">256</text>
