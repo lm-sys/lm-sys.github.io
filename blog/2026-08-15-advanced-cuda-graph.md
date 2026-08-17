@@ -180,7 +180,7 @@ Capturing through the chunked-prefill size buys two things:
 
 This work was a collaboration between the SGLang team and the Meta team.
 
-SGLang: Yuwei An*, Cheng Wan, Xiaoyu Zhang, Mick Qian
+SGLang: Yuwei An*, Cheng Wan, Xiaoyu Zhang, Mick Qian, Baizhou Zhang, Yusheng Su, Ke Bao
 
 Meta: Shiyang Chen*, Lianmin Zheng
 
