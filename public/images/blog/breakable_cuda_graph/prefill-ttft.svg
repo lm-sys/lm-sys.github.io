@@ -1,107 +1,68 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 470" width="1020" height="470"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420"
      font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <rect width="1020" height="470" fill="#ffffff"/>
+  <rect width="900" height="420" fill="#ffffff"/>
   <text x="40" y="38" font-size="16" font-weight="700" fill="#111827">Prefill latency by capture strategy</text>
-  <text x="40" y="59" font-size="12" fill="#6b7280">median TTFT · one request at a time · fixed input length, one output token · lower is better</text>
-  <line x1="40" y1="80" x2="62" y2="80" stroke="#9ca3af" stroke-width="2.5"/>
-  <circle cx="51" cy="80" r="3" fill="#9ca3af"/>
-  <text x="68" y="84" font-size="11.5" fill="#374151">no graph</text>
-  <line x1="144" y1="80" x2="166" y2="80" stroke="#f0a02a" stroke-width="2.5"/>
-  <circle cx="155" cy="80" r="3" fill="#f0a02a"/>
-  <text x="172" y="84" font-size="11.5" fill="#374151">tc_piecewise</text>
-  <line x1="280" y1="80" x2="302" y2="80" stroke="#4e79a7" stroke-width="2.5"/>
-  <circle cx="291" cy="80" r="3" fill="#4e79a7"/>
-  <text x="308" y="84" font-size="11.5" fill="#374151">breakable</text>
-  <line x1="392" y1="80" x2="414" y2="80" stroke="#166534" stroke-width="2.5"/>
-  <circle cx="403" cy="80" r="3" fill="#166534"/>
-  <text x="420" y="84" font-size="11.5" fill="#374151">full</text>
-  <text x="90" y="128" font-size="13" font-weight="700" fill="#111827">gpt-oss-120b · TP4</text>
-  <text x="90" y="146" font-size="11.5" fill="#9ca3af">every backend works here</text>
-  <line x1="106" y1="360" x2="474" y2="360" stroke="#c8ccd2"/>
-  <text x="100" y="364" font-size="10.5" fill="#9ca3af" text-anchor="end">0</text>
-  <line x1="106" y1="295" x2="474" y2="295" stroke="#f1f3f5"/>
-  <text x="100" y="299" font-size="10.5" fill="#9ca3af" text-anchor="end">40</text>
-  <line x1="106" y1="230" x2="474" y2="230" stroke="#f1f3f5"/>
-  <text x="100" y="234" font-size="10.5" fill="#9ca3af" text-anchor="end">80</text>
-  <line x1="106" y1="165" x2="474" y2="165" stroke="#f1f3f5"/>
-  <text x="100" y="169" font-size="10.5" fill="#9ca3af" text-anchor="end">120</text>
-  <line x1="106" y1="100" x2="474" y2="100" stroke="#f1f3f5"/>
-  <text x="100" y="104" font-size="10.5" fill="#9ca3af" text-anchor="end">160 ms</text>
-  <polyline points="120,131.8 188,124.4 256,154.8 324,164.7 392,122.3 460,116.4" fill="none" stroke="#9ca3af" stroke-width="2.5"/>
-  <circle cx="120" cy="131.8" r="3.2" fill="#9ca3af"/>
-  <circle cx="188" cy="124.4" r="3.2" fill="#9ca3af"/>
-  <circle cx="256" cy="154.8" r="3.2" fill="#9ca3af"/>
-  <circle cx="324" cy="164.7" r="3.2" fill="#9ca3af"/>
-  <circle cx="392" cy="122.3" r="3.2" fill="#9ca3af"/>
-  <circle cx="460" cy="116.4" r="3.2" fill="#9ca3af"/>
-  <text x="470" y="120.4" font-size="11" font-weight="600" fill="#9ca3af">no graph</text>
-  <polyline points="120,199.8 188,186.9 256,194.4 324,215.9 392,204.0 460,190.3" fill="none" stroke="#f0a02a" stroke-width="2.5"/>
-  <circle cx="120" cy="199.8" r="3.2" fill="#f0a02a"/>
-  <circle cx="188" cy="186.9" r="3.2" fill="#f0a02a"/>
-  <circle cx="256" cy="194.4" r="3.2" fill="#f0a02a"/>
-  <circle cx="324" cy="215.9" r="3.2" fill="#f0a02a"/>
-  <circle cx="392" cy="204.0" r="3.2" fill="#f0a02a"/>
-  <circle cx="460" cy="190.3" r="3.2" fill="#f0a02a"/>
-  <text x="470" y="194.3" font-size="11" font-weight="600" fill="#f0a02a">tc_piecewise</text>
-  <polyline points="120,225.8 188,218.3 256,220.1 324,225.8 392,220.6 460,220.7" fill="none" stroke="#4e79a7" stroke-width="2.5"/>
-  <circle cx="120" cy="225.8" r="3.2" fill="#4e79a7"/>
-  <circle cx="188" cy="218.3" r="3.2" fill="#4e79a7"/>
-  <circle cx="256" cy="220.1" r="3.2" fill="#4e79a7"/>
-  <circle cx="324" cy="225.8" r="3.2" fill="#4e79a7"/>
-  <circle cx="392" cy="220.6" r="3.2" fill="#4e79a7"/>
-  <circle cx="460" cy="220.7" r="3.2" fill="#4e79a7"/>
-  <text x="470" y="224.7" font-size="11" font-weight="600" fill="#4e79a7">breakable</text>
-  <polyline points="120,238.3 188,240.6 256,240.4 324,246.2 392,230.2 460,235.8" fill="none" stroke="#166534" stroke-width="2.5"/>
-  <circle cx="120" cy="238.3" r="3.2" fill="#166534"/>
-  <circle cx="188" cy="240.6" r="3.2" fill="#166534"/>
-  <circle cx="256" cy="240.4" r="3.2" fill="#166534"/>
-  <circle cx="324" cy="246.2" r="3.2" fill="#166534"/>
-  <circle cx="392" cy="230.2" r="3.2" fill="#166534"/>
-  <circle cx="460" cy="235.8" r="3.2" fill="#166534"/>
-  <text x="470" y="239.8" font-size="11" font-weight="600" fill="#166534">full</text>
-  <text x="120" y="380" font-size="10.5" fill="#374151" text-anchor="middle">64</text>
-  <text x="188" y="380" font-size="10.5" fill="#374151" text-anchor="middle">128</text>
-  <text x="256" y="380" font-size="10.5" fill="#374151" text-anchor="middle">256</text>
-  <text x="324" y="380" font-size="10.5" fill="#374151" text-anchor="middle">512</text>
-  <text x="392" y="380" font-size="10.5" fill="#374151" text-anchor="middle">1024</text>
-  <text x="460" y="380" font-size="10.5" fill="#374151" text-anchor="middle">2048</text>
-  <text x="290" y="400" font-size="11" fill="#6b7280" text-anchor="middle">input length (tokens)</text>
-  <text x="590" y="128" font-size="13" font-weight="700" fill="#111827">GLM-5.2-FP8 · TP4</text>
-  <text x="590" y="146" font-size="11.5" fill="#9ca3af">only BCG can capture this model</text>
-  <line x1="606" y1="360" x2="974" y2="360" stroke="#c8ccd2"/>
-  <text x="600" y="364" font-size="10.5" fill="#9ca3af" text-anchor="end">0</text>
-  <line x1="606" y1="295" x2="974" y2="295" stroke="#f1f3f5"/>
-  <text x="600" y="299" font-size="10.5" fill="#9ca3af" text-anchor="end">150</text>
-  <line x1="606" y1="230" x2="974" y2="230" stroke="#f1f3f5"/>
-  <text x="600" y="234" font-size="10.5" fill="#9ca3af" text-anchor="end">300</text>
-  <line x1="606" y1="165" x2="974" y2="165" stroke="#f1f3f5"/>
-  <text x="600" y="169" font-size="10.5" fill="#9ca3af" text-anchor="end">450</text>
-  <line x1="606" y1="100" x2="974" y2="100" stroke="#f1f3f5"/>
-  <text x="600" y="104" font-size="10.5" fill="#9ca3af" text-anchor="end">600 ms</text>
-  <polyline points="620,129.5 688,143.2 756,119.3 824,126.2 892,145.8 960,117.0" fill="none" stroke="#9ca3af" stroke-width="2.5"/>
-  <circle cx="620" cy="129.5" r="3.2" fill="#9ca3af"/>
-  <circle cx="688" cy="143.2" r="3.2" fill="#9ca3af"/>
-  <circle cx="756" cy="119.3" r="3.2" fill="#9ca3af"/>
-  <circle cx="824" cy="126.2" r="3.2" fill="#9ca3af"/>
-  <circle cx="892" cy="145.8" r="3.2" fill="#9ca3af"/>
-  <circle cx="960" cy="117.0" r="3.2" fill="#9ca3af"/>
-  <text x="970" y="121.0" font-size="11" font-weight="600" fill="#9ca3af">no graph</text>
-  <polyline points="620,226.3 688,239.7 756,208.5 824,208.1 892,201.0 960,208.8" fill="none" stroke="#4e79a7" stroke-width="2.5"/>
-  <circle cx="620" cy="226.3" r="3.2" fill="#4e79a7"/>
-  <circle cx="688" cy="239.7" r="3.2" fill="#4e79a7"/>
-  <circle cx="756" cy="208.5" r="3.2" fill="#4e79a7"/>
-  <circle cx="824" cy="208.1" r="3.2" fill="#4e79a7"/>
-  <circle cx="892" cy="201.0" r="3.2" fill="#4e79a7"/>
-  <circle cx="960" cy="208.8" r="3.2" fill="#4e79a7"/>
-  <text x="970" y="212.8" font-size="11" font-weight="600" fill="#4e79a7">breakable</text>
-  <text x="620" y="380" font-size="10.5" fill="#374151" text-anchor="middle">64</text>
-  <text x="688" y="380" font-size="10.5" fill="#374151" text-anchor="middle">128</text>
-  <text x="756" y="380" font-size="10.5" fill="#374151" text-anchor="middle">256</text>
-  <text x="824" y="380" font-size="10.5" fill="#374151" text-anchor="middle">512</text>
-  <text x="892" y="380" font-size="10.5" fill="#374151" text-anchor="middle">1024</text>
-  <text x="960" y="380" font-size="10.5" fill="#374151" text-anchor="middle">2048</text>
-  <text x="790" y="400" font-size="11" fill="#6b7280" text-anchor="middle">input length (tokens)</text>
-  <text x="590" y="392" font-size="11" fill="#b45309">tc_piecewise — Torch Dynamo cannot trace this forward</text>
-  <text x="590" y="409" font-size="11" fill="#b45309">full — sparse attention has no captured-metadata path</text>
-  <text x="40" y="450" font-size="11.5" fill="#6b7280">Both curves are flat in prompt length: at these sizes prefill is dominated by launch overhead, and capture removes a roughly fixed cost.</text>
+  <text x="40" y="59" font-size="12" fill="#6b7280">gpt-oss-120b · TP4 · 4×GB300 · median TTFT, one request at a time, fixed input length and one output token</text>
+  <line x1="40" y1="86" x2="62" y2="86" stroke="#9ca3af" stroke-width="2.5"/>
+  <circle cx="51" cy="86" r="3" fill="#9ca3af"/>
+  <text x="68" y="90" font-size="11.5" fill="#374151">no graph</text>
+  <line x1="146" y1="86" x2="168" y2="86" stroke="#f0a02a" stroke-width="2.5"/>
+  <circle cx="157" cy="86" r="3" fill="#f0a02a"/>
+  <text x="174" y="90" font-size="11.5" fill="#374151">tc_piecewise</text>
+  <line x1="284" y1="86" x2="306" y2="86" stroke="#4e79a7" stroke-width="2.5"/>
+  <circle cx="295" cy="86" r="3" fill="#4e79a7"/>
+  <text x="312" y="90" font-size="11.5" fill="#374151">breakable</text>
+  <line x1="398" y1="86" x2="420" y2="86" stroke="#166534" stroke-width="2.5"/>
+  <circle cx="409" cy="86" r="3" fill="#166534"/>
+  <text x="426" y="90" font-size="11.5" fill="#374151">full</text>
+  <line x1="106" y1="348" x2="694" y2="348" stroke="#c8ccd2"/>
+  <text x="98" y="352" font-size="10.5" fill="#9ca3af" text-anchor="end">0</text>
+  <line x1="106" y1="298" x2="694" y2="298" stroke="#f1f3f5"/>
+  <text x="98" y="302" font-size="10.5" fill="#9ca3af" text-anchor="end">40</text>
+  <line x1="106" y1="249" x2="694" y2="249" stroke="#f1f3f5"/>
+  <text x="98" y="253" font-size="10.5" fill="#9ca3af" text-anchor="end">80</text>
+  <line x1="106" y1="200" x2="694" y2="200" stroke="#f1f3f5"/>
+  <text x="98" y="204" font-size="10.5" fill="#9ca3af" text-anchor="end">120</text>
+  <line x1="106" y1="150" x2="694" y2="150" stroke="#f1f3f5"/>
+  <text x="98" y="154" font-size="10.5" fill="#9ca3af" text-anchor="end">160 ms</text>
+  <polyline points="120,174.3 232,168.6 344,191.7 456,199.3 568,167.0 680,162.5" fill="none" stroke="#9ca3af" stroke-width="2.5"/>
+  <circle cx="120" cy="174.3" r="3.2" fill="#9ca3af"/>
+  <circle cx="232" cy="168.6" r="3.2" fill="#9ca3af"/>
+  <circle cx="344" cy="191.7" r="3.2" fill="#9ca3af"/>
+  <circle cx="456" cy="199.3" r="3.2" fill="#9ca3af"/>
+  <circle cx="568" cy="167.0" r="3.2" fill="#9ca3af"/>
+  <circle cx="680" cy="162.5" r="3.2" fill="#9ca3af"/>
+  <text x="692" y="166.5" font-size="11.5" font-weight="600" fill="#9ca3af">no graph</text>
+  <polyline points="120,226.0 232,216.2 344,221.9 456,238.2 568,229.2 680,218.8" fill="none" stroke="#f0a02a" stroke-width="2.5"/>
+  <circle cx="120" cy="226.0" r="3.2" fill="#f0a02a"/>
+  <circle cx="232" cy="216.2" r="3.2" fill="#f0a02a"/>
+  <circle cx="344" cy="221.9" r="3.2" fill="#f0a02a"/>
+  <circle cx="456" cy="238.2" r="3.2" fill="#f0a02a"/>
+  <circle cx="568" cy="229.2" r="3.2" fill="#f0a02a"/>
+  <circle cx="680" cy="218.8" r="3.2" fill="#f0a02a"/>
+  <text x="692" y="222.8" font-size="11.5" font-weight="600" fill="#f0a02a">tc_piecewise  1.39×</text>
+  <polyline points="120,245.8 232,240.1 344,241.5 456,245.8 568,241.8 680,241.9" fill="none" stroke="#4e79a7" stroke-width="2.5"/>
+  <circle cx="120" cy="245.8" r="3.2" fill="#4e79a7"/>
+  <circle cx="232" cy="240.1" r="3.2" fill="#4e79a7"/>
+  <circle cx="344" cy="241.5" r="3.2" fill="#4e79a7"/>
+  <circle cx="456" cy="245.8" r="3.2" fill="#4e79a7"/>
+  <circle cx="568" cy="241.8" r="3.2" fill="#4e79a7"/>
+  <circle cx="680" cy="241.9" r="3.2" fill="#4e79a7"/>
+  <text x="692" y="245.9" font-size="11.5" font-weight="600" fill="#4e79a7">breakable  1.62×</text>
+  <polyline points="120,255.3 232,257.0 344,256.9 456,261.4 568,249.1 680,253.5" fill="none" stroke="#166534" stroke-width="2.5"/>
+  <circle cx="120" cy="255.3" r="3.2" fill="#166534"/>
+  <circle cx="232" cy="257.0" r="3.2" fill="#166534"/>
+  <circle cx="344" cy="256.9" r="3.2" fill="#166534"/>
+  <circle cx="456" cy="261.4" r="3.2" fill="#166534"/>
+  <circle cx="568" cy="249.1" r="3.2" fill="#166534"/>
+  <circle cx="680" cy="253.5" r="3.2" fill="#166534"/>
+  <text x="692" y="257.5" font-size="11.5" font-weight="600" fill="#166534">full  1.85×</text>
+  <text x="120" y="368" font-size="10.5" fill="#374151" text-anchor="middle">64</text>
+  <text x="232" y="368" font-size="10.5" fill="#374151" text-anchor="middle">128</text>
+  <text x="344" y="368" font-size="10.5" fill="#374151" text-anchor="middle">256</text>
+  <text x="456" y="368" font-size="10.5" fill="#374151" text-anchor="middle">512</text>
+  <text x="568" y="368" font-size="10.5" fill="#374151" text-anchor="middle">1024</text>
+  <text x="680" y="368" font-size="10.5" fill="#374151" text-anchor="middle">2048</text>
+  <text x="400" y="388" font-size="11" fill="#6b7280" text-anchor="middle">input length (tokens)</text>
+  <text x="40" y="404" font-size="11.5" fill="#6b7280">Every curve is flat across a 32× range in prompt length: at these sizes prefill is dominated by launch overhead, so capture removes a roughly fixed cost.</text>
 </svg>
