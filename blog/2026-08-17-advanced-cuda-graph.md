@@ -33,7 +33,7 @@ This post walks through how CUDA Graph support is built in SGLang and what we ch
 
 Before this refactor, CUDA Graph support had grown around individual execution paths. Decode, prefill, and speculative decoding each had their own CUDA Graph runners, with overlapping logic for capture shapes, static buffers, replay, and graph configuration. As more execution modes and capture strategies were added, this duplication made it harder to reuse infrastructure and made CUDA Graph-related server arguments increasingly ambiguous.
 
-The refactor [#23906](https://github.com/sgl-project/sglang/pull/23906) separates these responsibilities into two layers. A **runner** manages the execution-specific state needed for capture and replay: captured shapes, static input buffers, attention metadata, and the padding of live batches into captured shapes. A **backend** determines how that execution is captured, whether as one full graph, a sequence of breakable segments, or compiler-generated pieces.
+The refactor [[#23906](https://github.com/sgl-project/sglang/pull/23906)] separates these responsibilities into two layers. A **runner** manages the execution-specific state needed for capture and replay: captured shapes, static input buffers, attention metadata, and the padding of live batches into captured shapes. A **backend** determines how that execution is captured, whether as one full graph, a sequence of breakable segments, or compiler-generated pieces.
 
 Because runners depend only on a common backend interface, each execution path can choose its capture strategy independently. Prefill and decode have separate runners, and speculative decoding adds more: the EAGLE draft, draft-extend and frozen-KV MTP draft steps each get their own runner built on the decode runner, while target verify is the decode runner itself, capturing more than one token per request.
 
@@ -59,7 +59,7 @@ The third backend reaches similar segmentation through a compiler. `torch.compil
 
 CUDA Graph traditionally requires the captured region to be fully graph-compatible. In practice, modern inference workloads contain operations that cannot be captured directly. Prefill attention is a common example: some attention backends depend on runtime metadata and host-side preparation. A single incompatible operation can therefore prevent CUDA Graph from covering a much larger part of the forward.
 
-We introduced **Breakable CUDA Graph (BCG)** to make capture more flexible. The mechanism and the `@eager_on_graph` decorator landed first as part of CUDA Graph debug mode in [#19102](https://github.com/sgl-project/sglang/pull/19102), and were then built into a breakable piecewise backend for prefill in [#22218](https://github.com/sgl-project/sglang/pull/22218). Instead of requiring the entire forward to be graph-compatible, BCG allows selected operations to run eagerly while capturing the graph-compatible regions around them. At a high level, the forward becomes a sequence of CUDA Graph segments connected by explicit eager breaks.
+We introduced **Breakable CUDA Graph (BCG)** to make capture more flexible. The mechanism and the `@eager_on_graph` decorator landed first as part of CUDA Graph debug mode in [[#19102](https://github.com/sgl-project/sglang/pull/19102)], and were then built into a breakable piecewise backend for prefill in [[#22218](https://github.com/sgl-project/sglang/pull/22218)]. Instead of requiring the entire forward to be graph-compatible, BCG allows selected operations to run eagerly while capturing the graph-compatible regions around them. At a high level, the forward becomes a sequence of CUDA Graph segments connected by explicit eager breaks.
 
 ### Design and Mechanism
 
@@ -73,7 +73,7 @@ From a functionality perspective, BCG and the earlier torch-compile-based piecew
 
 ### Benefits
 
-**Faster startup.** For compiler-based piecewise graphs, compilation — not CUDA Graph capture — became the dominant setup cost. Measured separately, `torch.compile` accounts for 78–86% of the time spent preparing prefill graphs. The cost also grows with model complexity: compilation alone takes about 90 seconds on a 235B MoE and 158 seconds on GLM-5.2. BCG removes that phase entirely and reaches segmented execution in a single capture pass.
+**Faster startup.** For compiler-based piecewise graphs, compilation — not capture — dominates setup: `torch.compile` accounts for 78–86% of the time spent preparing prefill graphs, and it grows with model complexity, reaching 90 seconds on a 235B MoE and 158 seconds on GLM-5.2. BCG removes that phase entirely, reaching segmented execution in a single capture pass.
 
 <img src="/images/blog/breakable_cuda_graph/prefill-build.svg" style="width: 68vw; max-width: 780px; min-width: 300px;" />
 
@@ -89,11 +89,11 @@ BCG removes this constraint at eager breaks: the graph system does not need to u
 
 **Debuggable by construction.** A captured CUDA Graph replays as an opaque unit: ordinary Python does not execute inside it, which makes prints, assertions, and step-by-step inspection difficult. BCG naturally leaves eager regions where normal Python still runs on every replay.
 
-SGLang extends this idea with `--debug-cuda-graph` [#19102](https://github.com/sgl-project/sglang/pull/19102), which effectively wraps the whole forward in an eager break. The model then executes eagerly while still going through the CUDA Graph runner, static buffers, replay path, and metadata preparation. This provides a useful debugging boundary: if the problem remains, it is likely in the model or runner path; if it disappears, capture itself becomes the primary suspect.
+SGLang extends this idea with `--debug-cuda-graph` [[#19102](https://github.com/sgl-project/sglang/pull/19102)], which effectively wraps the whole forward in an eager break. The model then executes eagerly while still going through the CUDA Graph runner, static buffers, replay path, and metadata preparation. This provides a useful debugging boundary: if the problem remains, it is likely in the model or runner path; if it disappears, capture itself becomes the primary suspect.
 
 ### BCG in Diffusion
 
-BCG has also been adopted by SGLang’s diffusion stack [#27436](https://github.com/sgl-project/sglang/pull/27436). Diffusion repeatedly executes the same DiT forward during denoising, making CUDA Graph especially useful when those forwards contain many small, launch-bound kernels.
+BCG has also been adopted by SGLang’s diffusion stack [[#27436](https://github.com/sgl-project/sglang/pull/27436)]. Diffusion repeatedly executes the same DiT forward during denoising, making CUDA Graph especially useful when those forwards contain many small, launch-bound kernels.
 
 <ul style="line-height: 1.75;">
   <li style="padding-top: 0.55em;"><strong>Capture the real serving shapes.</strong> Resolution, video frame count, prompt-conditioning length, CFG mode, and the selected transformer can all affect the capture signature. We warm up the shapes that are actually served and fall back to eager execution for unseen signatures.</li>
@@ -113,7 +113,7 @@ The broader lesson is that BCG removes launch overhead; it does not reduce model
 
 Full CUDA Graph is straightforward for decode because each request contributes one token: the main varying dimension is batch size. Prefill is harder because a batch varies in two dimensions at once — the total number of tokens and the number of requests those tokens belong to — while a captured graph requires both to remain fixed. Together with attention backends that depend on runtime metadata, this made full CUDA Graph difficult to apply to prefill and was one of the main reasons we adopted Breakable CUDA Graph there.
 
-More recently, we found ways to make prefill execution sufficiently static for full CUDA Graph [#27988](https://github.com/sgl-project/sglang/pull/27988), including restructuring how request slots and attention metadata are represented so that supported attention backends no longer have to remain outside the graph. This is an exciting experimental feature that is still under active development: backend coverage is limited today, and we are continuing to improve compatibility, capture policies, and performance.
+More recently, we found ways to make prefill execution sufficiently static for full CUDA Graph [[#27988](https://github.com/sgl-project/sglang/pull/27988)], including restructuring how request slots and attention metadata are represented so that supported attention backends no longer have to remain outside the graph. This is an exciting experimental feature that is still under active development: backend coverage is limited today, and we are continuing to improve compatibility, capture policies, and performance.
 
 ### Making prefill static
 
@@ -144,7 +144,7 @@ Full prefill capture is still an experimental feature. It has to be enabled expl
 With three ways to capture prefill and an eager baseline, the remaining question is what each one costs at replay. Measuring prefill on its own — a fixed input length with a single output token, one request at a time, decode graphs disabled in every arm — on gpt-oss-120b (TP4, 4×GB300), where all four paths run: full capture is 1.93× faster than eager, BCG 1.70×, and TC piecewise 1.45×, so BCG is also 17% faster than the compiler-based backend at replay, not only at build time. On GLM-5.2 only BCG can capture at all — TC piecewise cannot trace the forward and full capture has no path for its sparse attention — and it is 1.60× over eager there. Every curve is flat across a 32× range in prompt length, which is the signature of launch overhead rather than compute.
 
 <img src="/images/blog/breakable_cuda_graph/prefill-ttft.svg" style="width: 80vw; max-width: 860px; min-width: 300px;" />
-<p style="text-align: center; color: #666; font-style: italic;">Prefill-only latency on gpt-oss-120b, where all four backends run. Decode graphs are disabled in every arm, so the only difference is how prefill is captured.</p>
+<p style="text-align: center; color: #666; font-style: italic;">Prefill-only latency on gpt-oss-120b, where all four backends run.</p>
 
 ## Memory Footprint of CUDA Graphs
 
@@ -156,7 +156,7 @@ A segmented backend could easily multiply graph memory: every captured shape con
 
 <ul style="line-height: 1.75;">
   <li style="padding-top: 0.55em;"><strong>One shared memory pool across segments.</strong> Every segment for a captured shape uses the same CUDA Graph pool, allowing intermediate storage to be reused rather than pinned separately for each segment.</li>
-  <li style="padding-top: 0.55em;"><strong>Weak references at eager breaks.</strong> Tensors passed into a break are held weakly when the graph pool already owns their storage, avoiding unnecessary Python references that would extend tensor lifetimes. The tensor weak-reference technique comes from vLLM <a href="https://github.com/vllm-project/vllm/pull/9724">#9724</a>, which introduced it so that captured graphs could share output buffers instead of each pinning its own.</li>
+  <li style="padding-top: 0.55em;"><strong>Weak references at eager breaks.</strong> Tensors passed into a break are held weakly when the graph pool already owns their storage, avoiding unnecessary Python references that would extend tensor lifetimes. The tensor weak-reference technique comes from vLLM [<a href="https://github.com/vllm-project/vllm/pull/9724">#9724</a>], which introduced it so that captured graphs could share output buffers instead of each pinning its own.</li>
   <li style="padding-top: 0.55em;"><strong>One output buffer across capture sizes.</strong> Capture sizes share a single maximum-sized output buffer, sliced to the rows needed by each shape, instead of allocating one output buffer per shape.</li>
 </ul>
 
@@ -195,4 +195,4 @@ Meta: Shiyang Chen*, Lianmin Zheng
 
 We also thank the NVIDIA, AMD, Thinking Machines Lab, and Meta PyTorch teams for their help along the way.
 
-\* Equal contribution.
+(\* Equal contribution)
