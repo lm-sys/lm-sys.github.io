@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400"
      font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <rect width="900" height="420" fill="#ffffff"/>
+  <rect width="900" height="400" fill="#ffffff"/>
   <text x="40" y="38" font-size="16" font-weight="700" fill="#111827">Prefill latency by capture strategy</text>
   <text x="40" y="59" font-size="12" fill="#6b7280">gpt-oss-120b · TP4 · 4×GB300 · median TTFT, one request at a time, fixed input length and one output token</text>
   <line x1="40" y1="86" x2="62" y2="86" stroke="#9ca3af" stroke-width="2.5"/>
@@ -64,5 +64,4 @@
   <text x="568" y="368" font-size="10.5" fill="#374151" text-anchor="middle">1024</text>
   <text x="680" y="368" font-size="10.5" fill="#374151" text-anchor="middle">2048</text>
   <text x="400" y="388" font-size="11" fill="#6b7280" text-anchor="middle">input length (tokens)</text>
-  <text x="40" y="404" font-size="11.5" fill="#6b7280">Every curve is flat across a 32× range in prompt length: at these sizes prefill is dominated by launch overhead, so capture removes a roughly fixed cost.</text>
 </svg>
