@@ -184,6 +184,6 @@ SGLang: Yuwei An*, Cheng Wan, Xiaoyu Zhang, Mick Qian, Baizhou Zhang, Yusheng Su
 
 Meta: Shiyang Chen*, Lianmin Zheng
 
-We also thank the NVIDIA, AMD, and Meta PyTorch teams for their help along the way.
+We also thank the NVIDIA, AMD, Thinking Machines Lab, and Meta PyTorch teams for their help along the way.
 
 \* Equal contribution.
