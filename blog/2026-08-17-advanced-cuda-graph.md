@@ -1,5 +1,5 @@
 ---
-title: "Advanced CUDA Graph Techniques in Inference"
+title: "Advanced CUDA Graph Techniques in SGLang"
 author: "SGLang Team"
 date: "August 17, 2026"
 previewImg: /images/blog/breakable_cuda_graph/bcg-design.svg
