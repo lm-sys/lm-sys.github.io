@@ -79,6 +79,11 @@ From a functionality perspective, BCG and the earlier torch-compile-based piecew
 
 The compilation overhead was also visible in day-to-day development. In our CI setup at the time, compilation was often repeated across test runs, making CUDA Graph tests noticeably slower. Better caching could mitigate this, but removing the compiler from the capture path also removed this extra source of complexity from the development loop.
 
+**Faster prefill.** Segmented capture also pays off at replay, not only at startup. On gpt-oss-120b (TP4, 4×GB300) where every backend runs, prefill is 1.62× faster than eager with BCG and 1.85× with full capture, while the compiler-based backend reaches 1.39× — BCG is 17% faster than TC piecewise at replay. On GLM-5.2 the comparison is shorter, because only BCG can capture it at all: 1.60× over eager, while TC piecewise cannot trace the forward and full capture has no path for its sparse attention. Both models are flat across a 32× range in prompt length, which is the signature of launch overhead rather than compute.
+
+<img src="/images/blog/breakable_cuda_graph/prefill-ttft.svg" style="width: 80vw; max-width: 860px; min-width: 300px;" />
+<p style="text-align: center; color: #666; font-style: italic;">Prefill-only latency: a fixed input length with one output token, one request at a time. Measured with decode graphs disabled in every arm, so the only difference is how prefill is captured.</p>
+
 **Broader compatibility.** SGLang relies heavily on custom CUDA, Triton, and JIT-compiled kernels that are not native PyTorch operators. To make these kernels visible to `torch.compile`, we often had to wrap them through `torch.library` and provide fake implementations for tracing. This introduced compiler-specific scaffolding throughout the kernel stack.
 
 More importantly, the compiler also constrained **where graph boundaries could be placed**. Inputs and outputs crossing a registered operator boundary had to be representable by the compiler. When the natural boundary involved more specialized runtime state or return types, we sometimes had to search for a different cutting point or enlarge the eager region simply to expose an interface the compiler could handle. As the serving stack grew, the compiler boundary increasingly influenced the structure of code that was otherwise unrelated to compilation.
