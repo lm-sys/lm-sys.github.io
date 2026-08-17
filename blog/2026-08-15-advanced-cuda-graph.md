@@ -35,7 +35,7 @@ The [refactor](https://github.com/sgl-project/sglang/pull/23906) separates these
 
 Because runners depend only on a common backend interface, each execution path can choose its capture strategy independently. Prefill and decode have separate runners, and speculative decoding adds more: the EAGLE draft, draft-extend and frozen-KV MTP draft steps each get their own runner built on the decode runner, while target verify is the decode runner itself, capturing more than one token per request.
 
-<img src="/images/blog/breakable_cuda_graph/bcg-design.svg" style="width: 92vw; max-width: 1020px; min-width: 320px;" />
+<img src="/images/blog/breakable_cuda_graph/bcg-design.svg" style="width: 80vw; max-width: 860px; min-width: 300px;" />
 
 <p style="text-align: center; color: #666; font-style: italic;">The runner prepares each execution path for capture and replay, while the backend determines how the forward is turned into replayable graphs: as one full graph, segmented during capture, or traced and split before capture.</p>
 
@@ -73,7 +73,7 @@ From a functionality perspective, BCG and the earlier torch-compile-based piecew
 
 **Faster startup.** For compiler-based piecewise graphs, compilation — not CUDA Graph capture — became the dominant setup cost. Measured separately, `torch.compile` accounts for 78–86% of the time spent preparing prefill graphs. The cost also grows with model complexity: compilation alone takes about 90 seconds on a 235B MoE and 158 seconds on GLM-5.2. BCG removes that phase entirely and reaches segmented execution in a single capture pass.
 
-<img src="/images/blog/breakable_cuda_graph/prefill-build.svg" style="width: 78vw; max-width: 920px; min-width: 320px;" />
+<img src="/images/blog/breakable_cuda_graph/prefill-build.svg" style="width: 68vw; max-width: 780px; min-width: 300px;" />
 
 <p style="text-align: center; color: #666; font-style: italic;">Time to build the prefill CUDA Graphs, 42 captured shapes, TP4 on 4×GB300.</p>
 
@@ -101,7 +101,7 @@ BCG has also been [adopted by SGLang’s diffusion stack](https://github.com/sgl
 
 This is particularly effective when execution is launch-bound. For example, after warmup, Qwen-Image at 512×512 on a single B200 improves from 6.48 s to 2.45 s end-to-end latency, and Z-Image improves from 1.231 s to 0.662 s.
 
-<img src="/images/blog/breakable_cuda_graph/diffusion.svg" style="width: 92vw; max-width: 1020px; min-width: 320px;" />
+<img src="/images/blog/breakable_cuda_graph/diffusion.svg" style="width: 80vw; max-width: 860px; min-width: 300px;" />
 
 <p style="text-align: center; color: #666; font-style: italic;">End-to-end latency after warmup. Each bar pair uses the same model workload and seed.</p>
 
@@ -119,7 +119,7 @@ SGLang fixes the token dimension with token buckets. A live batch is padded to t
 
 The request dimension is handled separately. Each captured graph reserves a fixed number of request slots. Live requests occupy the first slots; unused ones are rewritten as zero-length sentinels, with zero sequence and extend lengths and offsets parked after the real tokens. If a batch contains more requests than the graph has slots, it falls back to eager execution.
 
-<img src="/images/blog/breakable_cuda_graph/full-prefill.svg" style="width: 88vw; max-width: 1020px; min-width: 320px;" />
+<img src="/images/blog/breakable_cuda_graph/full-prefill.svg" style="width: 76vw; max-width: 860px; min-width: 300px;" />
 
 <p style="text-align: center; color: #666; font-style: italic;">At replay, tokens are padded to the captured bucket while unused request slots are filled with zero-length sentinels.</p>
 
@@ -163,7 +163,7 @@ Capturing a prefill shape moves much of that transient working set into the grap
 
 This makes the capture ceiling more important than the number of captured shapes. Since `chunked_prefill_size` bounds the largest single prefill forward, capturing through that size removes the worst eager activation peak.
 
-<img src="/images/blog/breakable_cuda_graph/cg-memory.svg" style="width: 88vw; max-width: 980px; min-width: 320px;" />
+<img src="/images/blog/breakable_cuda_graph/cg-memory.svg" style="width: 76vw; max-width: 830px; min-width: 300px;" />
 
 <p style="text-align: center; color: #666; font-style: italic;">Prefill memory above the no-graph resident baseline, measured after one prefill at exactly the chunked-prefill size.</p>
 
