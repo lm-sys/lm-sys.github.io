@@ -1,7 +1,7 @@
 ---
 title: "Advanced CUDA Graph Techniques in Inference"
 author: "SGLang Team"
-date: "August 15, 2026"
+date: "August 17, 2026"
 previewImg: /images/blog/breakable_cuda_graph/bcg-design.svg
 type: blog
 ---
@@ -12,19 +12,7 @@ CUDA Graphs promise to remove kernel-launch overhead, but getting close to that 
 
 In SGLang, we refactored CUDA Graph support around a common runner/backend interface, making different capture strategies reusable across execution paths. For the more complex prefill path, the SGLang community introduced Breakable CUDA Graph and pioneered full CUDA Graph support on the FA4 and FlashInfer attention backends, both of which were first developed by the SGLang community as open-source serving techniques. We also dive deeper into CUDA Graph memory management, including memory reuse across shapes and graph segments, which is becoming an increasingly important part of SGLang’s overall memory management.
 
-| | TC piecewise | Breakable CUDA Graph |
-| --- | --- | --- |
-| Prefill graph build, Qwen3-235B | 106.6 s\* | **27.7 s** |
-| Prefill graph build, GLM-5.2 | 183.1 s\* | **35.2 s** |
-| Share of build spent compiling | 78–86% | **none** |
-| Prefill latency vs eager, gpt-oss-120b | 1.39× | **1.62×** (full capture 1.85×) |
-| Models it can capture | needs a local patch to trace Qwen3-235B or GLM-5.2; fails on Qwen3-Next | **all of them** |
-| Implementation size | 783 LoC | **521 LoC** |
-
-\* TC piecewise cannot trace either model as-is — a lazy import inside the traced region makes Torch Dynamo bail — so those two build times are measured with a local workaround.
-
-Memory stays modest: 42 captured shapes across a 78-layer MoE add 2.4 GB of graph memory, and capturing through the chunked-prefill size lands 0.5–1.1 GB *below* the no-graph baseline, because the activation peak it replaces is larger than the graphs themselves.
-
+For prefill, Breakable CUDA Graph is now SGLang's default. It reaches the same segmented execution as the `torch.compile`-based piecewise backend in roughly a quarter of the code (521 versus 1,771 lines), builds prefill graphs 3.8–5.2× faster because no compilation is involved, and has broader coverage for complex functionality naturally. Full CUDA Graph for prefill goes further, using request padding to capture the whole forward even for dynamic prefill workloads. Measured on prefill alone, BCG is 1.70× faster than eager execution and full capture reaches 1.93×.
 
 ## Background
 
@@ -93,11 +81,6 @@ From a functionality perspective, BCG and the earlier torch-compile-based piecew
 
 The compilation overhead was also visible in day-to-day development. In our CI setup at the time, compilation was often repeated across test runs, making CUDA Graph tests noticeably slower. Better caching could mitigate this, but removing the compiler from the capture path also removed this extra source of complexity from the development loop.
 
-**Faster prefill.** Segmented capture also pays off at replay, not only at startup. On gpt-oss-120b (TP4, 4×GB300) where every backend runs, prefill is 1.62× faster than eager with BCG and 1.85× with full capture, while the compiler-based backend reaches 1.39× — BCG is 17% faster than TC piecewise at replay. On GLM-5.2 only BCG can capture at all — TC piecewise cannot trace the forward and full capture has no path for its sparse attention — and it is 1.60× over eager there. Every curve is flat across a 32× range in prompt length, which is the signature of launch overhead rather than compute.
-
-<img src="/images/blog/breakable_cuda_graph/prefill-ttft.svg" style="width: 80vw; max-width: 860px; min-width: 300px;" />
-<p style="text-align: center; color: #666; font-style: italic;">Prefill-only latency on gpt-oss-120b, where all four backends run. Decode graphs are disabled in every arm, so the only difference is how prefill is captured.</p>
-
 **Broader compatibility.** SGLang relies heavily on custom CUDA, Triton, and JIT-compiled kernels that are not native PyTorch operators. To make these kernels visible to `torch.compile`, we often had to wrap them through `torch.library` and provide fake implementations for tracing. This introduced compiler-specific scaffolding throughout the kernel stack.
 
 More importantly, the compiler also constrained **where graph boundaries could be placed**. Inputs and outputs crossing a registered operator boundary had to be representable by the compiler. When the natural boundary involved more specialized runtime state or return types, we sometimes had to search for a different cutting point or enlarge the eager region simply to expose an interface the compiler could handle. As the serving stack grew, the compiler boundary increasingly influenced the structure of code that was otherwise unrelated to compilation.
@@ -155,6 +138,13 @@ Empty request slots are much cheaper. In FlashAttention's variable-length schedu
 This asymmetry is important: token padding is the expensive dimension, while request-slot padding is comparatively cheap.
 
 Full prefill capture is still an experimental feature. It has to be enabled explicitly — the engine warns that `full` is experimental and points to breakable or tc_piecewise for production workloads — and it currently works mainly on the FlashAttention (fa4) and FlashInfer backends, which are the ones that build extend-mode metadata the way the captured path needs. Broadening backend support and tuning the bucket and slot choices is still ahead of us.
+
+### Prefill benchmark
+
+With three ways to capture prefill and an eager baseline, the remaining question is what each one costs at replay. Measuring prefill on its own — a fixed input length with a single output token, one request at a time, decode graphs disabled in every arm — on gpt-oss-120b (TP4, 4×GB300), where all four paths run: full capture is 1.93× faster than eager, BCG 1.70×, and TC piecewise 1.45×, so BCG is also 17% faster than the compiler-based backend at replay, not only at build time. On GLM-5.2 only BCG can capture at all — TC piecewise cannot trace the forward and full capture has no path for its sparse attention — and it is 1.60× over eager there. Every curve is flat across a 32× range in prompt length, which is the signature of launch overhead rather than compute.
+
+<img src="/images/blog/breakable_cuda_graph/prefill-ttft.svg" style="width: 80vw; max-width: 860px; min-width: 300px;" />
+<p style="text-align: center; color: #666; font-style: italic;">Prefill-only latency on gpt-oss-120b, where all four backends run. Decode graphs are disabled in every arm, so the only difference is how prefill is captured.</p>
 
 ## Memory Footprint of CUDA Graphs
 
