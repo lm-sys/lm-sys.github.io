@@ -167,12 +167,12 @@ This makes the capture ceiling more important than the number of captured shapes
 
 <p style="text-align: center; color: #666; font-style: italic;">Prefill memory above the no-graph resident baseline, measured after one prefill at exactly the chunked-prefill size.</p>
 
-Ceilings below the chunk size sit slightly *above* the no-graph baseline: they add resident graphs while the activation peak stays exactly where it was. Once the ceiling reaches the chunk size, that peak goes away entirely.
+Ceilings below the chunk size sit slightly *above* the no-graph baseline: they add resident graphs while the activation peak stays exactly where it was. Once the ceiling reaches the chunk size, the largest prefill finally replays a graph and that peak collapses — to essentially nothing on gpt-oss-120b (0.56 GB to 0.001 GB), and from 1.55 GB to 0.35 GB on GLM-5.2, whose sparse-attention indexer still runs eagerly at a break.
 
 Capturing through the chunked-prefill size buys two things:
 
 <ul style="line-height: 1.75;">
-  <li style="padding-top: 0.55em;"><strong>Lower total memory.</strong> The activation peak stops being paid per request, and the total lands below the no-graph baseline — 0.69 GB lower on Llama-3.3-70B, 0.90 GB on gpt-oss-120b. Modest against a footprint of a few hundred gigabytes, but a saving rather than a cost.</li>
+  <li style="padding-top: 0.55em;"><strong>Lower total memory.</strong> The activation peak stops being paid per request, and the total lands below the no-graph baseline — 0.51 GB lower on gpt-oss-120b, 1.10 GB on GLM-5.2. Modest against a footprint of a few hundred gigabytes, but a saving rather than a cost.</li>
   <li style="padding-top: 0.55em;"><strong>Predictable memory usage.</strong> A workload-dependent activation spike becomes a fixed allocation established at capture time. The engine can account for that memory up front instead of reserving headroom for a transient peak that appears only during large prefills.</li>
 </ul>
 
