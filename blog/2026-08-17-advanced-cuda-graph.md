@@ -10,7 +10,7 @@ type: blog
 
 CUDA Graphs promise to remove kernel-launch overhead, but getting close to that benefit in a real inference engine requires graphing as much of the workload as possible without sacrificing compatibility, startup time, or memory.
 
-In SGLang, we refactored CUDA Graph support around a common runner/backend interface, making different capture strategies reusable across execution paths. For the more complex prefill path, the SGLang community introduced Breakable CUDA Graph and pioneered full CUDA Graph support on the FA4 and FlashInfer attention backends, both of which were first developed by the SGLang community as open-source serving techniques. We also dive deeper into CUDA Graph memory management, including memory reuse across shapes and graph segments, which is becoming an increasingly important part of SGLang’s overall memory management.
+In SGLang, we refactored CUDA Graph support around a common runner/backend interface, making different capture strategies reusable across execution paths. For the more complex prefill path, the SGLang community introduced Breakable CUDA Graph and pioneered full CUDA Graph support with the FA4 and FlashInfer attention backends. Both techniques were first developed in SGLang as open-source serving techniques. We also dive deeper into CUDA Graph memory management, including memory reuse across shapes and graph segments, which is becoming an increasingly important part of SGLang’s overall memory management.
 
 For prefill, Breakable CUDA Graph is now SGLang's default. It reaches the same segmented execution as the `torch.compile`-based piecewise backend in roughly a quarter of the code (521 versus 1,771 lines), builds prefill graphs 3.8–5.2× faster because no compilation is involved, and has broader coverage for complex functionality naturally. Full CUDA Graph for prefill goes further, using request padding to capture the whole forward even for dynamic prefill workloads. Measured on prefill alone, BCG is 1.70× faster than eager execution and full capture reaches 1.93×.
 
@@ -113,7 +113,7 @@ The broader lesson is that BCG removes launch overhead; it does not reduce model
 
 Full CUDA Graph is straightforward for decode because each request contributes one token: the main varying dimension is batch size. Prefill is harder because a batch varies in two dimensions at once — the total number of tokens and the number of requests those tokens belong to — while a captured graph requires both to remain fixed. Together with attention backends that depend on runtime metadata, this made full CUDA Graph difficult to apply to prefill and was one of the main reasons we adopted Breakable CUDA Graph there.
 
-More recently, we found ways to make prefill execution sufficiently static for full CUDA Graph [[#27988](https://github.com/sgl-project/sglang/pull/27988)], including restructuring how request slots and attention metadata are represented so that supported attention backends no longer have to remain outside the graph. This is an exciting experimental feature that is still under active development: backend coverage is limited today, and we are continuing to improve compatibility, capture policies, and performance.
+More recently, we found ways to make prefill execution sufficiently static for full CUDA Graph [[#27988](https://github.com/sgl-project/sglang/pull/27988)], including restructuring how request slots and attention metadata are represented so that supported attention backends no longer have to remain outside the graph.
 
 ### Making prefill static
 
