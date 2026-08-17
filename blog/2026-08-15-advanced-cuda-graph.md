@@ -14,12 +14,14 @@ In SGLang, we refactored CUDA Graph support around a common runner/backend inter
 
 | | TC piecewise | Breakable CUDA Graph |
 | --- | --- | --- |
-| Prefill graph build, Qwen3-235B | 106.6 s | **27.7 s** |
-| Prefill graph build, GLM-5.2 | 183.1 s | **35.2 s** |
+| Prefill graph build, Qwen3-235B | 106.6 s\* | **27.7 s** |
+| Prefill graph build, GLM-5.2 | 183.1 s\* | **35.2 s** |
 | Share of build spent compiling | 78–86% | **none** |
 | Prefill latency vs eager, gpt-oss-120b | 1.39× | **1.62×** (full capture 1.85×) |
-| Models it can capture | fails on GLM-5.2, Qwen3-235B, Qwen3-Next | **all of them** |
+| Models it can capture | needs a local patch to trace Qwen3-235B or GLM-5.2; fails on Qwen3-Next | **all of them** |
 | Implementation size | 783 LoC | **521 LoC** |
+
+\* TC piecewise cannot trace either model as-is — a lazy import inside the traced region makes Torch Dynamo bail — so those two build times are measured with a local workaround.
 
 Memory stays modest: 42 captured shapes across a 78-layer MoE add 2.4 GB of graph memory, and capturing through the chunked-prefill size lands 0.5–1.1 GB *below* the no-graph baseline, because the activation peak it replaces is larger than the graphs themselves.
 
