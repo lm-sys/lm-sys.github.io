@@ -12,6 +12,18 @@ CUDA Graphs promise to remove kernel-launch overhead, but getting close to that 
 
 In SGLang, we refactored CUDA Graph support around a common runner/backend interface, making different capture strategies reusable across execution paths. For the more complex prefill path, the SGLang community introduced Breakable CUDA Graph and pioneered full CUDA Graph support on the FA4 and FlashInfer attention backends, both of which were first developed by the SGLang community as open-source serving techniques. We also dive deeper into CUDA Graph memory management, including memory reuse across shapes and graph segments, which is becoming an increasingly important part of SGLang’s overall memory management.
 
+| | TC piecewise | Breakable CUDA Graph |
+| --- | --- | --- |
+| Prefill graph build, Qwen3-235B | 106.6 s | **27.7 s** |
+| Prefill graph build, GLM-5.2 | 183.1 s | **35.2 s** |
+| Share of build spent compiling | 78–86% | **none** |
+| Prefill latency vs eager, gpt-oss-120b | 1.39× | **1.62×** (full capture 1.85×) |
+| Models it can capture | fails on GLM-5.2, Qwen3-235B, Qwen3-Next | **all of them** |
+| Implementation size | 783 LoC | **521 LoC** |
+
+Memory stays modest: 42 captured shapes across a 78-layer MoE add 2.4 GB of graph memory, and capturing through the chunked-prefill size lands 0.5–1.1 GB *below* the no-graph baseline, because the activation peak it replaces is larger than the graphs themselves.
+
+
 ## Background
 
 An inference step is not a single kernel but a sequence of many GPU operations. In modern LLM serving engines, repeatedly launching these operations from the CPU can introduce noticeable overhead, especially for latency-sensitive workloads. CUDA Graph reduces this overhead by recording the GPU work once and replaying it with much lower launch overhead.
