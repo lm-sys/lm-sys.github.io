@@ -10,7 +10,7 @@ type: blog
 
 CUDA Graphs promise to remove kernel-launch overhead, but getting close to that benefit in a real inference engine requires graphing as much of the workload as possible without sacrificing compatibility, startup time, or memory.
 
-In SGLang, we refactored CUDA Graph support around a common runner/backend interface, making different capture strategies reusable across execution paths. For the more complex prefill path, the SGLang community introduced Breakable CUDA Graph and pioneered full CUDA Graph support with the FA4 and FlashInfer attention backends. Both techniques were first developed in SGLang as open-source serving techniques. We also dive deeper into CUDA Graph memory management, including memory reuse across shapes and graph segments, which is becoming an increasingly important part of SGLang’s overall memory management.
+In SGLang, we refactored CUDA Graph support around a common runner/backend interface, making different capture strategies reusable across execution paths. **Breakable CUDA Graph (BCG) is an SGLang-originated serving technique: it was first proposed, named, implemented, and open-sourced in SGLang**, with the first implementation published in [[#19102](https://github.com/sgl-project/sglang/pull/19102)] on February 21, 2026, and the prefill extension merged in [[#22218](https://github.com/sgl-project/sglang/pull/22218)] on April 24, 2026. SGLang also pioneered full CUDA Graph support for prefill with the FA4 and FlashInfer attention backends. We also dive deeper into CUDA Graph memory management, including memory reuse across shapes and graph segments, which is becoming an increasingly important part of SGLang’s overall memory management.
 
 For prefill, Breakable CUDA Graph is now SGLang's default. It reaches the same segmented execution as the `torch.compile`-based piecewise backend in roughly a quarter of the code (521 versus 1,771 lines), builds prefill graphs 3.8–5.2× faster because no compilation is involved, and has broader coverage for complex functionality naturally. Full CUDA Graph for prefill goes further, using request padding to capture the whole forward even for dynamic prefill workloads. Measured on prefill alone, BCG is 1.70× faster than eager execution and full capture reaches 1.93×.
 
@@ -59,7 +59,18 @@ The third backend reaches similar segmentation through a compiler. `torch.compil
 
 CUDA Graph traditionally requires the captured region to be fully graph-compatible. In practice, modern inference workloads contain operations that cannot be captured directly. Prefill attention is a common example: some attention backends depend on runtime metadata and host-side preparation. A single incompatible operation can therefore prevent CUDA Graph from covering a much larger part of the forward.
 
-We introduced **Breakable CUDA Graph (BCG)** to make capture more flexible. The mechanism and the `@eager_on_graph` decorator landed first as part of CUDA Graph debug mode in [[#19102](https://github.com/sgl-project/sglang/pull/19102)], and were then built into a breakable piecewise backend for prefill in [[#22218](https://github.com/sgl-project/sglang/pull/22218)]. Instead of requiring the entire forward to be graph-compatible, BCG allows selected operations to run eagerly while capturing the graph-compatible regions around them. At a high level, the forward becomes a sequence of CUDA Graph segments connected by explicit eager breaks.
+SGLang introduced and first open-sourced **Breakable CUDA Graph (BCG)** to make capture more flexible. Rather than tracing the whole forward with a compiler, BCG inserts explicit eager breaks while capture is in progress: selected operations run eagerly, while capture resumes for the graph-compatible regions around them. At a high level, the forward becomes a sequence of CUDA Graph segments connected by explicit eager breaks.
+
+### Origin and Open-Source Lineage
+
+BCG originated in SGLang. Its development is recorded in a public, chronological source history:
+
+<ul style="line-height: 1.75;">
+  <li style="padding-top: 0.55em;"><strong>February 21, 2026: SGLang published the first BCG implementation.</strong> The <a href="https://github.com/sgl-project/sglang/commit/571035632b263240e8daba7467dc3472e7884877">initial commit</a> of <a href="https://github.com/sgl-project/sglang/pull/19102">#19102</a> already contained <code>BreakableCUDAGraph</code>, an eager-break decorator, and the runtime machinery to end and resume CUDA Graph capture. The PR merged on April 11.</li>
+  <li style="padding-top: 0.55em;"><strong>April 2026: SGLang extended BCG to prefill.</strong> <a href="https://github.com/sgl-project/sglang/pull/22218">#22218</a>, explicitly based on #19102, built BCG into a compiler-free breakable piecewise backend for prefill and merged on April 24. BCG subsequently became SGLang's default prefill CUDA Graph strategy.</li>
+</ul>
+
+The originality claim here is specific to this runtime breakable capture/replay mechanism for open-source LLM serving: SGLang proposed, named, implemented, and open-sourced the mechanism before it was adopted elsewhere. It is not a claim that the broader concepts of graph segmentation or eager fallback had no prior art.
 
 ### Design and Mechanism
 
