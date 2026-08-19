@@ -38,7 +38,7 @@ export default function Post({ frontmatter, content, slug }) {
           {frontmatter.title}
         </h1>
         <p className="text-xl pt-2 pb-2">
-          by: <span dangerouslySetInnerHTML={{ __html: frontmatter.author }} />,{" "}
+          by: {frontmatter.author},{" "}
           {dateFormat(frontmatter.date, "mmm dd, yyyy")}
         </p>
         <hr />

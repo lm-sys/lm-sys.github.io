@@ -36,8 +36,7 @@ const cleanBlogMetadataField = (input) =>
     .join(":")
     .trim()
     .replaceAll(`"`, "")
-    .replaceAll(`\\`, "")
-    .replace(/<[^>]+>/g, "");
+    .replaceAll(`\\`, "");
 
 /**
  * Given a blog post head, parses out title, author, date & preview
