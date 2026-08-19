@@ -1,7 +1,7 @@
 ---
 title: "Pushing the Limits of Serving DeepSeek-V4-Pro"
 author: "Tianyu Zhang, Yusong Gao, Yun Zhang"
-date: "August 13, 2026"
+date: "August 19, 2026"
 previewImg: /images/blog/deepseek_v4/00_cover.png
 type: blog
 ---
