@@ -26,6 +26,8 @@ In agentic RL, where a single task can have dozens of turns, we essentially have
 
 Let us compare both options. In option 1, the trainer receives as many samples as there are turns in a trajectory; whereas in option 2, the trainer always receives one sample per task instantiation, regardless of the number of turns. For a typical SWE-Bench-like task, a trajectory consists of 30-50 turns, which means that to ingest the same amount of information, option 2 only has to spend an order of magnitude less compute compared with option 1. Such massive reduction in compute cost makes option 2 especially appealing for scaling up agentic RL training.
 
+**Update on August 18, 2026:** Building on [TITO](https://miles.radixark.com/docs/user-guide/agentic-rollout), Miles is developing training for black-box agent harnesses such as Claude Code and Codex. Across model families, CPU round trips and real SGLang GPU sessions validate the token exactness required by R3, OPD, and zero-KL alignment. Subagents and context compaction make trajectory counts per task dynamic. Session Server V2 records the full tree with exact token IDs, logprobs, and loss masks, then best-effort merges samples with their masks; multiple samples may remain. Training normalizes loss over the resulting dynamic global batch.
+
 ### Mathematical Correctness: Maintaining On-Policyness
 
 For a training sample to be on-policy, every sampled token should be evaluated by the trainer under the same conditional distribution that produced it during rollout. In transformers, that conditional distribution is entirely dependent on the preceding context of the token. If TITO is violated, there could be a token $x_t$ such that
