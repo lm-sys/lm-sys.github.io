@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="580" viewBox="0 0 1000 580" role="img" aria-labelledby="title desc">
+  <title id="title">Mooncake transfer path for a Miles rollout dictionary</title>
+  <desc id="desc">PUT and GET connect a Miles rollout dictionary to field expansion or object rebuild, field-specific encoding, and Bundle Store. Bundle Store contains a manifest, structured metadata, typed payloads, and the BufferPool fast path.</desc>
+  <defs>
+    <marker id="arrow-right" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#187a6d"/>
+    </marker>
+    <marker id="arrow-get" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#405f82"/>
+    </marker>
+    <style>
+      .bg { fill: #fbfaf7; }
+      .title { font: 600 30px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #22313f; }
+      .subtitle { font: 400 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #5d6b7a; }
+      .heading { font: 700 23px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #22313f; }
+      .label { font: 600 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #22313f; }
+      .box-label { font: 600 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #22313f; }
+      .member-label { font: 600 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #22313f; }
+      .small { font: 500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #5d6b7a; }
+      .tiny { font: 500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #5d6b7a; }
+      .lane-put { font: 700 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #187a6d; }
+      .lane-get { font: 700 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #405f82; }
+      .panel { fill: #fff; stroke: #cfd7dc; stroke-width: 1.5; }
+      .neutral { fill: #f2f4f3; stroke: #cfd7dc; stroke-width: 1.4; }
+      .codec { fill: #e4f3ee; stroke: #187a6d; stroke-width: 3; }
+      .schema { fill: #e7eef6; stroke: #405f82; stroke-width: 1.6; }
+      .bundle { fill: #fff; stroke: #c47a28; stroke-width: 2.5; }
+      .member { fill: #f9ecd8; stroke: #c47a28; stroke-width: 1.4; }
+      .manifest { fill: #e7eef6; stroke: #405f82; stroke-width: 1.6; }
+      .payload { fill: #e4f3ee; stroke: #187a6d; stroke-width: 1.4; }
+      .put { fill: none; stroke: #187a6d; stroke-width: 3.2; marker-end: url(#arrow-right); }
+      .get { fill: none; stroke: #405f82; stroke-width: 3.2; marker-end: url(#arrow-get); }
+      .divider { stroke: #b7c4c8; stroke-width: 1.4; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1000" height="580"/>
+  <text class="title" x="38" y="48">How Mooncake transfers a Miles rollout dict</text>
+  <text class="subtitle" x="38" y="78">Field encoding preserves values while the Bundle Store moves their payloads</text>
+
+  <rect class="panel" x="35" y="104" width="930" height="430" rx="7"/>
+
+  <!-- Symmetric public object lanes. -->
+  <text class="lane-put" x="48" y="220">PUT</text>
+  <rect class="neutral" x="85" y="176" width="130" height="74" rx="6"/>
+  <text class="box-label" x="150" y="207" text-anchor="middle">Miles rollout dict</text>
+  <text class="small" x="150" y="231" text-anchor="middle">completed batch</text>
+
+  <path class="put" d="M215 213 H255"/>
+  <rect class="neutral" x="260" y="176" width="120" height="74" rx="6"/>
+  <text class="box-label" x="320" y="207" text-anchor="middle">Field expansion</text>
+  <text class="small" x="320" y="231" text-anchor="middle">fields / leaves</text>
+  <path class="put" d="M380 213 H425"/>
+
+  <text class="lane-get" x="45" y="437">GET</text>
+  <rect class="neutral" x="85" y="393" width="130" height="74" rx="6"/>
+  <text class="box-label" x="150" y="424" text-anchor="middle">Miles rollout dict</text>
+  <text class="small" x="150" y="448" text-anchor="middle">reconstructed batch</text>
+
+  <path class="get" d="M260 430 H219"/>
+  <rect class="neutral" x="260" y="393" width="120" height="74" rx="6"/>
+  <text class="box-label" x="320" y="424" text-anchor="middle">Object rebuild</text>
+  <text class="small" x="320" y="448" text-anchor="middle">original field values</text>
+  <path class="get" d="M430 430 H384"/>
+
+  <!-- Central field encoding. -->
+  <rect class="codec" x="430" y="135" width="220" height="340" rx="8"/>
+  <text class="heading" x="540" y="170" text-anchor="middle">FIELD ENCODING</text>
+  <text class="label" x="540" y="213" text-anchor="middle">ENCODE</text>
+  <text class="small" x="540" y="237" text-anchor="middle">fields to typed members</text>
+
+  <rect class="schema" x="450" y="264" width="180" height="54" rx="6"/>
+  <text class="label" x="540" y="286" text-anchor="middle">Field schema</text>
+  <text class="small" x="540" y="307" text-anchor="middle">selects the stored layout</text>
+
+  <line class="divider" x1="450" y1="342" x2="630" y2="342"/>
+  <text class="label" x="540" y="411" text-anchor="middle">DECODE</text>
+  <text class="small" x="540" y="435" text-anchor="middle">typed members to fields</text>
+
+  <path class="put" d="M650 213 H715"/>
+  <path class="get" d="M720 430 H654"/>
+
+  <!-- Bundle Store and payload transport. -->
+  <rect class="bundle" x="720" y="125" width="225" height="360" rx="8"/>
+  <text class="heading" x="832" y="159" text-anchor="middle">Bundle Store</text>
+  <rect class="manifest" x="740" y="178" width="185" height="48" rx="5"/>
+  <text class="member-label" x="832" y="199" text-anchor="middle">Bundle manifest</text>
+  <text class="tiny" x="832" y="217" text-anchor="middle">entry index</text>
+  <rect class="member" x="740" y="244" width="185" height="48" rx="5"/>
+  <text class="member-label" x="832" y="264" text-anchor="middle">Structured metadata</text>
+  <text class="tiny" x="832" y="282" text-anchor="middle">object layout</text>
+  <rect class="payload" x="740" y="310" width="185" height="62" rx="5"/>
+  <text class="label" x="832" y="337" text-anchor="middle">Typed payloads</text>
+  <text class="small" x="832" y="359" text-anchor="middle">bulk data</text>
+  <line class="divider" x1="740" y1="389" x2="925" y2="389"/>
+  <text class="tiny" x="832" y="407" text-anchor="middle">PAYLOAD TRANSPORT</text>
+  <rect class="payload" x="740" y="418" width="185" height="45" rx="5"/>
+  <text class="label" x="832" y="438" text-anchor="middle">BufferPool fast path</text>
+  <text class="tiny" x="832" y="455" text-anchor="middle">reusable registered memory</text>
+</svg>

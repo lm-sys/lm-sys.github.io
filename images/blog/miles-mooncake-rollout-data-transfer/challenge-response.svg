@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="330" viewBox="0 0 760 330" role="img" aria-labelledby="title desc">
+  <title id="title">How Mooncake addresses Miles rollout data transfer challenges</title>
+  <desc id="desc">Two Miles rollout data challenges mapped to Mooncake structured transfer optimizations.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 700 28px Inter, Arial, sans-serif; fill: #243244; }
+      .label { font: 700 20px Inter, Arial, sans-serif; fill: #243244; }
+      .note { font: 400 17px Inter, Arial, sans-serif; fill: #5d6b7e; }
+      .tag { font: 700 15px Inter, Arial, sans-serif; letter-spacing: 0; }
+    </style>
+  </defs>
+
+  <rect width="760" height="330" fill="#fbfaf8"/>
+  <text class="title" x="32" y="52">Miles rollout challenges and Mooncake fast paths</text>
+
+  <g transform="translate(32 88)">
+    <rect width="282" height="86" rx="6" fill="#fff" stroke="#d7dee7" stroke-width="2"/>
+    <rect width="8" height="86" rx="4" fill="#b95c38"/>
+    <text class="label" x="34" y="37">Mixed field types</text>
+    <text class="note" x="34" y="64">tensor / ragged / Python values</text>
+
+    <path d="M300 43 H354" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <rect x="374" width="322" height="86" rx="6" fill="#edf8f5" stroke="#1d7f73" stroke-width="2"/>
+    <text class="tag" x="396" y="28" fill="#1d7f73">STRUCTURED ENCODING</text>
+    <text class="label" x="396" y="59">Schema + typed layouts</text>
+  </g>
+
+  <g transform="translate(32 190)">
+    <rect width="282" height="86" rx="6" fill="#fff" stroke="#d7dee7" stroke-width="2"/>
+    <rect width="8" height="86" rx="4" fill="#b95c38"/>
+    <text class="label" x="34" y="37">Fragmented memory</text>
+    <text class="note" x="34" y="64">many separate per-sample rows</text>
+
+    <path d="M300 43 H354" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <rect x="374" width="322" height="86" rx="6" fill="#eef5fb" stroke="#3979a8" stroke-width="2"/>
+    <text class="tag" x="396" y="28" fill="#3979a8">BULK TRANSFER</text>
+    <text class="label" x="396" y="59">Copy plan + BufferPool</text>
+  </g>
+</svg>
