@@ -1,7 +1,7 @@
 ---
 title: "Mooncake for Miles: From Fragmented Rollout Data to Efficient Bulk I/O"
 author: "Mooncake community"
-date: "August 18, 2026"
+date: "August 20, 2026"
 previewImg: /images/blog/miles-mooncake-rollout-data-transfer/featured.png
 ---
 
