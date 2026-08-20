@@ -183,10 +183,9 @@ PUT shows a smaller gain. Its timed path includes Python-object traversal, ragge
 
 ## What Comes Next
 
-The Miles integration establishes the basic data path. The main priority now is to validate, optimize, and integrate it across a wider range of RL workloads.
+The Miles integration establishes the basic data path. The next priority is to validate it with the Miles community across a wider range of real-world RL workloads.
 
-- **Explore more models and workloads with the Miles community.** We will work with the Miles community to validate and optimize the integration across a broader range of models and real-world workloads.
-- **Optimize for their actual data shapes.** Media-heavy samples, long or incrementally growing trajectories, and batches with many small fields stress different parts of the path. Profiling real workloads will guide improvements to field encoding and reconstruction, packing, request count, metadata handling, and partial reads instead of relying on dense synthetic buffers.
+- **Validate more models and workloads.** We will expand validation to multimodal and VLA workloads, agentic RL, world-model training, and RL for video-generation or diffusion models. Because these workloads combine media, trajectories, actions, rewards, and intermediate state in different ways, each workload will be validated with real rollout data and end-to-end training for correctness, compatibility, and transfer performance.
 - **Isolate rollout data from KV cache workloads.** Mooncake needs separate accounting, quotas, and eviction policy for short-lived rollout data and KV cache data, so a burst of rollout traffic cannot evict latency-sensitive cache entries.
 
 ## Acknowledgements
