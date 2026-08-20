@@ -27,6 +27,7 @@ This post walks through how CUDA Graph support is built in SGLang and what we ch
   <li style="padding-top: 0.55em;"><a href="#breakable-cuda-graph-eager-breaks-without-a-compiler">Breakable CUDA Graph: Eager Breaks without a Compiler</a></li>
   <li style="padding-top: 0.55em;"><a href="#full-cuda-graph-for-prefill">Full CUDA Graph for Prefill</a></li>
   <li style="padding-top: 0.55em;"><a href="#memory-footprint-of-cuda-graphs">Memory Footprint of CUDA Graphs</a></li>
+  <li style="padding-top: 0.55em;"><a href="#bcg-as-a-standalone-library">BCG as a Standalone Library</a></li>
 </ul>
 
 ## CUDA Graph in SGLang: the Runner/Backend Split and Flexible Combinations
@@ -195,6 +196,12 @@ Capturing through the chunked-prefill size buys two things:
   <li style="padding-top: 0.55em;"><strong>Lower total memory.</strong> The activation peak stops being paid per request, and the total lands below the no-graph baseline — 0.51 GB lower on gpt-oss-120b, 1.10 GB on GLM-5.2. Modest against a footprint of a few hundred gigabytes, but a saving rather than a cost.</li>
   <li style="padding-top: 0.55em;"><strong>Predictable memory usage.</strong> A workload-dependent activation spike becomes a fixed allocation established at capture time. The engine can account for that memory up front instead of reserving headroom for a transient peak that appears only during large prefills.</li>
 </ul>
+
+## BCG as a Standalone Library
+
+The breakable capture mechanism itself is not only tied to SGLang, so in collaboration with the Meta PyTorch team we have factored it out into a standalone library: [meta-pytorch/breakable-cuda-graphs](https://github.com/meta-pytorch/breakable-cuda-graphs). It exposes the same capture model behind a small PyTorch-style API: a `breakable_graph(...)` context manager analogous to `torch.cuda.graph`, a `@no_graph` decorator that marks functions to run eagerly between graph segments, and a `CUDAGraphSequence` that replays the captured segments and eager regions in order. If no eager break occurs inside the context, the block is captured as a single graph segment — the standard CUDA Graph pattern falls out as the trivial case.
+
+If your system needs partial CUDA Graph capture — in another inference engine, a training loop, or a research prototype — you can use the library directly for academic or industry work without adopting SGLang's runner stack. SGLang will continue to develop the mechanism, and we expect the standalone library and the in-tree implementation to converge over time.
 
 ## Acknowledgments
 
