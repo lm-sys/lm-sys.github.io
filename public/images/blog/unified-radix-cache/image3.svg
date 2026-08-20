@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="740" viewBox="0 0 1440 740" role="img" aria-labelledby="title desc">
+  <title id="title">DeepSeek-V4 components and HiCache sidecars</title>
+  <desc id="desc">FULL and SWA components share one prefix identity but use independent index spaces. Runtime mapping translates FULL tail indices F4 and F5 to SWA indices S0 and S1. Five sidecar pools store separate payloads while reusing the exact indices of a declared FULL or SWA source. PoolTransfer descriptors pass through HybridCacheController for movement among GPU L1, Host L2, and an external L3 tier.</desc>
+
+  <defs>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #303236; }
+      .title { font-size: 32px; font-weight: 720; letter-spacing: -0.45px; }
+      .subtitle { font-size: 18px; font-weight: 450; fill: #74777c; }
+      .section { font-size: 21px; font-weight: 720; letter-spacing: 0.35px; }
+      .body { font-size: 18px; font-weight: 560; }
+      .small { font-size: 16px; font-weight: 470; fill: #74777c; }
+      .tiny { font-size: 14px; font-weight: 500; fill: #74777c; }
+      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+      .strong { font-weight: 700; }
+      .blue { fill: #0072b2; }
+      .teal { fill: #008f69; }
+      .purple { fill: #a35c89; }
+      .translation { fill: none; stroke: #565d63; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+      .index-reuse { fill: none; stroke: #a35c89; stroke-width: 2.4; stroke-dasharray: 7 5; stroke-linecap: round; }
+      .transfer { fill: none; stroke: #8a9095; stroke-width: 2; stroke-linecap: round; }
+    </style>
+    <marker id="arrow-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#565d63"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#a35c89"/>
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a9095"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="740" fill="#ffffff"/>
+  <text x="52" y="48" class="title">DeepSeek-V4 Components and HiCache Sidecars</text>
+  <text x="52" y="78" class="subtitle">One prefix identity: components may translate indices; sidecars reuse their declared source indices.</text>
+
+  <!-- Shared prefix identity. -->
+  <rect x="52" y="104" width="1336" height="88" rx="18" fill="#fafafa" stroke="#dfe2e5" stroke-width="1.5"/>
+  <text x="78" y="140" class="section">SHARED PREFIX</text>
+  <text x="78" y="167" class="small">one canonical coordinate</text>
+  <g fill="#f5f6f7" stroke="#aeb3b8" stroke-width="1.5">
+    <rect x="408" y="126" width="58" height="44" rx="11"/>
+    <rect x="480" y="126" width="58" height="44" rx="11"/>
+    <rect x="552" y="126" width="58" height="44" rx="11"/>
+    <rect x="624" y="126" width="58" height="44" rx="11"/>
+    <rect x="696" y="126" width="58" height="44" rx="11"/>
+    <rect x="768" y="126" width="58" height="44" rx="11"/>
+  </g>
+  <g text-anchor="middle" class="body mono strong">
+    <text x="437" y="155">h0</text><text x="509" y="155">h1</text><text x="581" y="155">h2</text>
+    <text x="653" y="155">h3</text><text x="725" y="155">h4</text><text x="797" y="155">h5</text>
+  </g>
+  <text x="1000" y="143" class="body strong">normalized six-page example</text>
+  <text x="1000" y="168" class="small">same token prefix, different pool identities</text>
+
+  <!-- Components define reusable boundaries. -->
+  <rect x="52" y="216" width="646" height="324" rx="20" fill="#fafcfd" stroke="#d9e5ec" stroke-width="1.5"/>
+  <text x="78" y="254" class="section blue">COMPONENTS DEFINE REUSE</text>
+  <text x="78" y="281" class="small">independent spaces · runtime translation</text>
+
+  <text x="78" y="331" class="section blue">FULL</text>
+  <text x="78" y="356" class="small">prefix [0:6)</text>
+  <g stroke="#0072b2" stroke-width="1.8">
+    <rect x="214" y="302" width="52" height="46" rx="10" fill="#eef7fc"/>
+    <rect x="276" y="302" width="52" height="46" rx="10" fill="#eef7fc"/>
+    <rect x="338" y="302" width="52" height="46" rx="10" fill="#eef7fc"/>
+    <rect x="400" y="302" width="52" height="46" rx="10" fill="#eef7fc"/>
+    <rect x="462" y="302" width="52" height="46" rx="10" fill="#dceefa"/>
+    <rect x="524" y="302" width="52" height="46" rx="10" fill="#dceefa"/>
+  </g>
+  <g text-anchor="middle" class="body mono blue strong">
+    <text x="240" y="332">F0</text><text x="302" y="332">F1</text><text x="364" y="332">F2</text>
+    <text x="426" y="332">F3</text><text x="488" y="332">F4</text><text x="550" y="332">F5</text>
+  </g>
+
+  <path d="M519 352 V365" class="translation"/>
+  <rect x="362" y="366" width="298" height="64" rx="14" fill="#ffffff" stroke="#9da3a8" stroke-width="1.5"/>
+  <text x="511" y="392" text-anchor="middle" class="small strong">SWA allocator mapping</text>
+  <text x="511" y="417" text-anchor="middle" class="body mono strong">F4 → S0 · F5 → S1</text>
+  <path d="M519 431 V452" class="translation" marker-end="url(#arrow-dark)"/>
+
+  <text x="78" y="486" class="section teal">SWA</text>
+  <text x="78" y="511" class="small">trailing pages [4:6)</text>
+  <rect x="462" y="455" width="52" height="46" rx="10" fill="#e4f6ef" stroke="#009e73" stroke-width="1.8"/>
+  <rect x="524" y="455" width="52" height="46" rx="10" fill="#e4f6ef" stroke="#009e73" stroke-width="1.8"/>
+  <text x="488" y="485" text-anchor="middle" class="body mono teal strong">S0</text>
+  <text x="550" y="485" text-anchor="middle" class="body mono teal strong">S1</text>
+  <text x="362" y="522" class="small">component indices may translate</text>
+
+  <!-- Sidecars reuse exact source indices. -->
+  <rect x="718" y="216" width="670" height="324" rx="20" fill="#fdfbfc" stroke="#eadce5" stroke-width="1.5"/>
+  <text x="744" y="254" class="section purple">SIDECARS FOLLOW A SOURCE POOL</text>
+  <text x="744" y="281" class="small">same indices · separate payload bytes</text>
+
+  <text x="746" y="316" class="tiny blue strong">declared source: FULL</text>
+  <rect x="746" y="329" width="142" height="64" rx="12" fill="#f5f6f7" stroke="#aeb3b8" stroke-width="1.5"/>
+  <text x="817" y="355" text-anchor="middle" class="body strong">FULL source</text>
+  <text x="817" y="379" text-anchor="middle" class="small mono">F0…F5</text>
+  <path d="M902 361 H948" class="index-reuse" marker-end="url(#arrow-purple)"/>
+
+  <g fill="#fbf5f9" stroke="#cc79a7" stroke-width="1.5">
+    <rect x="962" y="329" width="120" height="64" rx="12"/>
+    <rect x="1094" y="329" width="128" height="64" rx="12"/>
+    <rect x="1234" y="329" width="128" height="64" rx="12"/>
+  </g>
+  <g text-anchor="middle" class="small purple strong">
+    <text x="1022" y="355">C4 KV</text><text x="1022" y="378" class="tiny purple">compressed</text>
+    <text x="1158" y="355">C4 indexer</text><text x="1158" y="378" class="tiny purple">buffer</text>
+    <text x="1298" y="355">C128 KV</text><text x="1298" y="378" class="tiny purple">compressed</text>
+  </g>
+
+  <text x="746" y="424" class="tiny teal strong">declared source: SWA</text>
+  <rect x="746" y="437" width="142" height="64" rx="12" fill="#f5f6f7" stroke="#aeb3b8" stroke-width="1.5"/>
+  <text x="817" y="463" text-anchor="middle" class="body strong">SWA source</text>
+  <text x="817" y="487" text-anchor="middle" class="small mono">S0, S1</text>
+  <path d="M902 469 H948" class="index-reuse" marker-end="url(#arrow-purple)"/>
+
+  <g fill="#fbf5f9" stroke="#cc79a7" stroke-width="1.5">
+    <rect x="962" y="437" width="184" height="64" rx="12"/>
+    <rect x="1158" y="437" width="204" height="64" rx="12"/>
+  </g>
+  <g text-anchor="middle" class="small purple strong">
+    <text x="1054" y="463">C4 compressor</text><text x="1054" y="486" class="tiny purple">state</text>
+    <text x="1260" y="463">C4 indexer</text><text x="1260" y="486" class="tiny purple">state</text>
+  </g>
+  <text x="1053" y="523" text-anchor="middle" class="small strong">no tree slot · no match vote</text>
+
+  <!-- HiCache ownership and physical flow. -->
+  <rect x="52" y="560" width="1336" height="104" rx="18" fill="#fafafa" stroke="#dfe2e5" stroke-width="1.5"/>
+  <text x="78" y="597" class="section">HICACHE</text>
+  <text x="78" y="625" class="small">prefix identity across tiers</text>
+
+  <rect x="300" y="578" width="176" height="58" rx="12" fill="#ffffff" stroke="#aeb3b8" stroke-width="1.5"/>
+  <text x="388" y="612" text-anchor="middle" class="small strong">component / sidecar</text>
+  <path d="M490 607 H514" class="transfer" marker-end="url(#arrow-gray)"/>
+  <rect x="528" y="578" width="170" height="58" rx="12" fill="#ffffff" stroke="#aeb3b8" stroke-width="1.5"/>
+  <text x="613" y="603" text-anchor="middle" class="body strong">PoolTransfer</text>
+  <text x="613" y="624" text-anchor="middle" class="tiny">describes I/O</text>
+  <path d="M712 607 H736" class="transfer" marker-end="url(#arrow-gray)"/>
+  <rect x="750" y="578" width="224" height="58" rx="12" fill="#ffffff" stroke="#8f959a" stroke-width="1.5"/>
+  <text x="862" y="603" text-anchor="middle" class="body strong">HybridCacheController</text>
+  <text x="862" y="624" text-anchor="middle" class="tiny">orchestrates tier I/O</text>
+  <path d="M988 607 H1012" class="transfer" marker-end="url(#arrow-gray)"/>
+
+  <rect x="1026" y="583" width="92" height="48" rx="11" fill="#ffffff" stroke="#8f959a" stroke-width="1.5"/>
+  <text x="1072" y="612" text-anchor="middle" class="small strong">GPU L1</text>
+  <path d="M1125 600 H1143" class="transfer" marker-end="url(#arrow-gray)"/>
+  <path d="M1143 614 H1125" class="transfer" marker-end="url(#arrow-gray)"/>
+  <rect x="1150" y="583" width="100" height="48" rx="11" fill="#ffffff" stroke="#8f959a" stroke-width="1.5"/>
+  <text x="1200" y="612" text-anchor="middle" class="small strong">Host L2</text>
+  <path d="M1257 600 H1275" class="transfer" marker-end="url(#arrow-gray)"/>
+  <path d="M1275 614 H1257" class="transfer" marker-end="url(#arrow-gray)"/>
+  <rect x="1282" y="583" width="88" height="48" rx="11" fill="#ffffff" stroke="#8f959a" stroke-width="1.5"/>
+  <text x="1326" y="601" text-anchor="middle" class="tiny strong">external</text>
+  <text x="1326" y="619" text-anchor="middle" class="tiny strong">L3 tier</text>
+
+  <!-- Connector legend. -->
+  <path d="M78 708 H130" class="translation" marker-end="url(#arrow-dark)"/>
+  <text x="148" y="714" class="small">component index translation</text>
+  <path d="M462 708 H514" class="index-reuse" marker-end="url(#arrow-purple)"/>
+  <text x="532" y="714" class="small">sidecar exact index reuse</text>
+  <path d="M850 708 H902" class="transfer" marker-start="url(#arrow-gray)" marker-end="url(#arrow-gray)"/>
+  <text x="920" y="714" class="small">physical tier transfer</text>
+</svg>

@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 430" width="720" height="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .ttl  { font-size: 14px; font-weight: 600; fill: #1a1a1a; }
+    .sub  { font-size: 11px; fill: #666; }
+    .lbl  { font-size: 11px; fill: #333; }
+    .tiny { font-size: 10px; fill: #777; }
+    .cmp  { fill: #cfe3f7; stroke: #5b9bd5; stroke-width: 1; }
+    .cmp2 { fill: #dff0d8; stroke: #6aa84f; stroke-width: 1; }
+    .a2a  { fill: #f7cfcf; stroke: #d55b5b; stroke-width: 1; }
+    .bub  { fill: #f2f2f2; stroke: #d0d0d0; stroke-width: 1; stroke-dasharray: 3 2; }
+    .ax   { stroke: #999; stroke-width: 1; }
+    .hand { stroke: #6aa84f; stroke-width: 1.4; marker-end: url(#ah); }
+  </style>
+  <defs>
+    <marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#6aa84f"/>
+    </marker>
+  </defs>
+
+  <g transform="translate(10 10)">
+
+  <!-- ================= top: wide EP ================= -->
+  <text class="ttl" x="0" y="14">Wide expert parallelism — one all-to-all pair per MoE layer</text>
+  <text class="sub" x="0" y="30">every rank holds a slice of the 512 experts, so each layer must dispatch and combine</text>
+
+  <line class="ax" x1="0" y1="96" x2="700" y2="96"/>
+  <text class="tiny" x="698" y="92" text-anchor="end">time</text>
+
+  <!-- layer 1 -->
+  <rect class="cmp" x="0"   y="46" width="70" height="42" rx="2"/>
+  <text class="lbl" x="35"  y="71" text-anchor="middle">attn</text>
+  <rect class="a2a" x="72"  y="46" width="34" height="42" rx="2"/>
+  <text class="tiny" x="89" y="63" text-anchor="middle">a2a</text>
+  <text class="tiny" x="89" y="76" text-anchor="middle">↓</text>
+  <rect class="cmp" x="108" y="46" width="62" height="42" rx="2"/>
+  <text class="lbl" x="139" y="71" text-anchor="middle">MoE</text>
+  <rect class="a2a" x="172" y="46" width="34" height="42" rx="2"/>
+  <text class="tiny" x="189" y="63" text-anchor="middle">a2a</text>
+  <text class="tiny" x="189" y="76" text-anchor="middle">↑</text>
+  <text class="tiny" x="103" y="110" text-anchor="middle">layer 1</text>
+
+  <!-- layer 2 -->
+  <rect class="cmp" x="212" y="46" width="70" height="42" rx="2"/>
+  <text class="lbl" x="247" y="71" text-anchor="middle">attn</text>
+  <rect class="a2a" x="284" y="46" width="34" height="42" rx="2"/>
+  <text class="tiny" x="301" y="63" text-anchor="middle">a2a</text>
+  <text class="tiny" x="301" y="76" text-anchor="middle">↓</text>
+  <rect class="cmp" x="320" y="46" width="62" height="42" rx="2"/>
+  <text class="lbl" x="351" y="71" text-anchor="middle">MoE</text>
+  <rect class="a2a" x="384" y="46" width="34" height="42" rx="2"/>
+  <text class="tiny" x="401" y="63" text-anchor="middle">a2a</text>
+  <text class="tiny" x="401" y="76" text-anchor="middle">↑</text>
+  <text class="tiny" x="315" y="110" text-anchor="middle">layer 2</text>
+
+  <text class="lbl" x="432" y="72">…  × 92 layers</text>
+  <text class="tiny" x="432" y="110">cost grows with the expert count</text>
+
+  <!-- ================= bottom: chunked PP ================= -->
+  <text class="ttl" x="0" y="168">Chunked pipeline parallelism — one activation hand-off per stage boundary</text>
+  <text class="sub" x="0" y="184">each stage owns whole layers, so a layer never leaves its rank; chunks keep the stages fed</text>
+
+  <!-- axes -->
+  <line class="ax" x1="66" y1="378" x2="700" y2="378"/>
+  <text class="tiny" x="698" y="374" text-anchor="end">time</text>
+
+  <!-- stage rows: 4 stages x 6 chunk slots, diagonal schedule -->
+  <!-- row y positions -->
+  <!-- stage 0 -->
+  <text class="lbl" x="66" y="216" text-anchor="end">stage 0</text>
+  <text class="tiny" x="66" y="228" text-anchor="end">layers 1–23</text>
+  <text class="lbl" x="66" y="256" text-anchor="end">stage 1</text>
+  <text class="tiny" x="66" y="268" text-anchor="end">layers 24–46</text>
+  <text class="lbl" x="66" y="296" text-anchor="end">stage 2</text>
+  <text class="tiny" x="66" y="308" text-anchor="end">layers 47–69</text>
+  <text class="lbl" x="66" y="336" text-anchor="end">stage 3</text>
+  <text class="tiny" x="66" y="348" text-anchor="end">layers 70–92</text>
+
+  <!-- chunk blocks: c = chunk index, s = stage; x = 70 + (c+s)*96 -->
+  <!-- stage 0: chunks 1..4 -->
+  <rect class="cmp2" x="70"  y="200" width="92" height="30" rx="2"/><text class="lbl" x="116" y="220" text-anchor="middle">chunk 1</text>
+  <rect class="cmp2" x="166" y="200" width="92" height="30" rx="2"/><text class="lbl" x="212" y="220" text-anchor="middle">chunk 2</text>
+  <rect class="cmp2" x="262" y="200" width="92" height="30" rx="2"/><text class="lbl" x="308" y="220" text-anchor="middle">chunk 3</text>
+  <rect class="cmp2" x="358" y="200" width="92" height="30" rx="2"/><text class="lbl" x="404" y="220" text-anchor="middle">chunk 4</text>
+  <rect class="bub"  x="454" y="200" width="188" height="30" rx="2"/><text class="tiny" x="548" y="220" text-anchor="middle">idle (drain)</text>
+
+  <!-- stage 1 -->
+  <rect class="bub"  x="70"  y="240" width="92" height="30" rx="2"/><text class="tiny" x="116" y="260" text-anchor="middle">bubble</text>
+  <rect class="cmp2" x="166" y="240" width="92" height="30" rx="2"/><text class="lbl" x="212" y="260" text-anchor="middle">chunk 1</text>
+  <rect class="cmp2" x="262" y="240" width="92" height="30" rx="2"/><text class="lbl" x="308" y="260" text-anchor="middle">chunk 2</text>
+  <rect class="cmp2" x="358" y="240" width="92" height="30" rx="2"/><text class="lbl" x="404" y="260" text-anchor="middle">chunk 3</text>
+  <rect class="cmp2" x="454" y="240" width="92" height="30" rx="2"/><text class="lbl" x="500" y="260" text-anchor="middle">chunk 4</text>
+  <rect class="bub"  x="550" y="240" width="92" height="30" rx="2"/>
+
+  <!-- stage 2 -->
+  <rect class="bub"  x="70"  y="280" width="188" height="30" rx="2"/><text class="tiny" x="164" y="300" text-anchor="middle">bubble</text>
+  <rect class="cmp2" x="262" y="280" width="92" height="30" rx="2"/><text class="lbl" x="308" y="300" text-anchor="middle">chunk 1</text>
+  <rect class="cmp2" x="358" y="280" width="92" height="30" rx="2"/><text class="lbl" x="404" y="300" text-anchor="middle">chunk 2</text>
+  <rect class="cmp2" x="454" y="280" width="92" height="30" rx="2"/><text class="lbl" x="500" y="300" text-anchor="middle">chunk 3</text>
+  <rect class="cmp2" x="550" y="280" width="92" height="30" rx="2"/><text class="lbl" x="596" y="300" text-anchor="middle">chunk 4</text>
+
+  <!-- stage 3 -->
+  <rect class="bub"  x="70"  y="320" width="284" height="30" rx="2"/><text class="tiny" x="212" y="340" text-anchor="middle">bubble — depth, not concurrency, sets its size</text>
+  <rect class="cmp2" x="358" y="320" width="92" height="30" rx="2"/><text class="lbl" x="404" y="340" text-anchor="middle">chunk 1</text>
+  <rect class="cmp2" x="454" y="320" width="92" height="30" rx="2"/><text class="lbl" x="500" y="340" text-anchor="middle">chunk 2</text>
+  <rect class="cmp2" x="550" y="320" width="92" height="30" rx="2"/><text class="lbl" x="596" y="340" text-anchor="middle">chunk 3</text>
+  <rect class="cmp2" x="646" y="320" width="52" height="30" rx="2"/><text class="tiny" x="672" y="340" text-anchor="middle">c4</text>
+
+  <!-- hand-off arrows, drawn on the diagonal -->
+  <path class="hand" d="M162,215 L164,238"/>
+  <path class="hand" d="M258,255 L260,278"/>
+  <path class="hand" d="M354,295 L356,318"/>
+
+  <text class="tiny" x="70" y="398">the hand-off for chunk i overlaps the compute of chunk i+1 — the only wire traffic is one activation per boundary</text>
+  </g>
+</svg>

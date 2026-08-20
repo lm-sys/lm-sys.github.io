@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 924" width="1020" height="924" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+    </marker>
+    <marker id="arrowD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1d4ed8"/>
+    </marker>
+    <marker id="arrowL" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d1d5db"/>
+    </marker>
+    <marker id="tiny" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect width="1020" height="924" fill="#ffffff"/>
+
+  <!-- containers: runner layer and backend layer -->
+  <rect x="24" y="22" width="972" height="158" rx="10" fill="#fbfcfd" stroke="#cbd5e1" stroke-width="1.5"/>
+  <rect x="24" y="248" width="972" height="654" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- ═══════════════ RUNNER ═══════════════ -->
+  <text x="40" y="48" font-size="18" font-weight="700" fill="#111827">Runner</text>
+
+  <text x="40" y="97" font-size="13" font-weight="600" fill="#374151">capture time</text>
+  <g font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="250" y="76" width="172" height="32" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="336" y="97" fill="#334155" text-anchor="middle">capture_prepare</text>
+    <path d="M 428 92 L 444 92" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#tiny)"/>
+    <rect x="450" y="76" width="110" height="32" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="505" y="97" fill="#334155" text-anchor="middle">capture</text>
+    <path d="M 566 92 L 582 92" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#tiny)"/>
+    <rect x="588" y="76" width="196" height="32" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="686" y="97" fill="#334155" text-anchor="middle">capture_one</text>
+  </g>
+
+  <text x="40" y="149" font-size="13" font-weight="600" fill="#374151">replay time</text>
+  <g font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="250" y="128" width="172" height="32" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="336" y="149" fill="#334155" text-anchor="middle">can_run_graph</text>
+    <path d="M 428 144 L 444 144" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#tiny)"/>
+    <rect x="450" y="128" width="110" height="32" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="505" y="149" fill="#334155" text-anchor="middle">load_batch</text>
+    <path d="M 566 144 L 582 144" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#tiny)"/>
+    <rect x="588" y="128" width="196" height="32" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="686" y="149" fill="#334155" text-anchor="middle">replay</text>
+  </g>
+
+
+
+  <!-- ─── runner → backend ─── -->
+  <defs>
+    <marker id="call" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <path d="M 400 188 L 400 242" stroke="#475569" stroke-width="2.2" marker-end="url(#call)"/>
+  <text x="414" y="220" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">capture_one()</text>
+  <path d="M 640 188 L 640 242" stroke="#475569" stroke-width="2.2" marker-end="url(#call)"/>
+  <text x="654" y="220" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">replay()</text>
+
+  <!-- ═══════════════ BACKEND ═══════════════ -->
+  <text x="40" y="278" font-size="18" font-weight="700" fill="#111827">Backend</text>
+
+  <!-- ─────── full ─────── -->
+  <text x="40" y="332" font-size="16" font-weight="700" fill="#111827">Full CUDA Graph</text>
+  <text x="280" y="332" font-size="13.5" fill="#6b7280">capture the whole forward as one graph</text>
+
+  <text x="40" y="374" font-size="13" font-weight="600" fill="#374151">one capture</text>
+
+  <rect x="240" y="356" width="738" height="60" rx="6" fill="#dbeafe" stroke="#1d4ed8"/>
+  <g font-size="12">
+    <rect x="250" y="372" width="80" height="28" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="290" y="391" fill="#1e3a8a" text-anchor="middle">proj</text>
+    <rect x="336" y="372" width="80" height="28" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="376" y="391" fill="#1e3a8a" text-anchor="middle">norm</text>
+    <rect x="422" y="372" width="92" height="28" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="468" y="391" fill="#1e3a8a" text-anchor="middle">attention</text>
+    <rect x="520" y="372" width="80" height="28" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="560" y="391" fill="#1e3a8a" text-anchor="middle">moe</text>
+    <rect x="606" y="372" width="92" height="28" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="652" y="391" fill="#1e3a8a" text-anchor="middle">a2a</text>
+    <rect x="704" y="372" width="80" height="28" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="744" y="391" fill="#1e3a8a" text-anchor="middle">proj</text>
+    <rect x="790" y="372" width="80" height="28" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="830" y="391" fill="#1e3a8a" text-anchor="middle">norm</text>
+    <rect x="876" y="372" width="92" height="28" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="922" y="391" fill="#1e3a8a" text-anchor="middle">mlp</text>
+  </g>
+
+  <line x1="40" y1="444" x2="980" y2="444" stroke="#f1f5f9" stroke-width="1"/>
+
+  <!-- ─────── breakable ─────── -->
+  <text x="40" y="488" font-size="16" font-weight="700" fill="#111827">Breakable CUDA Graph</text>
+  <text x="280" y="488" font-size="13.5" fill="#6b7280">cut in time, while capturing — no whole-graph pass</text>
+
+  <text x="40" y="530" font-size="13" font-weight="600" fill="#374151">one pass</text>
+
+  <path d="M 250 524 L 968 524" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowD)"/>
+  <g font-size="11" fill="#1e3a8a">
+    <text x="333" y="517" text-anchor="middle">capture</text>
+    <text x="560" y="517" text-anchor="middle">capture</text>
+    <text x="836" y="517" text-anchor="middle">capture</text>
+  </g>
+  <g font-size="11" fill="#92400e">
+    <text x="468" y="517" text-anchor="middle">exit ✂</text>
+    <text x="652" y="517" text-anchor="middle">exit ✂</text>
+  </g>
+
+  <g>
+    <rect x="250" y="536" width="166" height="38" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+    <text x="333" y="560" font-size="12" fill="#1e3a8a" text-anchor="middle">segment</text>
+    <rect x="422" y="536" width="92" height="38" rx="5" fill="#fed7aa" stroke="#f59e0b"/>
+    <text x="468" y="560" font-size="12" fill="#92400e" text-anchor="middle">attention</text>
+    <rect x="520" y="536" width="80" height="38" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+    <text x="560" y="560" font-size="12" fill="#1e3a8a" text-anchor="middle">segment</text>
+    <rect x="606" y="536" width="92" height="38" rx="5" fill="#fed7aa" stroke="#f59e0b"/>
+    <text x="652" y="560" font-size="12" fill="#92400e" text-anchor="middle">a2a</text>
+    <rect x="704" y="536" width="264" height="38" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+    <text x="836" y="560" font-size="12" fill="#1e3a8a" text-anchor="middle">segment</text>
+  </g>
+
+  <rect x="250" y="582" width="718" height="24" rx="4" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="609" y="599" font-size="11.5" fill="#1e40af" text-anchor="middle">one shared memory pool — keeps tensors alive across every break</text>
+
+  <line x1="40" y1="634" x2="980" y2="634" stroke="#f1f5f9" stroke-width="1"/>
+
+  <!-- ─────── tc_piecewise ─────── -->
+  <text x="40" y="678" font-size="16" font-weight="700" fill="#111827">TC Piecewise CUDA Graph</text>
+  <text x="280" y="678" font-size="13.5" fill="#6b7280">walk the whole graph first, then cut</text>
+
+  <text x="40" y="718" font-size="13" font-weight="600" fill="#374151">① trace entire forward</text>
+  <path d="M 250 724 L 968 724" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrowL)"/>
+  <text x="560" y="715" font-size="11.5" fill="#9ca3af" text-anchor="middle">Torch Dynamo traces every op</text>
+
+  <path d="M 224 714 L 224 872" stroke="#6b7280" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="250" y="740" width="80" height="38" rx="5" fill="#e5e7eb" stroke="#d1d5db"/>
+    <text x="290" y="764" font-size="12" fill="#4b5563" text-anchor="middle">proj</text>
+    <rect x="336" y="740" width="80" height="38" rx="5" fill="#e5e7eb" stroke="#d1d5db"/>
+    <text x="376" y="764" font-size="12" fill="#4b5563" text-anchor="middle">norm</text>
+    <rect x="422" y="740" width="92" height="38" rx="5" fill="#fed7aa" stroke="#f59e0b"/>
+    <text x="468" y="764" font-size="12" fill="#92400e" text-anchor="middle">attention</text>
+    <rect x="520" y="740" width="80" height="38" rx="5" fill="#e5e7eb" stroke="#d1d5db"/>
+    <text x="560" y="764" font-size="12" fill="#4b5563" text-anchor="middle">moe</text>
+    <rect x="606" y="740" width="92" height="38" rx="5" fill="#fed7aa" stroke="#f59e0b"/>
+    <text x="652" y="764" font-size="12" fill="#92400e" text-anchor="middle">a2a</text>
+    <rect x="704" y="740" width="80" height="38" rx="5" fill="#e5e7eb" stroke="#d1d5db"/>
+    <text x="744" y="764" font-size="12" fill="#4b5563" text-anchor="middle">proj</text>
+    <rect x="790" y="740" width="80" height="38" rx="5" fill="#e5e7eb" stroke="#d1d5db"/>
+    <text x="830" y="764" font-size="12" fill="#4b5563" text-anchor="middle">norm</text>
+    <rect x="876" y="740" width="92" height="38" rx="5" fill="#e5e7eb" stroke="#d1d5db"/>
+    <text x="922" y="764" font-size="12" fill="#4b5563" text-anchor="middle">mlp</text>
+  </g>
+
+  <text x="40" y="808" font-size="13" font-weight="600" fill="#374151">② split at registered</text>
+  <text x="40" y="824" font-size="13" font-weight="600" fill="#374151">    split points</text>
+  <g stroke="#1d4ed8" stroke-width="2" stroke-dasharray="5 4">
+    <line x1="422" y1="792" x2="422" y2="834"/>
+    <line x1="514" y1="792" x2="514" y2="834"/>
+    <line x1="606" y1="792" x2="606" y2="834"/>
+    <line x1="698" y1="792" x2="698" y2="834"/>
+  </g>
+  <text x="468" y="818" font-size="16" text-anchor="middle">✂</text>
+  <text x="652" y="818" font-size="16" text-anchor="middle">✂</text>
+
+  <text x="40" y="860" font-size="13" font-weight="600" fill="#374151">③ compile + capture</text>
+  <text x="40" y="876" font-size="13" font-weight="600" fill="#374151">    each piece</text>
+  <g>
+    <rect x="250" y="846" width="166" height="36" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+    <text x="333" y="869" font-size="12" fill="#1e3a8a" text-anchor="middle">compile → graph</text>
+    <rect x="422" y="846" width="92" height="36" rx="5" fill="#fed7aa" stroke="#f59e0b"/>
+    <text x="468" y="869" font-size="12" fill="#92400e" text-anchor="middle">eager</text>
+    <rect x="520" y="846" width="80" height="36" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+    <text x="560" y="869" font-size="12" fill="#1e3a8a" text-anchor="middle">graph</text>
+    <rect x="606" y="846" width="92" height="36" rx="5" fill="#fed7aa" stroke="#f59e0b"/>
+    <text x="652" y="869" font-size="12" fill="#92400e" text-anchor="middle">eager</text>
+    <rect x="704" y="846" width="264" height="36" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+    <text x="836" y="869" font-size="12" fill="#1e3a8a" text-anchor="middle">compile → graph</text>
+  </g>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 420" width="1020" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="pad" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="#f3f4f6"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#d1d5db" stroke-width="3.5"/>
+    </pattern>
+  </defs>
+  <rect width="1020" height="420" fill="#ffffff"/>
+
+  <!-- ── the incoming batch ── -->
+  <text x="40" y="56" font-size="14" font-weight="700" fill="#111827">the batch</text>
+  <text x="40" y="76" font-size="12" fill="#9ca3af">2 requests</text>
+  <text x="40" y="94" font-size="12" fill="#9ca3af">100 tokens</text>
+
+  <rect x="230" y="44" width="330" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="395" y="69" font-size="12.5" fill="#1e3a8a" text-anchor="middle">request A · 60 tokens</text>
+  <rect x="566" y="44" width="220" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="676" y="69" font-size="12.5" fill="#1e3a8a" text-anchor="middle">request B · 40 tokens</text>
+
+  <!-- ── the captured shape ── -->
+  <text x="40" y="164" font-size="14" font-weight="700" fill="#111827">the captured</text>
+  <text x="40" y="182" font-size="14" font-weight="700" fill="#111827">graph</text>
+  <text x="40" y="204" font-size="12" fill="#9ca3af">128-token bucket</text>
+  <text x="40" y="222" font-size="12" fill="#9ca3af">4 request slots</text>
+
+  <text x="230" y="140" font-size="11.5" fill="#6b7280">tokens — padded up to the bucket</text>
+  <rect x="230" y="150" width="330" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="395" y="175" font-size="12.5" fill="#1e3a8a" text-anchor="middle">A</text>
+  <rect x="566" y="150" width="220" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="676" y="175" font-size="12.5" fill="#1e3a8a" text-anchor="middle">B</text>
+  <rect x="792" y="150" width="154" height="40" rx="5" fill="url(#pad)" stroke="#d1d5db"/>
+  <text x="869" y="175" font-size="12" fill="#6b7280" text-anchor="middle">28 padded</text>
+
+  <text x="230" y="234" font-size="11.5" fill="#6b7280">request slots — unused ones zeroed</text>
+  <rect x="230" y="244" width="172" height="36" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="316" y="267" font-size="12.5" fill="#1e3a8a" text-anchor="middle">slot 0 — A</text>
+  <rect x="408" y="244" width="172" height="36" rx="5" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="494" y="267" font-size="12.5" fill="#1e3a8a" text-anchor="middle">slot 1 — B</text>
+  <rect x="586" y="244" width="172" height="36" rx="5" fill="url(#pad)" stroke="#d1d5db"/>
+  <text x="672" y="267" font-size="12.5" fill="#6b7280" text-anchor="middle">slot 2 — length 0</text>
+  <rect x="764" y="244" width="182" height="36" rx="5" fill="url(#pad)" stroke="#d1d5db"/>
+  <text x="855" y="267" font-size="12.5" fill="#6b7280" text-anchor="middle">slot 3 — length 0</text>
+
+  <!-- ── what each costs ── -->
+  <line x1="40" y1="316" x2="980" y2="316" stroke="#e5e7eb"/>
+
+  <rect x="230" y="336" width="18" height="18" rx="3" fill="url(#pad)" stroke="#d1d5db"/>
+  <text x="258" y="350" font-size="12.5" fill="#b45309">padded tokens — real rows through every dense projection</text>
+
+  <rect x="230" y="366" width="18" height="18" rx="3" fill="url(#pad)" stroke="#d1d5db"/>
+  <text x="258" y="380" font-size="12.5" fill="#166534">empty slots — no attention tiles; a metadata row and a spare block</text>
+</svg>

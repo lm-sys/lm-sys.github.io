@@ -157,7 +157,7 @@ This blog is mostly focused on optimization of low concurrency and high cache-hi
 We would like to express our gratitude to the following organizations and individuals, for their contribution to the support and optimization of GLM 5.2 NVFP4 model.
 
 
-SGLang Community/RadixArk: Khoa Pham, Baizhou Zhang, Jimmy Shong, Brayden Zhong, Ziyi Xu, Mohammad Miadh Angkad, Xinyuan Tong, Zhendong Hua, Zijie Xia, Banghua Zhu and many others – For optimization and benchmarking
+SGLang Community/RadixArk: Khoa Pham, Baizhou Zhang, Jimmy Shong, Brayden Zhong, Ziyi Xu, Mohammad Miadh Angkad, Xinyuan Tong, Zhendong Hua, Zijie Xia, Jun Liu, Banghua Zhu and many others – For optimization and benchmarking
 
 Nvidia: Julien Lin, Zhiyu Cheng, Po-Han Huang, Ryan Stewart, Triston Cao and many others – For helping with Day-0 support of GLM5.2 NVFP4
 

@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="820" viewBox="0 0 1440 820" role="img" aria-labelledby="title desc">
+  <title id="title">How match_prefix chooses a component-safe boundary</title>
+  <desc id="desc">The tree walk follows the canonical FULL path through n4. FULL, SWA, and MAMBA validate every candidate. Only n1 and n2 pass all validators, so n2 remains the deepest safe reusable boundary.</desc>
+
+  <defs>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #303236; }
+      .title { font-size: 37px; font-weight: 700; letter-spacing: -0.55px; }
+      .subtitle { font-size: 20px; font-weight: 430; fill: #74777c; }
+      .section { font-size: 22px; font-weight: 700; letter-spacing: 0.35px; }
+      .body { font-size: 20px; font-weight: 500; }
+      .small { font-size: 21px; font-weight: 470; fill: #74777c; }
+      .tiny { font-size: 20px; font-weight: 520; fill: #74777c; }
+      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+      .strong { font-weight: 700; }
+      .blue { fill: #0072b2; }
+      .teal { fill: #008f69; }
+      .orange { fill: #bd8200; }
+      .purple { fill: #a35c89; }
+      .gray { fill: #74777c; }
+      .tree-edge { fill: none; stroke: #666d73; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .branch-edge { fill: none; stroke: #b0b5ba; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .tree-node { fill: #fff; stroke: #666d73; stroke-width: 2.5; }
+      .saved-node { fill: #eef7fc; stroke: #0072b2; stroke-width: 3; }
+      .current-node { fill: #fff; stroke: #565d63; stroke-width: 3; }
+      .grid-line { stroke: #e4e6e8; stroke-width: 1.5; }
+    </style>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#666d73"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0072b2"/>
+    </marker>
+  </defs>
+
+  <rect width="1440" height="820" fill="#ffffff"/>
+
+  <text x="54" y="55" class="title">How <tspan class="mono">match_prefix()</tspan> chooses a component-safe boundary</text>
+  <text x="54" y="88" class="subtitle">walk the canonical FULL path · advance the saved boundary only on an all-component pass</text>
+
+  <rect x="40" y="116" width="1360" height="650" rx="24" fill="#fafafa" stroke="#e3e5e7" stroke-width="1.5"/>
+
+  <!-- Step 1: canonical traversal -->
+  <circle cx="91" cy="160" r="18" fill="#f1f2f3" stroke="#8d9398" stroke-width="1.5"/>
+  <text x="91" y="167" text-anchor="middle" class="small strong">1</text>
+  <text x="124" y="167" class="section">WALK THE CANONICAL FULL PATH</text>
+
+  <!-- Saved-boundary band -->
+  <rect x="602" y="188" width="76" height="487" rx="28" fill="#eaf5fb"/>
+  <rect x="520" y="190" width="240" height="38" rx="19" fill="#eaf5fb" stroke="#0072b2" stroke-width="1.5"/>
+  <text x="640" y="215" text-anchor="middle" class="tiny blue strong">saved reusable boundary</text>
+
+  <!-- Current traversal label -->
+  <rect x="916" y="190" width="248" height="38" rx="19" fill="#ffffff" stroke="#8f959a" stroke-width="1.5"/>
+  <text x="1040" y="215" text-anchor="middle" class="tiny strong">current traversal position</text>
+
+  <!-- Tree path -->
+  <path d="M241 258 H1040" class="tree-edge"/>
+  <path d="M900 258 H996" class="tree-edge" marker-end="url(#arrow-gray)"/>
+  <path d="M440 258 H510 V306 H566" class="branch-edge"/>
+  <circle cx="240" cy="258" r="18" class="tree-node"/>
+  <circle cx="440" cy="258" r="18" class="tree-node"/>
+  <circle cx="640" cy="258" r="20" class="saved-node"/>
+  <circle cx="840" cy="258" r="18" class="tree-node"/>
+  <circle cx="1040" cy="258" r="20" class="current-node"/>
+  <circle cx="1040" cy="258" r="29" fill="none" stroke="#565d63" stroke-width="1.8" opacity="0.35"/>
+  <circle cx="566" cy="306" r="16" fill="#fff" stroke="#aeb3b8" stroke-width="2"/>
+
+  <text x="240" y="298" text-anchor="middle" class="tiny">root</text>
+  <text x="440" y="298" text-anchor="middle" class="tiny strong">n1</text>
+  <text x="640" y="298" text-anchor="middle" class="tiny blue strong">n2</text>
+  <text x="840" y="298" text-anchor="middle" class="tiny strong">n3</text>
+  <text x="1040" y="298" text-anchor="middle" class="tiny strong">n4</text>
+
+  <!-- Step 2: validator matrix -->
+  <circle cx="91" cy="352" r="18" fill="#f1f2f3" stroke="#8d9398" stroke-width="1.5"/>
+  <text x="91" y="359" text-anchor="middle" class="small strong">2</text>
+  <text x="124" y="359" class="section">VALIDATE EVERY CANDIDATE</text>
+
+  <g transform="translate(1110 352)">
+    <circle cx="0" cy="0" r="15" fill="#e7f6f0" stroke="#009e73" stroke-width="1.8"/>
+    <text x="0" y="7" text-anchor="middle" style="font-size:20px;font-weight:700;fill:#008f69">✓</text>
+    <text x="25" y="6" class="tiny">pass</text>
+    <circle cx="116" cy="0" r="15" fill="#fbf2f7" stroke="#cc79a7" stroke-width="1.8" stroke-dasharray="5 4"/>
+    <text x="116" y="7" text-anchor="middle" style="font-size:20px;font-weight:700;fill:#a35c89">×</text>
+    <text x="141" y="6" class="tiny">reject</text>
+  </g>
+
+  <!-- Grid guides -->
+  <line x1="440" y1="377" x2="440" y2="675" class="grid-line"/>
+  <line x1="640" y1="377" x2="640" y2="675" stroke="#b6daec" stroke-width="1.8"/>
+  <line x1="840" y1="377" x2="840" y2="675" class="grid-line"/>
+  <line x1="1040" y1="377" x2="1040" y2="675" class="grid-line"/>
+  <line x1="374" y1="452" x2="1104" y2="452" class="grid-line"/>
+  <line x1="374" y1="527" x2="1104" y2="527" class="grid-line"/>
+  <line x1="374" y1="602" x2="1104" y2="602" class="grid-line"/>
+
+  <!-- Row labels -->
+  <text x="76" y="410" class="section">FULL</text>
+  <text x="76" y="437" class="small">reusable FULL payload</text>
+  <text x="76" y="485" class="section">SWA</text>
+  <text x="76" y="512" class="small">contiguous trailing window</text>
+  <text x="76" y="560" class="section">MAMBA</text>
+  <text x="76" y="587" class="small">exact checkpoint present</text>
+
+  <!-- Pass marker helper instances: FULL -->
+  <g fill="#e7f6f0" stroke="#009e73" stroke-width="2">
+    <circle cx="440" cy="415" r="17"/><circle cx="640" cy="415" r="17"/><circle cx="840" cy="415" r="17"/><circle cx="1040" cy="415" r="17"/>
+  </g>
+  <g text-anchor="middle" style="font-size:22px;font-weight:700;fill:#008f69">
+    <text x="440" y="423">✓</text><text x="640" y="423">✓</text><text x="840" y="423">✓</text><text x="1040" y="423">✓</text>
+  </g>
+
+  <!-- SWA -->
+  <g fill="#e7f6f0" stroke="#009e73" stroke-width="2">
+    <circle cx="440" cy="490" r="17"/><circle cx="640" cy="490" r="17"/>
+  </g>
+  <g fill="#fbf2f7" stroke="#cc79a7" stroke-width="2" stroke-dasharray="5 4">
+    <circle cx="840" cy="490" r="17"/><circle cx="1040" cy="490" r="17"/>
+  </g>
+  <g text-anchor="middle" style="font-size:22px;font-weight:700">
+    <text x="440" y="498" fill="#008f69">✓</text><text x="640" y="498" fill="#008f69">✓</text>
+    <text x="840" y="498" fill="#a35c89">×</text><text x="1040" y="498" fill="#a35c89">×</text>
+  </g>
+
+  <!-- MAMBA -->
+  <g fill="#e7f6f0" stroke="#009e73" stroke-width="2">
+    <circle cx="440" cy="565" r="17"/><circle cx="640" cy="565" r="17"/><circle cx="1040" cy="565" r="17"/>
+  </g>
+  <circle cx="840" cy="565" r="17" fill="#fbf2f7" stroke="#cc79a7" stroke-width="2" stroke-dasharray="5 4"/>
+  <g text-anchor="middle" style="font-size:22px;font-weight:700">
+    <text x="440" y="573" fill="#008f69">✓</text><text x="640" y="573" fill="#008f69">✓</text>
+    <text x="840" y="573" fill="#a35c89">×</text><text x="1040" y="573" fill="#008f69">✓</text>
+  </g>
+  <text x="1120" y="557" class="tiny strong">n3 reject · n4 pass</text>
+  <text x="1120" y="584" class="tiny gray">later candidate can pass</text>
+
+  <!-- Safety reduction -->
+  <rect x="60" y="612" width="1070" height="72" rx="16" fill="#f5f6f7" stroke="#d8dade" stroke-width="1.5"/>
+  <text x="76" y="642" class="body strong">SAFETY INVARIANT</text>
+  <text x="76" y="668" class="small">advance only on all-pass</text>
+
+  <g fill="#e7f6f0" stroke="#009e73" stroke-width="2">
+    <circle cx="440" cy="648" r="18"/><circle cx="640" cy="648" r="18"/>
+  </g>
+  <g fill="#fbf2f7" stroke="#cc79a7" stroke-width="2" stroke-dasharray="5 4">
+    <circle cx="840" cy="648" r="18"/><circle cx="1040" cy="648" r="18"/>
+  </g>
+  <g text-anchor="middle" style="font-size:23px;font-weight:700">
+    <text x="440" y="656" fill="#008f69">✓</text><text x="640" y="656" fill="#008f69">✓</text>
+    <text x="840" y="656" fill="#a35c89">×</text><text x="1040" y="656" fill="#a35c89">×</text>
+  </g>
+
+  <!-- Result -->
+  <path d="M640 675 V688" fill="none" stroke="#0072b2" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <rect x="444" y="692" width="392" height="60" rx="18" fill="#eef7fc" stroke="#0072b2" stroke-width="2"/>
+  <text x="640" y="717" text-anchor="middle" class="tiny blue strong">DEEPEST ALL-COMPONENT PASS</text>
+  <text x="640" y="742" text-anchor="middle" class="body blue strong">reusable boundary remains n2</text>
+  <rect x="888" y="700" width="266" height="44" rx="22" fill="#ffffff" stroke="#8f959a" stroke-width="1.5"/>
+  <text x="1021" y="729" text-anchor="middle" class="body">traversal reaches <tspan class="strong">n4</tspan></text>
+</svg>
