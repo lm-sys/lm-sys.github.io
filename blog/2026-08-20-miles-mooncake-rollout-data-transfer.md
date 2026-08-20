@@ -1,0 +1,200 @@
+---
+title: "Mooncake for Miles: From Fragmented Rollout Data to Efficient Bulk I/O"
+author: "Mooncake community"
+date: "August 18, 2026"
+previewImg: /images/blog/miles-mooncake-rollout-data-transfer/featured.png
+---
+
+## Rollout Data in Disaggregated RL Systems
+
+Reinforcement learning for large language models combines two very different workloads: **rollout generation** and **model training**.
+
+During rollout, inference workers run the current policy on a set of prompts and generate responses. Along the way, they produce the information required by the learning algorithm, including generated tokens, masks, log probabilities, rewards, sequence lengths, sample identifiers, and other metadata. Together, these outputs form the **rollout data** that will be consumed by the next training step.
+
+At small scale, generation and training can share the same execution environment. At larger scale, however, modern RL systems increasingly adopt a **disaggregated architecture**, where rollout generation and training are deployed as separate worker groups, often across different processes, GPUs, or machines.
+
+The two stages have fundamentally different resource and execution characteristics. Rollout is an inference-heavy workload whose throughput depends on decoding efficiency, batching, and request scheduling, while training relies on large, highly synchronized tensor computations. Separating them allows each side to be scaled and scheduled independently instead of forcing both workloads into the same execution pattern.
+
+This separation also enables **pipeline-level concurrency**. Miles can train on rollout *N* while rollout workers are already generating rollout *N+1*. Asynchronous RL systems can therefore allow rollout and training workers to progress at different rates rather than making one stage wait for the other after every operation.
+The benefit is better resource utilization and greater flexibility in how inference and training capacity are provisioned. But disaggregation also introduces a new systems boundary: **the data produced by rollout workers must now move to a different set of workers before training can consume it**.
+
+That handoff sits directly between generation and the next policy update. A slow transfer can leave trainers waiting for data and keep memory occupied on rollout workers longer than necessary. For a distributed RL system such as Miles, efficiently moving this **structured rollout data from the inference side to the training side** therefore becomes an important part of the end-to-end RL pipeline.
+
+## What Makes RL Rollout Data Transfer Challenging
+
+RL rollout data differs significantly from the large, regular tensors commonly moved in distributed training.
+
+A rollout batch is usually a **heterogeneous structured object** rather than a single contiguous tensor. Depending on the framework and algorithm, it may contain generated tokens, loss masks, log probabilities, rewards, sequence lengths, sample identifiers, routing information, metadata, and other auxiliary fields. These values can be represented as tensors, NumPy arrays, Python scalar lists, variable-length per-sample arrays, bytes, or arbitrary Python objects.
+
+Several properties make this data particularly challenging to move efficiently.
+
+**Challenge 1: Heterogeneous Data Types and Complex Semantics**
+
+Different rollout fields have fundamentally different representations and semantics. Dense tensors and numeric arrays can be transferred efficiently as typed buffers, while ragged sequences need row-boundary information, scalar lists need their original values preserved, and metadata or Python objects may require more general encoding. At the same time, the trainer must reconstruct the exact structure expected by the RL framework, including dtype, shape, row order, null state, and metadata. A generic serializer can handle these objects functionally, but often at the cost of extra conversion, copying, and reconstruction. Efficient rollout transfer therefore needs to understand both the physical representation and the logical structure of each field.
+
+**Challenge 2: Highly Fragmented Memory Layout**
+
+Rollout data can contain a very large number of small memory allocations. In the captured Miles workload, major fields such as tokens, loss_masks, and rollout_log_probs are represented as list[np.ndarray], with one NumPy array allocated for each sample. As batch size grows, transferring these fragments individually introduces repeated memory registration and Store operations, while serializing the full Python object requires walking, copying, and rebuilding a large object graph. The challenge is to turn fragmented logical data into efficient bulk transfers without losing its original structure.
+
+Together, these challenges make rollout data movement more than a bandwidth problem: the system must efficiently move fragmented, heterogeneous data while preserving its structure.
+
+An effective data path needs to satisfy several requirements at the same time:
+
+* **Efficiency:** avoid excessive serialization, copying, object reconstruction, and per-allocation transfer overhead.
+* **Correctness:** preserve field types, shapes, row boundaries, null state, metadata, and Python-level values through the round trip.
+* **Scalability:** continue to perform well as the number of samples, object fragments, and total payload size increase.
+* **Flexibility:** support heterogeneous fields without forcing the RL framework to flatten or rewrite its native rollout representation.
+* **Predictable handoff latency:** deliver the batch quickly enough that the trainer does not stall waiting for rollout data.
+
+## Powering Miles Rollout Data Transfer with Mooncake
+
+**Miles** is a high-performance reinforcement learning framework for large-scale model post-training. It combines **SGLang for high-throughput rollout generation** with **Megatron-LM for scalable training**, and also provides a PyTorch FSDP2 backend for workloads that prefer to train Hugging Face model implementations directly. Miles supports fully asynchronous RL, where rollout and training workers are decoupled and can progress independently, together with features such as fast in-loop weight updates, agentic rollout, low-precision training, and fault tolerance for large-scale production RL workloads.
+
+This disaggregated and asynchronous design makes the rollout-to-training data path a critical part of the RL pipeline. Rollout batches are structured and heterogeneous, often containing fragmented per-sample data and framework-specific metadata, making efficient transfer and reconstruction increasingly important as workload scale grows.
+
+**Mooncake** provides a high-performance data plane for distributed AI workloads. For RL rollout data, it extends this data plane with structured-object transfer, allowing heterogeneous and fragmented rollout objects to be moved while preserving their original structure and semantics.
+
+Mooncake has now been integrated into Miles as a rollout data-transfer backend. On rollout data captured from Miles, the integration delivers substantially lower transfer latency than the existing Ray path: remote GET is roughly **10–14× faster**, while PUT improves by about **1.2–1.6×**.
+
+The result is a faster rollout-to-training handoff without changing the RL programming model, providing Miles with a more efficient data path for large, structured rollout workloads.
+
+## How Rollout Data Moves Through the RL Pipeline
+
+Miles supports both synchronous and asynchronous training loops. In either mode, once rollout workers and trainers are deployed in separate processes or on separate machines, each completed rollout batch must cross that boundary before it can be consumed by the next training step.
+
+A useful design principle is to separate the **control plane** from the **data plane**. The framework scheduler decides where a rollout batch should go, but it should not carry the bulk payload itself. Instead, it passes a lightweight transfer reference that excludes tensor payloads and Store chunk layouts, while still allowing JSON-safe metadata when needed. The actual rollout payload takes a separate path:
+
+* the framework scheduler passes the transfer reference;
+* Mooncake stores and transfers the payload;
+* the training worker reconstructs the original object before running the training step;
+* after all readers finish, the framework removes the short-lived Store object.
+
+This separation keeps scheduling decisions lightweight while allowing the bulk rollout payload to move through a dedicated data path.
+
+### What Miles Actually Transfers
+
+The rollout data captured from **Miles** makes this data path concrete. For a given framework configuration, the field contract is stable, but the fields do not share one convenient in-memory representation. They fall into three broad groups:
+
+| Field Group | Miles Representation | Transfer Concern |
+| --- | --- | --- |
+| Token, mask, and log-probability rows | Per-sample numeric rows | Many separate row objects; lengths may differ by sample. |
+| IDs, lengths, rewards, and flags | Python scalar lists | Small in bytes but required by training. |
+| Optional and object metadata | Python values, tensor dictionaries, or nested objects | Preserve structure, nulls, and enabled-feature semantics. |
+
+The first group carries most of the bytes in our capture. The other fields are smaller, but they cannot be discarded or normalized away: they carry sample identity, lengths, rewards, feature state, and bookkeeping information. Their exact size depends on the workload; the benchmark section gives one measured example.
+
+### Miles Uses a Completed-Dict Handoff
+
+In **Miles**, the current handoff begins after the complete rollout dictionary is ready. The producer calls `put(data, type="dict")`, the scheduler carries the returned reference, and the trainer calls `get` to reconstruct the original dictionary.
+
+<center>
+<img src="/images/blog/miles-mooncake-rollout-data-transfer/rollout-data-plane.svg"
+     alt="Synchronous rollout transfer for Miles"
+     style="width:60%; max-width:1100px"/>
+</center>
+
+*Figure 1. Miles uses synchronous `put` and `get` for a completed rollout dict. The reference travels through the scheduler, while Mooncake moves the payload through the Store data plane.*
+
+The individual transfer calls are synchronous. The producer returns the reference only after `put` completes, and the trainer waits for `get` to finish before consuming the object.
+
+This does not prevent the RL pipeline itself from being asynchronous. Miles can generate rollout *N+1* while training on rollout *N*. In other words, the concurrency sits above the transfer operation: each individual handoff is synchronous, while different rollout and training stages can overlap at the pipeline level.
+
+## How Mooncake Preserves and Transfers Miles Rollout Data
+
+Mooncake tackles the two challenges at different layers. It keeps the structure visible long enough to choose an efficient representation for each field: tensors and arrays stay typed, ragged rows carry compact boundary metadata, and Python values retain what GET needs to rebuild them. It then turns fragmented memory into bulk I/O. A copy plan packs eligible small rows directly into reusable, registered BufferPool chunks, while large contiguous tensors and arrays can use native Store paths. This avoids both extremes: serializing the entire dict as one opaque blob or issuing a Store operation for every small allocation.
+
+The resulting payload members are published as a bundle. Its manifest records where those members live and how they fit together, and becomes visible only after the payload is ready. GET follows that description in reverse to fetch and reconstruct the original Miles dict. Miles still uses the small public interface, `put(data, type="dict")` and `get(ref, type="dict")`; the schema, field layouts, transfer plan, and reconstruction remain inside Mooncake.
+
+<center>
+<img src="/images/blog/miles-mooncake-rollout-data-transfer/structured-transfer-architecture.svg"
+     alt="Mooncake structured-object transfer architecture"
+     style="width:70%; max-width:1100px"/>
+</center>
+
+*Figure 2. Schema and leaf expansion expose each field's type and structure. Field-specific encoding produces typed payload members and reconstruction metadata; the Bundle Store publishes their manifest last. Eligible fragmented transfers use BufferPool-backed staging, and GET follows the same structure in reverse.*
+
+### Choose a Layout for Each Field
+
+Mooncake first expands the dict into leaves that can be encoded efficiently. Arrays and tensors remain typed, ragged rows carry compact boundary metadata, and supported Python values retain the information needed to reconstruct them. A framework-provided schema fixes the stored representation for ambiguous or performance-sensitive fields; when no schema is supplied, Mooncake infers one from the observed values.
+
+The same choice applies to multimodal data. Processed pixels and related model inputs can stay on the tensor path. PIL images, encoded PNG or JPEG bytes, and variable-length media lists use media-aware layouts that preserve their boundaries and reconstruction metadata without forcing every representation through the same serializer.
+
+### Turn Fragmented Memory into Bulk I/O
+
+Sending every row separately creates thousands of registrations and Store requests. Concatenating a whole field first avoids that request count, but adds a full-size temporary. Mooncake instead builds a copy plan and fills reusable, registered BufferPool chunks as they are needed. Its native path copies eligible numeric rows directly into those chunks, avoiding Python row loops and temporary concatenations. Large contiguous arrays and tensors still use direct or native paths when the Store supports them.
+
+### Publish Complete Bundles and Rebuild Directly
+
+Mooncake publishes the bundle manifest only after all payloads and metadata are ready, so a reader never sees a half-written Miles dict. On GET, the manifest identifies the members to fetch and the structured metadata describes how to rebuild each field. Eligible reads can target BufferPool-backed destinations without an intermediate `bytes` object, and typed ragged rows can view the result buffer directly.
+
+The trainer releases its local BufferPool-backed result after use. Once all readers finish, Miles removes the short-lived Store object and Mooncake reclaims its payload chunks and manifest.
+
+<center>
+<img src="/images/blog/miles-mooncake-rollout-data-transfer/challenge-response.svg"
+     alt="Rollout data challenges and Mooncake optimizations"
+     style="width:50%; max-width:1100px"/>
+</center>
+
+*Figure 3. The two main Miles rollout data challenges map directly to Mooncake's structured encoding and bulk-transfer optimizations.*
+
+## Performance Results
+
+For a fixed framework configuration, switching models does not by itself change the field contract. Transfer size instead follows the number of samples, prompt and response lengths, and optional fields such as teacher log probabilities, routing information, or multimodal inputs.
+
+### Benchmark Payload
+
+Miles generated the source data with Qwen3-0.6B on math prompts (`rollout_id=0`, 8 source samples). Every response in this capture has 256 tokens. For the benchmark, the three large numeric fields were normalized to typed ndarray rows while preserving their values, row lengths, dtypes, and per-sample fragmentation. Averaged across those samples, the logical payload breaks down as follows:
+
+| Part of One Captured Sample | Calculation | Logical Bytes |
+| --- | ---: | ---: |
+| `tokens` | Average prompt-plus-response token count x 4 B (`int32`) | ~1,338 B |
+| `loss_masks` | 256 entries x 4 B (`int32`) | 1,024 B |
+| `rollout_log_probs` | 256 entries x 4 B (`float32`) | 1,024 B |
+| Scalar and object fields | IDs, lengths, rewards, flags, and version metadata | ~36 B |
+| **Total** | | **~3,422 B** |
+
+The first three fields account for about 3,386 bytes, or 98.9% of this particular sample layout. Larger benchmark payloads repeat the eight captured samples, preserving their field types and fragmented allocation pattern while increasing the logical sample count. The calculation describes this capture; it does not define a fixed Miles sample size.
+
+<center>
+<img src="/images/blog/miles-mooncake-rollout-data-transfer/rollout-object-anatomy.svg"
+     alt="Miles rollout object anatomy"
+     style="width:50%; max-width:1100px"/>
+</center>
+
+_Figure 4. The measured composition of one sample in the Qwen3-0.6B benchmark capture._
+
+### Transfer Results
+
+The benchmark measures the completed flat-dict handoff used by Miles and compares the Miles Ray backend with Mooncake structured-object transfer.
+
+PUT is one timed backend call after the producer loads the payload. GET is the mean of three remote-consumer trials after one warmup. Reference serialization and scheduler handoff are outside the timed region. These numbers cover payload transfer and reconstruction, not end-to-end training throughput.
+
+Across the tested payload sizes, Mooncake makes Miles GET roughly 10–14x faster than the Ray backend. PUT improves by about 1.2–1.6x.
+
+<center>
+<img src="/images/blog/miles-mooncake-rollout-data-transfer/miles-get-latency.svg"
+     alt="Miles GET latency benchmark"
+     style="width:40%; max-width:1100px"/>
+</center>
+
+_Figure 5. Mooncake provides roughly 10–14x faster GET for this fragmented Miles rollout layout. The vertical axis uses a logarithmic scale._
+
+PUT shows a smaller gain. Its timed path includes Python-object traversal, ragged-row packing, metadata and manifest construction, and payload transfer. GET improves more for this workload, and the trainer must finish it before starting the training step.
+
+## What Comes Next
+
+The Miles integration establishes the basic data path. The main priority now is to validate, optimize, and integrate it across a wider range of RL workloads.
+
+- **Explore more models and workloads with the Miles community.** We will work with the Miles community to validate and optimize the integration across a broader range of models and real-world workloads.
+- **Optimize for their actual data shapes.** Media-heavy samples, long or incrementally growing trajectories, and batches with many small fields stress different parts of the path. Profiling real workloads will guide improvements to field encoding and reconstruction, packing, request count, metadata handling, and partial reads instead of relying on dense synthetic buffers.
+- **Isolate rollout data from KV cache workloads.** Mooncake needs separate accounting, quotas, and eviction policy for short-lived rollout data and KV cache data, so a burst of rollout traffic cannot evict latency-sensitive cache entries.
+
+## Acknowledgements
+
+This work crossed several repository boundaries, and so did its review and validation. We thank Xinpeng Zhao ([@zxpdemonio](https://github.com/zxpdemonio)), Teng Ma ([@stmatengss](https://github.com/stmatengss)), Xingyuan Wu ([@yokinoshitayoki](https://github.com/yokinoshitayoki)), [@fzyzcjy](https://github.com/fzyzcjy), [@guapisolo](https://github.com/guapisolo), Xuchun Shang ([@XucSh](https://github.com/XucSh)), Bo Gao ([@Bo-Vincent](https://github.com/Bo-Vincent)), He Zhou ([@ehuohz](https://github.com/ehuohz)), and Yufeng He ([@he-yufeng](https://github.com/he-yufeng)) for their contributions across Mooncake implementation and review, Miles integration and validation, and design feedback, review, and testing.
+
+## Related Links
+
+- Mooncake project: [https://github.com/kvcache-ai/Mooncake](https://github.com/kvcache-ai/Mooncake)
+- Mooncake documentation: [https://kvcache-ai.github.io/Mooncake/](https://kvcache-ai.github.io/Mooncake/)
+- Miles Mooncake rollout transfer user guide: [radixark/miles#2535](https://github.com/radixark/miles/pull/2535)

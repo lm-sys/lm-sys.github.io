@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" role="img" aria-labelledby="title desc">
+  <title id="title">Qwen3-0.6B Miles benchmark capture</title>
+  <desc id="desc">In one Qwen3-0.6B Miles benchmark capture, tokens, loss masks, and rollout log probabilities account for about 98.9 percent of the average logical bytes per sample. These values are capture-specific.</desc>
+  <defs>
+    <style>
+      .bg { fill: #fbfaf7; }
+      .label { font: 600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #22313f; }
+      .value { font: 500 20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #425466; }
+      .body { font: 500 19px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #5d6b7a; }
+      .panel { fill: #fff; stroke: #cfd7dc; stroke-width: 1.5; rx: 8; }
+      .token { fill: #b9ddd5; stroke: #187a6d; stroke-width: 1.4; }
+      .mask { fill: #d7e6f3; stroke: #405f82; stroke-width: 1.4; }
+      .prob { fill: #e8ddf1; stroke: #76588b; stroke-width: 1.4; }
+      .other { fill: #f3c784; stroke: #b96d20; stroke-width: 1.4; }
+      .callout { fill: none; stroke: #b96d20; stroke-width: 1.8; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="760" height="430"/>
+  <rect x="22" y="22" width="716" height="386" class="panel"/>
+
+  <rect x="50" y="78" width="258" height="112" class="token"/>
+  <text x="179" y="124" class="label" text-anchor="middle">tokens</text>
+  <text x="179" y="157" class="value" text-anchor="middle">~1,338 B</text>
+
+  <rect x="308" y="78" width="197" height="112" class="mask"/>
+  <text x="406.5" y="124" class="label" text-anchor="middle">loss_masks</text>
+  <text x="406.5" y="157" class="value" text-anchor="middle">1,024 B</text>
+
+  <rect x="505" y="78" width="197" height="112" class="prob"/>
+  <text x="603.5" y="116" class="label" text-anchor="middle">rollout</text>
+  <text x="603.5" y="143" class="label" text-anchor="middle">log_probs</text>
+  <text x="603.5" y="172" class="value" text-anchor="middle">1,024 B</text>
+
+  <rect x="702" y="78" width="8" height="112" class="other"/>
+  <path d="M706 78 V54 H612" class="callout"/>
+  <text x="600" y="61" class="value" text-anchor="end">other · ~36 B</text>
+
+  <text x="50" y="250" class="label">~98.9% in three array-list fields</text>
+  <text x="50" y="302" class="label">Smaller fields still preserve:</text>
+  <text x="50" y="340" class="body">IDs · lengths · rewards · flags · weight versions</text>
+  <text x="50" y="378" class="body">Qwen3-0.6B capture · ~3,422 B/sample average</text>
+</svg>
