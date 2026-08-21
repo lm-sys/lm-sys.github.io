@@ -1,7 +1,7 @@
 ---
 title: "Fast Engine Recovery: Sub-Second Engine Restart for SGLang via Weight Cache Daemon"
 author: "Ant Ling Infra Team (Ant Group), Alibaba, SGLang Team"
-date: "August 9, 2026"
+date: "August 21, 2026"
 previewImg: /images/blog/sglang-fast-recovery/preview.png
 ---
 
