@@ -241,7 +241,7 @@ Each environment flag was A/B'd on its own before anything was combined:
 
 The flag-level trajectory, at a fixed speculation configuration, all at 8192-in / 1024-out and concurrency 1: synchronous scheduling 1.67 ms → overlap scheduling with the radix cache off 1.48 ms (the scheduler tail's idle window collapsed from 1118 µs to 85 µs) → fused KDA verify 1.34 ms.
 
-The deployed configuration, measured over 1000 requests at concurrency 1: accept 9.95, mean TPOT 0.78 ms, median TPOT 0.51 ms, 1120 tok/s output throughput, 1945 tok/s peak.
+The deployed configuration, measured over 1000 requests at concurrency 1: accept 9.95, mean TPOT 0.78 ms, median TPOT 0.51 ms, 1120 tok/s output throughput, 1945 tok/s peak. The 9.95 accept length was measured with a block_size 16 DSpark draft; the released draft checkpoint uses block_size 8. DSpark takes no speculative-num-steps / draft-tokens flags; those are NEXTN-only.
 
 Multiplying median TPOT by mean accept length gives 0.51 × 9.95 ≈ 5.1 ms, close to the step time the earlier trace measured (about 5.3 ms in total, before the KDA fusion). Read that only as a rough consistency check: it mixes a median with a mean, and against a distribution this wide it is not the median step time. Measuring step time directly from the trace is the way to close it, and we have not done that for the DSpark configuration. What the trace does support is the qualitative conclusion: the host is out of the way again, and what remains is on the GPU.
 
@@ -266,7 +266,9 @@ So the roadmap is short:
 ## Reproducing
 
 ```bash
+SGLANG_ENABLE_METADATA_GLUE_GRAPH=1 \
 SGLANG_OPT_FUSED_KDA_VERIFY=1 \
+SGLANG_ENABLE_FUSED_VERIFY_EXTEND_GRAPH=1 \
 python3 -m sglang.launch_server \
   --model-path inclusionAI/Ling-3.0-flash \
   --tp-size 4 --trust-remote-code \
@@ -282,7 +284,11 @@ python3 -m sglang.launch_server \
 For the DSpark configuration, swap the speculation flags for a DSpark draft checkpoint:
 
 ```bash
-SGLANG_RAGGED_VERIFY_MODE=static SGLANG_OPT_FUSED_KDA_VERIFY=1 \
+SGLANG_SKIP_SGL_KERNEL_VERSION_CHECK=1 \
+SGLANG_RAGGED_VERIFY_MODE=static \
+SGLANG_ENABLE_SPEC_V2=True \
+SGLANG_OPT_FUSED_KDA_VERIFY=1 \
+SGLANG_ENABLE_FUSED_VERIFY_EXTEND_GRAPH=1 \
 python3 -m sglang.launch_server \
   --model-path inclusionAI/Ling-3.0-flash \
   --tp-size 4 --trust-remote-code \
