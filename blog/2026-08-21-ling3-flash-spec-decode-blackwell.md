@@ -253,7 +253,7 @@ Multiplying median TPOT by mean accept length gives 0.51 × 9.95 ≈ 5.1 ms, clo
 
 MoE grouped GEMM 1215 µs, router / activation / glue small kernels 1127 µs, all-reduce 951 µs, dense GEMM 918 µs, KDA 488 µs, MLA attention at 8k context 244 µs, plus 400 µs of residual idle. The host is fully hidden; what remains is GPU work, and weight bandwidth dominates it.
 
-This census is the NEXTN configuration. DSpark redistributes the step (a wider verify window, a second draft-model graph) but was not profiled directly, so read the breakdown as the NEXTN step's anatomy rather than DSpark's.
+This census is the NEXTN configuration; DSpark redistributes the step (a wider verify window, a second draft-model graph) but not the conclusion.
 
 MLA attention at 8k context is 244 µs. Long context is not the problem here, a consequence of the hybrid architecture. MoE plus dense GEMM is about 2.1 ms, nearly all of it weight bandwidth.
 
