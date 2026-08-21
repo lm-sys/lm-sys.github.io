@@ -163,7 +163,7 @@ KDA chain-verify tile economics. The fused conv1d + gating delta-rule verify ker
 
 ## bf16 router gate and lm_head
 
-The largest single post-structural change was not a kernel at all. At batch 1, the router gate and the lm_head are pure bandwidth: every decode step cold-reads each MoE layer's gate weight (2.6 MB in bf16) and the vocab-parallel lm_head projection, and neither has arithmetic to hide the read behind. Running both in bf16 instead of fp32 halves those bytes; end to end it was worth roughly +10%, the largest gain of any single change after the host run-ahead fix. Like the other rounding changes above, this one was declared in its commit message and validated on accept length and task metrics rather than bit parity.
+The largest single post-structural change was a dtype change. At batch 1, the router gate and the lm_head are pure bandwidth: every decode step cold-reads each MoE layer's gate weight (2.6 MB in bf16) and the vocab-parallel lm_head projection, and neither has arithmetic to hide the read behind. Running both in bf16 instead of fp32 halves those bytes; end to end it was worth roughly +10%, the largest gain of any single change after the host run-ahead fix. Like the other rounding changes above, this one was declared in its commit message and validated on accept length and task metrics rather than bit parity.
 
 ## KDA under speculation
 
