@@ -284,11 +284,7 @@ python3 -m sglang.launch_server \
 For the DSpark configuration, swap the speculation flags for a DSpark draft checkpoint:
 
 ```bash
-SGLANG_SKIP_SGL_KERNEL_VERSION_CHECK=1 \
-SGLANG_RAGGED_VERIFY_MODE=static \
-SGLANG_ENABLE_SPEC_V2=True \
 SGLANG_OPT_FUSED_KDA_VERIFY=1 \
-SGLANG_ENABLE_FUSED_VERIFY_EXTEND_GRAPH=1 \
 python3 -m sglang.launch_server \
   --model-path inclusionAI/Ling-3.0-flash \
   --tp-size 4 --trust-remote-code \
