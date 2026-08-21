@@ -6,7 +6,7 @@ previewImg: /images/blog/ling3-flash-batch1/00_headline.png
 type: blog
 ---
 
-Batch-1 decode keeps getting more important. Xiaomi MiMo, for example, recently announced MiMo-V2.5-Pro UltraSpeed and claims to have broken 1,000 tok/s on a one-trillion-parameter MoE model.
+Batch-1 decode keeps getting more important. Xiaomi MiMo, for example, [announced MiMo-V2.5-Pro UltraSpeed in June](https://mimo.xiaomi.com/blog/mimo-tilert-1000tps), claiming 1,000 tok/s decode on a one-trillion-parameter MoE model.
 
 Batch 1 gives an inference stack no room to hide overhead. There is no batch to amortize launch cost across, no concurrency to fill pipeline bubbles, and not enough arithmetic intensity for clever tiling to pay off. Every microsecond on the critical path is a microsecond the user waits.
 
@@ -36,7 +36,7 @@ On GSM8K, the same stack scored: accuracy 0.889, invalid 0.000, latency 341.5 s,
 
 All runs use Ling-3.0-flash on 4 Blackwell GPUs, TP4, bf16, concurrency 1, greedy decoding, and the same fixed 8192-input / 1024-output random workload. From left to right, the columns show the initial NEXTN baseline, NEXTN after the draft-extend graph fix, final tuned NEXTN, and DSpark. The first two are shorter campaign checkpoints; the last two are the controlled comparison, each measured over the same 1000 requests on the same machine. Peak throughput is compared only between the last two runs because it is the maximum over fixed one-second windows.
 
-Two definitions matter here, because together they explain why output throughput is not simply the reciprocal of mean TPOT even at concurrency 1: SGLang's TPOT excludes TTFT, while output throughput divides total output tokens by total benchmark wall time (see the [bench_serving guide](https://github.com/sgl-project/sglang/blob/main/docs/developer_guide/bench_serving.md)). Every figure in this post is measured on a synthetic `random` workload; accept length in particular depends on the prompt and output distribution, so 9.95 is this workload's accept length rather than the model's.
+Two definitions matter here, because together they explain why output throughput is not simply the reciprocal of mean TPOT even at concurrency 1: SGLang's TPOT excludes TTFT, while output throughput divides total output tokens by total benchmark wall time (see the [bench_serving guide](https://github.com/sgl-project/sglang/blob/main/docs/developer_guide/bench_serving.md)). All headline benchmark runs in this post use a synthetic `random` workload; accept length in particular depends on the prompt and output distribution, so 9.95 is this workload's accept length rather than the model's.
 
 ---
 
@@ -91,7 +91,7 @@ The profiler inflates host-side events. CUPTI adds overhead to each host event i
 
 Microbenchmarks run optimistic for cold-weight kernels. A loop calling one kernel repeatedly keeps its 2.6 MB gate weight resident in L2, while the real model flushes L2 with about 94 MB of expert traffic between consecutive calls to the same layer. Hot 7 µs, cold 11 µs: enough to reverse a ranking against the library GEMV.
 
-Peak throughput is a single-window statistic. The benchmark's peak number is the maximum over a fixed 1-second grid, so it carries roughly a ±5% phase band: shifted TTFT/TPOT re-slices the grid, and a change that improves mean throughput by 2.3% can print as a drop from 909 to 858. Both readings reproduce exactly under a fixed seed, so reproducibility does not separate signal from phase. A/B decisions here are made on mean TPOT × mean accept length. That product is a derived estimate of step time rather than a measured one (the product of two aggregates is not the aggregate of the product), but it is stable across runs and invariant to accept-length shifts, which is what an A/B criterion needs. We report peak but never optimized against it.
+Peak throughput is a single-window statistic. The benchmark's peak number is the maximum over a fixed 1-second grid, so it carries roughly a ±5% phase band: shifted TTFT/TPOT re-slices the grid, and a change that improves mean throughput by 2.3% can print as a drop from 909 to 858. Both readings reproduce exactly under a fixed seed, so reproducibility does not separate signal from phase. A/B decisions here are made on mean TPOT × mean accept length. That product is a derived estimate of step time rather than a measured one (the product of two aggregates is not the aggregate of the product), but it is stable across runs and insensitive to accept-length drift in these runs, which is what an A/B criterion needs. We report peak but never optimized against it.
 
 Correctness had its own gate, applied to every change before it stayed: byte-exact comparison of a 256-token greedy generation, accept length unchanged within 0.05, and a greedy re-run after interleaving temperature-sampled requests to catch state pollution. Changes that legitimately alter rounding (the bf16 gate, the single-rounding combine) said so in their commit message and were validated on accept and task metrics instead of bit parity.
 
@@ -151,7 +151,7 @@ PDL is pure scheduling semantics. Changes whose accumulation order is unchanged 
 
 `moe_align`, on the pair axis. The Triton fused-MoE GEMM consumes tokens in `block_size` tiles where every row shares an expert, and `moe_align_block_size` builds that permutation. The generic path needs two kernel launches: no token can be placed until every expert's offset is final, those offsets come out of a grid-wide scan, and a device-wide barrier exists only at a kernel boundary. A single-launch variant exists, but it stages per-thread expert counters in shared memory, so it is limited to 64 experts or fewer; a 513-expert decode always paid two launches.
 
-The replacement works on the pair axis: an [NP, NP] pairwise comparison gives every (token, slot) pair a stable rank within its bucket and its bucket population in one shot; the rank-0 representative of each bucket then derives padded counts, bucket-ordered exclusive offsets, the published total, and per-block expert ids. Nothing scales with the expert count, so the expert-count limit disappears. The obvious alternative, histogram and cumsum over roughly 1k buckets on the expert axis, is correct but puts about 3x more single-SM work on the critical path than the two kernels it replaces. That is why the pair axis is load-bearing rather than a matter of taste.
+The replacement works on the pair axis: an [NP, NP] pairwise comparison gives every (token, slot) pair a stable rank within its bucket and its bucket population in one shot; the rank-0 representative of each bucket then derives padded counts, bucket-ordered exclusive offsets, the published total, and per-block expert ids. Nothing scales with the expert count, so the expert-count limit disappears. The obvious alternative, histogram and cumsum over roughly 1k buckets on the expert axis, is correct but puts about 3x more single-SM work on the critical path than the two kernels it replaces. That is what makes the pair axis load-bearing here.
 
 Two deliberate deviations from the reference, both argued from consumer invariants: intra-bucket order is stable in pair index rather than atomic-scheduling order (every pair writes its own output row, so consumers are order-invariant), and the buffer tail beyond the published total is left unwritten (consumer CTAs early-exit before reading it). One cliff: the pairwise tensors are O(NP²). They live entirely in registers at NP=64 (about 4 µs, on par with the CUDA two-kernel path) and spill to local memory at NP=256, costing about 230 µs per launch. The dispatch gate is a hard `numel ≤ 64`; larger batches fall back to the CUDA path.
 
@@ -173,7 +173,7 @@ Profiling shows KDA decode is bandwidth-bound, mostly HBM traffic on the K×V st
 
 Weight-bandwidth dominance has a counter-intuitive corollary: verifying more tokens is nearly free. Verifying 4 tokens and verifying 6 tokens read exactly the same weights. Deepening speculation at batch 1 costs one extra cheap draft forward per added step (the draft is a single layer) plus the incremental serial cost in the KDA chain-verify recurrence, and buys accept length.
 
-We swept it rather than assuming it:
+We swept it rather than assuming it (this sweep predates the fusion bundle; the optimum moved afterwards, as noted below):
 
 | steps / draft tokens | accept length | mean TPOT | step time (derived) | steady-state tok/s |
 |-|-|-|-|-|
@@ -207,13 +207,13 @@ Acceptance-aware optimization. On top of the public DSpark loss setup, we added 
 
 *Figure 9. Acceptance-aware optimization.*
 
-### 47% idle, and one mechanism behind all of it
+### 47% idle, and the mechanism behind it
 
 The first DSpark trace on Blackwell TP4 at batch 1, over 239 steady-state decode iterations, was nowhere near the state the NEXTN path had reached. Median step time was 10.62 ms with 4.99 ms of GPU idle (47%).
 
 The idle was not inside the CUDA graphs: in-graph micro-gaps totaled about 80 ms out of 3 seconds. It was all in the eager segments between graphs, as four or five medium gaps of 100 µs to 2 ms per step.
 
-FlashInfer's `plan()`, both the fa2 `BatchPrefillWithPagedKVCacheWrapper` and the MLA wrapper, was being fed device tensors, and internally it does a blocking `.to("cpu")` on each of `qo_indptr`, `kv_indptr`, and `kv_len_arr`. A blocking D2H waits for everything in flight on the stream, including the draft graph that is still executing. So every step, the CPU was pinned to GPU progress right after the draft launch; the roughly 1 ms of `cudaGraphLaunch` CPU cost had no GPU-busy window left to hide in; and the scheduler tail serialized behind both.
+Both FlashInfer `plan()` implementations, the fa2 `BatchPrefillWithPagedKVCacheWrapper` and the MLA wrapper, were being fed device tensors, and internally they do a blocking `.to("cpu")` on each of `qo_indptr`, `kv_indptr`, and `kv_len_arr`. A blocking D2H waits for everything in flight on the stream, including the draft graph that is still executing. So every step, the CPU was pinned to GPU progress right after the draft launch; the roughly 1 ms of `cudaGraphLaunch` CPU cost had no GPU-busy window left to hide in; and the scheduler tail serialized behind both.
 
 Structurally this is the `resolve_seq_lens_cpu` pin again: a host-side blocking read of a device-resident value that resets run-ahead to zero every step, in an unrelated subsystem. The rule it suggests: at batch 1, look for blocking reads of device values on the host path before anything else, because each one converts the entire host loop from hidden work into a GPU bubble.
 
@@ -224,7 +224,7 @@ Those three arrays never needed to come from the device. The DFLASH family guara
 - fa2 side. Install `fast_prefill_plan` on the per-batch-size target-verify wrappers at capture time, gated on the DFLASH verify input type so EAGLE's target-verify is untouched, plus an assertion that no custom mask is present (fast plans do not support one; DFLASH never has one).
 - MLA side. Build the plan kwargs from `seq_lens_cpu` in pure host arithmetic with zero D2H, write `kv_indices` directly into the wrapper's CUDA-graph buffer through a new `kv_indices_buf` parameter, and call `fast_mla_decode_plan(causal=True)`, skipping three blocking D2Hs and four device buffer refreshes. Capture still runs the real `plan()`, which is what populates the cached module and the wrapper's buffers.
 
-The other two fixes came free. `graph.replay()` was always a pure enqueue; nothing prevented the CPU from queueing draft graph → verify prep → verify graph back to back except the D2H standing in the middle. With it removed, verify metadata prep and both graph launches are enqueued while the draft graph is still executing, and the two graphs run back to back on the GPU.
+The other two fixes required no extra work. `graph.replay()` was always a pure enqueue; nothing prevented the CPU from queueing draft graph → verify prep → verify graph back to back except the D2H standing in the middle. With it removed, verify metadata prep and both graph launches are enqueued while the draft graph is still executing, and the two graphs run back to back on the GPU.
 
 ### Results
 
@@ -239,7 +239,7 @@ The flag-level trajectory, at a fixed speculation configuration, all at 8192-in 
 
 The deployed configuration, measured over 1000 requests at concurrency 1: accept 9.95, mean TPOT 0.78 ms, median TPOT 0.51 ms, 1120 tok/s output throughput, 1945 tok/s peak.
 
-Multiplying median TPOT by mean accept length gives 0.51 × 9.95 ≈ 5.1 ms, close to the GPU-busy floor the trace measured (about 5.3 ms, before the KDA fusion). Read that only as a rough consistency check: it mixes a median with a mean, and against a distribution this wide it is not the median step time. Measuring step time directly from the trace is the way to close it, and we have not done that for the DSpark configuration. What the trace does support is the qualitative conclusion: the host is out of the way again, and what remains is on the GPU.
+Multiplying median TPOT by mean accept length gives 0.51 × 9.95 ≈ 5.1 ms, close to the step time the earlier trace measured (about 5.3 ms in total, before the KDA fusion). Read that only as a rough consistency check: it mixes a median with a mean, and against a distribution this wide it is not the median step time. Measuring step time directly from the trace is the way to close it, and we have not done that for the DSpark configuration. What the trace does support is the qualitative conclusion: the host is out of the way again, and what remains is on the GPU.
 
 ## Where the time goes now
 
@@ -249,7 +249,7 @@ Multiplying median TPOT by mean accept length gives 0.51 × 9.95 ≈ 5.1 ms, clo
 
 MoE grouped GEMM 1215 µs, router / activation / glue small kernels 1127 µs, all-reduce 951 µs, dense GEMM 918 µs, KDA 488 µs, MLA attention at 8k context 244 µs, plus 400 µs of residual idle. The host is fully hidden; what remains is GPU work, and weight bandwidth dominates it.
 
-MLA attention at 8k context is 244 µs. Long context is not the problem here, which is the hybrid architecture doing its job. MoE plus dense GEMM is about 2.1 ms, nearly all of it weight bandwidth.
+MLA attention at 8k context is 244 µs. Long context is not the problem here, a consequence of the hybrid architecture. MoE plus dense GEMM is about 2.1 ms, nearly all of it weight bandwidth.
 
 So the roadmap is short:
 
