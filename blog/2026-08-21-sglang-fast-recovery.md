@@ -34,7 +34,7 @@ Where does the time go? We profiled a complete SGLang engine startup for Ling-2.
 |-------|----------|------------|-------|
 | Pre-init & ServerArgs | ~1 | 0.2% | Pre-init and ServerArgs parsing |
 | Tokenizer init | ~13 | 2.4% | load and init tokenizer |
-| Init torch distributed | ~5 | 0.9% | NCCL 2.28.9,8 卡 H20,NVLink mesh 370.8 GB/s,P2P/IPC;slowest rank TP1=5.19s |
+| Init torch distributed | ~5 | 0.9% | NCCL 2.28.9,8*H20,NVLink mesh 370.8 GB/s,P2P/IPC;slowest rank TP1=5.19s |
 | Load weight (disk) | ~495 | 93.9% | 161 shard,W8A8 FP8 (CompressedTensorsW8A8Fp8MoE),slowest rank=495.3s, 120GB per card; Disk I/O bound |
 | Cache allocation (KV+Mamba) | ~1 | 0.2% | KV:553,599 tokens/5.94GB bf16;Mamba SSM state:5.33GB,max_mamba_cache_size=155 |
 | Capture CUDA graph | ~7.7 | 1.5% | only 3 decode BS [1,2,4] |
