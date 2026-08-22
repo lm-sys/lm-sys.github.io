@@ -2,22 +2,22 @@
 <title id="title">MiniMax-H3 H200 speedup comparison</title>
 <desc id="desc">Four panels compare speedup against the matching Diffusers case for T2VA and FL2VA at five and ten seconds on eight H200 GPUs.</desc>
 <rect width="1080" height="760" rx="14" fill="#f0eee6"/>
-<text x="30.0" y="251.0" font-family="Arial, Helvetica, sans-serif" font-size="20.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">Speedup versus the matching Diffusers case (higher is better)</text>
-<text x="30.0" y="275.0" font-family="Arial, Helvetica, sans-serif" font-size="12.0px" font-weight="400" fill="#6b675f" text-anchor="start">The orange-red bars are the Cache-DiT + SubBlock combinations; the fastest tested mode is 0.80 + Cache-DiT stride</text>
-<text x="30.0" y="313.0" font-family="Arial, Helvetica, sans-serif" font-size="14.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">T2VA</text>
-<text x="30.0" y="331.0" font-family="Arial, Helvetica, sans-serif" font-size="10.5px" font-weight="400" fill="#6b675f" text-anchor="start">5s output · baseline = 1.00×</text>
+<text x="30.0" y="35.0" font-family="Arial, Helvetica, sans-serif" font-size="20.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">Speedup versus the matching Diffusers case (higher is better)</text>
+<text x="30.0" y="59.0" font-family="Arial, Helvetica, sans-serif" font-size="12.0px" font-weight="400" fill="#6b675f" text-anchor="start">The orange-red bars are the Cache-DiT + SubBlock combinations; the fastest tested mode is 0.80 + Cache-DiT stride</text>
+<text x="30.0" y="97.0" font-family="Arial, Helvetica, sans-serif" font-size="14.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">T2VA</text>
+<text x="30.0" y="115.0" font-family="Arial, Helvetica, sans-serif" font-size="10.5px" font-weight="400" fill="#6b675f" text-anchor="start">5s output · baseline = 1.00×</text>
 <line x1="314.8" y1="130.0" x2="314.8" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="314.8" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">1.00×</text>
+<text x="314.8" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">1.00×</text>
 <line x1="349.7" y1="130.0" x2="349.7" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="349.7" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">2.00×</text>
+<text x="349.7" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">2.00×</text>
 <line x1="384.5" y1="130.0" x2="384.5" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="384.5" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">3.00×</text>
+<text x="384.5" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">3.00×</text>
 <line x1="419.4" y1="130.0" x2="419.4" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="419.4" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">4.00×</text>
+<text x="419.4" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">4.00×</text>
 <line x1="454.2" y1="130.0" x2="454.2" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="454.2" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">5.00×</text>
+<text x="454.2" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">5.00×</text>
 <line x1="489.1" y1="130.0" x2="489.1" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="489.1" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">6.00×</text>
+<text x="489.1" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">6.00×</text>
 <text x="272.0" y="358.0" font-family="Arial, Helvetica, sans-serif" font-size="9.2px" font-weight="400" fill="#1f1e1d" text-anchor="end">Diffusers BF16 dense</text>
 <text x="272.0" y="368.0" font-family="Arial, Helvetica, sans-serif" font-size="9.2px" font-weight="400" fill="#1f1e1d" text-anchor="end">+ Ulysses8</text>
 <rect x="280.0" y="348.0" width="34.8" height="23.0" rx="3" fill="#77736b"><title>Diffusers: 1.00×</title></rect>
@@ -52,21 +52,21 @@
 <rect x="280.0" y="132.0" width="176.4" height="23.0" rx="3" fill="#c94e3d"><title>SubBlock 0.80 + Cache-DiT stride: 5.06×</title></rect>
 <text x="451.4" y="147.0" font-family="Arial, Helvetica, sans-serif" font-size="9.4px" font-weight="600" fill="#fffaf2" text-anchor="end">5.06×</text>
 <line x1="280.0" y1="373.0" x2="510.0" y2="373.0" stroke="#6b675f" stroke-width="1"/>
-<text x="395.0" y="621.0" font-family="Arial, Helvetica, sans-serif" font-size="10.0px" font-weight="400" fill="#6b675f" text-anchor="middle">×</text>
-<text x="550.0" y="313.0" font-family="Arial, Helvetica, sans-serif" font-size="14.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">T2VA</text>
-<text x="550.0" y="331.0" font-family="Arial, Helvetica, sans-serif" font-size="10.5px" font-weight="400" fill="#6b675f" text-anchor="start">10s output · baseline = 1.00×</text>
+<text x="395.0" y="405.0" font-family="Arial, Helvetica, sans-serif" font-size="10.0px" font-weight="400" fill="#6b675f" text-anchor="middle">×</text>
+<text x="550.0" y="97.0" font-family="Arial, Helvetica, sans-serif" font-size="14.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">T2VA</text>
+<text x="550.0" y="115.0" font-family="Arial, Helvetica, sans-serif" font-size="10.5px" font-weight="400" fill="#6b675f" text-anchor="start">10s output · baseline = 1.00×</text>
 <line x1="834.8" y1="130.0" x2="834.8" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="834.8" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">1.00×</text>
+<text x="834.8" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">1.00×</text>
 <line x1="869.7" y1="130.0" x2="869.7" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="869.7" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">2.00×</text>
+<text x="869.7" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">2.00×</text>
 <line x1="904.5" y1="130.0" x2="904.5" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="904.5" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">3.00×</text>
+<text x="904.5" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">3.00×</text>
 <line x1="939.4" y1="130.0" x2="939.4" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="939.4" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">4.00×</text>
+<text x="939.4" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">4.00×</text>
 <line x1="974.2" y1="130.0" x2="974.2" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="974.2" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">5.00×</text>
+<text x="974.2" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">5.00×</text>
 <line x1="1009.1" y1="130.0" x2="1009.1" y2="373.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="1009.1" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">6.00×</text>
+<text x="1009.1" y="389.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">6.00×</text>
 <text x="792.0" y="358.0" font-family="Arial, Helvetica, sans-serif" font-size="9.2px" font-weight="400" fill="#1f1e1d" text-anchor="end">Diffusers BF16 dense</text>
 <text x="792.0" y="368.0" font-family="Arial, Helvetica, sans-serif" font-size="9.2px" font-weight="400" fill="#1f1e1d" text-anchor="end">+ Ulysses8</text>
 <rect x="800.0" y="348.0" width="34.8" height="23.0" rx="3" fill="#77736b"><title>Diffusers: 1.00×</title></rect>
@@ -101,21 +101,21 @@
 <rect x="800.0" y="132.0" width="199.5" height="23.0" rx="3" fill="#c94e3d"><title>SubBlock 0.80 + Cache-DiT stride: 5.72×</title></rect>
 <text x="994.5" y="147.0" font-family="Arial, Helvetica, sans-serif" font-size="9.4px" font-weight="600" fill="#fffaf2" text-anchor="end">5.72×</text>
 <line x1="800.0" y1="373.0" x2="1030.0" y2="373.0" stroke="#6b675f" stroke-width="1"/>
-<text x="915.0" y="623.7" font-family="Arial, Helvetica, sans-serif" font-size="10.0px" font-weight="400" fill="#6b675f" text-anchor="middle">×</text>
-<text x="30.0" y="650.7" font-family="Arial, Helvetica, sans-serif" font-size="14.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">FL2VA</text>
-<text x="30.0" y="668.7" font-family="Arial, Helvetica, sans-serif" font-size="10.5px" font-weight="400" fill="#6b675f" text-anchor="start">5s output · baseline = 1.00×</text>
+<text x="915.0" y="405.0" font-family="Arial, Helvetica, sans-serif" font-size="10.0px" font-weight="400" fill="#6b675f" text-anchor="middle">×</text>
+<text x="30.0" y="432.0" font-family="Arial, Helvetica, sans-serif" font-size="14.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">FL2VA</text>
+<text x="30.0" y="450.0" font-family="Arial, Helvetica, sans-serif" font-size="10.5px" font-weight="400" fill="#6b675f" text-anchor="start">5s output · baseline = 1.00×</text>
 <line x1="314.8" y1="465.0" x2="314.8" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="314.8" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">1.00×</text>
+<text x="314.8" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">1.00×</text>
 <line x1="349.7" y1="465.0" x2="349.7" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="349.7" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">2.00×</text>
+<text x="349.7" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">2.00×</text>
 <line x1="384.5" y1="465.0" x2="384.5" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="384.5" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">3.00×</text>
+<text x="384.5" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">3.00×</text>
 <line x1="419.4" y1="465.0" x2="419.4" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="419.4" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">4.00×</text>
+<text x="419.4" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">4.00×</text>
 <line x1="454.2" y1="465.0" x2="454.2" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="454.2" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">5.00×</text>
+<text x="454.2" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">5.00×</text>
 <line x1="489.1" y1="465.0" x2="489.1" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="489.1" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">6.00×</text>
+<text x="489.1" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">6.00×</text>
 <text x="272.0" y="694.3" font-family="Arial, Helvetica, sans-serif" font-size="9.2px" font-weight="400" fill="#1f1e1d" text-anchor="end">Diffusers BF16 dense</text>
 <text x="272.0" y="704.3" font-family="Arial, Helvetica, sans-serif" font-size="9.2px" font-weight="400" fill="#1f1e1d" text-anchor="end">+ Ulysses8</text>
 <rect x="280.0" y="685.7" width="34.8" height="20.3" rx="3" fill="#77736b"><title>Diffusers: 1.00×</title></rect>
@@ -153,21 +153,21 @@
 <rect x="280.0" y="467.0" width="204.2" height="20.3" rx="3" fill="#c94e3d"><title>SubBlock 0.80 + Cache-DiT stride: 5.86×</title></rect>
 <text x="479.2" y="480.7" font-family="Arial, Helvetica, sans-serif" font-size="9.4px" font-weight="600" fill="#fffaf2" text-anchor="end">5.86×</text>
 <line x1="280.0" y1="708.0" x2="510.0" y2="708.0" stroke="#6b675f" stroke-width="1"/>
-<text x="395.0" y="958.7" font-family="Arial, Helvetica, sans-serif" font-size="10.0px" font-weight="400" fill="#6b675f" text-anchor="middle">×</text>
-<text x="550.0" y="650.7" font-family="Arial, Helvetica, sans-serif" font-size="14.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">FL2VA</text>
-<text x="550.0" y="668.7" font-family="Arial, Helvetica, sans-serif" font-size="10.5px" font-weight="400" fill="#6b675f" text-anchor="start">10s output · baseline = 1.00×</text>
+<text x="395.0" y="740.0" font-family="Arial, Helvetica, sans-serif" font-size="10.0px" font-weight="400" fill="#6b675f" text-anchor="middle">×</text>
+<text x="550.0" y="432.0" font-family="Arial, Helvetica, sans-serif" font-size="14.0px" font-weight="600" fill="#1f1e1d" text-anchor="start">FL2VA</text>
+<text x="550.0" y="450.0" font-family="Arial, Helvetica, sans-serif" font-size="10.5px" font-weight="400" fill="#6b675f" text-anchor="start">10s output · baseline = 1.00×</text>
 <line x1="834.8" y1="465.0" x2="834.8" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="834.8" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">1.00×</text>
+<text x="834.8" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">1.00×</text>
 <line x1="869.7" y1="465.0" x2="869.7" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="869.7" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">2.00×</text>
+<text x="869.7" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">2.00×</text>
 <line x1="904.5" y1="465.0" x2="904.5" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="904.5" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">3.00×</text>
+<text x="904.5" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">3.00×</text>
 <line x1="939.4" y1="465.0" x2="939.4" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="939.4" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">4.00×</text>
+<text x="939.4" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">4.00×</text>
 <line x1="974.2" y1="465.0" x2="974.2" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="974.2" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">5.00×</text>
+<text x="974.2" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">5.00×</text>
 <line x1="1009.1" y1="465.0" x2="1009.1" y2="708.0" stroke="#d9d5ca" stroke-width="0.8"/>
-<text x="1009.1" y="942.7" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">6.00×</text>
+<text x="1009.1" y="724.0" font-family="Arial, Helvetica, sans-serif" font-size="9.5px" font-weight="400" fill="#6b675f" text-anchor="middle">6.00×</text>
 <text x="792.0" y="694.3" font-family="Arial, Helvetica, sans-serif" font-size="9.2px" font-weight="400" fill="#1f1e1d" text-anchor="end">Diffusers BF16 dense</text>
 <text x="792.0" y="704.3" font-family="Arial, Helvetica, sans-serif" font-size="9.2px" font-weight="400" fill="#1f1e1d" text-anchor="end">+ Ulysses8</text>
 <rect x="800.0" y="685.7" width="34.8" height="20.3" rx="3" fill="#77736b"><title>Diffusers: 1.00×</title></rect>
