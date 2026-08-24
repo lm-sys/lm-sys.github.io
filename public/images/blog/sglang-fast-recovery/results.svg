@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 660" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="rs" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1120" height="660" fill="#ffffff"/>
+  <text x="560" y="44" text-anchor="middle" font-size="25" font-weight="700" fill="#0f172a">Results: Weight Load and End-to-End Startup</text>
+
+  <!-- ============ Chart 1: weight load (log scale) ============ -->
+  <text x="60" y="96" font-size="17" font-weight="700" fill="#334155">Weight load time  ·  log scale (seconds)</text>
+
+  <!-- gridlines: 0.1 @360, 1 @530, 10 @700, 100 @870, 1000 @1040 -->
+  <g stroke="#e2e8f0" stroke-width="1">
+    <line x1="360" y1="110" x2="360" y2="250"/>
+    <line x1="530" y1="110" x2="530" y2="250"/>
+    <line x1="700" y1="110" x2="700" y2="250"/>
+    <line x1="870" y1="110" x2="870" y2="250"/>
+    <line x1="1040" y1="110" x2="1040" y2="250"/>
+  </g>
+  <g font-size="11" fill="#94a3b8" text-anchor="middle">
+    <text x="360" y="266">0.1</text>
+    <text x="530" y="266">1</text>
+    <text x="700" y="266">10</text>
+    <text x="870" y="266">100</text>
+    <text x="1040" y="266">1000</text>
+  </g>
+
+  <!-- row labels -->
+  <g font-size="13.5" fill="#334155" text-anchor="end">
+    <text x="344" y="135">Disk load · ~1 TB model</text>
+    <text x="344" y="177">Disk load · ~235 GB model</text>
+    <text x="344" y="219">IPC zero-copy (daemon)</text>
+  </g>
+
+  <!-- bars -->
+  <g filter="url(#rs)">
+    <rect x="360" y="120" width="613" height="26" rx="4" fill="#ef4444"/>
+    <rect x="360" y="162" width="595" height="26" rx="4" fill="#f97316"/>
+    <rect x="360" y="204" width="136" height="26" rx="4" fill="#16a34a"/>
+  </g>
+  <g font-size="13" font-weight="700">
+    <text x="983" y="139" fill="#b91c1c">~405 s</text>
+    <text x="965" y="181" fill="#c2410c">~316 s</text>
+    <text x="506" y="223" fill="#15803d">&lt; 1 s (~0.63 s)</text>
+  </g>
+
+  <!-- speedup callout -->
+  <g filter="url(#rs)">
+    <rect x="628" y="196" width="230" height="42" rx="10" fill="#ecfdf5" stroke="#16a34a" stroke-width="2"/>
+  </g>
+  <text x="743" y="223" text-anchor="middle" font-size="18" font-weight="800" fill="#15803d">~500–780× faster</text>
+
+  <!-- divider -->
+  <line x1="60" y1="312" x2="1060" y2="312" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- ============ Chart 2: end-to-end startup (linear) ============ -->
+  <text x="60" y="360" font-size="17" font-weight="700" fill="#334155">End-to-end engine startup  ·  seconds</text>
+
+  <!-- gridlines 0..560 -> x 360..1040 (linear) : 0,100,200,300,400,500 -->
+  <g stroke="#e2e8f0" stroke-width="1">
+    <line x1="360" y1="376" x2="360" y2="540"/>
+    <line x1="481" y1="376" x2="481" y2="540"/>
+    <line x1="603" y1="376" x2="603" y2="540"/>
+    <line x1="724" y1="376" x2="724" y2="540"/>
+    <line x1="846" y1="376" x2="846" y2="540"/>
+    <line x1="967" y1="376" x2="967" y2="540"/>
+  </g>
+  <g font-size="11" fill="#94a3b8" text-anchor="middle">
+    <text x="360" y="556">0</text>
+    <text x="481" y="556">100</text>
+    <text x="603" y="556">200</text>
+    <text x="724" y="556">300</text>
+    <text x="846" y="556">400</text>
+    <text x="967" y="556">500</text>
+  </g>
+
+  <g font-size="13.5" fill="#334155" text-anchor="end">
+    <text x="344" y="410">Cold start (disk load)</text>
+    <text x="344" y="470">Warm restart (Weight Cache)</text>
+  </g>
+
+  <g filter="url(#rs)">
+    <rect x="360" y="390" width="640" height="34" rx="4" fill="#ef4444"/>
+    <rect x="360" y="450" width="39" height="34" rx="4" fill="#16a34a"/>
+  </g>
+  <g font-size="14" font-weight="700">
+    <text x="1010" y="413" fill="#b91c1c">~527 s (8.8 min)</text>
+    <text x="410" y="473" fill="#15803d">~32 s (0.53 min)</text>
+  </g>
+
+  <!-- reduction callout -->
+  <g filter="url(#rs)">
+    <rect x="470" y="500" width="250" height="42" rx="10" fill="#ecfdf5" stroke="#16a34a" stroke-width="2"/>
+  </g>
+  <text x="595" y="527" text-anchor="middle" font-size="18" font-weight="800" fill="#15803d">−94% total boot time</text>
+
+  <!-- footnote -->
+  <text x="60" y="600" font-size="12" fill="#64748b">Measured on 8×H20-3e (TP8). Weight load is the dominant cost (~94% of cold start); the daemon removes it via CUDA IPC zero-copy.</text>
+  <text x="60" y="622" font-size="12" fill="#64748b">Cold start still pays disk load once to warm the daemon; every subsequent restart is a sub-second warm restart.</text>
+</svg>
