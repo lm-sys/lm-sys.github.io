@@ -1,7 +1,7 @@
 ---
 title: "Infer-forge: Loop and Graph Engineering Around SGLang"
 author: "Tianyu Zhang, Hanlin Gao, Yusong Gao, Yun Zhang"
-date: "August 7, 2026"
+date: "August 28, 2026"
 previewImg: /images/blog/infer-forge-loop/cover.png
 type: blog
 ---
@@ -231,7 +231,7 @@ If model-tier selection or subagents are unavailable, the Loop Block proceeds wi
 #### 4.4.1 Node Registry
 
 <div align="center">
-  <img src="/images/blog/infer-forge-loop/fig-06-node-registry.svg" alt="Node Registry combines periodic runtime and GPU observations to determine claim cleanup eligibility" />
+  <img src="/images/blog/infer-forge-loop/fig-06-node-registry.svg" alt="Node Registry combines periodic runtime and GPU observations to determine claim cleanup eligibility." />
   <br>
   <em>Figure 6: Node Registry.</em>
 </div>
@@ -388,7 +388,7 @@ Across the April–July record, the median archived lifetime increased from appr
   <em>Figure 15: A Task Graph Coordinates a Project-Scale Serving Delivery.</em>
 </div>
 
-**One engineer coordinated *Pushing the Limits of Serving DeepSeek-V4-Pro* through 38 independently verifiable Task nodes across seven Task Types.** The graph organized four serving workstreams—short-context Prefill, long-context Prefill, low-latency Decode, and high-throughput Decode—so they could progress independently while sharing the decisions, constraints, and Verification evidence required for one Release. The four workstreams converged on four different deployment points rather than one universal optimum.
+**One engineer coordinated [*Pushing the Limits of Serving DeepSeek-V4-Pro*](https://www.lmsys.org/blog/2026-08-19-deepseek-v4-pro-engine-optimization-h20)<sup>[18](#ref-18)</sup> through 38 independently verifiable Task nodes across seven Task Types.** The graph organized four serving workstreams—short-context Prefill, long-context Prefill, low-latency Decode, and high-throughput Decode—so they could progress independently while sharing the decisions, constraints, and Verification evidence required for one Release. The four workstreams converged on four different deployment points rather than one universal optimum.
 
 One Decode Task remained open for **nine days** while other workstreams continued elsewhere in the graph. The graph prevented this long-running Task from blocking the project. No single Agent or Task had to retain the whole project context: each workstream could converge against its own Task Contract, then contribute a verified Deliverable to the larger Release.
 
@@ -465,3 +465,4 @@ We also thank the researchers and engineering teams cited in this article. Their
 15. <a id="ref-15"></a>Thariq Shihipar — [The New Rules of Context Engineering for Claude 5 Generation Models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models), Claude, July 24, 2026.
 16. <a id="ref-16"></a>Boris Cherny and Diana Hu — [Boris Cherny: Building Claude Code](https://www.ycrootaccess.com/p/boris-cherny-building-claude-code), Y Combinator Startup School, July 27, 2026.
 17. <a id="ref-17"></a>Xiaoyu Zhang (BBuf) — [AI-Infra-Auto-Driven-SKILLS](https://github.com/BBuf/AI-Infra-Auto-Driven-SKILLS), GitHub.
+18. <a id="ref-18"></a>Tianyu Zhang, Yusong Gao, Yun Zhang — [Pushing the Limits of Serving DeepSeek-V4-Pro on Compute-Constrained NVIDIA H20](https://www.lmsys.org/blog/2026-08-19-deepseek-v4-pro-engine-optimization-h20), LMSYS Org, August 19, 2026.
