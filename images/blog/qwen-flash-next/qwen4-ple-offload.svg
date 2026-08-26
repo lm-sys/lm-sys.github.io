@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" role="img" aria-labelledby="title desc">
+  <title id="title">PLE architecture and sparse pinned-host offload</title>
+  <desc id="desc">Two-lane system diagram. The model lane shows token N-grams retrieving sixteen sparse embedding rows, per-branch gating, normalized short convolution, residual injection into four HyperConnection branches, and HyperConnection Mix before GDN attention. The offload lane shows a vocabulary-parallel PLE shard in pinned host memory, a Triton UVA gather overlapped with decoder layer one, a small BF16 GPU buffer, and the existing tensor-parallel and data-parallel paths.</desc>
+  <style>
+    :root {
+      --paper:#ffffff; --ink:#22211e; --cap:#8f8b83; --band:#22211e;
+      --state:#bd9358; --state-bg:#f4ecdc; --state-ink:#6d5222;
+      --compute:#4c5fa8; --compute-bg:#e5e9f7; --compute-ink:#354679;
+      --stream:#2e8c80; --stream-bg:#dcefeb; --stream-ink:#20685f;
+      --offload:#a05a92; --offload-bg:#f2e5ef; --line:#adb3af;
+      font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper:#16171a; --ink:#e8e7e3; --cap:#9a978f; --band:#e8e7e3;
+        --state:#d3ad67; --state-bg:#34301f; --state-ink:#e9d5a4;
+        --compute:#97a7ef; --compute-bg:#252c4e; --compute-ink:#cbd3ff;
+        --stream:#66c6b6; --stream-bg:#123230; --stream-ink:#a9ddd5;
+        --offload:#d59cc6; --offload-bg:#3a2436; --line:#59625e;
+      }
+    }
+    .band{fill:var(--band);opacity:.035;}
+    .row-label{fill:var(--ink);font-size:15px;font-weight:700;}
+    .row-sub{fill:var(--cap);font-size:11.5px;}
+    .section-label{fill:var(--cap);font-size:11px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;}
+    .box-title{font-size:13px;font-weight:700;text-anchor:middle;}
+    .box-sub{font-size:10.5px;text-anchor:middle;}
+    .tiny{font-size:9.5px;text-anchor:middle;}
+    .state-box{fill:var(--state-bg);stroke:var(--state);stroke-width:1.6;}
+    .state-title{fill:var(--state-ink);}
+    .compute-box{fill:var(--compute-bg);stroke:var(--compute);stroke-width:1.6;}
+    .compute-title{fill:var(--compute-ink);}
+    .stream-box{fill:var(--stream-bg);stroke:var(--stream);stroke-width:1.6;}
+    .stream-title{fill:var(--stream-ink);}
+    .offload-box{fill:var(--offload-bg);stroke:var(--offload);stroke-width:1.6;}
+    .offload-title{fill:var(--offload);}
+    .neutral-box{fill:var(--paper);stroke:var(--line);stroke-width:1.35;}
+    .neutral-title{fill:var(--ink);}
+    .arrow{fill:none;stroke:var(--line);stroke-width:1.6;}
+    .arrow-state{fill:none;stroke:var(--state);stroke-width:1.8;}
+    .arrow-compute{fill:none;stroke:var(--compute);stroke-width:1.8;}
+    .arrow-stream{fill:none;stroke:var(--stream);stroke-width:1.9;}
+    .arrow-offload{fill:none;stroke:var(--offload);stroke-width:2;}
+    .dashed{stroke-dasharray:5 4;}
+    .branch{fill:var(--paper);stroke:var(--compute);stroke-width:1.25;}
+    .branch-text{fill:var(--compute-ink);font-size:9.5px;font-weight:650;text-anchor:middle;}
+    .metric{fill:var(--paper);stroke:var(--line);stroke-width:1.1;}
+    .metric-value{fill:var(--ink);font-size:12px;font-weight:750;text-anchor:middle;}
+    .metric-label{fill:var(--cap);font-size:9.5px;text-anchor:middle;}
+    .note{fill:var(--cap);font-size:10.5px;font-style:italic;}
+    .marker-neutral{fill:var(--line);}
+    .marker-state{fill:var(--state);}
+    .marker-compute{fill:var(--compute);}
+    .marker-stream{fill:var(--stream);}
+    .marker-offload{fill:var(--offload);}
+  </style>
+  <rect width="1200" height="760" fill="var(--paper)"/>
+
+  <!-- Model architecture lane -->
+  <rect class="band" x="16" y="28" width="1168" height="382" rx="12"/>
+  <text class="row-label" x="28" y="62">model path</text>
+  <text class="row-sub" x="28" y="80">target model only</text>
+  <text class="row-sub" x="28" y="96">block 2 · ID 2 / index 1</text>
+
+  <text class="section-label" x="170" y="61">sparse memory lookup</text>
+  <rect class="neutral-box" x="170" y="78" width="136" height="64" rx="9"/>
+  <text class="box-title neutral-title" x="238" y="99">token context</text>
+  <text class="tiny" fill="var(--cap)" x="238" y="114">cached: x<tspan baseline-shift="sub" font-size="8">t−2</tspan> · x<tspan baseline-shift="sub" font-size="8">t−1</tspan></text>
+  <text class="tiny" fill="var(--cap)" x="238" y="130">current input: x<tspan baseline-shift="sub" font-size="8">t</tspan></text>
+
+  <path class="arrow-state" d="M306 110 H342"/>
+  <path class="marker-state" d="M342 110 L334 105.5 L334 114.5 Z"/>
+
+  <rect class="state-box" x="348" y="70" width="236" height="82" rx="10"/>
+  <text class="box-title state-title" x="466" y="94">N-gram embedding tables</text>
+  <rect class="neutral-box" x="365" y="103" width="91" height="31" rx="6"/>
+  <text class="tiny" fill="var(--state-ink)" x="410.5" y="116">2-gram × 8</text>
+  <text class="tiny" fill="var(--state-ink)" x="410.5" y="129">x<tspan baseline-shift="sub" font-size="8">t−1</tspan>, x<tspan baseline-shift="sub" font-size="8">t</tspan></text>
+  <rect class="neutral-box" x="468" y="103" width="99" height="31" rx="6"/>
+  <text class="tiny" fill="var(--state-ink)" x="517.5" y="116">3-gram × 8</text>
+  <text class="tiny" fill="var(--state-ink)" x="517.5" y="129">x<tspan baseline-shift="sub" font-size="8">t−2</tspan>, x<tspan baseline-shift="sub" font-size="8">t−1</tspan>, x<tspan baseline-shift="sub" font-size="8">t</tspan></text>
+  <text class="tiny" fill="var(--state-ink)" x="466" y="145">16 rows/token · fixed 51.2B parameters</text>
+
+  <path class="arrow-state" d="M584 111 H621"/>
+  <path class="marker-state" d="M621 111 L613 106.5 L613 115.5 Z"/>
+
+  <rect class="state-box" x="627" y="78" width="136" height="64" rx="9"/>
+  <text class="box-title state-title" x="695" y="102">E<tspan baseline-shift="sub" font-size="9">t</tspan> [2560]</text>
+  <text class="box-sub" fill="var(--state-ink)" x="695" y="123">4 keys · 1 shared value</text>
+
+  <text class="section-label" x="170" y="206">branch-aware residual injection</text>
+  <rect class="compute-box" x="170" y="225" width="224" height="126" rx="11"/>
+  <text class="box-title compute-title" x="282" y="248">HyperConnection state</text>
+  <text class="box-sub" fill="var(--compute-ink)" x="282" y="266">four residual branches provide Q<tspan baseline-shift="sub" font-size="8">c</tspan></text>
+  <rect class="branch" x="189" y="278" width="187" height="14" rx="5"/><text class="branch-text" x="282.5" y="288">branch 1 · [2560]</text>
+  <rect class="branch" x="189" y="296" width="187" height="14" rx="5"/><text class="branch-text" x="282.5" y="306">branch 2 · [2560]</text>
+  <rect class="branch" x="189" y="314" width="187" height="14" rx="5"/><text class="branch-text" x="282.5" y="324">branch 3 · [2560]</text>
+  <rect class="branch" x="189" y="332" width="187" height="14" rx="5"/><text class="branch-text" x="282.5" y="342">branch 4 · [2560]</text>
+
+  <path class="arrow-compute" d="M394 288 H431"/>
+  <path class="marker-compute" d="M431 288 L423 283.5 L423 292.5 Z"/>
+  <path class="arrow-state" d="M695 142 V182 Q695 192 685 192 H520 Q510 192 510 219"/>
+  <path class="marker-state" d="M510 219 L505.5 211 L514.5 211 Z"/>
+  <text class="tiny" fill="var(--state-ink)" x="612" y="184">4 K<tspan baseline-shift="sub" font-size="8">c</tspan> · shared V</text>
+
+  <rect class="compute-box" x="437" y="225" width="202" height="126" rx="11"/>
+  <text class="box-title compute-title" x="538" y="249">branch-aware gate</text>
+  <text class="box-sub" fill="var(--compute-ink)" x="538" y="274">s<tspan baseline-shift="sub" font-size="8">c</tspan> = 〈Norm(K<tspan baseline-shift="sub" font-size="8">c</tspan>), Norm(Q<tspan baseline-shift="sub" font-size="8">c</tspan>)〉 / √2560</text>
+  <text class="box-sub" fill="var(--compute-ink)" x="538" y="296">g<tspan baseline-shift="sub" font-size="8">c</tspan> = σ(sign(s<tspan baseline-shift="sub" font-size="8">c</tspan>) √max(|s<tspan baseline-shift="sub" font-size="8">c</tspan>|, 10⁻⁶))</text>
+  <text class="box-sub" fill="var(--compute-ink)" x="538" y="320">U<tspan baseline-shift="sub" font-size="8">c</tspan> = g<tspan baseline-shift="sub" font-size="8">c</tspan> · V</text>
+  <text class="tiny" fill="var(--cap)" x="538" y="340">one gate per HC branch</text>
+
+  <path class="arrow-stream" d="M639 288 H676"/>
+  <path class="marker-stream" d="M676 288 L668 283.5 L668 292.5 Z"/>
+
+  <rect class="stream-box" x="682" y="225" width="205" height="126" rx="11"/>
+  <text class="box-title stream-title" x="784.5" y="249">short temporal state</text>
+  <text class="box-sub" fill="var(--stream-ink)" x="784.5" y="274">RMSNorm → depthwise Conv1D</text>
+  <text class="box-sub" fill="var(--stream-ink)" x="784.5" y="296">kernel 4 · dilation 3 · SiLU</text>
+  <text class="box-sub" fill="var(--stream-ink)" x="784.5" y="320">Δ<tspan baseline-shift="sub" font-size="8">c</tspan> = U<tspan baseline-shift="sub" font-size="8">c</tspan> + SiLU(DWConv(Norm(U<tspan baseline-shift="sub" font-size="8">c</tspan>)))</text>
+  <text class="tiny" fill="var(--cap)" x="784.5" y="340">per-request state · [10240, 9]</text>
+
+  <path class="arrow-stream" d="M887 288 H924"/>
+  <path class="marker-stream" d="M924 288 L916 283.5 L916 292.5 Z"/>
+
+  <rect class="compute-box" x="930" y="225" width="222" height="126" rx="11"/>
+  <text class="box-title compute-title" x="1041" y="249">inject, then mix</text>
+  <text class="box-sub" fill="var(--compute-ink)" x="1041" y="274">branch state ← branch state + Δ<tspan baseline-shift="sub" font-size="8">c</tspan></text>
+  <rect class="neutral-box" x="949" y="291" width="83" height="37" rx="7"/>
+  <text class="tiny" fill="var(--compute-ink)" x="990.5" y="306">HC Mix</text>
+  <text class="tiny" fill="var(--cap)" x="990.5" y="319">4H → H</text>
+  <path class="arrow" d="M1032 309.5 H1052"/>
+  <path class="marker-neutral" d="M1052 309.5 L1044 305 L1044 314 Z"/>
+  <rect class="neutral-box" x="1058" y="291" width="75" height="37" rx="7"/>
+  <text class="tiny" fill="var(--compute-ink)" x="1095.5" y="306">GDN</text>
+  <text class="tiny" fill="var(--cap)" x="1095.5" y="319">attention</text>
+  <text class="tiny" fill="var(--cap)" x="1041" y="340">PLE enters before HC Mix</text>
+
+  <!-- Sparse offload lane -->
+  <rect class="band" x="16" y="430" width="1168" height="266" rx="12"/>
+  <text class="row-label" x="28" y="464">offload path</text>
+  <text class="row-sub" x="28" y="482">one TP rank</text>
+  <text class="row-sub" x="28" y="498">CUDA UVA</text>
+
+  <rect class="state-box" x="170" y="466" width="224" height="92" rx="10"/>
+  <text class="box-title state-title" x="282" y="491">pinned host memory</text>
+  <text class="box-sub" fill="var(--state-ink)" x="282" y="515">vocabulary-parallel PLE shard</text>
+  <text class="box-sub" fill="var(--state-ink)" x="282" y="537">BF16 TP4 · approximately 23.84 GiB</text>
+
+  <path class="arrow-offload" d="M394 512 H449"/>
+  <path class="marker-offload" d="M449 512 L441 507.5 L441 516.5 Z"/>
+  <text class="tiny" fill="var(--offload)" x="421.5" y="500">UVA reads</text>
+
+  <rect class="stream-box" x="455" y="466" width="205" height="92" rx="10"/>
+  <text class="box-title stream-title" x="557.5" y="491">dedicated CUDA stream</text>
+  <text class="box-sub" fill="var(--stream-ink)" x="557.5" y="515">Triton sparse row gather</text>
+  <text class="box-sub" fill="var(--stream-ink)" x="557.5" y="537">prefetch while block 1 runs</text>
+
+  <path class="arrow-stream" d="M660 512 H715"/>
+  <path class="marker-stream" d="M715 512 L707 507.5 L707 516.5 Z"/>
+
+  <rect class="compute-box" x="721" y="466" width="178" height="92" rx="10"/>
+  <text class="box-title compute-title" x="810" y="491">GPU staging buffer</text>
+  <text class="box-sub" fill="var(--compute-ink)" x="810" y="515">gather output: BF16 rows</text>
+  <text class="box-sub" fill="var(--compute-ink)" x="810" y="537">tokens × 16 × 160</text>
+
+  <path class="arrow-compute" d="M899 512 H954"/>
+  <path class="marker-compute" d="M954 512 L946 507.5 L946 516.5 Z"/>
+
+  <rect class="neutral-box" x="960" y="466" width="192" height="92" rx="10"/>
+  <text class="box-title neutral-title" x="1056" y="491">unchanged semantics</text>
+  <text class="box-sub" fill="var(--cap)" x="1056" y="515">existing TP reduction / DP routing</text>
+  <text class="box-sub" fill="var(--cap)" x="1056" y="537">then unchanged PLE math</text>
+
+  <path class="arrow-stream dashed" d="M557 466 V443 Q557 437 563 437 H1035"/>
+  <path class="marker-stream" d="M1035 437 L1027 432.5 L1027 441.5 Z"/>
+  <text class="tiny" fill="var(--stream-ink)" x="792" y="444">lookup overlaps the first decoder block</text>
+
+  <rect class="metric" x="170" y="600" width="224" height="57" rx="9"/>
+  <text class="metric-value" x="282" y="622">−23.46 GiB / GPU</text>
+  <text class="metric-label" x="282" y="642">target-model weights · H200 TP4</text>
+  <rect class="metric" x="414" y="600" width="224" height="57" rx="9"/>
+  <text class="metric-value" x="526" y="622">+78.54% KV capacity</text>
+  <text class="metric-label" x="526" y="642">same static memory fraction</text>
+  <rect class="metric" x="658" y="600" width="224" height="57" rx="9"/>
+  <text class="metric-value" x="770" y="622">−0.07% throughput</text>
+  <text class="metric-label" x="770" y="642">C1 / C2 / C4 geometric mean</text>
+  <rect class="metric" x="902" y="600" width="250" height="57" rx="9"/>
+  <text class="metric-value" x="1027" y="622">4 / 4 exact</text>
+  <text class="metric-label" x="1027" y="642">deterministic feature checks</text>
+
+  <line x1="170" y1="716" x2="200" y2="716" stroke="var(--state)" stroke-width="5" stroke-linecap="round"/>
+  <text class="note" x="210" y="720">persistent weights / state</text>
+  <line x1="392" y1="716" x2="422" y2="716" stroke="var(--compute)" stroke-width="5" stroke-linecap="round"/>
+  <text class="note" x="432" y="720">model compute</text>
+  <line x1="568" y1="716" x2="598" y2="716" stroke="var(--stream)" stroke-width="5" stroke-linecap="round"/>
+  <text class="note" x="608" y="720">streamed movement</text>
+  <text class="note" x="800" y="720">storage optimization only · not KV-cache or generic layer offload</text>
+</svg>

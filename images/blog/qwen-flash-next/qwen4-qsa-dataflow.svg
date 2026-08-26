@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="920" viewBox="0 0 1700 920" role="img" aria-labelledby="title desc">
+  <title id="title">Qwen Sparse Attention data flow in SGLang</title>
+  <desc id="desc">Hidden states feed a compressed four-token index path and a full-resolution attention path. The indexer selects 512 blocks, expands them to at most 2051 logical token indices, and sparse grouped-query attention reads the original paged key-value cache.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#eef2ff"/>
+    </linearGradient>
+    <linearGradient id="indexFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/>
+      <stop offset="1" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="attnFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#ffedd5"/>
+    </linearGradient>
+    <linearGradient id="selectedFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecfdf5"/>
+      <stop offset="1" stop-color="#d1fae5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrowPurple" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#6366f1"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#f97316"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#059669"/>
+    </marker>
+    <style>
+      .title { font: 700 31px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .lane { font: 700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .box-title { font: 700 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .body { font: 400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #334155; }
+      .small { font: 500 12.5px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .mono { font: 600 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #334155; }
+      .chip { font: 700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: 0.03em; }
+    </style>
+  </defs>
+
+  <rect width="1700" height="920" rx="28" fill="url(#bg)"/>
+  <text x="54" y="61" class="title">Qwen Sparse Attention: retrieve coarsely, attend precisely</text>
+  <text x="54" y="92" class="subtitle">Compression shrinks the relevance scan; final attention still reads the original, full-resolution K/V cache.</text>
+
+  <rect x="230" y="130" width="1220" height="426" rx="24" fill="#ffffff" stroke="#c7d2fe" stroke-width="2"/>
+  <rect x="230" y="576" width="1220" height="288" rx="24" fill="#ffffff" stroke="#fed7aa" stroke-width="2"/>
+  <rect x="245" y="147" width="110" height="34" rx="17" fill="#e0e7ff"/>
+  <text x="300" y="170" text-anchor="middle" class="lane" fill="#4f46e5">INDEXER</text>
+  <rect x="245" y="593" width="164" height="34" rx="17" fill="#ffedd5"/>
+  <text x="327" y="616" text-anchor="middle" class="lane" fill="#ea580c">ATTENTION PATH</text>
+
+  <!-- Shared input -->
+  <rect x="40" y="412" width="160" height="100" rx="18" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" filter="url(#shadow)"/>
+  <text x="120" y="447" text-anchor="middle" class="box-title">Hidden states</text>
+  <text x="120" y="476" text-anchor="middle" class="mono">xₜ [2560]</text>
+  <text x="120" y="497" text-anchor="middle" class="small">shared layer input</text>
+
+  <!-- Index projection -->
+  <path d="M200 438 H215 V331 H259" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <rect x="270" y="263" width="180" height="136" rx="18" fill="url(#indexFill)" stroke="#818cf8" stroke-width="2" filter="url(#shadow)"/>
+  <text x="360" y="294" text-anchor="middle" class="box-title">Index Q/K projection</text>
+  <text x="360" y="320" text-anchor="middle" class="small">bias-free, replicated</text>
+  <line x1="292" y1="338" x2="428" y2="338" stroke="#a5b4fc"/>
+  <text x="360" y="362" text-anchor="middle" class="mono">Q: 4 × 128</text>
+  <text x="360" y="385" text-anchor="middle" class="mono">K: 1 × 128</text>
+
+  <!-- Query prep -->
+  <path d="M450 288 H469" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <rect x="480" y="218" width="190" height="108" rx="18" fill="#eef2ff" stroke="#818cf8" stroke-width="2"/>
+  <text x="575" y="251" text-anchor="middle" class="box-title">Index query</text>
+  <text x="575" y="279" text-anchor="middle" class="body">RMSNorm + MRoPE</text>
+  <text x="575" y="305" text-anchor="middle" class="mono">qᴵₜ [4, 128]</text>
+
+  <!-- Key compression -->
+  <path d="M450 374 H462 V420 H469" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <rect x="480" y="363" width="230" height="132" rx="18" fill="#eef2ff" stroke="#818cf8" stroke-width="2"/>
+  <text x="595" y="393" text-anchor="middle" class="box-title">Complete each c4 block</text>
+  <text x="595" y="420" text-anchor="middle" class="body">FP32 mean of four raw keys</text>
+  <text x="595" y="444" text-anchor="middle" class="body">→ RMSNorm → group-start MRoPE</text>
+  <text x="595" y="475" text-anchor="middle" class="mono">k̄ᴵᵦ [1, 128]</text>
+
+  <rect x="487" y="513" width="216" height="25" rx="12.5" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="595" y="530" text-anchor="middle" class="small">4-slot per-request pending ring</text>
+
+  <!-- Compressed cache -->
+  <path d="M710 428 H729" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <rect x="740" y="359" width="185" height="136" rx="18" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="833" y="390" text-anchor="middle" class="box-title">Compressed K cache</text>
+  <text x="833" y="416" text-anchor="middle" class="body">one BF16 key / 4 tokens</text>
+  <text x="833" y="444" text-anchor="middle" class="mono">slot = full_slot ÷ 4</text>
+  <text x="833" y="474" text-anchor="middle" class="small">paged + Radix Cache aligned</text>
+
+  <!-- Score -->
+  <path d="M670 272 H946 V312 H959" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <path d="M925 427 H946 V370 H959" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <rect x="970" y="263" width="195" height="144" rx="18" fill="url(#indexFill)" stroke="#6366f1" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="1068" y="294" text-anchor="middle" class="box-title">Weight-free MQA score</text>
+  <text x="1068" y="323" text-anchor="middle" class="mono">Σₕ ReLU(qₕ · k̄)</text>
+  <text x="1068" y="348" text-anchor="middle" class="mono">÷ √128</text>
+  <text x="1068" y="380" text-anchor="middle" class="small">scan ≈ sequence length / 4</text>
+
+  <!-- Topk -->
+  <path d="M1165 335 H1184" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <rect x="1195" y="273" width="105" height="124" rx="18" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="1248" y="307" text-anchor="middle" class="box-title">Top-512</text>
+  <text x="1248" y="336" text-anchor="middle" class="body">blocks</text>
+  <text x="1248" y="368" text-anchor="middle" class="small">fast top-k</text>
+
+  <!-- Expand -->
+  <path d="M1300 335 H1319" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#arrowPurple)"/>
+  <rect x="1330" y="250" width="95" height="170" rx="18" fill="url(#selectedFill)" stroke="#10b981" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="1378" y="282" text-anchor="middle" class="box-title">Expand</text>
+  <text x="1378" y="307" text-anchor="middle" class="body">4 tokens</text>
+  <text x="1378" y="328" text-anchor="middle" class="body">per block</text>
+  <text x="1378" y="355" text-anchor="middle" class="body">+ causal tail</text>
+  <line x1="1345" y1="370" x2="1410" y2="370" stroke="#6ee7b7"/>
+  <text x="1378" y="394" text-anchor="middle" class="mono">[M, 2051]</text>
+
+  <!-- Main projection -->
+  <path d="M200 486 H215 V709 H269" fill="none" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowOrange)"/>
+  <rect x="280" y="639" width="200" height="140" rx="18" fill="url(#attnFill)" stroke="#fb923c" stroke-width="2" filter="url(#shadow)"/>
+  <text x="380" y="671" text-anchor="middle" class="box-title">Main Q/K/V + gate</text>
+  <text x="380" y="699" text-anchor="middle" class="body">full-resolution projection</text>
+  <text x="380" y="725" text-anchor="middle" class="mono">head dim = 256</text>
+  <text x="380" y="754" text-anchor="middle" class="small">normal attention weights</text>
+
+  <!-- Original KV cache -->
+  <path d="M480 724 H559" fill="none" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowOrange)"/>
+  <rect x="570" y="652" width="220" height="136" rx="18" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+  <text x="680" y="684" text-anchor="middle" class="box-title">Original paged K/V cache</text>
+  <text x="680" y="713" text-anchor="middle" class="body">no averaging, no replacement</text>
+  <text x="680" y="742" text-anchor="middle" class="mono">Kᴬ, Vᴬ at every token</text>
+  <text x="680" y="770" text-anchor="middle" class="small">logical → physical slot mapping</text>
+
+  <!-- Sparse attention -->
+  <path d="M790 720 H869" fill="none" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowOrange)"/>
+  <path d="M1378 420 V520 H995 V631" fill="none" stroke="#059669" stroke-width="3" marker-end="url(#arrowGreen)"/>
+  <rect x="880" y="642" width="230" height="156" rx="18" fill="url(#selectedFill)" stroke="#10b981" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="995" y="676" text-anchor="middle" class="box-title">Sparse GQA on original K/V</text>
+  <text x="995" y="705" text-anchor="middle" class="body">scaled softmax over selected tokens</text>
+  <text x="995" y="735" text-anchor="middle" class="mono">≤ 2048 + tail</text>
+  <text x="995" y="767" text-anchor="middle" class="small">the index score is not reused here</text>
+
+  <!-- Gate and output -->
+  <path d="M1110 720 H1189" fill="none" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowOrange)"/>
+  <rect x="1200" y="652" width="200" height="136" rx="18" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+  <text x="1300" y="684" text-anchor="middle" class="box-title">Gate + output projection</text>
+  <text x="1300" y="718" text-anchor="middle" class="mono">o ⊙ sigmoid(g)</text>
+  <text x="1300" y="746" text-anchor="middle" class="mono">→ Wₒ</text>
+  <text x="1300" y="771" text-anchor="middle" class="small">fused gate multiply</text>
+
+  <path d="M1400 720 H1489" fill="none" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowOrange)"/>
+  <rect x="1500" y="666" width="160" height="108" rx="18" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" filter="url(#shadow)"/>
+  <text x="1580" y="705" text-anchor="middle" class="box-title">Layer output</text>
+  <text x="1580" y="738" text-anchor="middle" class="mono">oₜ [2560]</text>
+
+  <!-- Execution-path footer -->
+  <rect x="57" y="879" width="492" height="25" rx="12.5" fill="#e0e7ff"/>
+  <text x="303" y="896" text-anchor="middle" class="chip" fill="#4338ca">PREFILL · INDEX SCORER → FAST TOP-K → TRITON SPARSE GQA</text>
+  <rect x="574" y="879" width="617" height="25" rx="12.5" fill="#ffedd5"/>
+  <text x="883" y="896" text-anchor="middle" class="chip" fill="#c2410c">DECODE · PAGED INDEX SCORER → COMPACT K/V → TRTLLM-GEN OR FA2/FA4</text>
+  <rect x="1216" y="879" width="427" height="25" rx="12.5" fill="#d1fae5"/>
+  <text x="1430" y="896" text-anchor="middle" class="chip" fill="#047857">CUDA-GRAPH SAFE · DEVICE-SIDE METADATA</text>
+</svg>
