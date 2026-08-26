@@ -1,5 +1,5 @@
 ---
-title: "Infer-forge: Loop and Graph Engineering Around SGLang"
+title: "Infer-forge: Harness, Loop, and Graph Engineering Around SGLang"
 author: "Tianyu Zhang, Hanlin Gao, Yusong Gao, Yun Zhang"
 date: "August 28, 2026"
 previewImg: /images/blog/infer-forge-loop/cover.png
