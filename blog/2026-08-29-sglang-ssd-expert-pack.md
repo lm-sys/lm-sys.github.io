@@ -34,7 +34,7 @@ This is why SSD is a useful backing tier. It provides much more capacity than co
 A capacity-cost comparison makes the trade-off clear. The following figures are capacity-only lower bounds, not complete system prices:
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/price.png" alt="Capacity cost comparison for DeepSeek-V4-Flash and Kimi-K3 on a logarithmic scale" width="460">
+  <img src="../public/images/blog/sglang-ssd-expert-pack/price.png" alt="Capacity cost comparison for DeepSeek-V4-Flash and Kimi-K3 on a logarithmic scale" width="460">
 </p>
 
 The figure does not mean SSD and DRAM have the same latency, or that buying an SSD alone is sufficient to run the model. It shows that placing the complete expert pool in VRAM or DRAM quickly becomes impractical, while using SSD for capacity and a bounded GPU cache for the active working set can substantially lower the hardware barrier.
@@ -84,7 +84,7 @@ SGLang Expert Pack v1 treats one `(layer, expert)` pair as one complete expert. 
 
 The logical layout is:
 
-![Expert Pack physical data block layout with contiguous expert byte-streams and explicit block-aligned padding](/images/blog/sglang-ssd-expert-pack/expert-pack-layout.png)
+![Expert Pack physical data block layout with contiguous expert byte-streams and explicit block-aligned padding](../public/images/blog/sglang-ssd-expert-pack/expert-pack-layout.png)
 
 The runtime does not scan the file for tensor names. It derives the expert offset from the pack metadata:
 
@@ -116,7 +116,7 @@ This is one of the most important differences between Expert Pack and a conventi
 Traditional file reads normally go through the operating system page cache:
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/traditional_copy.png" alt="Traditional file-read path: a synchronous page-cache-to-pinned-memory copy followed by asynchronous H2D" width="300">
+  <img src="../public/images/blog/sglang-ssd-expert-pack/traditional_copy.png" alt="Traditional file-read path: a synchronous page-cache-to-pinned-memory copy followed by asynchronous H2D" width="300">
 </p>
 
 The page cache is a kernel-managed file cache. It is not the same thing as the page-locked user memory that CUDA can use for asynchronous H2D. To issue an asynchronous H2D transfer, the application normally prepares a pinned buffer. The file data therefore has to be copied from the page cache into that pinned buffer before the GPU transfer can start. From the application's perspective, this page-cache-to-pinned handoff is a synchronous CPU memory copy: the host-side staging step must complete before the H2D operation has a valid pinned source buffer. It is not itself a `cudaMemcpyAsync` operation.
@@ -128,7 +128,7 @@ This is neither SSD reads nor H2D transfers. Rather, it is an extra synchronous 
 When `direct_io=True`, SGLang opens the Expert Pack with `O_DIRECT` and makes the read target a preallocated, aligned pinned staging buffer:
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/expert_pack_copy.png" alt="Expert Pack direct-I/O path: an aligned pinned host buffer feeds the GPU expert cache before MoE computation" width="300">
+  <img src="../public/images/blog/sglang-ssd-expert-pack/expert_pack_copy.png" alt="Expert Pack direct-I/O path: an aligned pinned host buffer feeds the GPU expert cache before MoE computation" width="300">
 </p>
 
 The read target is already the pinned buffer required by CUDA, so the intermediate step below is removed:
@@ -273,7 +273,7 @@ All SGLang, Ollama, and llama.cpp measurements use the same test environment: on
 The comparison uses ten shared requests: five Alpaca and five MMLU. Both runtimes generated up to 200 tokens per request. The chart reports mean prefill and decode token rates for each dataset.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_ollama_compare.png" alt="DeepSeek-V4-Flash SGLang versus Ollama prefill and decode token rates for Alpaca and MMLU" width="100%">
+  <img src="../public/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_ollama_compare.png" alt="DeepSeek-V4-Flash SGLang versus Ollama prefill and decode token rates for Alpaca and MMLU" width="100%">
 </p>
 
 Relative to Ollama, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.
@@ -283,7 +283,7 @@ Relative to Ollama, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU
 The comparison includes three Alpaca and two MMLU samples. SGLang generated 200 tokens, while llama.cpp generated 50 tokens, so the decode comparison is indicative rather than a strict equal-length A/B measurement. The chart reports mean prefill and decode token rates for each dataset.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/kimi_k3_sglang_vs_llama_compare.png?v=20260828" alt="Kimi-K3 SGLang versus llama.cpp prefill and decode token rates for Alpaca and MMLU" width="100%">
+  <img src="../public/images/blog/sglang-ssd-expert-pack/kimi_k3_sglang_vs_llama_compare.png?v=20260828" alt="Kimi-K3 SGLang versus llama.cpp prefill and decode token rates for Alpaca and MMLU" width="100%">
 </p>
 
 Relative to llama.cpp, SGLang improves prefill by 7.81x on Alpaca and 5.98x on MMLU. Decode improves by 3.14x and 3.04x, respectively.
@@ -294,13 +294,13 @@ Token rate should be read together with cache telemetry. The following Python-ge
 Both figures show SGLang-only telemetry, so the single series is labeled by the surrounding text rather than a legend.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_expert_cache_metrics.png" alt="DeepSeek-V4-Flash SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
+  <img src="../public/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_expert_cache_metrics.png" alt="DeepSeek-V4-Flash SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
 </p>
 
 DeepSeek uses the complete ten-request run: five Alpaca and five MMLU requests, each with a 200-token completion. Its hit rate is 54.2% for Alpaca and 46.4% for MMLU, with 1.66 and 2.04 GB read per generated token.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/kimi_k3_expert_cache_metrics.png" alt="Kimi-K3 SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
+  <img src="../public/images/blog/sglang-ssd-expert-pack/kimi_k3_expert_cache_metrics.png" alt="Kimi-K3 SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
 </p>
 
 The Kimi figure uses the first three completed requests of the interleaved run: two Alpaca and one MMLU, each with a 200-token completion. The current means are 17.4% and 18.5% VRAM cache hit rate, with 21.84 and 24.46 GB read per generated token, respectively. The remaining seven requests are still running, so these are explicitly stage results rather than final ten-request averages. The difference from DeepSeek is expected: Kimi’s configuration reserves 5 GiB for the GPU expert cache, while the DeepSeek run reserves about 21 GiB, and the two adapters have different expert payload sizes and routing behavior.
