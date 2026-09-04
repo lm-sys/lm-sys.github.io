@@ -16,7 +16,7 @@ The total parameter capacity of DeepSeek-V4-Flash and Kimi-K3 is far beyond the 
 
 SGLang's SSD-backed Expert Pack path takes a different approach. Routed expert weights remain on an NVMe SSD. The router activates only a small subset of experts for each token, so the runtime moves only the selected experts that are not already cached to the GPU. Expert Pack reorganizes the weights of each layer/expert pair into a directly addressable contiguous expert block. The runtime reads that expert block into an aligned pinned host buffer using direct I/O, then transfers it to a GPU cache asynchronously.
 
-This path changes how model weights are stored and delivered, not the model computation. It does not prune, replace, merge, or skip selected experts, and it does not reduce Expert Top-K. The result is a practical way to run DeepSeek-V4-Flash and the validated text-only Kimi-K3 path with one RTX 5090 (32 GB VRAM), 32 GB of CPU memory, and a 2 TB storage volume.
+This path changes how model weights are stored and delivered, not the model computation. It does not prune, replace, merge, or skip selected experts, and it does not reduce Expert Top-K. The result is a practical way to run DeepSeek-V4-Flash and the validated text-only Kimi-K3 path with an Intel Ultra5 230F CPU, 32 GB memory, a TiPro9000 2 TB disk, and an RTX 5090 with 32 GB VRAM.
 
 ### MoE computation is sparse, but model capacity is not
 
@@ -268,7 +268,7 @@ Validation showed that DeepSeek-V4-Flash produced semantically equivalent answer
 
 ## 8. Performance results
 
-All SGLang, Ollama, and llama.cpp measurements use the same test environment: one NVIDIA RTX 5090 with 32 GB VRAM, 32 GB of CPU memory, and a 2 TB storage volume. The figures below describe validation results under this shared hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.
+All SGLang, Ollama, and llama.cpp measurements use the test environment listed in the reproduction table below. The figures describe validation results under this hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.
 
 ### DeepSeek-V4-Flash vs. Ollama
 
@@ -298,86 +298,31 @@ aggregates use the ten retained request records described below.
 
 ### Benchmark reproduction record
 
-The retained benchmark bundle uses one request at a time, 16 logical CPUs
-(`0-15`), a 32 GiB memory limit, and disabled swap. It uses ten fixed prompts,
-five Alpaca and five MMLU, in the following request order:
+The retained benchmark bundle uses one request at a time.
 
-1. `alpaca-37246`
-   ```text
-   Summarize the movie "Toy Story"
-   ```
-2. `mmlu-abstract_algebra-14`
-   ```text
-   Answer the multiple-choice question. Select the correct option and briefly explain your answer.
+| Component | Test configuration |
+| --- | --- |
+| CPU | Intel Ultra5 230F |
+| Memory | 32 GB |
+| Disk | TiPro9000 2 TB |
+| GPU | NVIDIA RTX 5090 32 GB |
+| Requests | 10 fixed prompts: 5 Alpaca + 5 MMLU |
+| Generation | Temperature 0, default EOS, 200-token target |
 
-   Question: Find the maximum possible order for an element of S_n for n = 10.
-   A. 6
-   B. 12
-   C. 30
-   D. 105
-   ```
-3. `alpaca-50812`
-   ```text
-   Given a list of items, suggest an interesting activity.
+The ten prompts, in request order:
 
-   Input:
-   pencils, paper, markers
-   ```
-4. `mmlu-moral_disputes-8315`
-   ```text
-   Answer the multiple-choice question. Select the correct option and briefly explain your answer.
-
-   Question: According to Hardin, the "ratchet effect" refers to the fact that
-   A. overpopulation does not affect the number of people who are poor.
-   B. overpopulation leads to creation of food banks that help curb poverty rates.
-   C. world hunger and poverty leads to recognition of rights not to be hungry.
-   D. the use of a world food bank to feed the hungry leads to an escalating series of emergency situations.
-   ```
-5. `alpaca-9907`
-   ```text
-   Translate this phrase from Spanish to English: El sol no brilla hoy.
-   ```
-6. `mmlu-high_school_macroeconomics-3940`
-   ```text
-   Answer the multiple-choice question. Select the correct option and briefly explain your answer.
-
-   Question: The crowding-out effect from government borrowing is best described as
-   A. the rightward shift in AD in response to the decreasing interest rates from contractionary fiscal policy.
-   B. the leftward shift in AD in response to the rising interest rates from expansionary fiscal policy.
-   C. the effect of the President increasing the money supply which decreases real interest rates and increases AD.
-   D. the effect on the economy of hearing the chairperson of the central bank say that he or she believes that the economy is in a recession.
-   ```
-7. `alpaca-40699`
-   ```text
-   Give an example of a bias that could exist in an AI algorithm.
-   ```
-8. `mmlu-professional_law-10971`
-   ```text
-   Answer the multiple-choice question. Select the correct option and briefly explain your answer.
-
-   Question: Homeowner owns a property in its natural condition with a house on it. There was no fill of any kind on the property. Neighbor, who owns the adjacent property to the East, built a driveway whose western boundary is along the border of homeowner's property. The excavator dug the driveway five feet deep. The land began to subside along the line of excavation and about three feet of homeowner's land fell off into the driveway, making that part of her property useless. Homeowner demanded that neighbor fill in the property to buttress the erosion created. That was not done and the erosion continued to occur. Homeowner sued and asked for an injunction compelling the neighbor to build and maintain a retaining wall. Will the court rule for the plaintiff/homeowner?
-   A. Yes, because excavation is an abnormally dangerous activity and neighbor is absolutely liable for any damages caused by the violation.
-   B. Yes, because every landowner has a right to the lateral support of the soil in its natural state.
-   C. No, because the neighbor did not go onto the adjacent land and confined all excavation to his own land.
-   D. No, the right to lateral support is a common law right that has been abrogated by statute in virtually all states so that the right no longer exists.
-   ```
-9. `alpaca-34440`
-   ```text
-   Make a menu item for a restaurant that contains the following ingredients.
-
-   Input:
-   Salmon, avocado, spinach
-   ```
-10. `mmlu-jurisprudence-6660`
-    ```text
-    Answer the multiple-choice question. Select the correct option and briefly explain your answer.
-
-    Question: Which of the following is the strongest argument against ethical relativism's hostility to human rights?
-    A. Utilitarianism
-    B. Communitarianism.
-    C. Cognitivism.
-    D. Positivism.
-    ```
+| # | Sample ID | Dataset | Prompt |
+| ---: | --- | --- | --- |
+| 1 | `alpaca-37246` | Alpaca | Summarize the movie "Toy Story" |
+| 2 | `mmlu-abstract_algebra-14` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Find the maximum possible order for an element of S_n for n = 10.<br>A. 6<br>B. 12<br>C. 30<br>D. 105 |
+| 3 | `alpaca-50812` | Alpaca | Given a list of items, suggest an interesting activity.<br><br>Input: pencils, paper, markers |
+| 4 | `mmlu-moral_disputes-8315` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: According to Hardin, the "ratchet effect" refers to the fact that<br>A. overpopulation does not affect the number of people who are poor.<br>B. overpopulation leads to creation of food banks that help curb poverty rates.<br>C. world hunger and poverty leads to recognition of rights not to be hungry.<br>D. the use of a world food bank to feed the hungry leads to an escalating series of emergency situations. |
+| 5 | `alpaca-9907` | Alpaca | Translate this phrase from Spanish to English: El sol no brilla hoy. |
+| 6 | `mmlu-high_school_macroeconomics-3940` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: The crowding-out effect from government borrowing is best described as<br>A. the rightward shift in AD in response to the decreasing interest rates from contractionary fiscal policy.<br>B. the leftward shift in AD in response to the rising interest rates from expansionary fiscal policy.<br>C. the effect of the President increasing the money supply which decreases real interest rates and increases AD.<br>D. the effect on the economy of hearing the chairperson of the central bank say that he or she believes that the economy is in a recession. |
+| 7 | `alpaca-40699` | Alpaca | Give an example of a bias that could exist in an AI algorithm. |
+| 8 | `mmlu-professional_law-10971` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Homeowner owns a property in its natural condition with a house on it. There was no fill of any kind on the property. Neighbor, who owns the adjacent property to the East, built a driveway whose western boundary is along the border of homeowner's property. The excavator dug the driveway five feet deep. The land began to subside along the line of excavation and about three feet of homeowner's land fell off into the driveway, making that part of her property useless. Homeowner demanded that neighbor fill in the property to buttress the erosion created. That was not done and the erosion continued to occur. Homeowner sued and asked for an injunction compelling the neighbor to build and maintain a retaining wall. Will the court rule for the plaintiff/homeowner?<br>A. Yes, because excavation is an abnormally dangerous activity and neighbor is absolutely liable for any damages caused by the violation.<br>B. Yes, because every landowner has a right to the lateral support of the soil in its natural state.<br>C. No, because the neighbor did not go onto the adjacent land and confined all excavation to his own land.<br>D. No, the right to lateral support is a common law right that has been abrogated by statute in virtually all states so that the right no longer exists. |
+| 9 | `alpaca-34440` | Alpaca | Make a menu item for a restaurant that contains the following ingredients.<br><br>Input: Salmon, avocado, spinach |
+| 10 | `mmlu-jurisprudence-6660` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Which of the following is the strongest argument against ethical relativism's hostility to human rights?<br>A. Utilitarianism<br>B. Communitarianism.<br>C. Cognitivism.<br>D. Positivism. |
 
 Each runtime used temperature 0, default EOS handling, and a 200-token target
 for the matched Kimi chart. Prompt-token counts and actual completion-token
@@ -429,12 +374,6 @@ Expert Pack and manifest are supplied through
 `--model-loader-extra-config`. The source GGUF shards remain next to the pack
 as described by the manifest.
 
-The corresponding SGLang server used `--load-format expert_pack` with
-`tp_size=1`, `ep_size=1`, `max_running_requests=1`, `read_splits=1`,
-`direct_io=true`, a 5120 MiB GPU expert-cache budget, and a 1536 MiB cache
-reserve. The request set also used `chunked_prefill_size=64` and
-`mem_fraction_static=0.98`.
-
 The llama.cpp server was started with:
 
 ```bash
@@ -466,10 +405,6 @@ time.
 
 The exact per-request JSONL records and effective launch logs are retained in
 the benchmark evidence bundle.
-
-The benchmark host exposed an RTX 5090 with 32 GiB VRAM, 32 GiB CPU memory,
-and a 2 TB ext4 storage volume. The physical storage model was not exposed by
-the host, so no more specific SSD claim is made here.
 
 ### Expert-cache hit rate and SSD traffic
 
@@ -505,7 +440,7 @@ The improvement does not come from one isolated faster-copy primitive. It is the
 
 ### SSD capacity and preparation time
 
-Expert Pack requires additional SSD capacity. The PR records an estimated 5-10 minutes to build the DeepSeek-V4-Flash pack and approximately 8-15 minutes for first-run readiness. Kimi-K3 pack construction took 29 minutes 42 seconds in the retained measurement, with approximately 35-45 minutes to first readiness. The 38 Kimi source shards and generated Expert Pack occupy about 1.814 TiB in total; the measurements use a 2 TB storage volume, while a 4 TB SSD is recommended for practical deployment headroom.
+Expert Pack requires additional SSD capacity. The PR records an estimated 5-10 minutes to build the DeepSeek-V4-Flash pack and approximately 8-15 minutes for first-run readiness. Kimi-K3 pack construction took 29 minutes 42 seconds in the retained measurement, with approximately 35-45 minutes to first readiness. The 38 Kimi source shards and generated Expert Pack occupy about 1.814 TiB in total; the measurements use the TiPro9000 2 TB disk, while a 4 TB SSD is recommended for practical deployment headroom.
 
 ### Direct I/O
 
