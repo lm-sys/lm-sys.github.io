@@ -272,7 +272,7 @@ aggregates use the ten retained request records described in Section 9.
 
 ### Expert-cache hit rate and SSD traffic
 
-Token rate should be read together with cache telemetry. The following Python-generated bar charts report two independent quantities: the share of unique `(layer, expert)` keys counted by `acquire()` that were served from the VRAM cache, and decimal gigabytes read from the Expert Pack per generated token. Repeated token-to-expert routes within one acquire/update are de-duplicated, so this is not a per-token router-edge hit rate. A cache hit avoids the SSD read and H2D transfer for that expert. `pack_read_bytes` includes both prefill and decode traffic; GB/token is normalized by generated completion tokens and is not decode-only traffic.
+Token rate should be read together with cache telemetry. The following Python-generated bar charts report VRAM cache hit rate and decimal gigabytes read from the Expert Pack per generated token. A cache hit avoids the SSD read and H2D transfer for that expert. `pack_read_bytes` includes both prefill and decode traffic; GB/token is normalized by generated completion tokens and is not decode-only traffic.
 Both figures show SGLang-only telemetry, so the single series is labeled by the surrounding text rather than a legend.
 
 <p align="center">
@@ -304,8 +304,8 @@ The improvement does not come from one isolated faster-copy primitive. It is the
 
 This section gives the complete reproduction flow after the result tables. The
 two subsections use the same ten fixed requests. They are endpoint-style tests:
-the client sends one request, waits for its completion, and then sends the next
-request. No batch is used.
+the client sends ten HTTP requests in order, waits for each response before
+sending the next request, and uses concurrency 1. No batch of requests is used.
 
 The requests are five Alpaca samples and five MMLU samples, in this order:
 
@@ -326,6 +326,12 @@ Each request uses temperature 0, default EOS handling, and a 200-token target.
 The clients record prompt tokens, completion tokens, TTFT/prefill timing, and
 decode timing for every request. The tables in Section 8 report arithmetic means
 over the five requests in each dataset.
+
+In the SGLang commands below, `model-meta` is the lightweight directory holding
+the model configuration and tokenizer metadata used to initialize the server.
+It is not the raw GGUF weight file. The raw GGUF remains the source artifact,
+while the Expert Pack supplies the routed expert payload; the loader connects
+them through `source_path`, `pack_path`, and the manifest.
 
 ### 9.1 DeepSeek-V4-Flash: SGLang and Ollama
 
@@ -362,40 +368,40 @@ OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
    Ollama manifest SHA-256 is
    `882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3`.
 
-2. Install the SGLang checkout and run its validation-only preparation. This
-   extracts the model configuration and tokenizer metadata from the GGUF, then
-   invokes `tools/expert_pack/prepare_deepseek_pack.py` to build or validate the
-   Pack and manifest without starting a server:
+2. Install the SGLang checkout and build the DeepSeek Expert Pack manually. Use
+   a matching DeepSeek model configuration JSON for `--model-config`:
 
    ```bash
    cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
    python3 -m pip install -e 'python'
+   python3 tools/expert_pack/prepare_deepseek_pack.py \
+     --gguf /path/to/deepseek-v4-flash-0731.gguf \
+     --model-config /path/to/deepseek-v4-flash-config.json \
+     --safety-margin-gib 16
+   ```
+
+   This creates or reuses `DeepSeek-V4-Flash.expert-pack` and its
+   `DeepSeek-V4-Flash.expert-pack.manifest.json` beside the source GGUF.
+
+3. Validate the generated Pack and create the metadata used by the server. This
+   command does not start a service; because the Pack was built in the previous
+   step, the validation phase reuses it instead of rebuilding it:
+
+   ```bash
    python3 examples/runtime/deepseek_v4/benchmark_deepseek_5090.py \
      --gguf /path/to/deepseek-v4-flash-0731.gguf \
      --validate-only
    ```
 
-   The generated files are stored under
+   The generated metadata files are stored under
    `${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/deepseek-v4-flash/<fingerprint>/model-meta/`:
    `config.json`, `generation_config.json`, `tokenizer.json`,
-   `tokenizer_config.json`, and `metadata.json`. Beside the source GGUF, the
-   preparation creates `DeepSeek-V4-Flash.expert-pack` and
-   `DeepSeek-V4-Flash.expert-pack.manifest.json`.
+   `tokenizer_config.json`, and `metadata.json`.
 
    Here `<fingerprint>` is a short hash derived from the source GGUF state and
    preparation format. It is generated locally to isolate artifacts for
    different source files; it is not a fixed model name or a directory that
    must be downloaded.
-
-   If the Pack needs to be rebuilt or checked separately after the metadata
-   exists, invoke the model-specific builder directly:
-
-   ```bash
-   ARTIFACT_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/deepseek-v4-flash/<fingerprint>"
-   python3 tools/expert_pack/prepare_deepseek_pack.py \
-     --gguf /path/to/deepseek-v4-flash-0731.gguf \
-     --model-config "$ARTIFACT_DIR/model-meta/config.json"
-   ```
 
 #### Starting SGLang
 
@@ -529,7 +535,7 @@ Start the pinned llama.cpp build with CPU expert execution:
 /path/to/llama.cpp/build/bin/llama-server \
   -m /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
   -ngl -1 --cpu-moe --host 127.0.0.1 --port 8081 \
-  -t 16 -tb 16 --threads-http 16 -np 1 -c 4096 -b 16 -ub 16 \
+  -t 16 -tb 16 --threads-http 16 -np 1 -c 4096 \
   --no-warmup --metrics \
   --log-file /path/to/kimi-k3-llama-cpp/server.log
 ```
