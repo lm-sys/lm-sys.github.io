@@ -16,7 +16,7 @@ The total parameter capacity of DeepSeek-V4-Flash and Kimi-K3 is far beyond the 
 
 SGLang's SSD-backed Expert Pack path takes a different approach. Routed expert weights remain on an NVMe SSD. The router activates only a small subset of experts for each token, so the runtime moves only the selected experts that are not already cached to the GPU. Expert Pack reorganizes the weights of each layer/expert pair into a directly addressable contiguous expert block. The runtime reads that expert block into an aligned pinned host buffer using direct I/O, then transfers it to a GPU cache asynchronously.
 
-This path changes how model weights are stored and delivered, not the model computation. It does not prune, replace, merge, or skip selected experts, and it does not reduce Expert Top-K. The result is a practical way to run DeepSeek-V4-Flash and the validated text-only Kimi-K3 path with one RTX 5090 (32 GB VRAM), 32 GB of CPU memory, and a 2 TB NVMe SSD.
+This path changes how model weights are stored and delivered, not the model computation. It does not prune, replace, merge, or skip selected experts, and it does not reduce Expert Top-K. The result is a practical way to run DeepSeek-V4-Flash and the validated text-only Kimi-K3 path with one RTX 5090 (32 GB VRAM), 32 GB of CPU memory, and a 2 TB storage volume.
 
 ### MoE computation is sparse, but model capacity is not
 
@@ -34,7 +34,7 @@ This is why SSD is a useful backing tier. It provides much more capacity than co
 A capacity-cost comparison makes the trade-off clear. The following figures are capacity-only lower bounds, not complete system prices:
 
 <p align="center">
-  <img src="../public/images/blog/sglang-ssd-expert-pack/price.png" alt="Capacity cost comparison for DeepSeek-V4-Flash and Kimi-K3 on a logarithmic scale" width="460">
+  <img src="/images/blog/sglang-ssd-expert-pack/price.png" alt="Capacity cost comparison for DeepSeek-V4-Flash and Kimi-K3 on a logarithmic scale" width="460">
 </p>
 
 The figure does not mean SSD and DRAM have the same latency, or that buying an SSD alone is sufficient to run the model. It shows that placing the complete expert pool in VRAM or DRAM quickly becomes impractical, while using SSD for capacity and a bounded GPU cache for the active working set can substantially lower the hardware barrier.
@@ -84,7 +84,7 @@ SGLang Expert Pack v1 treats one `(layer, expert)` pair as one complete expert. 
 
 The logical layout is:
 
-![Expert Pack physical data block layout with contiguous expert byte-streams and explicit block-aligned padding](../public/images/blog/sglang-ssd-expert-pack/expert-pack-layout.png)
+![Expert Pack physical data block layout with contiguous expert byte-streams and explicit block-aligned padding](/images/blog/sglang-ssd-expert-pack/expert-pack-layout.png)
 
 The runtime does not scan the file for tensor names. It derives the expert offset from the pack metadata:
 
@@ -116,7 +116,7 @@ This is one of the most important differences between Expert Pack and a conventi
 Traditional file reads normally go through the operating system page cache:
 
 <p align="center">
-  <img src="../public/images/blog/sglang-ssd-expert-pack/traditional_copy.png" alt="Traditional file-read path: a synchronous page-cache-to-pinned-memory copy followed by asynchronous H2D" width="300">
+  <img src="/images/blog/sglang-ssd-expert-pack/traditional_copy.png" alt="Traditional file-read path: a synchronous page-cache-to-pinned-memory copy followed by asynchronous H2D" width="300">
 </p>
 
 The page cache is a kernel-managed file cache. It is not the same thing as the page-locked user memory that CUDA can use for asynchronous H2D. To issue an asynchronous H2D transfer, the application normally prepares a pinned buffer. The file data therefore has to be copied from the page cache into that pinned buffer before the GPU transfer can start. From the application's perspective, this page-cache-to-pinned handoff is a synchronous CPU memory copy: the host-side staging step must complete before the H2D operation has a valid pinned source buffer. It is not itself a `cudaMemcpyAsync` operation.
@@ -128,7 +128,7 @@ This is neither SSD reads nor H2D transfers. Rather, it is an extra synchronous 
 When `direct_io=True`, SGLang opens the Expert Pack with `O_DIRECT` and makes the read target a preallocated, aligned pinned staging buffer:
 
 <p align="center">
-  <img src="../public/images/blog/sglang-ssd-expert-pack/expert_pack_copy.png" alt="Expert Pack direct-I/O path: an aligned pinned host buffer feeds the GPU expert cache before MoE computation" width="300">
+  <img src="/images/blog/sglang-ssd-expert-pack/expert_pack_copy.png" alt="Expert Pack direct-I/O path: an aligned pinned host buffer feeds the GPU expert cache before MoE computation" width="300">
 </p>
 
 The read target is already the pinned buffer required by CUDA, so the intermediate step below is removed:
@@ -188,15 +188,17 @@ The runtime exposes counters that make cache behavior measurable:
 - `h2d_bytes`;
 - `fallback_count` and `io_errors`.
 
-These counters distinguish a cache problem from an I/O problem. A low hit rate means the VRAM budget or workload locality is insufficient; high `pack_read_bytes` and `h2d_bytes` with a good hit rate may instead indicate that the active set is larger than the cache during a particular phase. `fallback_count` and `io_errors` are correctness signals, not cache-performance signals.
+These counters distinguish a cache problem from an I/O problem. A low hit rate means the VRAM budget or workload locality is insufficient; high `pack_read_bytes` and `h2d_bytes` with a good hit rate may instead indicate that the active set is larger than the cache during a particular phase. `io_errors` reports observed I/O failures, while `fallback_count` is diagnostic telemetry whose meaning depends on an instrumented fallback path; neither is a cache-performance metric.
 
-The cost of a cache miss can be viewed as:
+The current execution order places an expert-cache miss on the critical path for the MoE computation it feeds. `acquire()` copies routing IDs to CPU, waits for the SSD read futures, enqueues the expert-level H2D transfers, and makes the current CUDA stream wait for their transfer events. Only after those events are ready does `apply()` launch the MoE kernels. Reads and transfers for different missing experts may overlap during the delivery phase, but the current path does not overlap that delivery with the MoE computation that consumes the experts.
+
+A simplified per-step model for the current path is therefore:
 
 ```text
-T_step ~= max(T(SSD read) + T(H2D), T(GPU compute))
+T_step ~= T(miss delivery) + T(GPU compute)
 ```
 
-On a GPU cache hit, both SSD read and H2D can be skipped. On a miss, the cost includes the expert read, the expert-level H2D, and the expert computation. The actual result depends on SSD bandwidth, access distribution, cache hit rate, staging-slot count, and expert shapes.
+Here, `T(miss delivery)` includes route-ID preparation, SSD reads, staging, H2D submission, and the waits needed to make the selected experts available. On a GPU cache hit, the SSD-read and H2D portions can be skipped. A cross-step pipeline could change this model, but that is not part of the execution path described here. The actual result depends on SSD bandwidth, access distribution, cache hit rate, staging-slot count, and expert shapes.
 
 ## 6. DeepSeek-V4-Flash and Kimi-K3 integration
 
@@ -262,48 +264,144 @@ Expert Pack is a weight-layout and delivery optimization, not an approximate-inf
 - the pack and manifest are structurally, dimensionally, and cryptographically validated as configured;
 - `fallback_count` and `io_errors` are reported instead of silently hiding I/O failures.
 
-Validation showed that DeepSeek-V4-Flash produced semantically equivalent answers to Ollama across multiple prompt categories. Kimi-K3 matched the 200-token SGLang reference output; all 92 routed layers executed Top-16 experts with `fallback_count=0` and `io_errors=0`.
+Validation showed that DeepSeek-V4-Flash produced semantically equivalent answers to Ollama across multiple prompt categories. Kimi-K3 matched the 200-token SGLang reference output; all 92 routed layers executed Top-16 experts with `io_errors=0`. `fallback_count` is retained as diagnostic telemetry, but the current path does not expose an instrumented increment for every hypothetical fallback, so zero is not used as an independent correctness proof. Correctness is instead established by the route/output audit and the structural pack checks.
 
 ## 8. Performance results
 
-All SGLang, Ollama, and llama.cpp measurements use the same test environment: one NVIDIA RTX 5090 with 32 GB VRAM, 32 GB of CPU memory, and a 2 TB NVMe SSD. The figures below describe validation results under this shared hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.
+All SGLang, Ollama, and llama.cpp measurements use the same test environment: one NVIDIA RTX 5090 with 32 GB VRAM, 32 GB of CPU memory, and a 2 TB storage volume. The figures below describe validation results under this shared hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.
 
 ### DeepSeek-V4-Flash vs. Ollama
 
 The comparison uses ten shared requests: five Alpaca and five MMLU. Both runtimes generated up to 200 tokens per request. The chart reports mean prefill and decode token rates for each dataset.
 
 <p align="center">
-  <img src="../public/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_ollama_compare.png" alt="DeepSeek-V4-Flash SGLang versus Ollama prefill and decode token rates for Alpaca and MMLU" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_ollama_compare.png" alt="DeepSeek-V4-Flash SGLang versus Ollama prefill and decode token rates for Alpaca and MMLU" width="100%">
 </p>
 
 Relative to Ollama, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.
 
 ### Kimi-K3 vs. llama.cpp
 
-The comparison includes three Alpaca and two MMLU samples. SGLang generated 200 tokens, while llama.cpp generated 50 tokens, so the decode comparison is indicative rather than a strict equal-length A/B measurement. The chart reports mean prefill and decode token rates for each dataset.
+The comparison uses the same ten fixed requests in both runtimes: five Alpaca
+and five MMLU. Both clients use temperature 0 and default EOS handling; each
+request generated exactly 200 completion tokens, so the decode comparison is
+now matched for prompt set, stop behavior, and output length. The chart reports
+mean prefill and decode token rates for each dataset.
 
 <p align="center">
-  <img src="../public/images/blog/sglang-ssd-expert-pack/kimi_k3_sglang_vs_llama_compare.png?v=20260828" alt="Kimi-K3 SGLang versus llama.cpp prefill and decode token rates for Alpaca and MMLU" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/kimi_k3_sglang_vs_llama_compare.png?v=20260904" alt="Kimi-K3 SGLang versus llama.cpp prefill and decode token rates for a matched 200-token Alpaca and MMLU rerun" width="100%">
 </p>
 
-Relative to llama.cpp, SGLang improves prefill by 7.81x on Alpaca and 5.98x on MMLU. Decode improves by 3.14x and 3.04x, respectively.
+Relative to llama.cpp, SGLang improves prefill by 6.96x on Alpaca and 5.80x on
+MMLU. Decode improves by 3.30x and 3.52x, respectively. The ten-request
+aggregates use the ten retained request records described below.
+
+### Benchmark reproduction record
+
+The retained benchmark bundle uses one request at a time, 16 logical CPUs
+(`0-15`), a 32 GiB memory limit, and disabled swap. The shared input file is
+`examples/runtime/kimi_k3/benchmark_kimi_k3_inputs.jsonl`: ten fixed records,
+interleaved as five Alpaca and five MMLU requests. Each runtime used temperature
+0, default EOS handling, and a 200-token target for the matched Kimi chart.
+Prompt-token counts and actual completion-token counts are retained per request
+in the JSONL records. The Kimi records all reached 200 completion tokens; the
+retained DeepSeek Ollama records include earlier EOS stops and therefore report
+their actual counts separately from the 200-token ceiling.
+
+| Runtime | Source revision and identity |
+| --- | --- |
+| SGLang | `81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec` (`support_deepseek-v4_and_kimi-k3_on_ssd`) |
+| llama.cpp | `5fff128451d7603857597ee1fc18ac1dfb90f148`; local `src/models/kimi-k3.cpp` was modified for Kimi-K3 |
+| Ollama (DeepSeek record) | Ollama `0.33.1`; managed llama.cpp runner commit `d222767c7` |
+
+The Kimi source is the 38-shard GGUF beginning at
+`/models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf`.
+The Expert Pack is
+`/models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack`.
+The retained Kimi manifest provides pack-index and source-inventory hashes, but
+full SHA-256 hashes for all GGUF shards and the complete pack were not recorded.
+
+| Available artifact digest | Value |
+| --- | --- |
+| DeepSeek Ollama manifest | `sha256:882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3` |
+| DeepSeek GGUF blob | `sha256:947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd` |
+| Kimi Expert Pack index | `ceb3e63ac411cce02ffdec875e5ae05f61c3dea351d0c91d86d712544b0288aa` |
+| Kimi source inventory | `e7e2caab78a1da736fe9d17b8754b682498f6c430531054c109c0f624a0ab89b` |
+
+The SGLang batch client was invoked as:
+
+```bash
+python3 /root/workspace/benchmark_kimi_k3_alpaca_mmlu_interleaved.py \
+  --gguf /models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+  --inputs /root/workspace/sglang-latest-deepseek-v4-kimi-k3-ssd/examples/runtime/kimi_k3/benchmark_kimi_k3_inputs.jsonl \
+  --output-dir /root/workspace/kimi-k3-sglang-rerun-20260903-200tok \
+  --max-new-tokens 200
+```
+
+The corresponding SGLang server used `--load-format expert_pack` with
+`tp_size=1`, `ep_size=1`, `max_running_requests=1`, `read_splits=1`,
+`direct_io=true`, a 5120 MiB GPU expert-cache budget, and a 1536 MiB cache
+reserve. The request set also used `chunked_prefill_size=64` and
+`mem_fraction_static=0.98`.
+
+The llama.cpp server was started with:
+
+```bash
+/root/workspace/llama.cpp/build/bin/llama-server \
+  -m /models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+  -ngl -1 --cpu-moe --host 127.0.0.1 --port 8081 \
+  -t 16 -tb 16 --threads-http 16 -np 1 -c 4096 -b 16 -ub 16 \
+  --no-warmup --metrics \
+  --log-file /root/workspace/kimi-k3-llama-cpp-16cpu-32gb-20260828/server.log
+```
+
+The retained DeepSeek Ollama service was started with
+`OLLAMA_HOST=http://127.0.0.1:11435 /usr/local/bin/ollama serve`. Its managed
+runner command was:
+
+```bash
+/usr/local/lib/ollama/llama-server \
+  --model /usr/share/ollama/.ollama/models/blobs/sha256-947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd \
+  --port 40115 --host 127.0.0.1 --no-webui --offline \
+  -c 32768 -np 1 --log-verbosity 4 --no-log-prefix --no-log-timestamps \
+  --flash-attn auto -b 512 -ub 512 --context-shift --keep 4
+```
+
+The service log identifies Ollama `0.33.1` and runner commit `d222767c7`.
+
+The llama.cpp benchmark client sent non-streaming `/completion` requests with
+`cache_prompt=false`, `temperature=0`, and `n_predict=200`, one request at a
+time.
+
+The exact per-request JSONL records and effective launch logs are retained in
+the benchmark evidence bundle.
+
+The benchmark host exposed an RTX 5090 with 32 GiB VRAM, 32 GiB CPU memory,
+and a 2 TB ext4 storage volume. The physical storage model was not exposed by
+the host, so no more specific SSD claim is made here.
 
 ### Expert-cache hit rate and SSD traffic
 
-Token rate should be read together with cache telemetry. The following Python-generated bar charts report two independent quantities: the share of routed-expert accesses served from the VRAM cache, and decimal gigabytes read from the Expert Pack per generated token. A cache hit avoids the SSD read and H2D transfer for that expert; GB/token also depends on expert payload size and routing locality.
+Token rate should be read together with cache telemetry. The following Python-generated bar charts report two independent quantities: the share of unique `(layer, expert)` keys counted by `acquire()` that were served from the VRAM cache, and decimal gigabytes read from the Expert Pack per generated token. Repeated token-to-expert routes within one acquire/update are de-duplicated, so this is not a per-token router-edge hit rate. A cache hit avoids the SSD read and H2D transfer for that expert. `pack_read_bytes` includes both prefill and decode traffic; GB/token is normalized by generated completion tokens and is not decode-only traffic.
 Both figures show SGLang-only telemetry, so the single series is labeled by the surrounding text rather than a legend.
 
 <p align="center">
-  <img src="../public/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_expert_cache_metrics.png" alt="DeepSeek-V4-Flash SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_expert_cache_metrics.png" alt="DeepSeek-V4-Flash SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
 </p>
 
 DeepSeek uses the complete ten-request run: five Alpaca and five MMLU requests, each with a 200-token completion. Its hit rate is 54.2% for Alpaca and 46.4% for MMLU, with 1.66 and 2.04 GB read per generated token.
 
 <p align="center">
-  <img src="../public/images/blog/sglang-ssd-expert-pack/kimi_k3_expert_cache_metrics.png" alt="Kimi-K3 SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/kimi_k3_expert_cache_metrics.png" alt="Kimi-K3 SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
 </p>
 
+The Kimi figure uses all ten completed requests: five Alpaca and five MMLU, each with a 200-token completion. The unweighted per-request means are 17.0% and 22.7% VRAM cache hit rate, with 22.10 and 27.63 decimal GB read per generated token, respectively. The difference from DeepSeek is expected: Kimi's configuration reserves 5 GiB for the GPU expert cache, while the DeepSeek run reserves about 21 GiB, and the two adapters have different expert payload sizes and routing behavior.
+
+<!-- Retired interim three-request values are kept below only as review history. -->
+<!--
 The Kimi figure uses the first three completed requests of the interleaved run: two Alpaca and one MMLU, each with a 200-token completion. The current means are 17.4% and 18.5% VRAM cache hit rate, with 21.84 and 24.46 GB read per generated token, respectively. The remaining seven requests are still running, so these are explicitly stage results rather than final ten-request averages. The difference from DeepSeek is expected: Kimi’s configuration reserves 5 GiB for the GPU expert cache, while the DeepSeek run reserves about 21 GiB, and the two adapters have different expert payload sizes and routing behavior.
+
+-->
 
 The improvement does not come from one isolated faster-copy primitive. It is the combined effect of:
 
@@ -316,7 +414,7 @@ The improvement does not come from one isolated faster-copy primitive. It is the
 
 ### SSD capacity and preparation time
 
-Expert Pack requires additional SSD capacity. The PR records an estimated 5-10 minutes to build the DeepSeek-V4-Flash pack and approximately 8-15 minutes for first-run readiness. Kimi-K3 pack construction took 29 minutes 42 seconds in the retained measurement, with approximately 35-45 minutes to first readiness. The 38 Kimi source shards and generated Expert Pack occupy about 1.814 TiB in total; the measurements use a 2 TB SSD, while a 4 TB SSD is recommended for practical deployment headroom.
+Expert Pack requires additional SSD capacity. The PR records an estimated 5-10 minutes to build the DeepSeek-V4-Flash pack and approximately 8-15 minutes for first-run readiness. Kimi-K3 pack construction took 29 minutes 42 seconds in the retained measurement, with approximately 35-45 minutes to first readiness. The 38 Kimi source shards and generated Expert Pack occupy about 1.814 TiB in total; the measurements use a 2 TB storage volume, while a 4 TB SSD is recommended for practical deployment headroom.
 
 ### Direct I/O
 
