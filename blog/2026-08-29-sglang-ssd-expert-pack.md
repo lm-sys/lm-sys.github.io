@@ -227,11 +227,40 @@ python3 examples/runtime/deepseek_v4/benchmark_deepseek_5090.py \
   --max-new-tokens 200
 ```
 
-The launcher uses `--load-format expert_pack`, prepares or validates model metadata, Expert Pack, and manifest artifacts, and passes runtime settings through `--model-loader-extra-config`. The first launch prepares the pack; later launches reuse the existing artifacts.
+The launchers use `--load-format expert_pack`, prepare or validate model metadata
+and manifest artifacts, and pass runtime settings through
+`--model-loader-extra-config`. The Kimi benchmark expects its Expert Pack to be
+present before launch and reuses it across runs.
 
 ### 6.3 Kimi-K3
 
-The currently validated input is the text-only 38-shard GGUF path, not the complete multimodal safetensors checkpoint. Point the launcher at the first shard; it discovers the remaining shards in the same directory:
+The currently validated input is the text-only 38-shard GGUF path, not the complete multimodal safetensors checkpoint. Download the Q2_K shards from [Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED](https://huggingface.co/Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED):
+
+```bash
+hf download Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED \
+  --include "KIMI-K3-MXP4-DERISKED-Q2_K-*.gguf" \
+  --local-dir /path/to/kimi-k3
+```
+
+Download the tokenizer and configuration files separately from [moonshotai/Kimi-K3 at the recorded revision](https://huggingface.co/moonshotai/Kimi-K3/tree/9f62e4e9fffbd0a83ddd60e1c209d828994b3569). The recorded run used revision `9f62e4e9fffbd0a83ddd60e1c209d828994b3569`:
+
+```bash
+hf download moonshotai/Kimi-K3 \
+  config.json tokenizer_config.json generation_config.json \
+  tokenization_kimi.py encoding_k3.py tiktoken.model \
+  --revision 9f62e4e9fffbd0a83ddd60e1c209d828994b3569 \
+  --local-dir /path/to/kimi-k3-tokenizer
+```
+
+Keep the directories separate. The validated layout is:
+
+```text
+/path/to/kimi-k3/                         # 38 GGUF shards
+/path/to/kimi-k3-tokenizer/               # tokenizer/config files
+/path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack
+```
+
+The Expert Pack is prepared before serving and must be placed beside the GGUF shards; `benchmark_kimi_k3_5090.py` does not build the Pack. Its `--gguf` argument points to the first shard, and the launcher derives the GGUF directory, sibling Pack, and tokenizer directory automatically:
 
 ```bash
 python3 examples/runtime/kimi_k3/benchmark_kimi_k3_5090.py \
@@ -240,7 +269,14 @@ python3 examples/runtime/kimi_k3/benchmark_kimi_k3_5090.py \
   --max-new-tokens 200
 ```
 
-Kimi uses the GGML Expert Pack adapter. The validated routed experts use Q2_K for gate/up and Q3_K for down. Other GGUF quantization variants should not be claimed as supported without additional validation.
+Before starting SGLang, this launcher creates the following generated paths under `${XDG_CACHE_HOME:-$HOME/.cache}`:
+
+```text
+sglang-expert-pack/kimi-k3/<fingerprint>/model-meta/
+sglang-expert-pack/kimi-k3/<fingerprint>/kimi-k3-expert-pack.manifest.json
+```
+
+The direct server arguments therefore use `model-meta` for both model and tokenizer, `pack_path` for the Pack beside the GGUF shards, and the generated `manifest_path`. Kimi uses the GGML Expert Pack adapter. The validated routed experts use Q2_K for gate/up and Q3_K for down. Other GGUF quantization variants should not be claimed as supported without additional validation.
 
 ### 6.4 Model and Expert Pack weight footprint
 
@@ -344,6 +380,17 @@ The Expert Pack is
 The retained Kimi manifest provides pack-index and source-inventory hashes, but
 full SHA-256 hashes for all GGUF shards and the complete pack were not recorded.
 
+For the retained 92-host run, the concrete loader paths were:
+
+| Loader path | Value |
+| --- | --- |
+| `pack_path` | `/models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack` |
+| `manifest_path` | `/root/.cache/sglang-expert-pack/kimi-k3/e78cd60cd8fbbd79136b/kimi-k3-expert-pack.manifest.json` |
+
+The manifest directory component is a generated source fingerprint and can
+change when the GGUF or Pack file state changes. The portable form is therefore
+`${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/<fingerprint>/`.
+
 | Available artifact digest | Value |
 | --- | --- |
 | DeepSeek Ollama manifest | `sha256:882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3` |
@@ -351,28 +398,36 @@ full SHA-256 hashes for all GGUF shards and the complete pack were not recorded.
 | Kimi Expert Pack index | `ceb3e63ac411cce02ffdec875e5ae05f61c3dea351d0c91d86d712544b0288aa` |
 | Kimi source inventory | `e7e2caab78a1da736fe9d17b8754b682498f6c430531054c109c0f624a0ab89b` |
 
-The official SGLang server entry point for Expert Pack mode is:
+The benchmark launcher is the canonical reproducible entry point because it prepares `model-meta`, generates the manifest, validates the Pack, and then starts SGLang. After those preparation steps, the equivalent direct server launch is:
 
 ```bash
+GGUF_DIR=/path/to/kimi-k3
+PACK_PATH="$GGUF_DIR/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack"
+ARTIFACT_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/<fingerprint>"
+MODEL_META="$ARTIFACT_DIR/model-meta"
+MANIFEST_PATH="$ARTIFACT_DIR/kimi-k3-expert-pack.manifest.json"
+STATS_PATH="$ARTIFACT_DIR/kimi-k3-expert-pack.stats.json"
+
 python3 -m sglang.launch_server \
-  --model-path /path/to/kimi-k3-tokenizer \
-  --tokenizer-path /path/to/kimi-k3-tokenizer \
+  --model-path "$MODEL_META" \
+  --tokenizer-path "$MODEL_META" \
   --trust-remote-code \
   --load-format expert_pack \
-  --model-loader-extra-config '{"pack_path":"/path/to/KIMI-K3.expert-major.pack","manifest_path":"/path/to/kimi-k3-expert-pack.manifest.json","cache_vram_mib":5120,"cache_vram_reserve_mib":1536,"stage_slots":16,"read_splits":4,"direct_io":true}' \
+  --model-loader-extra-config "{\"pack_path\":\"$PACK_PATH\",\"manifest_path\":\"$MANIFEST_PATH\",\"cache_vram_mib\":5120,\"cache_vram_reserve_mib\":1536,\"stage_slots\":16,\"read_splits\":1,\"direct_io\":true,\"stats_flush_interval\":92,\"stats_path\":\"$STATS_PATH\",\"verify_pack_sha256\":false}" \
   --tp-size 1 --ep-size 1 \
   --disable-cuda-graph --disable-shared-experts-fusion \
   --disable-radix-cache --mamba-radix-cache-strategy no_buffer \
   --disable-overlap-schedule --skip-server-warmup \
+  --chunked-prefill-size 64 --watchdog-timeout 1800 \
   --max-running-requests 1 --mem-fraction-static 0.98 \
-  --chunked-prefill-size 64 \
-  --host 0.0.0.0 --port 30000
+  --host 127.0.0.1 --port 30001
 ```
 
-`--model-path` points to the verified tokenizer/configuration directory; the
-Expert Pack and manifest are supplied through
-`--model-loader-extra-config`. The source GGUF shards remain next to the pack
-as described by the manifest.
+`<fingerprint>` is generated from the source GGUF and Pack file state, so it is
+not a fixed model identifier. The benchmark's `--prepare-only` mode can be used
+to create `model-meta` and the manifest without starting the server. The source
+GGUF shards remain next to the Pack; the manifest records their inventory and
+the Pack index used by the loader.
 
 The llama.cpp server was started with:
 
