@@ -263,7 +263,7 @@ now matched for prompt set, stop behavior, and output length. The chart reports
 mean prefill and decode token rates for each dataset.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/kimi_k3_sglang_vs_llama_compare.png?v=20260904" alt="Kimi-K3 SGLang versus llama.cpp prefill and decode token rates for a matched 200-token Alpaca and MMLU rerun" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/kimi_k3_sglang_vs_llama_compare.png?v=20260904" alt="Kimi-K3 SGLang versus llama.cpp prefill and decode token rates for Alpaca and MMLU" width="100%">
 </p>
 
 Relative to llama.cpp, SGLang improves prefill by 6.96x on Alpaca and 5.80x on
@@ -272,20 +272,20 @@ aggregates use the ten retained request records described in Section 9.
 
 ### Expert-cache hit rate and SSD traffic
 
-Token rate should be read together with cache telemetry. The following Python-generated bar charts report VRAM cache hit rate and decimal gigabytes read from the Expert Pack per generated token. A cache hit avoids the SSD read and H2D transfer for that expert. `pack_read_bytes` includes both prefill and decode traffic; GB/token is normalized by generated completion tokens and is not decode-only traffic.
+Token rate should be read together with cache telemetry. The following Python-generated bar charts report the unique-key VRAM cache hit rate and mean SSD traffic per generated token. `cache_hits` and `cache_misses` count unique `(layer, expert)` keys after `acquire()` de-duplicates keys within each update; they are not per-token router-edge accesses. A cache hit avoids the SSD read and H2D transfer for that expert. The SSD traffic metric is the unweighted per-request mean of total `pack_read_bytes` across prefill and decode, normalized by generated completion tokens, and is therefore not decode-only traffic.
 Both figures show SGLang-only telemetry, so the single series is labeled by the surrounding text rather than a legend.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_expert_cache_metrics.png" alt="DeepSeek-V4-Flash SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_expert_cache_metrics.png" alt="DeepSeek-V4-Flash SGLang unique VRAM cache hit rate and mean SSD traffic per generated token" width="100%">
 </p>
 
-DeepSeek uses the complete ten-request run: five Alpaca and five MMLU requests, each with a 200-token completion. Its hit rate is 54.2% for Alpaca and 46.4% for MMLU, with 1.66 and 2.04 GB read per generated token.
+DeepSeek uses the complete ten-request run: five Alpaca and five MMLU requests, each with a 200-token completion. Its unique-key VRAM cache hit rate is 54.2% for Alpaca and 46.4% for MMLU. The mean SSD traffic, combining prefill and decode, is 1.66 and 2.04 decimal GB per generated token, respectively.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/kimi_k3_expert_cache_metrics.png" alt="Kimi-K3 SGLang VRAM cache hit rate and SSD reads per generated token" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/kimi_k3_expert_cache_metrics.png" alt="Kimi-K3 SGLang unique VRAM cache hit rate and mean SSD traffic per generated token" width="100%">
 </p>
 
-The Kimi figure uses all ten completed requests: five Alpaca and five MMLU, each with a 200-token completion. The unweighted per-request means are 17.0% and 22.7% VRAM cache hit rate, with 22.10 and 27.63 decimal GB read per generated token, respectively. The difference from DeepSeek is expected: Kimi's configuration reserves 5 GiB for the GPU expert cache, while the DeepSeek run reserves about 21 GiB, and the two adapters have different expert payload sizes and routing behavior.
+The Kimi figure uses all ten completed requests: five Alpaca and five MMLU, each with a 200-token completion. The unweighted per-request unique-key VRAM cache hit rates are 17.0% and 22.7%, respectively. The corresponding mean SSD traffic, combining prefill and decode, is 22.10 and 27.63 decimal GB per generated token. The difference from DeepSeek is expected: Kimi's configuration reserves 5 GiB for the GPU expert cache, while the DeepSeek run reserves about 21 GiB, and the two adapters have different expert payload sizes and routing behavior.
 
 <!-- Retired interim three-request values are kept below only as review history. -->
 <!--
