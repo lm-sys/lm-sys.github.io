@@ -367,38 +367,70 @@ reached 200 completion tokens; the retained DeepSeek Ollama records include
 earlier EOS stops and therefore report their actual counts separately from the
 200-token ceiling.
 
-| Runtime | Source revision and identity |
+| Runtime | Source revision or commit hash |
 | --- | --- |
 | SGLang | `81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec` (`support_deepseek-v4_and_kimi-k3_on_ssd`) |
-| llama.cpp | `5fff128451d7603857597ee1fc18ac1dfb90f148`; local `src/models/kimi-k3.cpp` was modified for Kimi-K3 |
+| llama.cpp | `5fff128451d7603857597ee1fc18ac1dfb90f148` |
 | Ollama | Ollama `0.33.1`; managed llama.cpp runner commit `d222767c7` |
 
-The Kimi source is the 38-shard GGUF beginning at
-`/models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf`.
-The Expert Pack is
-`/models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack`.
-The retained Kimi manifest provides pack-index and source-inventory hashes, but
-full SHA-256 hashes for all GGUF shards and the complete pack were not recorded.
+#### Reproducing the Kimi-K3 SGLang run
 
-For the retained 92-host run, the concrete loader paths were:
+Download the 38 text-only Q2_K GGUF shards from [Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED](https://huggingface.co/Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED):
 
-| Loader path | Value |
+```bash
+hf download Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED \
+  --include "KIMI-K3-MXP4-DERISKED-Q2_K-*.gguf" \
+  --local-dir /path/to/kimi-k3
+```
+
+Download the tokenizer and configuration files separately from [moonshotai/Kimi-K3 at the recorded revision](https://huggingface.co/moonshotai/Kimi-K3/tree/9f62e4e9fffbd0a83ddd60e1c209d828994b3569):
+
+```bash
+hf download moonshotai/Kimi-K3 \
+  config.json tokenizer_config.json generation_config.json \
+  tokenization_kimi.py encoding_k3.py tiktoken.model \
+  --revision 9f62e4e9fffbd0a83ddd60e1c209d828994b3569 \
+  --local-dir /path/to/kimi-k3-tokenizer
+```
+
+The Expert Pack is a separate offline artifact and must already be beside the
+GGUF shards. The Kimi benchmark validates and reuses it; it does not build the
+Pack. The source layout is therefore:
+
+```text
+/path/to/kimi-k3/                         # 38 GGUF shards and the Expert Pack
+/path/to/kimi-k3-tokenizer/               # tokenizer/config files
+/path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack
+```
+
+Run the benchmark launcher in preparation mode to create the files needed by
+the direct server command:
+
+```bash
+cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
+
+python3 examples/runtime/kimi_k3/benchmark_kimi_k3_5090.py \
+  --gguf /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+  --max-new-tokens 200 \
+  --direct-io \
+  --read-splits 1 \
+  --prepare-only
+```
+
+The launcher derives an artifact directory under
+`${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/<fingerprint>/` and
+creates:
+
+| Generated file | Purpose |
 | --- | --- |
-| `pack_path` | `/models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack` |
-| `manifest_path` | `/root/.cache/sglang-expert-pack/kimi-k3/e78cd60cd8fbbd79136b/kimi-k3-expert-pack.manifest.json` |
+| `model-meta/` | Rewritten Kimi text configuration plus copied tokenizer files used by SGLang for model and tokenizer initialization. |
+| `kimi-k3-expert-pack.manifest.json` | Records the GGUF shard inventory, tensor layout, Pack index, model configuration, and tokenizer file hashes. This is the `manifest_path` passed to the loader. |
+| `kimi-k3-expert-pack.stats.json` | Runtime Expert Pack counters such as cache hits/misses, Pack reads, bytes read, H2D bytes, and I/O errors. Created by a normal benchmark run, not by `--prepare-only`. |
+| `kimi-k3-5090-benchmark.json` | Single-request benchmark result and route audit. Created by a normal benchmark run. |
+| `kimi-k3-5090-benchmark-server.log` | SGLang server log. Created when the launcher starts the server. |
 
-The manifest directory component is a generated source fingerprint and can
-change when the GGUF or Pack file state changes. The portable form is therefore
-`${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/<fingerprint>/`.
-
-| Available artifact digest | Value |
-| --- | --- |
-| DeepSeek Ollama manifest | `sha256:882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3` |
-| DeepSeek GGUF blob | `sha256:947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd` |
-| Kimi Expert Pack index | `ceb3e63ac411cce02ffdec875e5ae05f61c3dea351d0c91d86d712544b0288aa` |
-| Kimi source inventory | `e7e2caab78a1da736fe9d17b8754b682498f6c430531054c109c0f624a0ab89b` |
-
-The benchmark launcher is the canonical reproducible entry point because it prepares `model-meta`, generates the manifest, validates the Pack, and then starts SGLang. After those preparation steps, the equivalent direct server launch is:
+After preparation, the direct SGLang launch uses the Pack beside the GGUF
+shards and the generated manifest:
 
 ```bash
 GGUF_DIR=/path/to/kimi-k3
