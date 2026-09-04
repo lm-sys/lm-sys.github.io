@@ -229,8 +229,10 @@ python3 examples/runtime/deepseek_v4/benchmark_deepseek_5090.py \
 
 The launchers use `--load-format expert_pack`, prepare or validate model metadata
 and manifest artifacts, and pass runtime settings through
-`--model-loader-extra-config`. The Kimi benchmark expects its Expert Pack to be
-present before launch and reuses it across runs.
+`--model-loader-extra-config`. For DeepSeek, the benchmark invokes
+`tools/expert_pack/prepare_deepseek_pack.py`, so the Expert Pack is validated and
+built beside the GGUF automatically when it is missing. The Kimi benchmark
+expects its Expert Pack to be present before launch and reuses it across runs.
 
 ### 6.3 Kimi-K3
 
@@ -316,6 +318,15 @@ The comparison uses ten shared requests: five Alpaca and five MMLU. Both runtime
 
 Relative to Ollama, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.
 
+The underlying per-dataset means are compactly reported below. Rates are in
+tokens per second and are arithmetic means over the five records in each
+dataset.
+
+| Dataset | Ollama prefill | SGLang prefill | Prefill gain | Ollama decode | SGLang decode | Decode gain |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Alpaca (n=5) | 1.108 | 2.532 | 2.28x | 0.288 | 1.992 | 6.92x |
+| MMLU (n=5) | 1.223 | 4.141 | 3.39x | 0.282 | 1.846 | 6.55x |
+
 ### Kimi-K3 vs. llama.cpp
 
 The comparison uses the same ten fixed requests in both runtimes: five Alpaca
@@ -372,6 +383,81 @@ earlier EOS stops and therefore report their actual counts separately from the
 | SGLang | `81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec` (`support_deepseek-v4_and_kimi-k3_on_ssd`) |
 | llama.cpp | `5fff128451d7603857597ee1fc18ac1dfb90f148` |
 | Ollama | Ollama `0.33.1`; managed llama.cpp runner commit `d222767c7` |
+
+#### Reproducing the DeepSeek-V4-Flash SGLang and Ollama runs
+
+The DeepSeek comparison uses the same ten fixed requests listed above: five
+Alpaca and five MMLU records aligned by `sample_id`. Each request is sent alone,
+with temperature 0 and a 200-token target. The retained Ollama model is
+`frob/deepseek-v4-flash-0731`, distributed through the [Ollama model page](https://ollama.com/frob/deepseek-v4-flash-0731).
+The corresponding model card and tokenizer metadata are available from
+[DeepSeek-V4-Flash-0731 on Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731).
+
+Pull the Ollama artifact first:
+
+```bash
+OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
+ollama pull frob/deepseek-v4-flash-0731
+ollama show --modelfile frob/deepseek-v4-flash-0731
+```
+
+The pulled model is the validated MXFP4 GGUF blob. `ollama show --modelfile`
+prints its local path; pass that path to the SGLang benchmark as `--gguf` even
+when the Ollama blob has no `.gguf` filename suffix. The recorded model blob
+SHA-256 is
+`947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd`; the
+Ollama manifest SHA-256 is
+`882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3`.
+
+Install the SGLang checkout that contains the DeepSeek Expert Pack loader, then
+run the 5090 benchmark launcher:
+
+```bash
+cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
+python3 -m pip install -e 'python'
+
+python3 examples/runtime/deepseek_v4/benchmark_deepseek_5090.py \
+  --gguf /path/to/deepseek-v4-flash-0731.gguf \
+  --prompt 'Explain why the sky appears blue.' \
+  --max-new-tokens 200 \
+  --warmup
+```
+
+The launcher first extracts model configuration and tokenizer metadata from the
+GGUF. It then validates or builds the Pack and starts SGLang with
+`--load-format expert_pack`; no manually downloaded tokenizer directory is
+needed for this GGUF path. Use `--prepare-only` to stop after artifact
+preparation.
+
+The preparation and benchmark outputs are:
+
+| Generated path | Purpose |
+| --- | --- |
+| `${XDG_CACHE_HOME:-$HOME/.cache}/deepseek-v4-benchmarks/<fingerprint>/config.json` | DeepSeek model configuration reconstructed from GGUF metadata. |
+| The same `<fingerprint>/generation_config.json`, `tokenizer.json`, `tokenizer_config.json`, and `metadata.json` | Sampling defaults, tokenizer files, and the cache marker used by SGLang. |
+| `DeepSeek-V4-Flash.expert-pack` beside the source GGUF | Contiguous routed-expert payload built by `prepare_deepseek_pack.py`. |
+| `DeepSeek-V4-Flash.expert-pack.manifest.json` beside the Pack | Source, model, configuration, tensor-layout, and Pack integrity metadata passed to the loader. |
+| `<server-log>.log` and `<server-log>.stats.json` | SGLang startup output and Expert Pack counters such as cache hits, Pack reads, bytes read, and I/O errors. |
+
+For the Ollama side, start the native service and send the same ten prompts to
+`/api/generate`:
+
+```bash
+python3 /path/to/benchmark_deepseek_v4_flash_ollama.py \
+  --input /path/to/benchmark_kimi_k3_inputs.jsonl \
+  --model frob/deepseek-v4-flash-0731 \
+  --host http://127.0.0.1:11435 \
+  --output-dir /path/to/results/ollama \
+  --seed 20260827
+```
+
+The helper uses non-interactive `/api/generate` requests with
+`num_predict=200`, `temperature=0`, and the fixed seed. It writes
+`results.jsonl`, `summary.json`, and `run_meta.json`; the latter records the
+model, input bundle, sampling settings, and resource limits. The retained
+comparison has ten successful records on each side. Ollama's `eval_duration`
+and SGLang's streamed timing fields are converted to the prefill and decode
+rates in the table above.
 
 #### Reproducing the Kimi-K3 SGLang run
 
@@ -472,19 +558,8 @@ The llama.cpp server was started with:
   --log-file /root/workspace/kimi-k3-llama-cpp-16cpu-32gb-20260828/server.log
 ```
 
-The retained DeepSeek Ollama service was started with
-`OLLAMA_HOST=http://127.0.0.1:11435 /usr/local/bin/ollama serve`. Its managed
-runner command was:
-
-```bash
-/usr/local/lib/ollama/llama-server \
-  --model /usr/share/ollama/.ollama/models/blobs/sha256-947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd \
-  --port 40115 --host 127.0.0.1 --no-webui --offline \
-  -c 32768 -np 1 --log-verbosity 4 --no-log-prefix --no-log-timestamps \
-  --flash-attn auto -b 512 -ub 512 --context-shift --keep 4
-```
-
-The service log identifies Ollama `0.33.1` and runner commit `d222767c7`.
+The DeepSeek Ollama baseline is documented in the preceding subsection; the
+Kimi reproduction does not depend on an Ollama runner path.
 
 The llama.cpp benchmark client sent non-streaming `/completion` requests with
 `cache_prompt=false`, `temperature=0`, and `n_predict=200`, one request at a
