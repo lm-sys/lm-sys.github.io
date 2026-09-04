@@ -299,20 +299,98 @@ aggregates use the ten retained request records described below.
 ### Benchmark reproduction record
 
 The retained benchmark bundle uses one request at a time, 16 logical CPUs
-(`0-15`), a 32 GiB memory limit, and disabled swap. The shared input file is
-`examples/runtime/kimi_k3/benchmark_kimi_k3_inputs.jsonl`: ten fixed records,
-interleaved as five Alpaca and five MMLU requests. Each runtime used temperature
-0, default EOS handling, and a 200-token target for the matched Kimi chart.
-Prompt-token counts and actual completion-token counts are retained per request
-in the JSONL records. The Kimi records all reached 200 completion tokens; the
-retained DeepSeek Ollama records include earlier EOS stops and therefore report
-their actual counts separately from the 200-token ceiling.
+(`0-15`), a 32 GiB memory limit, and disabled swap. It uses ten fixed prompts,
+five Alpaca and five MMLU, in the following request order:
+
+1. `alpaca-37246`
+   ```text
+   Summarize the movie "Toy Story"
+   ```
+2. `mmlu-abstract_algebra-14`
+   ```text
+   Answer the multiple-choice question. Select the correct option and briefly explain your answer.
+
+   Question: Find the maximum possible order for an element of S_n for n = 10.
+   A. 6
+   B. 12
+   C. 30
+   D. 105
+   ```
+3. `alpaca-50812`
+   ```text
+   Given a list of items, suggest an interesting activity.
+
+   Input:
+   pencils, paper, markers
+   ```
+4. `mmlu-moral_disputes-8315`
+   ```text
+   Answer the multiple-choice question. Select the correct option and briefly explain your answer.
+
+   Question: According to Hardin, the "ratchet effect" refers to the fact that
+   A. overpopulation does not affect the number of people who are poor.
+   B. overpopulation leads to creation of food banks that help curb poverty rates.
+   C. world hunger and poverty leads to recognition of rights not to be hungry.
+   D. the use of a world food bank to feed the hungry leads to an escalating series of emergency situations.
+   ```
+5. `alpaca-9907`
+   ```text
+   Translate this phrase from Spanish to English: El sol no brilla hoy.
+   ```
+6. `mmlu-high_school_macroeconomics-3940`
+   ```text
+   Answer the multiple-choice question. Select the correct option and briefly explain your answer.
+
+   Question: The crowding-out effect from government borrowing is best described as
+   A. the rightward shift in AD in response to the decreasing interest rates from contractionary fiscal policy.
+   B. the leftward shift in AD in response to the rising interest rates from expansionary fiscal policy.
+   C. the effect of the President increasing the money supply which decreases real interest rates and increases AD.
+   D. the effect on the economy of hearing the chairperson of the central bank say that he or she believes that the economy is in a recession.
+   ```
+7. `alpaca-40699`
+   ```text
+   Give an example of a bias that could exist in an AI algorithm.
+   ```
+8. `mmlu-professional_law-10971`
+   ```text
+   Answer the multiple-choice question. Select the correct option and briefly explain your answer.
+
+   Question: Homeowner owns a property in its natural condition with a house on it. There was no fill of any kind on the property. Neighbor, who owns the adjacent property to the East, built a driveway whose western boundary is along the border of homeowner's property. The excavator dug the driveway five feet deep. The land began to subside along the line of excavation and about three feet of homeowner's land fell off into the driveway, making that part of her property useless. Homeowner demanded that neighbor fill in the property to buttress the erosion created. That was not done and the erosion continued to occur. Homeowner sued and asked for an injunction compelling the neighbor to build and maintain a retaining wall. Will the court rule for the plaintiff/homeowner?
+   A. Yes, because excavation is an abnormally dangerous activity and neighbor is absolutely liable for any damages caused by the violation.
+   B. Yes, because every landowner has a right to the lateral support of the soil in its natural state.
+   C. No, because the neighbor did not go onto the adjacent land and confined all excavation to his own land.
+   D. No, the right to lateral support is a common law right that has been abrogated by statute in virtually all states so that the right no longer exists.
+   ```
+9. `alpaca-34440`
+   ```text
+   Make a menu item for a restaurant that contains the following ingredients.
+
+   Input:
+   Salmon, avocado, spinach
+   ```
+10. `mmlu-jurisprudence-6660`
+    ```text
+    Answer the multiple-choice question. Select the correct option and briefly explain your answer.
+
+    Question: Which of the following is the strongest argument against ethical relativism's hostility to human rights?
+    A. Utilitarianism
+    B. Communitarianism.
+    C. Cognitivism.
+    D. Positivism.
+    ```
+
+Each runtime used temperature 0, default EOS handling, and a 200-token target
+for the matched Kimi chart. Prompt-token counts and actual completion-token
+counts are retained per request in the JSONL records. The Kimi records all
+reached 200 completion tokens; the retained DeepSeek Ollama records include
+earlier EOS stops and therefore report their actual counts separately from the
+200-token ceiling.
 
 | Runtime | Source revision and identity |
 | --- | --- |
 | SGLang | `81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec` (`support_deepseek-v4_and_kimi-k3_on_ssd`) |
 | llama.cpp | `5fff128451d7603857597ee1fc18ac1dfb90f148`; local `src/models/kimi-k3.cpp` was modified for Kimi-K3 |
-| Ollama (DeepSeek record) | Ollama `0.33.1`; managed llama.cpp runner commit `d222767c7` |
+| Ollama | Ollama `0.33.1`; managed llama.cpp runner commit `d222767c7` |
 
 The Kimi source is the 38-shard GGUF beginning at
 `/models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf`.
@@ -328,15 +406,28 @@ full SHA-256 hashes for all GGUF shards and the complete pack were not recorded.
 | Kimi Expert Pack index | `ceb3e63ac411cce02ffdec875e5ae05f61c3dea351d0c91d86d712544b0288aa` |
 | Kimi source inventory | `e7e2caab78a1da736fe9d17b8754b682498f6c430531054c109c0f624a0ab89b` |
 
-The SGLang batch client was invoked as:
+The official SGLang server entry point for Expert Pack mode is:
 
 ```bash
-python3 /root/workspace/benchmark_kimi_k3_alpaca_mmlu_interleaved.py \
-  --gguf /models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
-  --inputs /root/workspace/sglang-latest-deepseek-v4-kimi-k3-ssd/examples/runtime/kimi_k3/benchmark_kimi_k3_inputs.jsonl \
-  --output-dir /root/workspace/kimi-k3-sglang-rerun-20260903-200tok \
-  --max-new-tokens 200
+python3 -m sglang.launch_server \
+  --model-path /path/to/kimi-k3-tokenizer \
+  --tokenizer-path /path/to/kimi-k3-tokenizer \
+  --trust-remote-code \
+  --load-format expert_pack \
+  --model-loader-extra-config '{"pack_path":"/path/to/KIMI-K3.expert-major.pack","manifest_path":"/path/to/kimi-k3-expert-pack.manifest.json","cache_vram_mib":5120,"cache_vram_reserve_mib":1536,"stage_slots":16,"read_splits":4,"direct_io":true}' \
+  --tp-size 1 --ep-size 1 \
+  --disable-cuda-graph --disable-shared-experts-fusion \
+  --disable-radix-cache --mamba-radix-cache-strategy no_buffer \
+  --disable-overlap-schedule --skip-server-warmup \
+  --max-running-requests 1 --mem-fraction-static 0.98 \
+  --chunked-prefill-size 64 \
+  --host 0.0.0.0 --port 30000
 ```
+
+`--model-path` points to the verified tokenizer/configuration directory; the
+Expert Pack and manifest are supplied through
+`--model-loader-extra-config`. The source GGUF shards remain next to the pack
+as described by the manifest.
 
 The corresponding SGLang server used `--load-format expert_pack` with
 `tp_size=1`, `ep_size=1`, `max_running_requests=1`, `read_splits=1`,
