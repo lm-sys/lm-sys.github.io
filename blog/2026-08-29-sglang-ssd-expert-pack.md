@@ -337,15 +337,22 @@ The SGLang run uses commit
 with its managed llama.cpp runner at commit `d222767c7`. Both sides run the ten
 requests above serially, one request at a time, with the same sampling settings.
 
+#### Starting the Ollama baseline server
+
+Start the Ollama service before pulling the model and sending requests:
+
+```bash
+OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
+```
+
 #### Preparation
 
-1. Pull the validated DeepSeek-V4-Flash MXFP4 GGUF blob from the
+1. With the baseline service running, pull the validated DeepSeek-V4-Flash MXFP4 GGUF blob from the
    [Ollama model page](https://ollama.com/frob/deepseek-v4-flash-0731) and use
    `ollama show --modelfile` to obtain its local file path. The corresponding
    model card is [DeepSeek-V4-Flash-0731 on Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731):
 
    ```bash
-   OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
    ollama pull frob/deepseek-v4-flash-0731
    ollama show --modelfile frob/deepseek-v4-flash-0731
    ```
@@ -374,6 +381,11 @@ requests above serially, one request at a time, with the same sampling settings.
    `tokenizer_config.json`, and `metadata.json`. Beside the source GGUF, the
    preparation creates `DeepSeek-V4-Flash.expert-pack` and
    `DeepSeek-V4-Flash.expert-pack.manifest.json`.
+
+   Here `<fingerprint>` is a short hash derived from the source GGUF state and
+   preparation format. It is generated locally to isolate artifacts for
+   different source files; it is not a fixed model name or a directory that
+   must be downloaded.
 
    If the Pack needs to be rebuilt or checked separately after the metadata
    exists, invoke the model-specific builder directly:
@@ -415,8 +427,7 @@ python3 -m sglang.launch_server \
   --watchdog-timeout 1800 --host 127.0.0.1 --port 30001
 ```
 
-Start Ollama separately for the baseline and send the same ten rows to its
-`/api/generate` endpoint. The retained client uses `num_predict=200`,
+Send the same ten rows to the running Ollama `/api/generate` endpoint. The retained client uses `num_predict=200`,
 `temperature=0`, the fixed seed, and one request at a time; it writes the
 per-request JSONL records and summary used by the result table.
 
@@ -510,9 +521,21 @@ python3 -m sglang.launch_server \
   --host 127.0.0.1 --port 30001
 ```
 
-For the llama.cpp baseline, start the pinned `llama-server` build with
-`--cpu-moe` and send the same ten prompts to `/completion`, also one at a time,
-with `cache_prompt=false`, `temperature=0`, and `n_predict=200`.
+#### Starting the llama.cpp baseline server
+
+Start the pinned llama.cpp build with CPU expert execution:
+
+```bash
+/path/to/llama.cpp/build/bin/llama-server \
+  -m /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+  -ngl -1 --cpu-moe --host 127.0.0.1 --port 8081 \
+  -t 16 -tb 16 --threads-http 16 -np 1 -c 4096 -b 16 -ub 16 \
+  --no-warmup --metrics \
+  --log-file /path/to/kimi-k3-llama-cpp/server.log
+```
+
+The llama.cpp client sends the same ten prompts to `/completion`, one at a
+time, with `cache_prompt=false`, `temperature=0`, and `n_predict=200`.
 
 ## 10. Conditions and limitations
 
