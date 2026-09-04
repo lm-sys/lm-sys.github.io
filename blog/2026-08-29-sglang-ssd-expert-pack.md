@@ -200,96 +200,13 @@ T_step ~= T(miss delivery) + T(GPU compute)
 
 Here, `T(miss delivery)` includes route-ID preparation, SSD reads, staging, H2D submission, and the waits needed to make the selected experts available. On a GPU cache hit, the SSD-read and H2D portions can be skipped. A cross-step pipeline could change this model, but that is not part of the execution path described here. The actual result depends on SSD bandwidth, access distribution, cache hit rate, staging-slot count, and expert shapes.
 
-## 6. DeepSeek-V4-Flash and Kimi-K3 integration
+## 6. Experimental setup
 
-### 6.1 Explicit opt-in loading
+We evaluated DeepSeek-V4-Flash and Kimi-K3 with SGLang's SSD Expert Pack path on one consumer machine: an Intel Ultra5 230F CPU, 32 GB of memory, a TiPro9000 2 TB disk, and an RTX 5090 with 32 GB of VRAM. The workload represents endpoint inference rather than batched serving: the ten fixed requests are sent one at a time, and the next request starts only after the previous one finishes.
 
-Expert Pack does not replace ordinary model loading. The `ExpertPackModelLoader` is selected only when the server is started with:
+The test set contains five Alpaca requests and five MMLU requests. Both comparisons use the same prompt order, temperature 0, default EOS handling, and a 200-token generation target. The result section reports the mean prefill and decode rates, together with the SGLang cache hit rate and SSD traffic. Exact revisions, file preparation, and server commands are documented after the results.
 
-```bash
---load-format expert_pack
-```
-
-The default `auto`, `safetensors`, and `gguf` paths remain unchanged. Installing this feature therefore does not route ordinary model users into the SSD runtime by accident.
-
-### 6.2 DeepSeek-V4-Flash
-
-The currently validated input is an MXFP4 GGUF. Routed expert matrices use MXFP4. Non-routed weights are provided by the GGUF iterator, while the Expert Pack runtime handles dynamic routed-expert delivery.
-
-With the GGUF and runtime environment prepared, use the 5090 launcher:
-
-```bash
-python3 -m pip install -e 'python'
-
-python3 examples/runtime/deepseek_v4/benchmark_deepseek_5090.py \
-  --gguf /path/to/deepseek-v4-flash-0731-mxfp4.gguf \
-  --prompt 'Explain why the sky appears blue.' \
-  --max-new-tokens 200
-```
-
-The launchers use `--load-format expert_pack`, prepare or validate model metadata
-and manifest artifacts, and pass runtime settings through
-`--model-loader-extra-config`. For DeepSeek, the benchmark invokes
-`tools/expert_pack/prepare_deepseek_pack.py`, so the Expert Pack is validated and
-built beside the GGUF automatically when it is missing. The Kimi benchmark
-expects its Expert Pack to be present before launch and reuses it across runs.
-
-### 6.3 Kimi-K3
-
-The currently validated input is the text-only 38-shard GGUF path, not the complete multimodal safetensors checkpoint. Download the Q2_K shards from [Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED](https://huggingface.co/Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED):
-
-```bash
-hf download Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED \
-  --include "KIMI-K3-MXP4-DERISKED-Q2_K-*.gguf" \
-  --local-dir /path/to/kimi-k3
-```
-
-Download the tokenizer and configuration files separately from [moonshotai/Kimi-K3 at the recorded revision](https://huggingface.co/moonshotai/Kimi-K3/tree/9f62e4e9fffbd0a83ddd60e1c209d828994b3569). The recorded run used revision `9f62e4e9fffbd0a83ddd60e1c209d828994b3569`:
-
-```bash
-hf download moonshotai/Kimi-K3 \
-  config.json tokenizer_config.json generation_config.json \
-  tokenization_kimi.py encoding_k3.py tiktoken.model \
-  --revision 9f62e4e9fffbd0a83ddd60e1c209d828994b3569 \
-  --local-dir /path/to/kimi-k3-tokenizer
-```
-
-Keep the directories separate. The validated layout is:
-
-```text
-/path/to/kimi-k3/                         # 38 GGUF shards
-/path/to/kimi-k3-tokenizer/               # tokenizer/config files
-/path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack
-```
-
-The Expert Pack is prepared before serving and must be placed beside the GGUF shards; `benchmark_kimi_k3_5090.py` does not build the Pack. Its `--gguf` argument points to the first shard, and the launcher derives the GGUF directory, sibling Pack, and tokenizer directory automatically:
-
-```bash
-python3 examples/runtime/kimi_k3/benchmark_kimi_k3_5090.py \
-  --gguf /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
-  --prompt 'Explain why the sky appears blue.' \
-  --max-new-tokens 200
-```
-
-Before starting SGLang, this launcher creates the following generated paths under `${XDG_CACHE_HOME:-$HOME/.cache}`:
-
-```text
-sglang-expert-pack/kimi-k3/<fingerprint>/model-meta/
-sglang-expert-pack/kimi-k3/<fingerprint>/kimi-k3-expert-pack.manifest.json
-```
-
-The direct server arguments therefore use `model-meta` for both model and tokenizer, `pack_path` for the Pack beside the GGUF shards, and the generated `manifest_path`. Kimi uses the GGML Expert Pack adapter. The validated routed experts use Q2_K for gate/up and Q3_K for down. Other GGUF quantization variants should not be claimed as supported without additional validation.
-
-### 6.4 Model and Expert Pack weight footprint
-
-The validated original model weights and generated Expert Pack files occupy:
-
-| Model | Original weight files | Weight size | Expert Pack size |
-| --- | --- | ---: | ---: |
-| DeepSeek-V4-Flash | One Ollama MXFP4 GGUF blob | 155.10 GB | 147.18 GB |
-| Kimi-K3 | 38 Q2_K GGUF shards | 1009.51 GB (about 1.01 TB) | 985.61 GB |
-
-These are file sizes for the validated weight payloads and generated Expert Pack payloads. Expert Pack indexes, locks, and other metadata are separate and are not included in this table.
+Expert Pack is explicitly selected with `--load-format expert_pack`; ordinary `auto`, `safetensors`, and `gguf` loading paths are unchanged. The detailed DeepSeek-V4-Flash and Kimi-K3 reproduction procedures are in Section 9.
 
 ## 7. Correctness boundary
 
@@ -306,7 +223,17 @@ Validation showed that DeepSeek-V4-Flash produced semantically equivalent answer
 
 ## 8. Performance results
 
-All SGLang, Ollama, and llama.cpp measurements use the test environment listed in the reproduction table below. The figures describe validation results under this hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.
+All SGLang, Ollama, and llama.cpp measurements use the test environment and revisions documented in Section 9. The figures describe validation results under this hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.
+
+The validated weight files and generated Expert Packs occupy:
+
+| Model | Original weight files | Weight size | Expert Pack size |
+| --- | --- | ---: | ---: |
+| DeepSeek-V4-Flash | One Ollama MXFP4 GGUF blob | 155.10 GB | 147.18 GB |
+| Kimi-K3 | 38 Q2_K GGUF shards | 1009.51 GB (about 1.01 TB) | 985.61 GB |
+
+These are file sizes for the validated weight payloads. Pack indexes, locks,
+manifests, and other metadata are separate.
 
 ### DeepSeek-V4-Flash vs. Ollama
 
@@ -341,232 +268,7 @@ mean prefill and decode token rates for each dataset.
 
 Relative to llama.cpp, SGLang improves prefill by 6.96x on Alpaca and 5.80x on
 MMLU. Decode improves by 3.30x and 3.52x, respectively. The ten-request
-aggregates use the ten retained request records described below.
-
-### Benchmark reproduction record
-
-The retained benchmark bundle uses one request at a time.
-
-| Component | Test configuration |
-| --- | --- |
-| CPU | Intel Ultra5 230F |
-| Memory | 32 GB |
-| Disk | TiPro9000 2 TB |
-| GPU | NVIDIA RTX 5090 32 GB |
-| Requests | 10 fixed prompts: 5 Alpaca + 5 MMLU |
-| Generation | Temperature 0, default EOS, 200-token target |
-
-The ten prompts, in request order:
-
-| # | Sample ID | Dataset | Prompt |
-| ---: | --- | --- | --- |
-| 1 | `alpaca-37246` | Alpaca | Summarize the movie "Toy Story" |
-| 2 | `mmlu-abstract_algebra-14` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Find the maximum possible order for an element of S_n for n = 10.<br>A. 6<br>B. 12<br>C. 30<br>D. 105 |
-| 3 | `alpaca-50812` | Alpaca | Given a list of items, suggest an interesting activity.<br><br>Input: pencils, paper, markers |
-| 4 | `mmlu-moral_disputes-8315` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: According to Hardin, the "ratchet effect" refers to the fact that<br>A. overpopulation does not affect the number of people who are poor.<br>B. overpopulation leads to creation of food banks that help curb poverty rates.<br>C. world hunger and poverty leads to recognition of rights not to be hungry.<br>D. the use of a world food bank to feed the hungry leads to an escalating series of emergency situations. |
-| 5 | `alpaca-9907` | Alpaca | Translate this phrase from Spanish to English: El sol no brilla hoy. |
-| 6 | `mmlu-high_school_macroeconomics-3940` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: The crowding-out effect from government borrowing is best described as<br>A. the rightward shift in AD in response to the decreasing interest rates from contractionary fiscal policy.<br>B. the leftward shift in AD in response to the rising interest rates from expansionary fiscal policy.<br>C. the effect of the President increasing the money supply which decreases real interest rates and increases AD.<br>D. the effect on the economy of hearing the chairperson of the central bank say that he or she believes that the economy is in a recession. |
-| 7 | `alpaca-40699` | Alpaca | Give an example of a bias that could exist in an AI algorithm. |
-| 8 | `mmlu-professional_law-10971` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Homeowner owns a property in its natural condition with a house on it. There was no fill of any kind on the property. Neighbor, who owns the adjacent property to the East, built a driveway whose western boundary is along the border of homeowner's property. The excavator dug the driveway five feet deep. The land began to subside along the line of excavation and about three feet of homeowner's land fell off into the driveway, making that part of her property useless. Homeowner demanded that neighbor fill in the property to buttress the erosion created. That was not done and the erosion continued to occur. Homeowner sued and asked for an injunction compelling the neighbor to build and maintain a retaining wall. Will the court rule for the plaintiff/homeowner?<br>A. Yes, because excavation is an abnormally dangerous activity and neighbor is absolutely liable for any damages caused by the violation.<br>B. Yes, because every landowner has a right to the lateral support of the soil in its natural state.<br>C. No, because the neighbor did not go onto the adjacent land and confined all excavation to his own land.<br>D. No, the right to lateral support is a common law right that has been abrogated by statute in virtually all states so that the right no longer exists. |
-| 9 | `alpaca-34440` | Alpaca | Make a menu item for a restaurant that contains the following ingredients.<br><br>Input: Salmon, avocado, spinach |
-| 10 | `mmlu-jurisprudence-6660` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Which of the following is the strongest argument against ethical relativism's hostility to human rights?<br>A. Utilitarianism<br>B. Communitarianism.<br>C. Cognitivism.<br>D. Positivism. |
-
-Each runtime used temperature 0, default EOS handling, and a 200-token target
-for the matched Kimi chart. Prompt-token counts and actual completion-token
-counts are retained per request in the JSONL records. The Kimi records all
-reached 200 completion tokens; the retained DeepSeek Ollama records include
-earlier EOS stops and therefore report their actual counts separately from the
-200-token ceiling.
-
-| Runtime | Source revision or commit hash |
-| --- | --- |
-| SGLang | `81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec` (`support_deepseek-v4_and_kimi-k3_on_ssd`) |
-| llama.cpp | `5fff128451d7603857597ee1fc18ac1dfb90f148` |
-| Ollama | Ollama `0.33.1`; managed llama.cpp runner commit `d222767c7` |
-
-#### Reproducing the DeepSeek-V4-Flash SGLang and Ollama runs
-
-The DeepSeek comparison uses the same ten fixed requests listed above: five
-Alpaca and five MMLU records aligned by `sample_id`. Each request is sent alone,
-with temperature 0 and a 200-token target. The retained Ollama model is
-`frob/deepseek-v4-flash-0731`, distributed through the [Ollama model page](https://ollama.com/frob/deepseek-v4-flash-0731).
-The corresponding model card and tokenizer metadata are available from
-[DeepSeek-V4-Flash-0731 on Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731).
-
-Pull the Ollama artifact first:
-
-```bash
-OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
-ollama pull frob/deepseek-v4-flash-0731
-ollama show --modelfile frob/deepseek-v4-flash-0731
-```
-
-The pulled model is the validated MXFP4 GGUF blob. `ollama show --modelfile`
-prints its local path; pass that path to the SGLang benchmark as `--gguf` even
-when the Ollama blob has no `.gguf` filename suffix. The recorded model blob
-SHA-256 is
-`947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd`; the
-Ollama manifest SHA-256 is
-`882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3`.
-
-Install the SGLang checkout that contains the DeepSeek Expert Pack loader, then
-run the 5090 benchmark launcher:
-
-```bash
-cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
-python3 -m pip install -e 'python'
-
-python3 examples/runtime/deepseek_v4/benchmark_deepseek_5090.py \
-  --gguf /path/to/deepseek-v4-flash-0731.gguf \
-  --prompt 'Explain why the sky appears blue.' \
-  --max-new-tokens 200 \
-  --warmup
-```
-
-The launcher first extracts model configuration and tokenizer metadata from the
-GGUF. It then validates or builds the Pack and starts SGLang with
-`--load-format expert_pack`; no manually downloaded tokenizer directory is
-needed for this GGUF path. Use `--prepare-only` to stop after artifact
-preparation.
-
-The preparation and benchmark outputs are:
-
-| Generated path | Purpose |
-| --- | --- |
-| `${XDG_CACHE_HOME:-$HOME/.cache}/deepseek-v4-benchmarks/<fingerprint>/config.json` | DeepSeek model configuration reconstructed from GGUF metadata. |
-| The same `<fingerprint>/generation_config.json`, `tokenizer.json`, `tokenizer_config.json`, and `metadata.json` | Sampling defaults, tokenizer files, and the cache marker used by SGLang. |
-| `DeepSeek-V4-Flash.expert-pack` beside the source GGUF | Contiguous routed-expert payload built by `prepare_deepseek_pack.py`. |
-| `DeepSeek-V4-Flash.expert-pack.manifest.json` beside the Pack | Source, model, configuration, tensor-layout, and Pack integrity metadata passed to the loader. |
-| `<server-log>.log` and `<server-log>.stats.json` | SGLang startup output and Expert Pack counters such as cache hits, Pack reads, bytes read, and I/O errors. |
-
-For the Ollama side, start the native service and send the same ten prompts to
-`/api/generate`:
-
-```bash
-python3 /path/to/benchmark_deepseek_v4_flash_ollama.py \
-  --input /path/to/benchmark_kimi_k3_inputs.jsonl \
-  --model frob/deepseek-v4-flash-0731 \
-  --host http://127.0.0.1:11435 \
-  --output-dir /path/to/results/ollama \
-  --seed 20260827
-```
-
-The helper uses non-interactive `/api/generate` requests with
-`num_predict=200`, `temperature=0`, and the fixed seed. It writes
-`results.jsonl`, `summary.json`, and `run_meta.json`; the latter records the
-model, input bundle, sampling settings, and resource limits. The retained
-comparison has ten successful records on each side. Ollama's `eval_duration`
-and SGLang's streamed timing fields are converted to the prefill and decode
-rates in the table above.
-
-#### Reproducing the Kimi-K3 SGLang run
-
-Download the 38 text-only Q2_K GGUF shards from [Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED](https://huggingface.co/Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED):
-
-```bash
-hf download Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED \
-  --include "KIMI-K3-MXP4-DERISKED-Q2_K-*.gguf" \
-  --local-dir /path/to/kimi-k3
-```
-
-Download the tokenizer and configuration files separately from [moonshotai/Kimi-K3 at the recorded revision](https://huggingface.co/moonshotai/Kimi-K3/tree/9f62e4e9fffbd0a83ddd60e1c209d828994b3569):
-
-```bash
-hf download moonshotai/Kimi-K3 \
-  config.json tokenizer_config.json generation_config.json \
-  tokenization_kimi.py encoding_k3.py tiktoken.model \
-  --revision 9f62e4e9fffbd0a83ddd60e1c209d828994b3569 \
-  --local-dir /path/to/kimi-k3-tokenizer
-```
-
-The Expert Pack is a separate offline artifact and must already be beside the
-GGUF shards. The Kimi benchmark validates and reuses it; it does not build the
-Pack. The source layout is therefore:
-
-```text
-/path/to/kimi-k3/                         # 38 GGUF shards and the Expert Pack
-/path/to/kimi-k3-tokenizer/               # tokenizer/config files
-/path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack
-```
-
-Run the benchmark launcher in preparation mode to create the files needed by
-the direct server command:
-
-```bash
-cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
-
-python3 examples/runtime/kimi_k3/benchmark_kimi_k3_5090.py \
-  --gguf /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
-  --max-new-tokens 200 \
-  --direct-io \
-  --read-splits 1 \
-  --prepare-only
-```
-
-The launcher derives an artifact directory under
-`${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/<fingerprint>/` and
-creates:
-
-| Generated file | Purpose |
-| --- | --- |
-| `model-meta/` | Rewritten Kimi text configuration plus copied tokenizer files used by SGLang for model and tokenizer initialization. |
-| `kimi-k3-expert-pack.manifest.json` | Records the GGUF shard inventory, tensor layout, Pack index, model configuration, and tokenizer file hashes. This is the `manifest_path` passed to the loader. |
-| `kimi-k3-expert-pack.stats.json` | Runtime Expert Pack counters such as cache hits/misses, Pack reads, bytes read, H2D bytes, and I/O errors. Created by a normal benchmark run, not by `--prepare-only`. |
-| `kimi-k3-5090-benchmark.json` | Single-request benchmark result and route audit. Created by a normal benchmark run. |
-| `kimi-k3-5090-benchmark-server.log` | SGLang server log. Created when the launcher starts the server. |
-
-After preparation, the direct SGLang launch uses the Pack beside the GGUF
-shards and the generated manifest:
-
-```bash
-GGUF_DIR=/path/to/kimi-k3
-PACK_PATH="$GGUF_DIR/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack"
-ARTIFACT_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/<fingerprint>"
-MODEL_META="$ARTIFACT_DIR/model-meta"
-MANIFEST_PATH="$ARTIFACT_DIR/kimi-k3-expert-pack.manifest.json"
-STATS_PATH="$ARTIFACT_DIR/kimi-k3-expert-pack.stats.json"
-
-python3 -m sglang.launch_server \
-  --model-path "$MODEL_META" \
-  --tokenizer-path "$MODEL_META" \
-  --trust-remote-code \
-  --load-format expert_pack \
-  --model-loader-extra-config "{\"pack_path\":\"$PACK_PATH\",\"manifest_path\":\"$MANIFEST_PATH\",\"cache_vram_mib\":5120,\"cache_vram_reserve_mib\":1536,\"stage_slots\":16,\"read_splits\":1,\"direct_io\":true,\"stats_flush_interval\":92,\"stats_path\":\"$STATS_PATH\",\"verify_pack_sha256\":false}" \
-  --tp-size 1 --ep-size 1 \
-  --disable-cuda-graph --disable-shared-experts-fusion \
-  --disable-radix-cache --mamba-radix-cache-strategy no_buffer \
-  --disable-overlap-schedule --skip-server-warmup \
-  --chunked-prefill-size 64 --watchdog-timeout 1800 \
-  --max-running-requests 1 --mem-fraction-static 0.98 \
-  --host 127.0.0.1 --port 30001
-```
-
-`<fingerprint>` is generated from the source GGUF and Pack file state, so it is
-not a fixed model identifier. The benchmark's `--prepare-only` mode can be used
-to create `model-meta` and the manifest without starting the server. The source
-GGUF shards remain next to the Pack; the manifest records their inventory and
-the Pack index used by the loader.
-
-The llama.cpp server was started with:
-
-```bash
-/root/workspace/llama.cpp/build/bin/llama-server \
-  -m /models/kimi-k3-blackfrost-q2k/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
-  -ngl -1 --cpu-moe --host 127.0.0.1 --port 8081 \
-  -t 16 -tb 16 --threads-http 16 -np 1 -c 4096 -b 16 -ub 16 \
-  --no-warmup --metrics \
-  --log-file /root/workspace/kimi-k3-llama-cpp-16cpu-32gb-20260828/server.log
-```
-
-The DeepSeek Ollama baseline is documented in the preceding subsection; the
-Kimi reproduction does not depend on an Ollama runner path.
-
-The llama.cpp benchmark client sent non-streaming `/completion` requests with
-`cache_prompt=false`, `temperature=0`, and `n_predict=200`, one request at a
-time.
-
-The exact per-request JSONL records and effective launch logs are retained in
-the benchmark evidence bundle.
+aggregates use the ten retained request records described in Section 9.
 
 ### Expert-cache hit rate and SSD traffic
 
@@ -598,7 +300,221 @@ The improvement does not come from one isolated faster-copy primitive. It is the
 3. pinned staging provides a CUDA-compatible host source for expert-level H2D without page-cache staging;
 4. the GPU cache skipping SSD reads and H2D transfers on a hit.
 
-## 9. Conditions and limitations
+## 9. Detailed reproduction
+
+This section gives the complete reproduction flow after the result tables. The
+two subsections use the same ten fixed requests. They are endpoint-style tests:
+the client sends one request, waits for its completion, and then sends the next
+request. No batch is used.
+
+The requests are five Alpaca samples and five MMLU samples, in this order:
+
+| # | Sample ID | Dataset | Prompt |
+| ---: | --- | --- | --- |
+| 1 | `alpaca-37246` | Alpaca | Summarize the movie "Toy Story" |
+| 2 | `mmlu-abstract_algebra-14` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Find the maximum possible order for an element of S_n for n = 10.<br>A. 6<br>B. 12<br>C. 30<br>D. 105 |
+| 3 | `alpaca-50812` | Alpaca | Given a list of items, suggest an interesting activity.<br><br>Input: pencils, paper, markers |
+| 4 | `mmlu-moral_disputes-8315` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: According to Hardin, the "ratchet effect" refers to the fact that<br>A. overpopulation does not affect the number of people who are poor.<br>B. overpopulation leads to creation of food banks that help curb poverty rates.<br>C. world hunger and poverty leads to recognition of rights not to be hungry.<br>D. the use of a world food bank to feed the hungry leads to an escalating series of emergency situations. |
+| 5 | `alpaca-9907` | Alpaca | Translate this phrase from Spanish to English: El sol no brilla hoy. |
+| 6 | `mmlu-high_school_macroeconomics-3940` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: The crowding-out effect from government borrowing is best described as<br>A. the rightward shift in AD in response to the decreasing interest rates from contractionary fiscal policy.<br>B. the leftward shift in AD in response to the rising interest rates from expansionary fiscal policy.<br>C. the effect of the President increasing the money supply which decreases real interest rates and increases AD.<br>D. the effect on the economy of hearing the chairperson of the central bank say that he or she believes that the economy is in a recession. |
+| 7 | `alpaca-40699` | Alpaca | Give an example of a bias that could exist in an AI algorithm. |
+| 8 | `mmlu-professional_law-10971` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Homeowner owns a property in its natural condition with a house on it. There was no fill of any kind on the property. Neighbor, who owns the adjacent property to the East, built a driveway whose western boundary is along the border of homeowner's property. The excavator dug the driveway five feet deep. The land began to subside along the line of excavation and about three feet of homeowner's land fell off into the driveway, making that part of her property useless. Homeowner demanded that neighbor fill in the property to buttress the erosion created. That was not done and the erosion continued to occur. Homeowner sued and asked for an injunction compelling the neighbor to build and maintain a retaining wall. Will the court rule for the plaintiff/homeowner?<br>A. Yes, because excavation is an abnormally dangerous activity and neighbor is absolutely liable for any damages caused by the violation.<br>B. Yes, because every landowner has a right to the lateral support of the soil in its natural state.<br>C. No, because the neighbor did not go onto the adjacent land and confined all excavation to his own land.<br>D. No, the right to lateral support is a common law right that has been abrogated by statute in virtually all states so that the right no longer exists. |
+| 9 | `alpaca-34440` | Alpaca | Make a menu item for a restaurant that contains the following ingredients.<br><br>Input: Salmon, avocado, spinach |
+| 10 | `mmlu-jurisprudence-6660` | MMLU | Answer the multiple-choice question. Select the correct option and briefly explain your answer.<br><br>Question: Which of the following is the strongest argument against ethical relativism's hostility to human rights?<br>A. Utilitarianism<br>B. Communitarianism.<br>C. Cognitivism.<br>D. Positivism. |
+
+Each request uses temperature 0, default EOS handling, and a 200-token target.
+The clients record prompt tokens, completion tokens, TTFT/prefill timing, and
+decode timing for every request. The tables in Section 8 report arithmetic means
+over the five requests in each dataset.
+
+### 9.1 DeepSeek-V4-Flash: SGLang and Ollama
+
+#### Versions and workload
+
+The SGLang run uses commit
+`81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec` on branch
+`support_deepseek-v4_and_kimi-k3_on_ssd`. The baseline uses Ollama `0.33.1`
+with its managed llama.cpp runner at commit `d222767c7`. Both sides run the ten
+requests above serially, one request at a time, with the same sampling settings.
+
+#### Preparation
+
+1. Pull the validated DeepSeek-V4-Flash MXFP4 GGUF blob from the
+   [Ollama model page](https://ollama.com/frob/deepseek-v4-flash-0731) and use
+   `ollama show --modelfile` to obtain its local file path. The corresponding
+   model card is [DeepSeek-V4-Flash-0731 on Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731):
+
+   ```bash
+   OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
+   ollama pull frob/deepseek-v4-flash-0731
+   ollama show --modelfile frob/deepseek-v4-flash-0731
+   ```
+
+   The recorded blob SHA-256 is
+   `947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd` and the
+   Ollama manifest SHA-256 is
+   `882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3`.
+
+2. Install the SGLang checkout and run its validation-only preparation. This
+   extracts the model configuration and tokenizer metadata from the GGUF, then
+   invokes `tools/expert_pack/prepare_deepseek_pack.py` to build or validate the
+   Pack and manifest without starting a server:
+
+   ```bash
+   cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
+   python3 -m pip install -e 'python'
+   python3 examples/runtime/deepseek_v4/benchmark_deepseek_5090.py \
+     --gguf /path/to/deepseek-v4-flash-0731.gguf \
+     --validate-only
+   ```
+
+   The generated files are stored under
+   `${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/deepseek-v4-flash/<fingerprint>/model-meta/`:
+   `config.json`, `generation_config.json`, `tokenizer.json`,
+   `tokenizer_config.json`, and `metadata.json`. Beside the source GGUF, the
+   preparation creates `DeepSeek-V4-Flash.expert-pack` and
+   `DeepSeek-V4-Flash.expert-pack.manifest.json`.
+
+   If the Pack needs to be rebuilt or checked separately after the metadata
+   exists, invoke the model-specific builder directly:
+
+   ```bash
+   ARTIFACT_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/deepseek-v4-flash/<fingerprint>"
+   python3 tools/expert_pack/prepare_deepseek_pack.py \
+     --gguf /path/to/deepseek-v4-flash-0731.gguf \
+     --model-config "$ARTIFACT_DIR/model-meta/config.json"
+   ```
+
+#### Starting SGLang
+
+The following is the direct Expert Pack server command. The hash values are
+read from the generated manifest before launch.
+
+```bash
+GGUF=/path/to/deepseek-v4-flash-0731.gguf
+ARTIFACT_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/deepseek-v4-flash/<fingerprint>
+MODEL_META="$ARTIFACT_DIR/model-meta"
+PACK_PATH="$(dirname "$GGUF")/DeepSeek-V4-Flash.expert-pack"
+MANIFEST_PATH="$(dirname "$GGUF")/DeepSeek-V4-Flash.expert-pack.manifest.json"
+STATS_PATH="$ARTIFACT_DIR/deepseek-v4-expert-pack.stats.json"
+SOURCE_SHA256="$(jq -r '.source.sha256' "$MANIFEST_PATH")"
+OLLAMA_MANIFEST_SHA256="$(jq -r '.model.model_identity_sha256 // .model.ollama_manifest_sha256' "$MANIFEST_PATH")"
+CONFIG_SHA256="$(jq -r '.model.config_sha256' "$MANIFEST_PATH")"
+
+python3 -m sglang.launch_server \
+  --model-path "$MODEL_META" \
+  --tokenizer-path "$MODEL_META" \
+  --trust-remote-code \
+  --load-format expert_pack \
+  --model-loader-extra-config "{\"pack_path\":\"$PACK_PATH\",\"manifest_path\":\"$MANIFEST_PATH\",\"source_path\":\"$GGUF\",\"source_sha256\":\"$SOURCE_SHA256\",\"ollama_manifest_sha256\":\"$OLLAMA_MANIFEST_SHA256\",\"config_sha256\":\"$CONFIG_SHA256\",\"cache_vram_mib\":21504,\"cache_vram_reserve_mib\":2048,\"stage_slots\":12,\"read_splits\":4,\"direct_io\":true,\"stats_flush_interval\":43,\"stats_path\":\"$STATS_PATH\"}" \
+  --attention-backend dsv4 \
+  --tp-size 1 --ep-size 1 \
+  --disable-cuda-graph --disable-flashinfer-autotune \
+  --disable-shared-experts-fusion --skip-server-warmup \
+  --max-running-requests 1 --mem-fraction-static 0.96 \
+  --watchdog-timeout 1800 --host 127.0.0.1 --port 30001
+```
+
+Start Ollama separately for the baseline and send the same ten rows to its
+`/api/generate` endpoint. The retained client uses `num_predict=200`,
+`temperature=0`, the fixed seed, and one request at a time; it writes the
+per-request JSONL records and summary used by the result table.
+
+### 9.2 Kimi-K3: SGLang and llama.cpp
+
+#### Versions and workload
+
+The SGLang run uses the same commit
+`81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec`. The baseline uses llama.cpp commit
+`5fff128451d7603857597ee1fc18ac1dfb90f148`. The ten Alpaca/MMLU requests above
+are sent serially, one at a time, with temperature 0, default EOS handling, and
+a 200-token target on both runtimes.
+
+#### Preparation
+
+1. Download the 38 text-only Q2_K GGUF shards from
+   [Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED](https://huggingface.co/Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED):
+
+   ```bash
+   hf download Blackfrost-AI/KIMI-K3-Q2_K-GGUF-ABLITERATED \
+     --include "KIMI-K3-MXP4-DERISKED-Q2_K-*.gguf" \
+     --local-dir /path/to/kimi-k3
+   ```
+
+2. Download the tokenizer and configuration files from
+   [moonshotai/Kimi-K3 at the recorded revision](https://huggingface.co/moonshotai/Kimi-K3/tree/9f62e4e9fffbd0a83ddd60e1c209d828994b3569):
+
+   ```bash
+   hf download moonshotai/Kimi-K3 \
+     config.json tokenizer_config.json generation_config.json \
+     tokenization_kimi.py encoding_k3.py tiktoken.model \
+     --revision 9f62e4e9fffbd0a83ddd60e1c209d828994b3569 \
+     --local-dir /path/to/kimi-k3-tokenizer
+   ```
+
+3. Build the Kimi Expert Pack manually. `--gguf` points to the first numbered
+   shard; the script discovers all 38 shards in that directory. The Kimi model
+   configuration is the downloaded `config.json` containing `text_config`:
+
+   ```bash
+   cd /path/to/sglang-latest-deepseek-v4-kimi-k3-ssd
+   python3 tools/expert_pack/prepare_kimi_pack.py \
+     --gguf /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+     --model-config /path/to/kimi-k3-tokenizer/config.json \
+     --safety-margin-gib 2
+   ```
+
+   This creates `KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack` beside the GGUF
+   shards. It is a separate GGML Expert Pack; the validated routed experts use
+   Q2_K for gate/up and Q3_K for down.
+
+4. Create the model metadata and manifest needed by SGLang. This preparation
+   mode does not start the service:
+
+   ```bash
+   python3 examples/runtime/kimi_k3/benchmark_kimi_k3_5090.py \
+     --gguf /path/to/kimi-k3/KIMI-K3-MXP4-DERISKED-Q2_K-00001-of-00038.gguf \
+     --max-new-tokens 200 --direct-io --read-splits 1 --prepare-only
+   ```
+
+   It creates `model-meta/` and
+   `kimi-k3-expert-pack.manifest.json` under
+   `${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/<fingerprint>/`.
+   The metadata directory contains the rewritten text configuration and copied
+   tokenizer files. The manifest records the shard inventory, tensor layout,
+   Pack index, model configuration, and tokenizer hashes. A normal benchmark
+   run additionally creates the stats JSON, report JSON, and server log.
+
+#### Starting SGLang
+
+```bash
+GGUF_DIR=/path/to/kimi-k3
+PACK_PATH="$GGUF_DIR/KIMI-K3-MXP4-DERISKED-Q2_K.expert-major.pack"
+ARTIFACT_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sglang-expert-pack/kimi-k3/<fingerprint>"
+MODEL_META="$ARTIFACT_DIR/model-meta"
+MANIFEST_PATH="$ARTIFACT_DIR/kimi-k3-expert-pack.manifest.json"
+STATS_PATH="$ARTIFACT_DIR/kimi-k3-expert-pack.stats.json"
+
+python3 -m sglang.launch_server \
+  --model-path "$MODEL_META" \
+  --tokenizer-path "$MODEL_META" \
+  --trust-remote-code \
+  --load-format expert_pack \
+  --model-loader-extra-config "{\"pack_path\":\"$PACK_PATH\",\"manifest_path\":\"$MANIFEST_PATH\",\"cache_vram_mib\":5120,\"cache_vram_reserve_mib\":1536,\"stage_slots\":16,\"read_splits\":1,\"direct_io\":true,\"stats_flush_interval\":92,\"stats_path\":\"$STATS_PATH\",\"verify_pack_sha256\":false}" \
+  --tp-size 1 --ep-size 1 \
+  --disable-cuda-graph --disable-shared-experts-fusion \
+  --disable-radix-cache --mamba-radix-cache-strategy no_buffer \
+  --disable-overlap-schedule --skip-server-warmup \
+  --chunked-prefill-size 64 --watchdog-timeout 1800 \
+  --max-running-requests 1 --mem-fraction-static 0.98 \
+  --host 127.0.0.1 --port 30001
+```
+
+For the llama.cpp baseline, start the pinned `llama-server` build with
+`--cpu-moe` and send the same ten prompts to `/completion`, also one at a time,
+with `cache_prompt=false`, `temperature=0`, and `n_predict=200`.
+
+## 10. Conditions and limitations
 
 ### SSD capacity and preparation time
 
@@ -620,7 +536,7 @@ Expert Pack requires additional SSD capacity. The PR records an estimated 5-10 m
 
 This feature focuses on routed-expert SSD delivery and GPU caching. It does not provide SSD KV-cache offload and does not change request scheduling. It is an explicit opt-in Expert Pack path, not a global replacement for every SGLang model-loading format.
 
-## 10. Conclusion
+## 11. Conclusion
 
 SSD Expert Pack is not simply replacing GPU memory with a slower disk. It redesigns weight delivery around the sparse access pattern of MoE inference:
 
