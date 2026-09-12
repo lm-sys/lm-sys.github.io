@@ -44,7 +44,7 @@ More information see [FlashInfer GitHub](https://github.com/flashinfer-ai/flashi
 [Ion Stoica](https://people.eecs.berkeley.edu/~istoica/),
 [Zhanghao Wu](https://zhanghaowu.me),
 [Eric P. Xing](http://www.cs.cmu.edu/~epxing/),
-[Hao Zhang](https://people.eecs.berkeley.edu/~hao/),
+[Hao Zhang](https://haozhang.ai/),
 [Lianmin Zheng](https://lmzheng.net/),
 [Siyuan Zhuang](https://github.com/suquark),
 [Yonghao Zhuang](https://github.com/ZYHowell)
@@ -53,7 +53,7 @@ More information see [FlashInfer GitHub](https://github.com/flashinfer-ai/flashi
 Project memberships are granted to individuals who have demonstrated outstanding technical contributions and research impact in LMSYS projects, as evaluated by our advisory board of distinguished academics and industry leaders.
 
 ## Advisors
-[Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/), [Ion Stoica](https://people.eecs.berkeley.edu/~istoica/), [Eric P. Xing](http://www.cs.cmu.edu/~epxing/), [Hao Zhang](https://people.eecs.berkeley.edu/~hao/), [Jun Qian](https://www.linkedin.com/in/junqian1/), [Mingxing Zhang](https://madsys.cs.tsinghua.edu.cn/~zhangmx/)
+[Joseph E. Gonzalez](https://people.eecs.berkeley.edu/~jegonzal/), [Ion Stoica](https://people.eecs.berkeley.edu/~istoica/), [Eric P. Xing](http://www.cs.cmu.edu/~epxing/), [Hao Zhang](https://haozhang.ai/), [Jun Qian](https://www.linkedin.com/in/junqian1/), [Mingxing Zhang](https://madsys.cs.tsinghua.edu.cn/~zhangmx/)
 
 ## Sponsors
 LMSYS is supported by donations from the following institutions:
