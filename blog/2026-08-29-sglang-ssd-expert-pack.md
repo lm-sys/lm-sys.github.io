@@ -1,6 +1,6 @@
 ---
 title: Running DeepSeek-V4-Flash and Kimi-K3 on Consumer Hardware with SSD Expert Pack
-author: SGLang Team
+author: WiCi AI Team, SGLang Team
 date: August 29, 2026
 previewImg: /images/blog/sglang-ssd-expert-pack/expert-pack-layout.png
 type: blog
