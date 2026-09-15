@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2600" height="1500" viewBox="0 0 2600 1500" role="img" aria-labelledby="title desc">
+<title id="title">Qwen3.5-397B-A17B Accuracy by KV Cache Precision</title>
+<desc id="desc">FP8 KV versus NVFP4 KV: GSM8K 97.71% versus 97.64%; GPQA-Diamond both 88.64%; AIME 2025 both 88.33%. Zero-based percentage axis.</desc>
+<rect width="2600" height="1500" fill="white"/>
+<text x="1300" y="100" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="700" fill="#19251A" text-anchor="middle" dominant-baseline="central">Qwen3.5-397B-A17B Accuracy by KV Cache Precision</text>
+<rect x="980.0000" y="198.0000" width="35.0000" height="35.0000" fill="#B5F548"/>
+<text x="1035" y="217" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="400" fill="#19251A" text-anchor="start" dominant-baseline="central">FP8 KV</text>
+<rect x="1310.0000" y="198.0000" width="35.0000" height="35.0000" fill="#76B900"/>
+<text x="1365" y="217" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="400" fill="#19251A" text-anchor="start" dominant-baseline="central">NVFP4 KV</text>
+<line x1="250" y1="1200.0" x2="2490" y2="1200.0" stroke="#E3E8DF" stroke-width="2"/>
+<text x="215" y="1200.0" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="400" fill="#697368" text-anchor="end" dominant-baseline="central">0%</text>
+<line x1="250" y1="1026.0" x2="2490" y2="1026.0" stroke="#E3E8DF" stroke-width="2"/>
+<text x="215" y="1026.0" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="400" fill="#697368" text-anchor="end" dominant-baseline="central">20%</text>
+<line x1="250" y1="852.0" x2="2490" y2="852.0" stroke="#E3E8DF" stroke-width="2"/>
+<text x="215" y="852.0" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="400" fill="#697368" text-anchor="end" dominant-baseline="central">40%</text>
+<line x1="250" y1="678.0" x2="2490" y2="678.0" stroke="#E3E8DF" stroke-width="2"/>
+<text x="215" y="678.0" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="400" fill="#697368" text-anchor="end" dominant-baseline="central">60%</text>
+<line x1="250" y1="504.0" x2="2490" y2="504.0" stroke="#E3E8DF" stroke-width="2"/>
+<text x="215" y="504.0" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="400" fill="#697368" text-anchor="end" dominant-baseline="central">80%</text>
+<line x1="250" y1="330.0" x2="2490" y2="330.0" stroke="#E3E8DF" stroke-width="2"/>
+<text x="215" y="330.0" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="400" fill="#697368" text-anchor="end" dominant-baseline="central">100%</text>
+<line x1="250" y1="1200" x2="2490" y2="1200" stroke="#AAB5A4" stroke-width="2"/>
+<text x="105" y="815" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 105 815)">Benchmark Accuracy</text>
+<rect x="433.0000" y="349.9085" width="184.0000" height="850.0915" fill="#B5F548"/>
+<text x="525" y="314.908466819222" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">97.71%</text>
+<rect x="643.0000" y="350.5721" width="184.0000" height="849.4279" fill="#76B900"/>
+<text x="735" y="315.57208237986265" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">97.64%</text>
+<text x="630" y="1260" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">GSM8K</text>
+<rect x="1173.0000" y="428.8636" width="184.0000" height="771.1364" fill="#B5F548"/>
+<text x="1265" y="393.8636363636364" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">88.64%</text>
+<rect x="1383.0000" y="428.8636" width="184.0000" height="771.1364" fill="#76B900"/>
+<text x="1475" y="393.8636363636364" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">88.64%</text>
+<text x="1370" y="1260" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">GPQA-Diamond</text>
+<rect x="1913.0000" y="431.5000" width="184.0000" height="768.5000" fill="#B5F548"/>
+<text x="2005" y="396.5" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">88.33%</text>
+<rect x="2123.0000" y="431.5000" width="184.0000" height="768.5000" fill="#76B900"/>
+<text x="2215" y="396.5" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">88.33%</text>
+<text x="2110" y="1260" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">AIME 2025</text>
+<text x="250" y="1370" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400" fill="#697368" text-anchor="start" dominant-baseline="central">Scored outputs: GSM8K 1,311 (1 repeat); GPQA-Diamond 396 (2 repeats); AIME 2025 60 (2 repeats).</text>
+<text x="250" y="1420" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400" fill="#697368" text-anchor="start" dominant-baseline="central">Aggregate accuracy, rounded to 2 decimals.</text>
+</svg>

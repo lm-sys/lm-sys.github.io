@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3800" height="1400" viewBox="0 0 1900 700">
+<rect width="1900" height="700" fill="white"/>
+<text x="950" y="28" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="51" font-weight="700" fill="#101d40">NVFP4 KV Decode on SM120</text>
+<text x="950" y="99" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="30" font-weight="400" fill="#637993">NVFP4 KV storage · BF16 compute</text>
+<rect x="25" y="185" width="350" height="470" rx="18" fill="#e8f8ef" stroke="#22a477" stroke-width="2"/>
+<text x="200" y="218" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="32" font-weight="700" fill="#101d40">Paged KV Cache</text>
+<text x="200" y="265" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="400" fill="#637993">Global Memory</text>
+<rect x="49" y="355" width="302" height="107" rx="12" fill="#f3fbf5" stroke="#49a47a" stroke-width="1.7"/>
+<text x="200.0" y="378.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#101d40">Packed E2M1 K/V</text>
+<text x="200.0" y="417.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="400" fill="#637993">2 values per byte</text>
+<rect x="49" y="498" width="302" height="107" rx="12" fill="#f3fbf5" stroke="#49a47a" stroke-width="1.7"/>
+<text x="200.0" y="521.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#101d40">E4M3 Block Scales</text>
+<text x="200.0" y="559.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="400" fill="#637993">1 scale per 16 values</text>
+<rect x="410" y="185" width="1180" height="470" rx="18" fill="#f0edfc" stroke="#947bd8" stroke-width="2"/>
+<text x="444" y="220" text-anchor="start" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#493187">SM120 XQA Decode Kernel</text>
+<rect x="1145" y="224" width="155" height="88" rx="12" fill="#eef4ff" stroke="#6584b7" stroke-width="1.7"/>
+<text x="1222.5" y="255.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#101d40">Query</text>
+<rect x="1320" y="224" width="235" height="88" rx="12" fill="#eef4ff" stroke="#6584b7" stroke-width="1.7"/>
+<text x="1437.5" y="240.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#101d40">Global Scales</text>
+<text x="1437.5" y="275.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="400" fill="#637993">via BMM parameters</text>
+<rect x="465" y="391" width="280" height="177" rx="12" fill="#faf8ff" stroke="#8a79c9" stroke-width="1.7"/>
+<text x="605.0" y="431.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#101d40">Async Tile Load</text>
+<text x="605.0" y="475.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="23" font-weight="400" fill="#637993">K/V + scales →</text>
+<text x="605.0" y="504.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="23" font-weight="400" fill="#637993">shared memory</text>
+<rect x="800" y="391" width="290" height="177" rx="12" fill="#faf8ff" stroke="#8a79c9" stroke-width="1.7"/>
+<text x="945.0" y="417.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#101d40">Unpack &amp; Scale</text>
+<text x="945.0" y="461.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="400" fill="#637993">NVFP4 KV → BF16</text>
+<text x="945.0" y="493.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="400" fill="#637993">Apply block scales</text>
+<text x="945.0" y="520.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="400" fill="#637993">in registers</text>
+<rect x="1145" y="391" width="410" height="177" rx="12" fill="#faf8ff" stroke="#8a79c9" stroke-width="1.7"/>
+<text x="1350.0" y="443.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="30" font-weight="700" fill="#101d40">Attention Compute</text>
+<text x="1350.0" y="490.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="400" fill="#637993">QKᵀ → Softmax → PV</text>
+<rect x="1630" y="424" width="245" height="111" rx="12" fill="#eaf4ff" stroke="#5597d7" stroke-width="1.7"/>
+<text x="1752.5" y="467.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#101d40">Attention Output</text>
+<polyline points="351,408 438,408 438,445 465,445" fill="none" stroke="#617187" stroke-width="3.3" stroke-linejoin="round"/>
+<polygon points="465.00,445.00 453.00,439.50 453.00,450.50" fill="#617187"/>
+<polyline points="351,551 438,551 438,516 465,516" fill="none" stroke="#617187" stroke-width="3.3" stroke-linejoin="round"/>
+<polygon points="465.00,516.00 453.00,510.50 453.00,521.50" fill="#617187"/>
+<polyline points="745,480 800,480" fill="none" stroke="#617187" stroke-width="3.3" stroke-linejoin="round"/>
+<polygon points="800.00,480.00 788.00,474.50 788.00,485.50" fill="#617187"/>
+<polyline points="1090,480 1145,480" fill="none" stroke="#617187" stroke-width="3.3" stroke-linejoin="round"/>
+<polygon points="1145.00,480.00 1133.00,474.50 1133.00,485.50" fill="#617187"/>
+<polyline points="1222,312 1222,391" fill="none" stroke="#617187" stroke-width="3.3" stroke-linejoin="round"/>
+<polygon points="1222.00,391.00 1227.50,379.00 1216.50,379.00" fill="#617187"/>
+<polyline points="1437,312 1437,391" fill="none" stroke="#617187" stroke-width="3.3" stroke-linejoin="round"/>
+<polygon points="1437.00,391.00 1442.50,379.00 1431.50,379.00" fill="#617187"/>
+<polyline points="1555,480 1630,480" fill="none" stroke="#617187" stroke-width="3.3" stroke-linejoin="round"/>
+<polygon points="1630.00,480.00 1618.00,474.50 1618.00,485.50" fill="#617187"/>
+</svg>
