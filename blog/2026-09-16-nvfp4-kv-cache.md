@@ -1,7 +1,7 @@
 ---
 title: "Accelerating Long-Context and Agentic Inference with NVFP4 KV Cache"
 author: "SGLang, Qwen, and NVIDIA teams"
-date: "September 15, 2026"
+date: "September 16, 2026"
 previewImg: /images/blog/nvfp4-kv-cache/kv-cache-layout.svg
 type: blog
 ---
