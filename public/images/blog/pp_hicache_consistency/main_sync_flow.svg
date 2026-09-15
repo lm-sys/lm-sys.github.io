@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 320" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+  <defs>
+    <marker id="am" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="860" height="320" fill="#ffffff"/>
+  <text x="430" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#111827">main-branch prefetch sync — and where it falls short under PP + L3</text>
+
+  <!-- scheduler main -->
+  <rect x="30" y="56" width="200" height="58" rx="10" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="130" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#374151">Scheduler (main thread)</text>
+  <text x="130" y="99" text-anchor="middle" font-size="11" fill="#6b7280">enqueue prefetch op</text>
+
+  <line x1="232" y1="85" x2="282" y2="85" stroke="#6b7280" stroke-width="1.5" marker-end="url(#am)"/>
+
+  <!-- prefetch_thread -->
+  <rect x="286" y="48" width="280" height="74" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="426" y="71" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">prefetch_thread (background)</text>
+  <text x="426" y="90" text-anchor="middle" font-size="11" fill="#4b5563">all_reduce(MIN) storage_hit_count</text>
+  <text x="426" y="108" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">over TP / CP ring only — PP not covered</text>
+
+  <line x1="426" y1="122" x2="426" y2="150" stroke="#6b7280" stroke-width="1.5" marker-end="url(#am)"/>
+
+  <!-- IO load updates shared op -->
+  <rect x="286" y="152" width="280" height="66" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="426" y="175" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1d4ed8">IO load pages L3 → host</text>
+  <text x="426" y="194" text-anchor="middle" font-size="11" fill="#4b5563">updates completed_tokens in place</text>
+  <text x="426" y="210" text-anchor="middle" font-size="11" fill="#4b5563">on the shared operation object</text>
+
+  <!-- main thread polls -->
+  <line x1="426" y1="218" x2="426" y2="246" stroke="#6b7280" stroke-width="1.5" marker-end="url(#am)"/>
+  <rect x="246" y="248" width="360" height="56" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+  <text x="426" y="271" text-anchor="middle" font-size="12.5" font-weight="700" fill="#b45309">main thread: check_prefetch_progress(req) polling</text>
+  <text x="426" y="290" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">per-request, no alignment across PP ranks</text>
+
+  <!-- right: consequence (elbow connector into the red box's left-middle) -->
+  <path d="M606,276 H625 V213 H640" fill="none" stroke="#6b7280" stroke-width="1.5" marker-end="url(#am)"/>
+  <rect x="644" y="150" width="196" height="126" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="742" y="178" text-anchor="middle" font-size="12.5" font-weight="700" fill="#b91c1c">Result under PP + L3</text>
+  <text x="742" y="202" text-anchor="middle" font-size="11" fill="#4b5563">two divergent quantities</text>
+  <text x="742" y="219" text-anchor="middle" font-size="11" fill="#4b5563">not unified across PP</text>
+  <text x="742" y="243" text-anchor="middle" font-size="11" fill="#4b5563">host trees drift →</text>
+  <text x="742" y="260" text-anchor="middle" font-size="11" font-weight="700" fill="#b91c1c">shape-mismatch crash</text>
+
+  <text x="426" y="40" text-anchor="middle" font-size="11" fill="#6b7280">no PrefetchAck · no prefetch_sync_queue · no background sync thread</text>
+</svg>
