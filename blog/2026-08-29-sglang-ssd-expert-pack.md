@@ -217,28 +217,28 @@ Expert Pack is a weight-layout and delivery optimization, not an approximate-inf
 - the pack and manifest are structurally, dimensionally, and cryptographically validated as configured;
 - `fallback_count` and `io_errors` are reported instead of silently hiding I/O failures.
 
-Validation showed that DeepSeek-V4-Flash produced semantically equivalent answers to Ollama across multiple prompt categories. Kimi-K3 matched the 200-token SGLang reference output; all 92 routed layers executed Top-16 experts with `io_errors=0`. `fallback_count` is retained as diagnostic telemetry, but the current path does not expose an instrumented increment for every hypothetical fallback, so zero is not used as an independent correctness proof. Correctness is instead established by the route/output audit and the structural pack checks.
+Validation showed that DeepSeek-V4-Flash produced semantically equivalent answers to Baseline across multiple prompt categories. Kimi-K3 matched the 200-token SGLang reference output; all 92 routed layers executed Top-16 experts with `io_errors=0`. `fallback_count` is retained as diagnostic telemetry, but the current path does not expose an instrumented increment for every hypothetical fallback, so zero is not used as an independent correctness proof. Correctness is instead established by the route/output audit and the structural pack checks.
 
 ## 8. Performance results
 
-All SGLang, Ollama, and llama.cpp measurements use the test environment and revisions documented in Section 9. The figures describe validation results under this hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.
+All SGLang, Baseline, and llama.cpp measurements use the test environment and revisions documented in Section 9. The figures describe validation results under this hardware condition; token counts and runtime-specific software settings remain as stated in each comparison. The earlier summary tables are retired; the figures below are now the canonical presentation of the token-rate comparison.
 
 The validated weight files and generated Expert Packs occupy:
 
 | Model | Original weight files | Weight size | Expert Pack size |
 | --- | --- | ---: | ---: |
-| DeepSeek-V4-Flash | One Ollama MXFP4 GGUF blob | 155.10 GB | 147.18 GB |
+| DeepSeek-V4-Flash | One Baseline MXFP4 GGUF blob | 155.10 GB | 147.18 GB |
 | Kimi-K3 | 38 Q2_K GGUF shards | 1009.51 GB (about 1.01 TB) | 985.61 GB |
 
 These are file sizes for the validated weight payloads. Pack indexes, locks,
 manifests, and other metadata are separate.
 
-### DeepSeek-V4-Flash vs. Ollama
+### DeepSeek-V4-Flash vs. Baseline
 
 The comparison uses ten shared requests: five Alpaca and five MMLU. Both runtimes generated up to 200 tokens per request. The chart reports mean prefill and decode token rates for each dataset.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_ollama_compare.png" alt="DeepSeek-V4-Flash SGLang versus Ollama prefill and decode token rates for Alpaca and MMLU" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_baseline_compare.png" alt="DeepSeek-V4-Flash SGLang versus Baseline prefill and decode token rates for Alpaca and MMLU" width="100%">
 </p>
 
 Relative to Baseline, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.
@@ -247,7 +247,7 @@ The underlying per-dataset means are compactly reported below. Rates are in
 tokens per second and are arithmetic means over the five records in each
 dataset.
 
-| Dataset | Ollama prefill | SGLang prefill | Prefill gain | Ollama decode | SGLang decode | Decode gain |
+| Dataset | Baseline prefill | SGLang prefill | Prefill gain | Baseline decode | SGLang decode | Decode gain |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | Alpaca (n=5) | 1.108 | 2.532 | 2.28x | 0.288 | 1.992 | 6.92x |
 | MMLU (n=5) | 1.223 | 4.141 | 3.39x | 0.282 | 1.846 | 6.55x |
@@ -331,19 +331,19 @@ It is not the raw GGUF weight file. The raw GGUF remains the source artifact,
 while the Expert Pack supplies the routed expert payload; the loader connects
 them through `source_path`, `pack_path`, and the manifest.
 
-### 9.1 DeepSeek-V4-Flash: SGLang and Ollama
+### 9.1 DeepSeek-V4-Flash: SGLang and Baseline
 
 #### Versions and workload
 
 The SGLang run uses commit
 `81c9f837f19ff8dfe1a9fcd1abfc6069dd28d2ec` on branch
-`support_deepseek-v4_and_kimi-k3_on_ssd`. The baseline uses Ollama `0.33.1`
+`support_deepseek-v4_and_kimi-k3_on_ssd`. The Baseline uses version `0.33.1`
 with its managed llama.cpp runner at commit `d222767c7`. Both sides run the ten
 requests above serially, one request at a time, with the same sampling settings.
 
-#### Starting the Ollama baseline server
+#### Starting the Baseline server
 
-Start the Ollama service before pulling the model and sending requests:
+Start the Baseline service before pulling the model and sending requests:
 
 ```bash
 OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
@@ -352,7 +352,7 @@ OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
 #### Preparation
 
 1. With the baseline service running, pull the validated DeepSeek-V4-Flash MXFP4 GGUF blob from the
-   [Ollama model page](https://ollama.com/frob/deepseek-v4-flash-0731) and use
+   [Baseline model page](https://ollama.com/frob/deepseek-v4-flash-0731) and use
    `ollama show --modelfile` to obtain its local file path. The corresponding
    model card is [DeepSeek-V4-Flash-0731 on Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731):
 
@@ -363,7 +363,7 @@ OLLAMA_HOST=127.0.0.1:11435 ollama serve >/tmp/deepseek-ollama.log 2>&1 &
 
    The recorded blob SHA-256 is
    `947ac34c08c0e5c5752ac76398f934b3b6b4075cfe915ba43dd5ac754900a4cd` and the
-   Ollama manifest SHA-256 is
+   Baseline manifest SHA-256 is
    `882b1398c0ca4e7ec8ca0a501fd8c4372f780f690536a3ec17ffc75306569ed3`.
 
 2. Install the SGLang checkout and build the DeepSeek Expert Pack manually. Use
@@ -431,7 +431,7 @@ python3 -m sglang.launch_server \
   --watchdog-timeout 1800 --host 127.0.0.1 --port 30001
 ```
 
-Send the same ten rows to the running Ollama `/api/generate` endpoint. The retained client uses `num_predict=200`,
+Send the same ten rows to the running Baseline `/api/generate` endpoint. The retained client uses `num_predict=200`,
 `temperature=0`, the fixed seed, and one request at a time; it writes the
 per-request JSONL records and summary used by the result table.
 
