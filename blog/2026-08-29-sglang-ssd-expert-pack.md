@@ -233,21 +233,21 @@ The validated weight files and generated Expert Packs occupy:
 These are file sizes for the validated weight payloads. Pack indexes, locks,
 manifests, and other metadata are separate.
 
-### DeepSeek-V4-Flash vs. Ollama
+### DeepSeek-V4-Flash vs. Baseline
 
 The comparison uses ten shared requests: five Alpaca and five MMLU. Both runtimes generated up to 200 tokens per request. The chart reports mean prefill and decode token rates for each dataset.
 
 <p align="center">
-  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_ollama_compare.png" alt="DeepSeek-V4-Flash SGLang versus Ollama prefill and decode token rates for Alpaca and MMLU" width="100%">
+  <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_baseline_compare.png" alt="DeepSeek-V4-Flash SGLang versus Baseline prefill and decode token rates for Alpaca and MMLU" width="100%">
 </p>
 
-Relative to Ollama, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.
+Relative to Baseline, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.
 
 The underlying per-dataset means are compactly reported below. Rates are in
 tokens per second and are arithmetic means over the five records in each
 dataset.
 
-| Dataset | Ollama prefill | SGLang prefill | Prefill gain | Ollama decode | SGLang decode | Decode gain |
+| Dataset | Baseline prefill | SGLang prefill | Prefill gain | Baseline decode | SGLang decode | Decode gain |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | Alpaca (n=5) | 1.108 | 2.532 | 2.28x | 0.288 | 1.992 | 6.92x |
 | MMLU (n=5) | 1.223 | 4.141 | 3.39x | 0.282 | 1.846 | 6.55x |
