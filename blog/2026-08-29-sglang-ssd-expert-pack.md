@@ -241,7 +241,7 @@ The comparison uses ten shared requests: five Alpaca and five MMLU. Both runtime
   <img src="/images/blog/sglang-ssd-expert-pack/deepseek_v4_flash_sglang_vs_ollama_compare.png" alt="DeepSeek-V4-Flash SGLang versus Ollama prefill and decode token rates for Alpaca and MMLU" width="100%">
 </p>
 
-Relative to Ollama, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.
+Relative to Baseline, SGLang improves prefill by 2.28x on Alpaca and 3.39x on MMLU. Decode improves by 6.92x and 6.55x, respectively.
 
 The underlying per-dataset means are compactly reported below. Rates are in
 tokens per second and are arithmetic means over the five records in each
