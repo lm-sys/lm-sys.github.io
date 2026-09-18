@@ -6,8 +6,6 @@ previewImg: /images/blog/sglang-ssd-expert-pack/expert-pack-layout.png
 type: blog
 ---
 
-# Running DeepSeek-V4-Flash and Kimi-K3 on Consumer Hardware with SSD Expert Pack
-
 > SGLang brings the core idea of SSD-LLaMA to MoE inference: keep routed experts that do not fit in VRAM and host RAM on an NVMe SSD, load only the experts selected by the router, and use Expert Pack layout, direct I/O, pinned staging, asynchronous H2D transfers, and a GPU cache to turn SSD capacity into a practical backing tier.
 
 ## 1. Introduction: turning a VRAM problem into a storage problem
