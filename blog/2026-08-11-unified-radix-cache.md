@@ -242,7 +242,7 @@ That shared identity is useful beyond prefix matching. HiCache preserves it acro
 
 We thank the Alibaba Cloud TairKVCache team for co-leading the integration of Unified Radix Cache with HiCache across hybrid models and validating large-scale production deployments. We thank the Thinking Machines Lab team for validating Unified Radix Cache under heavy load and fixing correctness issues across component combinations. We also thank the Clank.world team for validating Gemma 4 SWA HiCache in a high-concurrency production deployment.
 
-We also thank Mingjun Zhang for the session-aware eviction work and its validation. We thank Tingwei Huang from Ant Group SCT Inference team for helping integrate Hybrid HiCache with Mooncake. We are grateful to Lianmin Zheng, Ishan Dhanani, Zhiqiang Xie, Chao Shi, Yanbo Yang, Shangming Cai, Hongjia Zhang, and the SGLang community for architecture reviews, systems integration, benchmarking, and feedback. We also thank all contributors to the related roadmaps [#20415](https://github.com/sgl-project/sglang/issues/20415) and [#21846](https://github.com/sgl-project/sglang/issues/21846).
+We also thank Mingjun Zhang for the session-aware eviction work and its validation. We thank Tingwei Huang from Ant Group SCT Inference team for helping integrate Hybrid HiCache with Mooncake. We are grateful to Lianmin Zheng, Hanming Lu, Ishan Dhanani, Zhiqiang Xie, Chao Shi, Yanbo Yang, Shangming Cai, Hongjia Zhang, and the SGLang community for architecture reviews, systems integration, benchmarking, and feedback. We also thank all contributors to the related roadmaps [#20415](https://github.com/sgl-project/sglang/issues/20415) and [#21846](https://github.com/sgl-project/sglang/issues/21846).
 
 <style>
 .figure-box {
