@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3600" height="1800" viewBox="0 0 1800 900">
+<rect width="1800" height="900" fill="white"/>
+<text x="900" y="22" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="49" font-weight="700" fill="#101d40">NVFP4 KV Cache in SGLang</text>
+<text x="900" y="86" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="28" font-weight="400" fill="#637993">One shared memory pool, three attention paths</text>
+<rect x="24" y="145" width="466" height="322" rx="18" fill="#eaf4ff" stroke="#75b6e7" stroke-width="2"/>
+<rect x="24" y="489" width="466" height="341" rx="18" fill="#fff6e4" stroke="#dfaa43" stroke-width="2"/>
+<rect x="655" y="145" width="530" height="685" rx="18" fill="#e8f8ef" stroke="#22a477" stroke-width="2"/>
+<rect x="1350" y="145" width="426" height="685" rx="18" fill="#f0edfc" stroke="#a08adb" stroke-width="2"/>
+<rect x="45" y="162" width="55" height="49" rx="10" fill="#518aca" stroke="#518aca" stroke-width="1.7"/>
+<text x="72.5" y="171" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="700" fill="white">01</text>
+<text x="118" y="174" text-anchor="start" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="31" font-weight="700" fill="#101d40">Initial Prefill</text>
+<rect x="45" y="506" width="55" height="49" rx="10" fill="#d49722" stroke="#d49722" stroke-width="1.7"/>
+<text x="72.5" y="515" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="700" fill="white">03</text>
+<text x="118" y="518" text-anchor="start" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="31" font-weight="700" fill="#101d40">Decode</text>
+<rect x="1370" y="162" width="55" height="49" rx="10" fill="#8873ca" stroke="#8873ca" stroke-width="1.7"/>
+<text x="1397.5" y="171" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="700" fill="white">02</text>
+<text x="1440" y="164" text-anchor="start" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#101d40">Chunked Prefill</text>
+<text x="1440" y="196" text-anchor="start" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#101d40">/ Extend</text>
+<text x="920" y="175" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="31" font-weight="700" fill="#101d40">Shared Memory System</text>
+<rect x="45" y="240" width="375" height="83" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="232.5" y="254.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#101d40">FP8 Prompt K/V</text>
+<text x="232.5" y="288.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="400" fill="#637993">No cached prefix</text>
+<rect x="45" y="367" width="375" height="69" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="232.5" y="388.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#101d40">FP8 KV prefill</text>
+<polyline points="232,323 232,367" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="232.00,367.00 237.50,355.00 226.50,355.00" fill="#317bc2"/>
+<rect x="45" y="580" width="375" height="82" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="232.5" y="594.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#101d40">FP8 New Token K/V</text>
+<text x="232.5" y="628.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="400" fill="#637993">(one step)</text>
+<rect x="45" y="710" width="375" height="86" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="232.5" y="726.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#101d40">NVFP4 KV Decode</text>
+<text x="232.5" y="759.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="400" fill="#637993">Native FP4 + scales</text>
+<polyline points="232,662 232,710" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="232.00,710.00 237.50,698.00 226.50,698.00" fill="#317bc2"/>
+<rect x="700" y="231" width="440" height="80" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="920.0" y="243.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#101d40">Request → Token → Slot</text>
+<text x="920.0" y="277.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="21" font-weight="400" fill="#637993">Page allocation &amp; recycling</text>
+<rect x="700" y="350" width="440" height="66" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="920.0" y="368.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="700" fill="#101d40">NVFP4 Cache Write</text>
+<polyline points="920,311 920,350" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="920.00,350.00 925.50,338.00 914.50,338.00" fill="#317bc2"/>
+<rect x="680" y="454" width="480" height="350" rx="16" fill="#f7fcf9" stroke="#28a27b" stroke-width="1.8"/>
+<text x="920" y="474" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="32" font-weight="700" fill="#101d40">GPU KV Pool</text>
+<polyline points="920,416 920,454" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="920.00,454.00 925.50,442.00 914.50,442.00" fill="#317bc2"/>
+<rect x="700" y="530" width="440" height="71" rx="12" fill="#e4f1ff" stroke="#5498dc" stroke-width="1.7"/>
+<text x="920.0" y="551.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#101d40">Packed E2M1 K/V</text>
+<rect x="700" y="617" width="440" height="76" rx="12" fill="#e4f3e5" stroke="#54a882" stroke-width="1.7"/>
+<text x="920.0" y="629.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#101d40">Block Scales</text>
+<text x="920.0" y="660.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="400" fill="#637993">1 x E4M3 per 16 elements</text>
+<rect x="700" y="709" width="440" height="76" rx="12" fill="#eef0f6" stroke="#a1acbf" stroke-width="1.7"/>
+<text x="920.0" y="721.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#101d40">Per-layer global scales</text>
+<text x="920.0" y="752.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="21" font-weight="400" fill="#637993">FP32</text>
+<rect x="1420" y="260" width="331" height="91" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="1585.5" y="281.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" fill="#101d40">FP8 Current Chunk K/V</text>
+<text x="1585.5" y="312.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#637993">(new tokens, not yet cached)</text>
+<rect x="1420" y="474" width="331" height="96" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="1585.5" y="495.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#101d40">FP8 KV prefill</text>
+<text x="1585.5" y="531.5" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#637993">Attend to prefix + current chunk</text>
+<rect x="1420" y="692" width="331" height="103" rx="12" fill="#f8fbff" stroke="#42638c" stroke-width="1.7"/>
+<text x="1585.5" y="705.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#101d40">Cached Prefix</text>
+<text x="1585.5" y="733.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#101d40">FP8 Workspace</text>
+<text x="1585.5" y="766.0" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#637993">Dequantized · reused across layers</text>
+<polyline points="1585,351 1585,474" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1585.00,474.00 1590.50,462.00 1579.50,462.00" fill="#317bc2"/>
+<polyline points="1585,692 1585,570" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1585.00,570.00 1579.50,582.00 1590.50,582.00" fill="#317bc2"/>
+<polyline points="420,279 520,279 520,367 700,367" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="700.00,367.00 688.00,361.50 688.00,372.50" fill="#317bc2"/>
+<text x="610" y="300" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#317bc2">quantize &amp; store</text>
+<text x="610" y="324" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#317bc2">NVFP4</text>
+<polyline points="420,618 520,618 520,395 700,395" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="700.00,395.00 688.00,389.50 688.00,400.50" fill="#317bc2"/>
+<text x="610" y="529" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#317bc2">quantize &amp; store</text>
+<text x="610" y="553" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#317bc2">NVFP4</text>
+<polyline points="680,753 420,753" fill="none" stroke="#149560" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="420.00,753.00 432.00,758.50 432.00,747.50" fill="#149560"/>
+<text x="566" y="728" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#149560">Read NVFP4 directly</text>
+<polyline points="1420,301 1390,301 1390,383 1140,383" fill="none" stroke="#317bc2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1140.00,383.00 1152.00,388.50 1152.00,377.50" fill="#317bc2"/>
+<text x="1264" y="320" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#317bc2">quantize &amp; store</text>
+<text x="1264" y="344" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#317bc2">NVFP4</text>
+<polyline points="1160,767 1420,767" fill="none" stroke="#149560" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1420.00,767.00 1408.00,761.50 1408.00,772.50" fill="#149560"/>
+<text x="1285" y="713" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#149560">Read NVFP4 &amp;</text>
+<text x="1285" y="737" text-anchor="middle" dominant-baseline="hanging" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#149560">dequantize</text>
+</svg>

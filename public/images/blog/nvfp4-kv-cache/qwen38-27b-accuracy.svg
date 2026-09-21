@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2600" height="1000" viewBox="0 0 2600 1000">
+<title>Qwen3.8-27B Accuracy by KV Cache Precision</title>
+<rect width="2600" height="1000" fill="white"/>
+<text x="110" y="95" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="700" fill="#19251A" text-anchor="start" dominant-baseline="central">Qwen3.8-27B Accuracy by KV Cache Precision</text>
+<rect x="110" y="185" width="897" height="105" fill="#EAF0E4"/>
+<text x="132" y="238" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19251A" text-anchor="start" dominant-baseline="central">Benchmark / Protocol</text>
+<rect x="1010" y="185" width="457" height="105" fill="#EAF0E4"/>
+<text x="1240.0" y="238" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19251A" text-anchor="middle" dominant-baseline="central">Questions / Tasks</text>
+<rect x="1470" y="185" width="337" height="105" fill="#B5F548"/>
+<text x="1640.0" y="238" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19251A" text-anchor="middle" dominant-baseline="central">FP8 KV</text>
+<rect x="1810" y="185" width="337" height="105" fill="#76B900"/>
+<text x="1980.0" y="238" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="central">NVFP4 KV</text>
+<rect x="2150" y="185" width="337" height="105" fill="#EAF0E4"/>
+<text x="2320.0" y="238" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19251A" text-anchor="middle" dominant-baseline="central">Delta (pp)</text>
+<rect x="110" y="294" width="2380" height="109" fill="#F3F7EE"/>
+<text x="132" y="349" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="start" dominant-baseline="central">GSM8K</text>
+<text x="1240.0" y="349" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">1,311</text>
+<text x="1640.0" y="349" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">97.79%</text>
+<text x="1980.0" y="349" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">97.48%</text>
+<text x="2320.0" y="349" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">-0.31</text>
+<rect x="110" y="406" width="2380" height="109" fill="white"/>
+<text x="132" y="461" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="start" dominant-baseline="central">GPQA-Diamond</text>
+<text x="1240.0" y="461" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">198</text>
+<text x="1640.0" y="461" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">89.39%</text>
+<text x="1980.0" y="461" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">88.38%</text>
+<text x="2320.0" y="461" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">-1.01</text>
+<rect x="110" y="518" width="2380" height="109" fill="#F3F7EE"/>
+<text x="132" y="573" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="start" dominant-baseline="central">AIME 2025 / thinking (xhigh)</text>
+<text x="1240.0" y="573" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">30</text>
+<text x="1640.0" y="573" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">98.33%</text>
+<text x="1980.0" y="573" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">98.33%</text>
+<text x="2320.0" y="573" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">+0.00</text>
+<rect x="110" y="630" width="2380" height="109" fill="white"/>
+<text x="132" y="685" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="start" dominant-baseline="central">SWE-bench Verified / thinking (xhigh)</text>
+<text x="1240.0" y="685" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">500</text>
+<text x="1640.0" y="685" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">77.80%</text>
+<text x="1980.0" y="685" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">76.20%</text>
+<text x="2320.0" y="685" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="400" fill="#19251A" text-anchor="middle" dominant-baseline="central">-1.60</text>
+<text x="110" y="795" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#697368" text-anchor="start" dominant-baseline="central">Delta = NVFP4 minus FP8, in percentage points.</text>
+<text x="110" y="850" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#697368" text-anchor="start" dominant-baseline="central">GPQA / AIME: mean of two repeats. GSM8K: one run with 8-shot prompting.</text>
+<text x="110" y="905" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#697368" text-anchor="start" dominant-baseline="central">SWE-bench Verified: 500 tasks, one attempt per task; TP1 / DP8; mini-SWE-agent 2.4.6.</text>
+</svg>
