@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="1260" viewBox="0 0 3000 1260" role="img">
+<title>Qwen3.8-27B NVFP4 KV versus FP8 KV decode performance</title>
+<rect width="3000" height="1260" fill="white"/>
+<rect x="110" y="80" width="10" height="152" rx="5" fill="#76B900"/>
+<text x="160" y="130.0" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700" fill="#19291E">Qwen3.8-27B</text>
+<text x="160" y="211.0" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="400" fill="#376A08">Iso-concurrency Performance</text>
+<text x="160" y="273.0" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="400" fill="#63746A">Matched achieved concurrency for FP8 KV and NVFP4 KV</text>
+<text x="160" y="335.0" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="400" fill="#63746A">1 × RTX PRO 6000 Blackwell Server Edition  |  FP8 weights  |  TP = 1  |  Output length = 1,024 tokens</text>
+<rect x="112" y="399" width="336" height="71" rx="12" fill="#EEF1EC"/>
+<text x="280.0" y="444.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#19291E">WORKLOAD</text>
+<rect x="452" y="399" width="1161" height="71" rx="12" fill="#EEF1EC"/>
+<text x="1032.5" y="444.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#19291E">CONCURRENCY</text>
+<rect x="1617" y="399" width="1271" height="71" rx="12" fill="#EFF7E7"/>
+<text x="2252.5" y="444.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#19291E">PEAK-BATCH DECODE TPS</text>
+<text x="280.0" y="526.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19291E">Context</text>
+<text x="637.5" y="526.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19291E">Requested</text>
+<text x="1022.5" y="526.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19291E">FP8 KV</text>
+<text x="1417.5" y="526.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#376A08">NVFP4 KV</text>
+<text x="1827.5" y="526.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19291E">FP8 KV</text>
+<text x="2252.5" y="526.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#376A08">NVFP4 KV</text>
+<text x="2677.5" y="526.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#19291E">Gain</text>
+<text x="1220.0" y="563.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#63746A">achieved peak</text>
+<text x="2252.5" y="563.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#63746A">tokens / second  ·  higher is better</text>
+<rect x="110" y="595" width="2780" height="119" rx="14" fill="#F5F7F3"/>
+<text x="280.0" y="668.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" fill="#19291E">32K</text>
+<text x="637.5" y="667.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">44</text>
+<text x="1022.5" y="667.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">44</text>
+<text x="1417.5" y="667.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="700" fill="#376A08">44</text>
+<text x="1827.5" y="667.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">700.02</text>
+<text x="2252.5" y="667.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="700" fill="#376A08">881.59</text>
+<rect x="2577.5" y="623" width="200.0" height="63" rx="25" fill="#E6F3D8"/>
+<text x="2677.5" y="665.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#376A08">+25.94%</text>
+<rect x="110" y="728" width="2780" height="119" rx="14" fill="#FFFFFF"/>
+<text x="280.0" y="801.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" fill="#19291E">160K</text>
+<text x="637.5" y="800.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">10</text>
+<text x="1022.5" y="800.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">10</text>
+<text x="1417.5" y="800.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="700" fill="#376A08">10</text>
+<text x="1827.5" y="800.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">167.55</text>
+<text x="2252.5" y="800.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="700" fill="#376A08">218.56</text>
+<rect x="2577.5" y="756" width="200.0" height="63" rx="25" fill="#E6F3D8"/>
+<text x="2677.5" y="798.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#376A08">+30.44%</text>
+<rect x="110" y="861" width="2780" height="119" rx="14" fill="#F5F7F3"/>
+<text x="280.0" y="934.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" fill="#19291E">1M*</text>
+<text x="637.5" y="933.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">1</text>
+<text x="1022.5" y="933.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">1</text>
+<text x="1417.5" y="933.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="700" fill="#376A08">1</text>
+<text x="1827.5" y="933.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="400" fill="#19291E">22.69</text>
+<text x="2252.5" y="933.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="37" font-weight="700" fill="#376A08">28.52</text>
+<rect x="2577.5" y="889" width="200.0" height="63" rx="25" fill="#E6F3D8"/>
+<text x="2677.5" y="931.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#376A08">+25.68%</text>
+<line x1="110" y1="1007" x2="2890" y2="1007" stroke="#DCE3D8" stroke-width="2"/>
+<text x="110" y="1062.5" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400" fill="#63746A">Peak-batch decode TPS is the median throughput at the achieved peak batch; higher is better.</text>
+<text x="110" y="1108.5" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400" fill="#63746A">Achieved concurrency counts decode-resident requests. Displayed TPS values are rounded.</text>
+<text x="110" y="1154.5" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400" fill="#63746A">* 1M is a performance-only context override (native limit: 262,144). Static memory fraction: FP8 0.90 / NVFP4 0.75 at 1M;</text>
+<text x="110" y="1200.5" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="400" fill="#63746A">  both 0.90 otherwise. Input lengths: 32,768 / 163,840 / 1,048,576 tokens. Source: supplied benchmark report.</text>
+</svg>
