@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1510" viewBox="0 0 960 1510" role="img" aria-labelledby="title description">
+<title id="title">Setwise: p95 latency at matched target load</title>
+<desc id="description">Three model panels compare Fused-Choice and Setwise SIS on the same FA3 server with radix cache and chunked prefill disabled, MIS off. A shared logarithmic axis spans 10 to 100000 milliseconds. Tooltips report p95 and achieved questions per second; target QPS is not achieved throughput.</desc>
+<metadata>Sundara Raman Ramachandran, 2026-09-25. Latest SGLang master; CUDA 13.0, H200, FA3, MIS off, radix cache off, chunked prefill -1 for both endpoints. Open-Jev c67699e13d0ae25e35b77165a4b6b079bedc8aba, seed 42. Load: train split, 20-second nominal Poisson arrivals, max(64,QPS) client workers. Candidate count: test split, 200 questions, concurrency 1, 1 warmup + 10 measured rounds. Values derived from verified per-run summary.json files; all 42 groups and 149440 raw samples checked. 8B ran on the original H200; complete 0.6B and 4B studies ran on a replacement H200 with restored package versions.</metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 0 0 L 8 4 L 0 8 Z" fill="#49566b"/></marker></defs>
+<rect width="960" height="1510" fill="white"/>
+<g fill="#152033" font-family="Avenir Next, DejaVu Sans, sans-serif"><text x="40" y="49" font-size="33" font-weight="700"><tspan x="40" dy="0">Setwise: p95 latency at matched target load</tspan></text>
+<text x="40" y="88" font-size="23" fill="#49566b"><tspan x="40" dy="0">Train split; nominal 20 s arrivals; logarithmic latency axis</tspan></text>
+<path d="M 40 123 H 68" stroke="#2563eb" stroke-width="4" />
+<text x="80" y="132" font-size="24" ><tspan x="80" dy="0">Fused-Choice</tspan></text>
+<path d="M 340 123 H 368" stroke="#c66b00" stroke-width="4" stroke-dasharray="8 5"/>
+<text x="380" y="132" font-size="24" ><tspan x="380" dy="0">Setwise (SIS)</tspan></text>
+<text x="40" y="183" font-size="29" font-weight="700"><tspan x="40" dy="0">Qwen3-0.6B</tspan></text>
+<path d="M 130 513 H 920" stroke="#d4dce5"/>
+<text x="114" y="520" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">10</tspan></text>
+<path d="M 130 438 H 920" stroke="#d4dce5"/>
+<text x="114" y="445" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">100</tspan></text>
+<path d="M 130 363 H 920" stroke="#d4dce5"/>
+<text x="114" y="370" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">1,000</tspan></text>
+<path d="M 130 288 H 920" stroke="#d4dce5"/>
+<text x="114" y="295" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">10,000</tspan></text>
+<path d="M 130 213 H 920" stroke="#d4dce5"/>
+<text x="114" y="220" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">100,000</tspan></text>
+<text x="130" y="546" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="130" dy="0">0</tspan></text>
+<text x="199.61077844311376" y="546" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="199.61077844311376" dy="0">60</tspan></text>
+<text x="304.0269461077844" y="546" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="304.0269461077844" dy="0">150</tspan></text>
+<text x="478.05389221556885" y="546" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="478.05389221556885" dy="0">300</tspan></text>
+<text x="652.0808383233533" y="546" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="652.0808383233533" dy="0">450</tspan></text>
+<text x="826.1077844311377" y="546" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="826.1077844311377" dy="0">600</tspan></text>
+<text x="905" y="546" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="905" dy="0">668</tspan></text>
+<polyline points="199.61077844311376,451.134305795549 304.0269461077844,412.5537706917657 478.05389221556885,281.6274265712501 652.0808383233533,251.26328360279018 826.1077844311377,236.8203033915703 905,234.97632425855159" fill="none" stroke="#2563eb" stroke-width="4" />
+<circle cx="199.61077844311376" cy="451.134305795549" r="5" fill="#2563eb" stroke="white"><title>Qwen3-0.6B, Fused-Choice, target 60 questions/s: p95 66.8 ms; achieved 58.6 questions/s</title></circle>
+<circle cx="304.0269461077844" cy="412.5537706917657" r="5" fill="#2563eb" stroke="white"><title>Qwen3-0.6B, Fused-Choice, target 150 questions/s: p95 218.4 ms; achieved 145.9 questions/s</title></circle>
+<circle cx="478.05389221556885" cy="281.6274265712501" r="5" fill="#2563eb" stroke="white"><title>Qwen3-0.6B, Fused-Choice, target 300 questions/s: p95 12161.0 ms; achieved 183.2 questions/s</title></circle>
+<circle cx="652.0808383233533" cy="251.26328360279018" r="5" fill="#2563eb" stroke="white"><title>Qwen3-0.6B, Fused-Choice, target 450 questions/s: p95 30890.4 ms; achieved 173.0 questions/s</title></circle>
+<circle cx="826.1077844311377" cy="236.8203033915703" r="5" fill="#2563eb" stroke="white"><title>Qwen3-0.6B, Fused-Choice, target 600 questions/s: p95 48127.8 ms; achieved 170.1 questions/s</title></circle>
+<circle cx="905" cy="234.97632425855159" r="5" fill="#2563eb" stroke="white"><title>Qwen3-0.6B, Fused-Choice, target 668 questions/s: p95 50931.0 ms; achieved 181.8 questions/s</title></circle>
+<polyline points="199.61077844311376,454.785288734085 304.0269461077844,422.9628883696015 478.05389221556885,281.0674199907699 652.0808383233533,246.70911493304936 826.1077844311377,234.10154899437686 905,231.22370391447254" fill="none" stroke="#c66b00" stroke-width="4" stroke-dasharray="10 6"/>
+<rect x="194.61077844311376" y="449.785288734085" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-0.6B, Setwise (SIS), target 60 questions/s: p95 59.7 ms; achieved 58.5 questions/s</title></rect>
+<rect x="299.0269461077844" y="417.9628883696015" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-0.6B, Setwise (SIS), target 150 questions/s: p95 158.7 ms; achieved 146.0 questions/s</title></rect>
+<rect x="473.05389221556885" y="276.0674199907699" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-0.6B, Setwise (SIS), target 300 questions/s: p95 12371.8 ms; achieved 180.8 questions/s</title></rect>
+<rect x="647.0808383233533" y="241.70911493304936" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-0.6B, Setwise (SIS), target 450 questions/s: p95 35525.9 ms; achieved 156.6 questions/s</title></rect>
+<rect x="821.1077844311377" y="229.10154899437686" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-0.6B, Setwise (SIS), target 600 questions/s: p95 52317.4 ms; achieved 160.1 questions/s</title></rect>
+<rect x="900" y="226.22370391447254" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-0.6B, Setwise (SIS), target 668 questions/s: p95 57150.1 ms; achieved 167.0 questions/s</title></rect>
+<text x="40" y="603" font-size="29" font-weight="700"><tspan x="40" dy="0">Qwen3-8B</tspan></text>
+<path d="M 130 933 H 920" stroke="#d4dce5"/>
+<text x="114" y="940" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">10</tspan></text>
+<path d="M 130 858 H 920" stroke="#d4dce5"/>
+<text x="114" y="865" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">100</tspan></text>
+<path d="M 130 783 H 920" stroke="#d4dce5"/>
+<text x="114" y="790" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">1,000</tspan></text>
+<path d="M 130 708 H 920" stroke="#d4dce5"/>
+<text x="114" y="715" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">10,000</tspan></text>
+<path d="M 130 633 H 920" stroke="#d4dce5"/>
+<text x="114" y="640" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">100,000</tspan></text>
+<text x="130" y="966" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="130" dy="0">0</tspan></text>
+<text x="209.0816326530612" y="966" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="209.0816326530612" dy="0">20</tspan></text>
+<text x="288.1632653061224" y="966" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="288.1632653061224" dy="0">40</tspan></text>
+<text x="446.3265306122449" y="966" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="446.3265306122449" dy="0">80</tspan></text>
+<text x="604.4897959183673" y="966" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="604.4897959183673" dy="0">120</tspan></text>
+<text x="762.6530612244898" y="966" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="762.6530612244898" dy="0">160</tspan></text>
+<text x="905" y="966" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="905" dy="0">196</tspan></text>
+<polyline points="209.0816326530612,871.5302075963406 288.1632653061224,864.4404937917554 446.3265306122449,857.2653138987006 604.4897959183673,803.7778694651272 762.6530612244898,755.8797320808703 905,726.5221261955973" fill="none" stroke="#2563eb" stroke-width="4" />
+<circle cx="209.0816326530612" cy="871.5302075963406" r="5" fill="#2563eb" stroke="white"><title>Qwen3-8B, Fused-Choice, target 20 questions/s: p95 66.0 ms; achieved 18.8 questions/s</title></circle>
+<circle cx="288.1632653061224" cy="864.4404937917554" r="5" fill="#2563eb" stroke="white"><title>Qwen3-8B, Fused-Choice, target 40 questions/s: p95 82.1 ms; achieved 38.5 questions/s</title></circle>
+<circle cx="446.3265306122449" cy="857.2653138987006" r="5" fill="#2563eb" stroke="white"><title>Qwen3-8B, Fused-Choice, target 80 questions/s: p95 102.3 ms; achieved 78.2 questions/s</title></circle>
+<circle cx="604.4897959183673" cy="803.7778694651272" r="5" fill="#2563eb" stroke="white"><title>Qwen3-8B, Fused-Choice, target 120 questions/s: p95 528.4 ms; achieved 116.1 questions/s</title></circle>
+<circle cx="762.6530612244898" cy="755.8797320808703" r="5" fill="#2563eb" stroke="white"><title>Qwen3-8B, Fused-Choice, target 160 questions/s: p95 2299.3 ms; achieved 141.7 questions/s</title></circle>
+<circle cx="905" cy="726.5221261955973" r="5" fill="#2563eb" stroke="white"><title>Qwen3-8B, Fused-Choice, target 196 questions/s: p95 5662.9 ms; achieved 148.0 questions/s</title></circle>
+<polyline points="209.0816326530612,865.4947613005155 288.1632653061224,862.7714611275214 446.3265306122449,852.7649894376741 604.4897959183673,819.147609843083 762.6530612244898,723.8193416046879 905,708.8169189541384" fill="none" stroke="#c66b00" stroke-width="4" stroke-dasharray="10 6"/>
+<rect x="204.0816326530612" y="860.4947613005155" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-8B, Setwise (SIS), target 20 questions/s: p95 79.4 ms; achieved 18.8 questions/s</title></rect>
+<rect x="283.1632653061224" y="857.7714611275214" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-8B, Setwise (SIS), target 40 questions/s: p95 86.4 ms; achieved 38.5 questions/s</title></rect>
+<rect x="441.3265306122449" y="847.7649894376741" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-8B, Setwise (SIS), target 80 questions/s: p95 117.4 ms; achieved 78.3 questions/s</title></rect>
+<rect x="599.4897959183673" y="814.147609843083" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-8B, Setwise (SIS), target 120 questions/s: p95 329.6 ms; achieved 117.5 questions/s</title></rect>
+<rect x="757.6530612244898" y="718.8193416046879" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-8B, Setwise (SIS), target 160 questions/s: p95 6152.8 ms; achieved 120.2 questions/s</title></rect>
+<rect x="900" y="703.8169189541384" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3-8B, Setwise (SIS), target 196 questions/s: p95 9752.3 ms; achieved 129.9 questions/s</title></rect>
+<text x="40" y="1023" font-size="29" font-weight="700"><tspan x="40" dy="0">Qwen3.5-4B</tspan></text>
+<path d="M 130 1353 H 920" stroke="#d4dce5"/>
+<text x="114" y="1360" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">10</tspan></text>
+<path d="M 130 1278 H 920" stroke="#d4dce5"/>
+<text x="114" y="1285" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">100</tspan></text>
+<path d="M 130 1203 H 920" stroke="#d4dce5"/>
+<text x="114" y="1210" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">1,000</tspan></text>
+<path d="M 130 1128 H 920" stroke="#d4dce5"/>
+<text x="114" y="1135" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">10,000</tspan></text>
+<path d="M 130 1053 H 920" stroke="#d4dce5"/>
+<text x="114" y="1060" font-size="21" text-anchor="end" fill="#49566b"><tspan x="114" dy="0">100,000</tspan></text>
+<text x="130" y="1386" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="130" dy="0">0</tspan></text>
+<text x="192.24899598393574" y="1386" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="192.24899598393574" dy="0">20</tspan></text>
+<text x="254.49799196787149" y="1386" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="254.49799196787149" dy="0">40</tspan></text>
+<text x="316.7469879518072" y="1386" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="316.7469879518072" dy="0">60</tspan></text>
+<text x="410.12048192771084" y="1386" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="410.12048192771084" dy="0">90</tspan></text>
+<text x="543.9558232931727" y="1386" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="543.9558232931727" dy="0">133</tspan></text>
+<text x="905" y="1386" font-size="21" text-anchor="middle" fill="#49566b"><tspan x="905" dy="0">249</tspan></text>
+<polyline points="192.24899598393574,1271.5715599097366 254.49799196787149,1251.5501834074432 316.7469879518072,1261.594657406768 410.12048192771084,1246.0118017893842 543.9558232931727,1203.4894158339064 905,1128.522205564442" fill="none" stroke="#2563eb" stroke-width="4" />
+<circle cx="192.24899598393574" cy="1271.5715599097366" r="5" fill="#2563eb" stroke="white"><title>Qwen3.5-4B, Fused-Choice, target 20 questions/s: p95 121.8 ms; achieved 18.8 questions/s</title></circle>
+<circle cx="254.49799196787149" cy="1251.5501834074432" r="5" fill="#2563eb" stroke="white"><title>Qwen3.5-4B, Fused-Choice, target 40 questions/s: p95 225.2 ms; achieved 38.4 questions/s</title></circle>
+<circle cx="316.7469879518072" cy="1261.594657406768" r="5" fill="#2563eb" stroke="white"><title>Qwen3.5-4B, Fused-Choice, target 60 questions/s: p95 165.5 ms; achieved 58.5 questions/s</title></circle>
+<circle cx="410.12048192771084" cy="1246.0118017893842" r="5" fill="#2563eb" stroke="white"><title>Qwen3.5-4B, Fused-Choice, target 90 questions/s: p95 267.0 ms; achieved 88.1 questions/s</title></circle>
+<circle cx="543.9558232931727" cy="1203.4894158339064" r="5" fill="#2563eb" stroke="white"><title>Qwen3.5-4B, Fused-Choice, target 133 questions/s: p95 985.1 ms; achieved 127.4 questions/s</title></circle>
+<circle cx="905" cy="1128.522205564442" r="5" fill="#2563eb" stroke="white"><title>Qwen3.5-4B, Fused-Choice, target 249 questions/s: p95 9841.0 ms; achieved 163.5 questions/s</title></circle>
+<polyline points="192.24899598393574,1273.3782582918075 254.49799196787149,1268.753351054061 316.7469879518072,1267.4182294948664 410.12048192771084,1259.28662472052 543.9558232931727,1182.8139590717076 905,1118.5682653023077" fill="none" stroke="#c66b00" stroke-width="4" stroke-dasharray="10 6"/>
+<rect x="187.24899598393574" y="1268.3782582918075" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3.5-4B, Setwise (SIS), target 20 questions/s: p95 115.2 ms; achieved 18.8 questions/s</title></rect>
+<rect x="249.49799196787149" y="1263.753351054061" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3.5-4B, Setwise (SIS), target 40 questions/s: p95 132.8 ms; achieved 38.4 questions/s</title></rect>
+<rect x="311.7469879518072" y="1262.4182294948664" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3.5-4B, Setwise (SIS), target 60 questions/s: p95 138.4 ms; achieved 58.4 questions/s</title></rect>
+<rect x="405.12048192771084" y="1254.28662472052" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3.5-4B, Setwise (SIS), target 90 questions/s: p95 177.6 ms; achieved 87.4 questions/s</title></rect>
+<rect x="538.9558232931727" y="1177.8139590717076" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3.5-4B, Setwise (SIS), target 133 questions/s: p95 1858.4 ms; achieved 120.6 questions/s</title></rect>
+<rect x="900" y="1113.5682653023077" width="10" height="10" fill="#c66b00" stroke="white"><title>Qwen3.5-4B, Setwise (SIS), target 249 questions/s: p95 13358.5 ms; achieved 146.7 questions/s</title></rect>
+<text x="32" y="845" font-size="23" text-anchor="middle" transform="rotate(-90 32 845)"><tspan x="32" dy="0">P95 end-to-end latency (ms)</tspan></text>
+<text x="506" y="1440" font-size="25" text-anchor="middle"><tspan x="506" dy="0">Offered questions/s (ranges differ by model)</tspan></text>
+<text x="40" y="1482" font-size="22" fill="#49566b"><tspan x="40" dy="0">Overloaded points include substantial client dispatch queueing.</tspan></text></g>
+</svg>

@@ -9,7 +9,7 @@ A customer asks whether an order has shipped. An agent already has the order ID 
 
 A JEV-like decision model can return a category or score instead of a prose explanation. Application code uses that signal to act. Efficient serving starts with two choices: **what information each judgment should see** and **how to return the scores the application needs**.
 
-In this post, we explain pointwise and setwise prompts, use Open-Jev's candidate evaluations as a concrete example, and show where SGLang's Score API and shared-context execution improve pointwise serving. We focus on next-token label scoring with causal language models rather than long-form generation.
+In this post, we explain pointwise and setwise prompts, use Open-Jev's candidate evaluations as a concrete example, and show where SGLang's Score API and shared-context execution improve pointwise serving. We then compare Fused-Choice and Setwise scoring when all candidates appear together. Throughout, we focus on next-token label scoring with causal language models rather than long-form generation.
 
 ## TL;DR
 
@@ -18,7 +18,7 @@ In this post, we explain pointwise and setwise prompts, use Open-Jev's candidate
 - **Reuse the repeated query.** Multi-item scoring (MIS) shares query computation within a request while keeping pointwise candidates isolated. In the plotted workloads, its latency grows much less with candidate count and offered load.
 - **Validate quality as well as speed.** Benefits vary by model and configuration. Lower serving latency does not, by itself, establish equivalent decision quality.
 
-## The nature of “Decision” LLM Model
+## The Nature of a Decision LLM
 
 In our example, the inputs are the current state, a question, and the available actions. Selecting a category is classification. Assigning suitability scores to actions is scoring; those scores can drive selection or ranking. This abstraction describes a serving workload, not the internals of a proprietary JEV model. It is not a substitute for training a good decision model.
 
@@ -63,12 +63,14 @@ We use choice tasks from the [Open-Jev dataset](https://huggingface.co/datasets/
 | --- | --- |
 | Models | Qwen3-0.6B, Qwen3-8B, and Qwen3.5-4B |
 | Accelerator | One NVIDIA H200 GPU |
-| Software | SGLang on CUDA 13.0 |
+| Software | SGLang on CUDA 13.0, with mode-specific server configurations |
 | Serving approaches | Generate with `max_tokens=1`, SIS, and MIS |
 | Latency metric | p95 end-to-end time to complete a question's candidate evaluations |
 | Load unit | Questions per second, not individual candidates per second |
 
-The figures compare the original benchmark configurations of these serving approaches. They are **not a same-backend ablation**: MIS has backend and cache requirements that differ from ordinary generation and SIS. The figures do not show results from the later CPU-pinned rerun. Reproducing a production capacity estimate requires the exact software revision, server flags, CPU allocation, client concurrency, and achieved throughput, not just a matching GPU.
+Each question is complete when all of its candidates have been evaluated. We report **p95 time to decision**, the latency threshold covering 95% of successful questions, rather than the time to score one candidate.
+
+These plots compare serving configurations, not an isolated API change: MIS has backend and cache requirements that differ from ordinary generation and SIS. The [appendix](#appendix-reproduction-steps) describes the clients, server settings, and measurement checks.
 
 ### Latency at Matched Target Load
 
@@ -76,7 +78,11 @@ The figures compare the original benchmark configurations of these serving appro
 
 *Figure 2. Pointwise p95 end-to-end latency at matched target load across three models (log scale).*
 
-**What to notice:** MIS's largest advantage appears as load rises; it is not consistently faster at low load. On **Qwen3-0.6B**, its p95 stays below roughly 100 ms across the plotted range while Generate and SIS climb into seconds. On **Qwen3-8B**, MIS stays near 130 ms through 90 questions/s, then rises sharply at the next load point: it delays saturation rather than eliminating it. **Qwen3.5-4B** shows a smaller advantage, and Generate is faster at low load. At the highest plotted load, MIS's p95 latency is roughly one-third that of the other two paths.
+**What to notice:** MIS's largest advantage appears as load rises; it is not consistently faster at low load.
+
+- **Qwen3-0.6B:** Its p95 stays below roughly 100 ms across the plotted range while Generate and SIS climb into seconds.
+- **Qwen3-8B:** MIS stays near 130 ms through 90 questions/s, then rises sharply at the next load point: it delays saturation rather than eliminating it.
+- **Qwen3.5-4B:** Shows a smaller advantage, and Generate is faster at low load. At the highest plotted load, MIS's p95 latency is roughly one-third that of the other two paths.
 
 These are latency ratios at the same *offered* load, not throughput multipliers, and the panels use different questions-per-second (QPS) ranges. Offered QPS alone does not show how many questions the server completes per second or whether the client can maintain the requested arrival rate.
 
@@ -89,6 +95,8 @@ These are latency ratios at the same *offered* load, not throughput multipliers,
 **What to notice:** MIS latency is nearly flat as the number of options grows from 2 to 16, consistent with amortizing shared-query computation across candidates. At 16 options, **Qwen3-0.6B** takes 18.7 ms with MIS versus 39.6 ms for Generate and 24.3 ms for SIS; **Qwen3-8B** takes 20.6 ms versus 54.1 ms and 53.1 ms, respectively. The gain is smaller on **Qwen3.5-4B**: 55.7 ms versus 84.8 ms and 74.4 ms, respectively. With just two options, SIS is slightly faster than MIS on Qwen3-0.6B and Qwen3.5-4B.
 
 Candidate-count groups contain different questions with different token lengths, so this is an observed workload trend, not an experiment that isolates the effect of candidate count.
+
+These are serving measurements, not evidence of equivalent decision accuracy across execution modes. Validate model/backend support and decision quality before enabling MIS for a workload.
 
 ## Why MIS Helps Pointwise Decisions
 
@@ -104,7 +112,131 @@ MIS requires a supported model, backend, and server configuration; selecting `/v
 
 **What to notice:** These are two independent benefits: **requesting labels explicitly** avoids relying on a top-k response that may omit a required label, while **MIS reuses query computation** across otherwise independent candidates. SIS can batch several candidates in one request without fusing their logical sequences. Neither benefit depends on eliminating an extra generation forward pass, and label-selective extraction still requires the vocabulary projection and full-distribution normalization.
 
+## Benchmark: Fused-Choice vs. Setwise Scoring
+
+How do generation and scoring compare when both approaches see every candidate in a single prompt? We ran a separate comparison between **Fused-Choice** through `/v1/completions` and **anchor-based Setwise scoring** through `/v1/score`. Both include the full candidate text in one prompt, but read the decision differently:
+
+| Approach | Where scores are read | How the candidate is selected |
+| --- | --- | --- |
+| Fused-Choice | A/B/C-style logprobs at one answer boundary | Highest-scoring candidate letter |
+| Anchor-based Setwise | A Yes/No row at each candidate's score-extraction marker | Candidate with the highest Yes score |
+
+For Setwise, the prompt ends with one `<|object_ref_start|>` marker per candidate. This is a different output contract from the single-boundary example in Figure 1. The chart label **Setwise (SIS)** means anchor-based scoring with MIS disabled, not the independent pointwise SIS requests in Figures 2 and 3. **MIS is N/A for this comparison.**
+
+### Example: Same Candidates, Different Readout Positions
+
+Using the order-status scenario from the introduction, the benchmark's two prompt constructions look like this.
+
+**Fused-Choice: one answer boundary for the whole decision**
+
+```text
+Context:
+The customer supplied an order ID and wants to know whether that order has shipped.
+
+Question: Which action should the agent take next?
+
+Options:
+A) Query the order-status service.
+B) Search general delivery-policy documentation.
+C) Ask the customer for the order ID.
+
+Choose the single correct option above. Your entire response must be exactly one letter: A, B, or C. Do not include any other words, punctuation, or explanation.
+```
+
+This text is the user-message body. The client applies the model's non-thinking chat template, then sends the resulting token IDs to `/v1/completions` with `max_tokens=1` and `logprobs=20`. It selects the candidate with the highest available letter logprob at that single answer boundary.
+
+**Setwise: one Yes/No readout per candidate**
+
+```text
+Context:
+The customer supplied an order ID and wants to know whether that order has shipped.
+
+Question: Which action should the agent take next?
+
+For each candidate answer below, decide whether it is correct. Respond with Yes or No at each marker.
+
+A) Query the order-status service.
+B) Search general delivery-policy documentation.
+C) Ask the customer for the order ID.
+Scores:<|object_ref_start|><|object_ref_start|><|object_ref_start|>
+```
+
+For `/v1/score`, the context, question, and instruction form `query`; the candidate list and markers form **one** entry in `items`. The request specifies `score_extraction_token="<|object_ref_start|>"`, the tokenizer's Yes/No IDs in `label_token_ids`, and `apply_softmax=True`.
+
+The three markers correspond to A, B, and C in order. The response contains one item with three label-score rows:
+
+```text
+scores[0] = [
+    [yes_score_A, no_score_A],
+    [yes_score_B, no_score_B],
+    [yes_score_C, no_score_C],
+]
+```
+
+The application selects the row with the highest Yes score. **All markers follow the complete candidate list**, so each readout can attend to every candidate. The markers identify where to extract scores; they do not, by themselves, teach the checkpoint to make accurate per-candidate judgments.
+
+### A Shared Server Configuration
+
+Both endpoints ran on the **same server for each model**, using its default **FA3** attention backend, with **radix caching disabled and `chunked_prefill_size=-1` for both**. Fused-Choice applied the model's non-thinking chat template client-side; smoke tests compared its prompt-token counts and outputs with the chat-completions endpoint before measurement.
+
+| Component | Setup |
+| --- | --- |
+| Models | Qwen3-0.6B, Qwen3-8B, and Qwen3.5-4B |
+| Accelerator | One NVIDIA H200 GPU |
+| Software | SGLang [sgl-project/sglang#41188](https://github.com/sgl-project/sglang/pull/41188), revision `0bf2d163`, on CUDA 13.0 |
+| Serving approaches | Fused-Choice and Setwise (SIS) |
+| Latency metric | p95 end-to-end time to complete a question's candidate evaluations |
+| Load unit | Questions per second, not individual candidates per second |
+
+We use choice tasks from the [Open-Jev dataset](https://huggingface.co/datasets/ZefanCai/Open-Jev), drawing from its training split to provide enough distinct questions for approximately **20 seconds of scheduled arrivals** at each target QPS. Fused-Choice and Setwise receive identical questions and arrival schedules, enabling a controlled comparison within this experiment. The pointwise load results use the test split and should be interpreted as a separate experiment.
+
+### Latency at Matched Target Load
+
+[![Three panels compare Fused-Choice and Setwise SIS p95 latency versus offered QPS on Qwen3-0.6B, Qwen3-8B, and Qwen3.5-4B, with a shared logarithmic latency scale.](/images/blog/sglang-decision-models/setwise-latency-by-load.svg)](/images/blog/sglang-decision-models/setwise-latency-by-load.svg)
+
+*Figure 5. Fused-Choice vs. Setwise p95 end-to-end latency under a shared server configuration. Target QPS is offered load, not achieved throughput.*
+
+**What to notice:** Neither approach wins at every load.
+
+- **Qwen3-0.6B:** Setwise has lower p95 at 60 and 150 QPS; both accumulate large queues from 300 QPS onward.
+- **Qwen3-8B:** Setwise is lower at 120 QPS (330 vs. 528 ms), while Fused is lower at 196 QPS (5.7 vs. 9.8 seconds).
+- **Qwen3.5-4B:** Setwise is lower from 20 through 90 QPS, but Fused wins at 133 and 249 QPS. The non-monotonic Fused points also warrant repeated measurements before choosing a deployment threshold.
+
+At 668 offered QPS on 0.6B, achieved throughput is only **182 questions/s for Fused and 167 for Setwise**. Substantial pre-dispatch client queueing contributes to the high-load latency: these points characterize the complete client/server setup, not an isolated GPU throughput ceiling. One sweep per load is not a confidence interval.
+
+### Latency as Candidate Count Grows
+
+[![Grouped bars show Fused-Choice and Setwise SIS p95 latency for 2, 5, 9, and 16 candidates on the three models, using a common zero-based 0 to 60 millisecond scale.](/images/blog/sglang-decision-models/setwise-latency-by-candidates.svg)](/images/blog/sglang-decision-models/setwise-latency-by-candidates.svg)
+
+*Figure 6. Low-load Fused-Choice vs. Setwise p95 decision latency by candidate count, using the test split at concurrency 1.*
+
+**What to notice:** Both approaches show weak candidate-count dependence because each question is processed as one logical sequence. At 16 candidates, **Qwen3-0.6B** takes 25.5 ms for Fused versus 31.0 ms for Setwise; **Qwen3-8B** takes 36.0 versus 32.2 ms; and **Qwen3.5-4B** takes 48.9 versus 50.5 ms. There is no consistent twofold Fused-Choice advantage under this configuration. As with Figure 3, the candidate-count groups contain different questions and token lengths.
+
+### Similar Latency Does Not Mean Equivalent Decisions
+
+The Setwise anchor prompt produced lower decision accuracy on the same 200-question test sample:
+
+| Model | Fused-Choice accuracy | Setwise accuracy |
+| --- | ---: | ---: |
+| Qwen3-0.6B | 44.0% | 18.0% |
+| Qwen3-8B | 45.5% | 23.5% |
+| Qwen3.5-4B | 47.5% | 34.0% |
+
+These figures use each prompt's label-score argmax, averaged across repeated measurements of the same questions; repetitions do not increase the number of distinct evaluation examples. The checkpoints were not trained here for the repeated-anchor contract. The gap is evidence about these prompts and checkpoints, not proof that the Score API itself reduces accuracy.
+
+Fused's sampled token was a valid letter in every measured request, but its top-20 response still omitted some candidate letters on 8B and 4B. Its reported accuracy retains the original first-matching-surface-form extractor. Format compliance is therefore not a substitute for complete label coverage, order-invariance testing, or application-level quality validation.
+
+## Choosing a Serving Path
+
+Start with the model's decision quality, then optimize the serving path that preserves it:
+
+- **Independent candidate judgments:** use the Score API for explicit label scores. When the context is repeated and the model/backend support it, evaluate MIS for shared-query reuse.
+- **A joint choice among candidates:** compare a Fused-Choice prompt with a scoring formulation suited to the checkpoint. The anchor-based Setwise results here demonstrate serving behavior, not a validated replacement for the better-performing prompt.
+- **A production latency target:** measure achieved throughput and tail latency at the intended load, with enough client capacity to avoid mistaking a load-generator limit for a server limit.
+
 ## Getting Started with the Score API
+
+The following pointwise example returns one Yes/No row for each possible action in our opening scenario.
 
 ### Deploy a Server
 
@@ -200,6 +332,8 @@ Decision workloads often need a small, structured signal rather than generated p
 
 The measurements illustrate where that reuse is valuable: more candidates and higher offered load. The gains are not uniform across architectures, and latency improvements must be paired with decision-quality checks and reproducible capacity measurements.
 
+For prompts that expose all candidates together, the separate Fused-Choice/Setwise study shows that latency can be comparable when both endpoints share the same server configuration. Which is faster depends on model and load; the measured Setwise quality gap remains a blocker to treating its anchor prompt as a drop-in replacement.
+
 For more background on high-performance prefill-only decision models, see [this paper](https://arxiv.org/abs/2512.07846). We welcome further contributions to scoring support and performance in [SGLang](https://github.com/sgl-project/sglang), including work outlined in the [prefill-only roadmap](https://github.com/sgl-project/sglang/issues/15344).
 
 ## Acknowledgements
@@ -218,7 +352,7 @@ Additional contributors to the performance optimizations:
 <details id="appendix-reproduction-steps" style="margin-top: 1.875rem;">
 <summary style="cursor: pointer; font-size: 1.875rem; line-height: 2.25rem; font-weight: 400;">Appendix: Reproduction Steps</summary>
 
-The benchmark clients are available in [chuanrui/sglang-benchmark, under `lmsys_blog/jev_bench`](https://github.com/chuanrui/sglang-benchmark/tree/main/lmsys_blog/jev_bench). The examples below use **Qwen3-0.6B on one H200** and cover the two experiments in this post: a closed-loop concurrency sweep with candidate-count breakdowns and an open-loop QPS sweep.
+The benchmark clients are available in [chuanrui/sglang-benchmark, under `lmsys_blog/jev_bench`](https://github.com/chuanrui/sglang-benchmark/tree/main/lmsys_blog/jev_bench). The examples below use **Qwen3-0.6B on one H200** and cover the pointwise experiments: a closed-loop concurrency sweep with candidate-count breakdowns and an open-loop QPS sweep. The separate Setwise study's server configuration and protocol differences are described below.
 
 These are instructions for rerunning the workloads, not a guarantee of reproducing every plotted value. The script revision is pinned below, but reproducing the original numbers also requires matching the original SGLang build and resource allocation. The examples use a larger client worker pool and avoid periodic cache flushes during timed open-loop traffic; these settings differ from some of the original runs.
 
@@ -419,6 +553,30 @@ python benchmark_sglang_jev_openloop.py \
 ```
 
 Here, `--question-concurrency 1` dispatches one question's candidates concurrently and waits for all of them; ordinary `--concurrency` in this N-calls client counts individual candidate requests instead. Keep this alternative separate from batched-completions results. Fused-Choice and anchor-based Setwise clients are also included in the [repository README](https://github.com/chuanrui/sglang-benchmark/blob/1a5972c601d0d6bae33a651c7bd951538c7b0ddc/lmsys_blog/jev_bench/README.md); they change the prompt/output contract and are not part of the pointwise reproduction above.
+
+### Setwise Study: Shared Server Configuration
+
+Figures 5 and 6 used the CausalLM Setwise implementation at commit `0bf2d16316c4fce8cf969e43ee53112c02b19842` of [sgl-project/sglang#41188](https://github.com/sgl-project/sglang/pull/41188), rather than the pointwise server configurations above. With that revision installed in a compatible CUDA 13.0 environment, launch one server for **both** endpoints:
+
+```bash
+python -m sglang.launch_server \
+  --model-path "$MODEL" \
+  --host 127.0.0.1 --port 30000 \
+  --disable-radix-cache \
+  --chunked-prefill-size -1
+```
+
+Do not enable MIS or override the attention backend; verify that the effective backend is FA3 for these checkpoints. For the load sweep, use `--split train`, 20-second nominal arrivals, seed 42, and the following target rates:
+
+| Model | Setwise-study target QPS |
+| --- | --- |
+| Qwen3-0.6B | `60 150 300 450 600 668` |
+| Qwen3-8B | `20 40 80 120 160 196` |
+| Qwen3.5-4B | `20 40 60 90 133 249` |
+
+The published `benchmark_sglang_setwise_openloop.py` contains the anchor-based request builder. The published Fused-Choice client uses `/v1/chat/completions`; this study adapted it to `/v1/completions` by applying `tokenizer.apply_chat_template(..., tokenize=True, return_dict=False, add_generation_prompt=True, enable_thinking=False)` client-side and sending those token IDs with `max_tokens=1` and `logprobs=20`. Merely switching the endpoint without applying the template does not reproduce the experiment. Both modes used `max(64, QPS)` workers, and the low-load study used the same 200 test questions with one warmup and ten measured rounds for each mode.
+
+The SVG figure-generation script stores the plotted measurements and revision metadata, including achieved QPS in the load-chart tooltips.
 
 ### Read the Results and Check the Measurements
 
