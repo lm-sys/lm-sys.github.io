@@ -2,7 +2,7 @@
 title: "Scaling JEV-like Decision Models with SGLang"
 author: "Sundara Raman Ramachandran, Chuanrui Zhu, Qing Lan, Shri Rajamanikandan Vasudevan"
 date: "September 24, 2026"
-previewImg: /images/blog/sglang-decision-models/pointwise-latency-by-load.png
+previewImg: /images/blog/sglang-decision-models/title-card.png
 ---
 
 A customer asks whether an order has shipped. An agent already has the order ID and three possible next actions: query the order-status service, search general delivery-policy documentation, or ask the customer for the ID. Before it can act, it needs to choose.
