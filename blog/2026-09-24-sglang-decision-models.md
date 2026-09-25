@@ -123,7 +123,7 @@ How do generation and scoring compare when both approaches see every candidate i
 
 For Setwise, the prompt ends with one `<|object_ref_start|>` marker per candidate. This is a different output contract from the single-boundary example in Figure 1. The chart label **Setwise (SIS)** means anchor-based scoring with MIS disabled, not the independent pointwise SIS requests in Figures 2 and 3. **MIS is N/A for this comparison.**
 
-**Scope of this comparison:** The results below evaluate serving latency and throughput. A separate study of decision quality is underway; these performance results do not establish equivalent decision quality between Fused-Choice and Setwise.
+**Scope of this comparison:** The results below evaluate serving latency and throughput only; they do not establish equivalent decision quality between Fused-Choice and Setwise.
 
 ### Example: Same Candidates, Different Readout Positions
 
