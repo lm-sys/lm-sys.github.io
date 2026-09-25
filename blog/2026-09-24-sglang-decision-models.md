@@ -1,6 +1,6 @@
 ---
 title: "Scaling JEV-like Decision Models with SGLang"
-author: "Sundara Raman Ramachandran, Chuanrui Zhu, Qing Lan, Shri Rajamanikandan Vasudevan, Fedor Borisyuk"
+author: "Sundara Raman Ramachandran, Chuanrui Zhu, Qing Lan, Shri Rajamanikandan Vasudevan, Jian Sheng, I-Ting Chen, Fedor Borisyuk"
 date: "September 25, 2026"
 previewImg: /images/blog/sglang-decision-models/title-card.png
 ---
@@ -106,7 +106,7 @@ MIS explicitly reuses the shared query within a request. On supported models and
 
 MIS requires a supported model, backend, and server configuration; selecting `/v1/score` alone does not enable it. A single-boundary setwise prompt already contains all options in one logical input and does not need candidate-isolating MIS.
 
-<a href="/images/blog/sglang-decision-models/scoring-contract.svg"><img src="/images/blog/sglang-decision-models/scoring-contract.svg" alt="The Score API explicitly returns requested labels, while MIS separately enables shared-query execution for independent pointwise candidates." width="600" style="display: block; width: 100%; max-width: 600px; height: auto; margin-left: auto; margin-right: auto;" /></a>
+<a href="/images/blog/sglang-decision-models/scoring-contract.svg"><img src="/images/blog/sglang-decision-models/scoring-contract.svg" alt="The Score API explicitly returns requested labels, while MIS separately enables shared-query execution for independent pointwise candidates." width="600" style="display: block; width: auto; max-width: min(100%, 600px); height: auto; max-height: 75vh; margin-left: auto; margin-right: auto;" /></a>
 
 *Figure 4. Explicit label scoring and shared-query execution address different parts of the serving workload.*
 
