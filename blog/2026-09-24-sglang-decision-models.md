@@ -1,7 +1,7 @@
 ---
 title: "Scaling JEV-like Decision Models with SGLang"
 author: "Sundara Raman Ramachandran, Chuanrui Zhu, Qing Lan, Shri Rajamanikandan Vasudevan, Fedor Borisyuk"
-date: "September 24, 2026"
+date: "September 25, 2026"
 previewImg: /images/blog/sglang-decision-models/title-card.png
 ---
 
@@ -30,7 +30,7 @@ The next question is what information each judgment should see.
 
 Keep the actions fixed: A is "query the order-status service," B is "search general delivery-policy documentation," and C is "ask the customer for the order ID." We can arrange these inputs in two ways, commonly called **pointwise** and **setwise** in recommendation and ranking systems.
 
-[![Pointwise prompts isolate each candidate; a setwise prompt places all options before one answer boundary.](/images/blog/sglang-decision-models/pointwise-vs-setwise.svg)](/images/blog/sglang-decision-models/pointwise-vs-setwise.svg)
+<a href="/images/blog/sglang-decision-models/pointwise-vs-setwise.svg"><img src="/images/blog/sglang-decision-models/pointwise-vs-setwise.svg" alt="Pointwise prompts isolate each candidate; a setwise prompt places all options before one answer boundary." width="600" style="display: block; width: 100%; max-width: 600px; height: auto; margin-left: auto; margin-right: auto;" /></a>
 
 *Figure 1. Pointwise and setwise prompt construction.*
 
@@ -88,7 +88,7 @@ These are latency ratios at the same *offered* load, not throughput multipliers,
 
 ### Latency as Candidate Count Grows
 
-[![Grouped bars compare p95 decision latency for 2, 5, 9, and 16 candidates on Qwen3-0.6B, Qwen3-8B, and Qwen3.5-4B.](/images/blog/sglang-decision-models/pointwise-latency-by-candidates.svg)](/images/blog/sglang-decision-models/pointwise-latency-by-candidates.svg)
+<a href="/images/blog/sglang-decision-models/pointwise-latency-by-candidates.svg"><img src="/images/blog/sglang-decision-models/pointwise-latency-by-candidates.svg" alt="Grouped bars compare p95 decision latency for 2, 5, 9, and 16 candidates on Qwen3-0.6B, Qwen3-8B, and Qwen3.5-4B." width="600" style="display: block; width: 100%; max-width: 600px; height: auto; margin-left: auto; margin-right: auto;" /></a>
 
 *Figure 3. Pointwise p95 time to decision by candidate count.*
 
@@ -106,7 +106,7 @@ MIS explicitly reuses the shared query within a request. On supported models and
 
 MIS requires a supported model, backend, and server configuration; selecting `/v1/score` alone does not enable it. A single-boundary setwise prompt already contains all options in one logical input and does not need candidate-isolating MIS.
 
-[![The Score API explicitly returns requested labels, while MIS separately enables shared-query execution for independent pointwise candidates.](/images/blog/sglang-decision-models/scoring-contract.svg)](/images/blog/sglang-decision-models/scoring-contract.svg)
+<a href="/images/blog/sglang-decision-models/scoring-contract.svg"><img src="/images/blog/sglang-decision-models/scoring-contract.svg" alt="The Score API explicitly returns requested labels, while MIS separately enables shared-query execution for independent pointwise candidates." width="600" style="display: block; width: 100%; max-width: 600px; height: auto; margin-left: auto; margin-right: auto;" /></a>
 
 *Figure 4. Explicit label scoring and shared-query execution address different parts of the serving workload.*
 
@@ -194,7 +194,7 @@ We use choice tasks from the [Open-Jev dataset](https://huggingface.co/datasets/
 
 ### Latency at Matched Target Load
 
-[![Three panels compare Fused-Choice and Setwise SIS p95 latency versus offered QPS on Qwen3-0.6B, Qwen3-8B, and Qwen3.5-4B, with a shared logarithmic latency scale.](/images/blog/sglang-decision-models/setwise-latency-by-load.svg)](/images/blog/sglang-decision-models/setwise-latency-by-load.svg)
+<a href="/images/blog/sglang-decision-models/setwise-latency-by-load.svg"><img src="/images/blog/sglang-decision-models/setwise-latency-by-load.svg" alt="Three panels compare Fused-Choice and Setwise SIS p95 latency versus offered QPS on Qwen3-0.6B, Qwen3-8B, and Qwen3.5-4B, with a shared logarithmic latency scale." width="600" style="display: block; width: 100%; max-width: 600px; height: auto; margin-left: auto; margin-right: auto;" /></a>
 
 *Figure 5. Fused-Choice vs. Setwise p95 end-to-end latency under a shared server configuration. Target QPS is offered load, not achieved throughput.*
 
@@ -208,7 +208,7 @@ At 668 offered QPS on 0.6B, achieved throughput is only **182 questions/s for Fu
 
 ### Latency as Candidate Count Grows
 
-[![Grouped bars show Fused-Choice and Setwise SIS p95 latency for 2, 5, 9, and 16 candidates on the three models, using a common zero-based 0 to 60 millisecond scale.](/images/blog/sglang-decision-models/setwise-latency-by-candidates.svg)](/images/blog/sglang-decision-models/setwise-latency-by-candidates.svg)
+<a href="/images/blog/sglang-decision-models/setwise-latency-by-candidates.svg"><img src="/images/blog/sglang-decision-models/setwise-latency-by-candidates.svg" alt="Grouped bars show Fused-Choice and Setwise SIS p95 latency for 2, 5, 9, and 16 candidates on the three models, using a common zero-based 0 to 60 millisecond scale." width="600" style="display: block; width: 100%; max-width: 600px; height: auto; margin-left: auto; margin-right: auto;" /></a>
 
 *Figure 6. Low-load Fused-Choice vs. Setwise p95 decision latency by candidate count, using the test split at concurrency 1.*
 
