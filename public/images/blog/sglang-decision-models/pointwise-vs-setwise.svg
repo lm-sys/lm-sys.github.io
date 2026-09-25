@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="900" viewBox="0 0 960 900" role="img" aria-labelledby="title description">
+<title id="title">Pointwise and setwise prompt construction</title>
+<desc id="description">Pointwise: three separate context-plus-candidate prompts yield three Yes/No rows. Setwise: one prompt containing all three candidates yields one A/B/C row.</desc>
+<metadata></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 0 0 L 8 4 L 0 8 Z" fill="#49566b"/></marker></defs>
+<rect width="960" height="900" fill="white"/>
+<g fill="#152033" font-family="Avenir Next, DejaVu Sans, sans-serif"><text x="40" y="52" font-size="34" font-weight="700"><tspan x="40" dy="0">What can each judgment see?</tspan></text>
+<text x="40" y="94" font-size="24" fill="#49566b"><tspan x="40" dy="0">The same actions, two prompt constructions</tspan></text>
+<text x="40" y="159" font-size="29" font-weight="700"><tspan x="40" dy="0">Pointwise</tspan></text>
+<text x="40" y="197" font-size="24" ><tspan x="40" dy="0">One independent Yes/No judgment per candidate</tspan></text>
+<rect x="40" y="224" width="256" height="64" rx="6" fill="#edf3ff" stroke="#d4dce5"/>
+<text x="58" y="264" font-size="24" ><tspan x="58" dy="0">Context + question</tspan></text>
+<path d="M 300 256 H 323" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="330" y="224" width="320" height="64" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="346" y="264" font-size="23" ><tspan x="346" dy="0">A: Order-status service</tspan></text>
+<path d="M 654 256 H 690" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="700" y="224" width="220" height="64" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="810" y="264" font-size="25" text-anchor="middle"><tspan x="810" dy="0">[Yes, No]</tspan></text>
+<rect x="40" y="310" width="256" height="64" rx="6" fill="#edf3ff" stroke="#d4dce5"/>
+<text x="58" y="350" font-size="24" ><tspan x="58" dy="0">Context + question</tspan></text>
+<path d="M 300 342 H 323" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="330" y="310" width="320" height="64" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="346" y="350" font-size="23" ><tspan x="346" dy="0">B: Delivery-policy search</tspan></text>
+<path d="M 654 342 H 690" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="700" y="310" width="220" height="64" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="810" y="350" font-size="25" text-anchor="middle"><tspan x="810" dy="0">[Yes, No]</tspan></text>
+<rect x="40" y="396" width="256" height="64" rx="6" fill="#edf3ff" stroke="#d4dce5"/>
+<text x="58" y="436" font-size="24" ><tspan x="58" dy="0">Context + question</tspan></text>
+<path d="M 300 428 H 323" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="330" y="396" width="320" height="64" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="346" y="436" font-size="23" ><tspan x="346" dy="0">C: Ask for the order ID</tspan></text>
+<path d="M 654 428 H 690" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="700" y="396" width="220" height="64" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="810" y="436" font-size="25" text-anchor="middle"><tspan x="810" dy="0">[Yes, No]</tspan></text>
+<text x="40" y="501" font-size="23" fill="#49566b"><tspan x="40" dy="0">Each prompt ends with the same Yes/No instruction.</tspan></text>
+<path d="M 40 534 H 920" stroke="#d4dce5"/>
+<text x="40" y="586" font-size="29" font-weight="700"><tspan x="40" dy="0">Setwise</tspan></text>
+<text x="40" y="624" font-size="24" ><tspan x="40" dy="0">One A/B/C judgment after seeing all candidates</tspan></text>
+<rect x="40" y="654" width="610" height="156" rx="6" fill="#edf3ff" stroke="#d4dce5"/>
+<text x="60" y="693" font-size="22" ><tspan x="60" dy="0">Context + question</tspan><tspan x="60" dy="30.799999999999997">A: Order status  |  B: Delivery-policy search</tspan><tspan x="60" dy="30.799999999999997">C: Ask for the order ID</tspan><tspan x="60" dy="30.799999999999997">Choose A, B, or C.</tspan></text>
+<path d="M 654 732 H 690" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="700" y="700" width="220" height="64" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="810" y="740" font-size="25" text-anchor="middle"><tspan x="810" dy="0">[A, B, C]</tspan></text>
+<text x="40" y="861" font-size="23" fill="#49566b"><tspan x="40" dy="0">Prompt semantics are separate from SIS or MIS execution.</tspan></text></g>
+</svg>
