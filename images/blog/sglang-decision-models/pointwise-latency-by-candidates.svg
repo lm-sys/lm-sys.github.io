@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1470" viewBox="0 0 960 1470" role="img" aria-labelledby="title description">
+<title id="title">P95 time to decision by candidate count</title>
+<desc id="description">Grouped bars for 2, 5, 9, and 16 candidates on Qwen3-0.6B, Qwen3-8B, and Qwen3.5-4B. Values are displayed to one decimal place. All panels use a zero baseline and a 0 to 100 ms scale with 10 ms ticks.</desc>
+<metadata>Values transcribed from the original figure&apos;s one-decimal labels, with a user-provided correction to Qwen3-8B SIS at 16 candidates: 53.1 ms. Raw benchmark samples were not supplied. The load chart is not regenerated because its source measurements were not supplied.</metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 0 0 L 8 4 L 0 8 Z" fill="#49566b"/></marker></defs>
+<rect width="960" height="1470" fill="white"/>
+<g fill="#152033" font-family="Avenir Next, DejaVu Sans, sans-serif"><text x="40" y="49" font-size="33" font-weight="700"><tspan x="40" dy="0">P95 time to decision by candidate count</tspan></text>
+<text x="40" y="88" font-size="23" fill="#49566b"><tspan x="40" dy="0">Latency in milliseconds; the same scale in every panel</tspan></text>
+<rect x="40" y="113" width="28" height="18" fill="#2563eb"/>
+<text x="80" y="132" font-size="24" ><tspan x="80" dy="0">Generate</tspan></text>
+<rect x="244" y="113" width="28" height="18" fill="#c66b00"/>
+<text x="284" y="132" font-size="24" ><tspan x="284" dy="0">SIS</tspan></text>
+<rect x="448" y="113" width="28" height="18" fill="#008577"/>
+<text x="488" y="132" font-size="24" ><tspan x="488" dy="0">MIS</tspan></text>
+<text x="40" y="183" font-size="29" font-weight="700"><tspan x="40" dy="0">Qwen3-0.6B</tspan></text>
+<path d="M 92 513 H 920" stroke="#d4dce5"/>
+<text x="76" y="520" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">0</tspan></text>
+<path d="M 92 483 H 920" stroke="#d4dce5"/>
+<text x="76" y="490" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">10</tspan></text>
+<path d="M 92 453 H 920" stroke="#d4dce5"/>
+<text x="76" y="460" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">20</tspan></text>
+<path d="M 92 423 H 920" stroke="#d4dce5"/>
+<text x="76" y="430" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">30</tspan></text>
+<path d="M 92 393 H 920" stroke="#d4dce5"/>
+<text x="76" y="400" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">40</tspan></text>
+<path d="M 92 363 H 920" stroke="#d4dce5"/>
+<text x="76" y="370" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">50</tspan></text>
+<path d="M 92 333 H 920" stroke="#d4dce5"/>
+<text x="76" y="340" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">60</tspan></text>
+<path d="M 92 303 H 920" stroke="#d4dce5"/>
+<text x="76" y="310" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">70</tspan></text>
+<path d="M 92 273 H 920" stroke="#d4dce5"/>
+<text x="76" y="280" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">80</tspan></text>
+<path d="M 92 243 H 920" stroke="#d4dce5"/>
+<text x="76" y="250" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">90</tspan></text>
+<path d="M 92 213 H 920" stroke="#d4dce5"/>
+<text x="76" y="220" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">100</tspan></text>
+<rect x="116" y="456.3" width="48" height="56.699999999999996" fill="#2563eb"><title>Qwen3-0.6B, 2 candidates, Generate: 18.9 ms</title></rect>
+<text x="140" y="446.3" font-size="21" text-anchor="middle"><tspan x="140" dy="0">18.9</tspan></text>
+<rect x="170" y="462" width="48" height="51" fill="#c66b00"><title>Qwen3-0.6B, 2 candidates, SIS: 17.0 ms</title></rect>
+<text x="194" y="452" font-size="21" text-anchor="middle"><tspan x="194" dy="0">17.0</tspan></text>
+<rect x="224" y="460.5" width="48" height="52.5" fill="#008577"><title>Qwen3-0.6B, 2 candidates, MIS: 17.5 ms</title></rect>
+<text x="248" y="450.5" font-size="21" text-anchor="middle"><tspan x="248" dy="0">17.5</tspan></text>
+<text x="194" y="546" font-size="24" text-anchor="middle"><tspan x="194" dy="0">2</tspan></text>
+<rect x="323" y="439.5" width="48" height="73.5" fill="#2563eb"><title>Qwen3-0.6B, 5 candidates, Generate: 24.5 ms</title></rect>
+<text x="347" y="429.5" font-size="21" text-anchor="middle"><tspan x="347" dy="0">24.5</tspan></text>
+<rect x="377" y="453.3" width="48" height="59.699999999999996" fill="#c66b00"><title>Qwen3-0.6B, 5 candidates, SIS: 19.9 ms</title></rect>
+<text x="401" y="443.3" font-size="21" text-anchor="middle"><tspan x="401" dy="0">19.9</tspan></text>
+<rect x="431" y="459.6" width="48" height="53.400000000000006" fill="#008577"><title>Qwen3-0.6B, 5 candidates, MIS: 17.8 ms</title></rect>
+<text x="455" y="449.6" font-size="21" text-anchor="middle"><tspan x="455" dy="0">17.8</tspan></text>
+<text x="401" y="546" font-size="24" text-anchor="middle"><tspan x="401" dy="0">5</tspan></text>
+<rect x="530" y="420.6" width="48" height="92.4" fill="#2563eb"><title>Qwen3-0.6B, 9 candidates, Generate: 30.8 ms</title></rect>
+<text x="554" y="410.6" font-size="21" text-anchor="middle"><tspan x="554" dy="0">30.8</tspan></text>
+<rect x="584" y="450.3" width="48" height="62.699999999999996" fill="#c66b00"><title>Qwen3-0.6B, 9 candidates, SIS: 20.9 ms</title></rect>
+<text x="608" y="440.3" font-size="21" text-anchor="middle"><tspan x="608" dy="0">20.9</tspan></text>
+<rect x="638" y="459.9" width="48" height="53.099999999999994" fill="#008577"><title>Qwen3-0.6B, 9 candidates, MIS: 17.7 ms</title></rect>
+<text x="662" y="449.9" font-size="21" text-anchor="middle"><tspan x="662" dy="0">17.7</tspan></text>
+<text x="608" y="546" font-size="24" text-anchor="middle"><tspan x="608" dy="0">9</tspan></text>
+<rect x="737" y="394.2" width="48" height="118.80000000000001" fill="#2563eb"><title>Qwen3-0.6B, 16 candidates, Generate: 39.6 ms</title></rect>
+<text x="761" y="384.2" font-size="21" text-anchor="middle"><tspan x="761" dy="0">39.6</tspan></text>
+<rect x="791" y="440.1" width="48" height="72.9" fill="#c66b00"><title>Qwen3-0.6B, 16 candidates, SIS: 24.3 ms</title></rect>
+<text x="815" y="430.1" font-size="21" text-anchor="middle"><tspan x="815" dy="0">24.3</tspan></text>
+<rect x="845" y="456.9" width="48" height="56.099999999999994" fill="#008577"><title>Qwen3-0.6B, 16 candidates, MIS: 18.7 ms</title></rect>
+<text x="869" y="446.9" font-size="21" text-anchor="middle"><tspan x="869" dy="0">18.7</tspan></text>
+<text x="815" y="546" font-size="24" text-anchor="middle"><tspan x="815" dy="0">16</tspan></text>
+<text x="40" y="603" font-size="29" font-weight="700"><tspan x="40" dy="0">Qwen3-8B</tspan></text>
+<path d="M 92 933 H 920" stroke="#d4dce5"/>
+<text x="76" y="940" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">0</tspan></text>
+<path d="M 92 903 H 920" stroke="#d4dce5"/>
+<text x="76" y="910" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">10</tspan></text>
+<path d="M 92 873 H 920" stroke="#d4dce5"/>
+<text x="76" y="880" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">20</tspan></text>
+<path d="M 92 843 H 920" stroke="#d4dce5"/>
+<text x="76" y="850" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">30</tspan></text>
+<path d="M 92 813 H 920" stroke="#d4dce5"/>
+<text x="76" y="820" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">40</tspan></text>
+<path d="M 92 783 H 920" stroke="#d4dce5"/>
+<text x="76" y="790" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">50</tspan></text>
+<path d="M 92 753 H 920" stroke="#d4dce5"/>
+<text x="76" y="760" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">60</tspan></text>
+<path d="M 92 723 H 920" stroke="#d4dce5"/>
+<text x="76" y="730" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">70</tspan></text>
+<path d="M 92 693 H 920" stroke="#d4dce5"/>
+<text x="76" y="700" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">80</tspan></text>
+<path d="M 92 663 H 920" stroke="#d4dce5"/>
+<text x="76" y="670" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">90</tspan></text>
+<path d="M 92 633 H 920" stroke="#d4dce5"/>
+<text x="76" y="640" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">100</tspan></text>
+<rect x="116" y="867.9" width="48" height="65.1" fill="#2563eb"><title>Qwen3-8B, 2 candidates, Generate: 21.7 ms</title></rect>
+<text x="140" y="857.9" font-size="21" text-anchor="middle"><tspan x="140" dy="0">21.7</tspan></text>
+<rect x="170" y="866.4" width="48" height="66.6" fill="#c66b00"><title>Qwen3-8B, 2 candidates, SIS: 22.2 ms</title></rect>
+<text x="194" y="856.4" font-size="21" text-anchor="middle"><tspan x="194" dy="0">22.2</tspan></text>
+<rect x="224" y="872.4" width="48" height="60.599999999999994" fill="#008577"><title>Qwen3-8B, 2 candidates, MIS: 20.2 ms</title></rect>
+<text x="248" y="862.4" font-size="21" text-anchor="middle"><tspan x="248" dy="0">20.2</tspan></text>
+<text x="194" y="966" font-size="24" text-anchor="middle"><tspan x="194" dy="0">2</tspan></text>
+<rect x="323" y="834.9" width="48" height="98.10000000000001" fill="#2563eb"><title>Qwen3-8B, 5 candidates, Generate: 32.7 ms</title></rect>
+<text x="347" y="824.9" font-size="21" text-anchor="middle"><tspan x="347" dy="0">32.7</tspan></text>
+<rect x="377" y="836.4" width="48" height="96.60000000000001" fill="#c66b00"><title>Qwen3-8B, 5 candidates, SIS: 32.2 ms</title></rect>
+<text x="401" y="826.4" font-size="21" text-anchor="middle"><tspan x="401" dy="0">32.2</tspan></text>
+<rect x="431" y="860.1" width="48" height="72.9" fill="#008577"><title>Qwen3-8B, 5 candidates, MIS: 24.3 ms</title></rect>
+<text x="455" y="850.1" font-size="21" text-anchor="middle"><tspan x="455" dy="0">24.3</tspan></text>
+<text x="401" y="966" font-size="24" text-anchor="middle"><tspan x="401" dy="0">5</tspan></text>
+<rect x="530" y="795.6" width="48" height="137.39999999999998" fill="#2563eb"><title>Qwen3-8B, 9 candidates, Generate: 45.8 ms</title></rect>
+<text x="554" y="785.6" font-size="21" text-anchor="middle"><tspan x="554" dy="0">45.8</tspan></text>
+<rect x="584" y="804" width="48" height="129" fill="#c66b00"><title>Qwen3-8B, 9 candidates, SIS: 43.0 ms</title></rect>
+<text x="608" y="794" font-size="21" text-anchor="middle"><tspan x="608" dy="0">43.0</tspan></text>
+<rect x="638" y="871.2" width="48" height="61.800000000000004" fill="#008577"><title>Qwen3-8B, 9 candidates, MIS: 20.6 ms</title></rect>
+<text x="662" y="861.2" font-size="21" text-anchor="middle"><tspan x="662" dy="0">20.6</tspan></text>
+<text x="608" y="966" font-size="24" text-anchor="middle"><tspan x="608" dy="0">9</tspan></text>
+<rect x="737" y="770.7" width="48" height="162.3" fill="#2563eb"><title>Qwen3-8B, 16 candidates, Generate: 54.1 ms</title></rect>
+<text x="761" y="760.7" font-size="21" text-anchor="middle"><tspan x="761" dy="0">54.1</tspan></text>
+<rect x="791" y="773.7" width="48" height="159.3" fill="#c66b00"><title>Qwen3-8B, 16 candidates, SIS: 53.1 ms</title></rect>
+<text x="815" y="763.7" font-size="21" text-anchor="middle"><tspan x="815" dy="0">53.1</tspan></text>
+<rect x="845" y="871.2" width="48" height="61.800000000000004" fill="#008577"><title>Qwen3-8B, 16 candidates, MIS: 20.6 ms</title></rect>
+<text x="869" y="861.2" font-size="21" text-anchor="middle"><tspan x="869" dy="0">20.6</tspan></text>
+<text x="815" y="966" font-size="24" text-anchor="middle"><tspan x="815" dy="0">16</tspan></text>
+<text x="40" y="1023" font-size="29" font-weight="700"><tspan x="40" dy="0">Qwen3.5-4B</tspan></text>
+<path d="M 92 1353 H 920" stroke="#d4dce5"/>
+<text x="76" y="1360" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">0</tspan></text>
+<path d="M 92 1323 H 920" stroke="#d4dce5"/>
+<text x="76" y="1330" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">10</tspan></text>
+<path d="M 92 1293 H 920" stroke="#d4dce5"/>
+<text x="76" y="1300" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">20</tspan></text>
+<path d="M 92 1263 H 920" stroke="#d4dce5"/>
+<text x="76" y="1270" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">30</tspan></text>
+<path d="M 92 1233 H 920" stroke="#d4dce5"/>
+<text x="76" y="1240" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">40</tspan></text>
+<path d="M 92 1203 H 920" stroke="#d4dce5"/>
+<text x="76" y="1210" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">50</tspan></text>
+<path d="M 92 1173 H 920" stroke="#d4dce5"/>
+<text x="76" y="1180" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">60</tspan></text>
+<path d="M 92 1143 H 920" stroke="#d4dce5"/>
+<text x="76" y="1150" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">70</tspan></text>
+<path d="M 92 1113 H 920" stroke="#d4dce5"/>
+<text x="76" y="1120" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">80</tspan></text>
+<path d="M 92 1083 H 920" stroke="#d4dce5"/>
+<text x="76" y="1090" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">90</tspan></text>
+<path d="M 92 1053 H 920" stroke="#d4dce5"/>
+<text x="76" y="1060" font-size="21" text-anchor="end" fill="#49566b"><tspan x="76" dy="0">100</tspan></text>
+<rect x="116" y="1179.6" width="48" height="173.39999999999998" fill="#2563eb"><title>Qwen3.5-4B, 2 candidates, Generate: 57.8 ms</title></rect>
+<text x="140" y="1169.6" font-size="21" text-anchor="middle"><tspan x="140" dy="0">57.8</tspan></text>
+<rect x="170" y="1191.9" width="48" height="161.10000000000002" fill="#c66b00"><title>Qwen3.5-4B, 2 candidates, SIS: 53.7 ms</title></rect>
+<text x="194" y="1181.9" font-size="21" text-anchor="middle"><tspan x="194" dy="0">53.7</tspan></text>
+<rect x="224" y="1185.9" width="48" height="167.10000000000002" fill="#008577"><title>Qwen3.5-4B, 2 candidates, MIS: 55.7 ms</title></rect>
+<text x="248" y="1175.9" font-size="21" text-anchor="middle"><tspan x="248" dy="0">55.7</tspan></text>
+<text x="194" y="1386" font-size="24" text-anchor="middle"><tspan x="194" dy="0">2</tspan></text>
+<rect x="323" y="1160.7" width="48" height="192.29999999999998" fill="#2563eb"><title>Qwen3.5-4B, 5 candidates, Generate: 64.1 ms</title></rect>
+<text x="347" y="1150.7" font-size="21" text-anchor="middle"><tspan x="347" dy="0">64.1</tspan></text>
+<rect x="377" y="1177.8" width="48" height="175.2" fill="#c66b00"><title>Qwen3.5-4B, 5 candidates, SIS: 58.4 ms</title></rect>
+<text x="401" y="1167.8" font-size="21" text-anchor="middle"><tspan x="401" dy="0">58.4</tspan></text>
+<rect x="431" y="1186.2" width="48" height="166.8" fill="#008577"><title>Qwen3.5-4B, 5 candidates, MIS: 55.6 ms</title></rect>
+<text x="455" y="1176.2" font-size="21" text-anchor="middle"><tspan x="455" dy="0">55.6</tspan></text>
+<text x="401" y="1386" font-size="24" text-anchor="middle"><tspan x="401" dy="0">5</tspan></text>
+<rect x="530" y="1148.1" width="48" height="204.89999999999998" fill="#2563eb"><title>Qwen3.5-4B, 9 candidates, Generate: 68.3 ms</title></rect>
+<text x="554" y="1138.1" font-size="21" text-anchor="middle"><tspan x="554" dy="0">68.3</tspan></text>
+<rect x="584" y="1173" width="48" height="180" fill="#c66b00"><title>Qwen3.5-4B, 9 candidates, SIS: 60.0 ms</title></rect>
+<text x="608" y="1163" font-size="21" text-anchor="middle"><tspan x="608" dy="0">60.0</tspan></text>
+<rect x="638" y="1186.5" width="48" height="166.5" fill="#008577"><title>Qwen3.5-4B, 9 candidates, MIS: 55.5 ms</title></rect>
+<text x="662" y="1176.5" font-size="21" text-anchor="middle"><tspan x="662" dy="0">55.5</tspan></text>
+<text x="608" y="1386" font-size="24" text-anchor="middle"><tspan x="608" dy="0">9</tspan></text>
+<rect x="737" y="1098.6" width="48" height="254.39999999999998" fill="#2563eb"><title>Qwen3.5-4B, 16 candidates, Generate: 84.8 ms</title></rect>
+<text x="761" y="1088.6" font-size="21" text-anchor="middle"><tspan x="761" dy="0">84.8</tspan></text>
+<rect x="791" y="1129.8" width="48" height="223.20000000000002" fill="#c66b00"><title>Qwen3.5-4B, 16 candidates, SIS: 74.4 ms</title></rect>
+<text x="815" y="1119.8" font-size="21" text-anchor="middle"><tspan x="815" dy="0">74.4</tspan></text>
+<rect x="845" y="1185.9" width="48" height="167.10000000000002" fill="#008577"><title>Qwen3.5-4B, 16 candidates, MIS: 55.7 ms</title></rect>
+<text x="869" y="1175.9" font-size="21" text-anchor="middle"><tspan x="869" dy="0">55.7</tspan></text>
+<text x="815" y="1386" font-size="24" text-anchor="middle"><tspan x="815" dy="0">16</tspan></text>
+<text x="506" y="1440" font-size="25" text-anchor="middle"><tspan x="506" dy="0">Number of candidates</tspan></text></g>
+</svg>

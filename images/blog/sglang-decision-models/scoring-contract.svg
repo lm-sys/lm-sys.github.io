@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1200" viewBox="0 0 960 1200" role="img" aria-labelledby="title description">
+<title id="title">Explicit scoring and shared-query execution</title>
+<desc id="description">The Score API returns requested labels explicitly. Independently, MIS shares query computation while isolating candidates; SIS uses separate logical sequences. Neither benefit implies an extra generation forward pass.</desc>
+<metadata></metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 0 0 L 8 4 L 0 8 Z" fill="#49566b"/></marker></defs>
+<rect width="960" height="1200" fill="white"/>
+<g fill="#152033" font-family="Avenir Next, DejaVu Sans, sans-serif"><text x="40" y="52" font-size="34" font-weight="700"><tspan x="40" dy="0">Two independent serving improvements</tspan></text>
+<text x="40" y="113" font-size="29" font-weight="700"><tspan x="40" dy="0">1. Make the output contract explicit</tspan></text>
+<text x="40" y="158" font-size="25" font-weight="600"><tspan x="40" dy="0">One-token generation</tspan></text>
+<text x="510" y="158" font-size="25" font-weight="600"><tspan x="510" dy="0">Score API: /v1/score</tspan></text>
+<rect x="40" y="180" width="410" height="110" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="60" y="218" font-size="24" ><tspan x="60" dy="0">Top-k logprobs</tspan><tspan x="60" dy="33.599999999999994">A required label may be absent.</tspan></text>
+<rect x="510" y="180" width="410" height="110" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="530" y="218" font-size="24" ><tspan x="530" dy="0">Explicit label scores</tspan><tspan x="530" dy="33.599999999999994">Requested labels, in order.</tspan></text>
+<path d="M 40 324 H 920" stroke="#d4dce5"/>
+<text x="40" y="378" font-size="29" font-weight="700"><tspan x="40" dy="0">2. Reuse the query across candidates</tspan></text>
+<text x="40" y="423" font-size="25" font-weight="600"><tspan x="40" dy="0">SIS: separate logical sequences</tspan></text>
+<rect x="40" y="447" width="260" height="50" rx="6" fill="#edf3ff" stroke="#d4dce5"/>
+<text x="170" y="480" font-size="24" text-anchor="middle"><tspan x="170" dy="0">Query</tspan></text>
+<path d="M 304 472 H 331" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="340" y="447" width="260" height="50" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="470" y="480" font-size="24" text-anchor="middle"><tspan x="470" dy="0">Candidate A</tspan></text>
+<path d="M 604 472 H 650" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="660" y="447" width="260" height="50" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="790" y="480" font-size="24" text-anchor="middle"><tspan x="790" dy="0">[Yes, No]</tspan></text>
+<rect x="40" y="514" width="260" height="50" rx="6" fill="#edf3ff" stroke="#d4dce5"/>
+<text x="170" y="547" font-size="24" text-anchor="middle"><tspan x="170" dy="0">Query</tspan></text>
+<path d="M 304 539 H 331" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="340" y="514" width="260" height="50" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="470" y="547" font-size="24" text-anchor="middle"><tspan x="470" dy="0">Candidate B</tspan></text>
+<path d="M 604 539 H 650" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="660" y="514" width="260" height="50" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="790" y="547" font-size="24" text-anchor="middle"><tspan x="790" dy="0">[Yes, No]</tspan></text>
+<rect x="40" y="581" width="260" height="50" rx="6" fill="#edf3ff" stroke="#d4dce5"/>
+<text x="170" y="614" font-size="24" text-anchor="middle"><tspan x="170" dy="0">Query</tspan></text>
+<path d="M 304 606 H 331" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="340" y="581" width="260" height="50" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="470" y="614" font-size="24" text-anchor="middle"><tspan x="470" dy="0">Candidate C</tspan></text>
+<path d="M 604 606 H 650" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="660" y="581" width="260" height="50" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="790" y="614" font-size="24" text-anchor="middle"><tspan x="790" dy="0">[Yes, No]</tspan></text>
+<text x="40" y="671" font-size="23" fill="#49566b"><tspan x="40" dy="0">One request can contain all three sequences.</tspan></text>
+<path d="M 40 704 H 920" stroke="#d4dce5"/>
+<text x="40" y="753" font-size="25" font-weight="600"><tspan x="40" dy="0">MIS: shared query, isolated candidates</tspan></text>
+<rect x="40" y="780" width="260" height="184" rx="6" fill="#edf3ff" stroke="#d4dce5"/>
+<text x="170" y="857" font-size="24" text-anchor="middle"><tspan x="170" dy="0">Query</tspan><tspan x="170" dy="33.599999999999994">computed once</tspan></text>
+<path d="M 300 872 H 320 M 320 805 V 939" fill="none" stroke="#49566b" stroke-width="2"/>
+<path d="M 320 805 H 331" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="340" y="780" width="260" height="50" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="470" y="813" font-size="24" text-anchor="middle"><tspan x="470" dy="0">Candidate A</tspan></text>
+<path d="M 604 805 H 650" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="660" y="780" width="260" height="50" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="790" y="813" font-size="24" text-anchor="middle"><tspan x="790" dy="0">[Yes, No]</tspan></text>
+<path d="M 320 872 H 331" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="340" y="847" width="260" height="50" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="470" y="880" font-size="24" text-anchor="middle"><tspan x="470" dy="0">Candidate B</tspan></text>
+<path d="M 604 872 H 650" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="660" y="847" width="260" height="50" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="790" y="880" font-size="24" text-anchor="middle"><tspan x="790" dy="0">[Yes, No]</tspan></text>
+<path d="M 320 939 H 331" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="340" y="914" width="260" height="50" rx="6" fill="#f5f7fa" stroke="#d4dce5"/>
+<text x="470" y="947" font-size="24" text-anchor="middle"><tspan x="470" dy="0">Candidate C</tspan></text>
+<path d="M 604 939 H 650" fill="none" stroke="#49566b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="660" y="914" width="260" height="50" rx="6" fill="#e6f5f1" stroke="#d4dce5"/>
+<text x="790" y="947" font-size="24" text-anchor="middle"><tspan x="790" dy="0">[Yes, No]</tspan></text>
+<text x="40" y="1004" font-size="23" fill="#49566b"><tspan x="40" dy="0">Each candidate attends only to the query and its own tokens.</tspan></text>
+<path d="M 40 1038 H 920" stroke="#d4dce5"/>
+<text x="40" y="1084" font-size="23" ><tspan x="40" dy="0">Both scoring and one-token generation can finish from prefill.</tspan></text>
+<text x="40" y="1124" font-size="23" fill="#49566b"><tspan x="40" dy="0">Label extraction still requires the vocabulary projection</tspan><tspan x="40" dy="32.199999999999996">and full-distribution normalization.</tspan></text></g>
+</svg>
