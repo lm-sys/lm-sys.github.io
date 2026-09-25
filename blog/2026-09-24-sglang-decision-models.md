@@ -1,6 +1,6 @@
 ---
 title: "Scaling JEV-like Decision Models with SGLang"
-author: "Sundara Raman Ramachandran, Chuanrui Zhu, Qing Lan, Shri Rajamanikandan Vasudevan"
+author: "Sundara Raman Ramachandran, Chuanrui Zhu, Qing Lan, Shri Rajamanikandan Vasudevan, Fedor Borisyuk"
 date: "September 24, 2026"
 previewImg: /images/blog/sglang-decision-models/title-card.png
 ---
