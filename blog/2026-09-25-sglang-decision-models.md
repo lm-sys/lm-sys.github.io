@@ -48,12 +48,14 @@ That gives us a useful serving workload: repeated state, multiple independent ev
 
 One-token generation with logprobs is a workable baseline, but its top-k response may omit a label the application needs. SGLang's `/v1/score` lets the caller declare those labels explicitly through `label_token_ids`, alongside `query` and `items`. Ordinary next-token scoring returns one row per item, in the requested label order.
 
-An explicit score-only workload lets the runtime skip token sampling, avoid unnecessary logprobs for input tokens, gather label scores in batches, and reduce repeated GPU-to-CPU transfers. This label-selective extraction does **not** remove the vocabulary projection or full-distribution normalization.
+For causal-LM label scoring, an explicit score-only workload lets the runtime skip token sampling, avoid unnecessary logprobs for input tokens, gather label scores in batches, and reduce repeated GPU-to-CPU transfers. This label-selective extraction does **not** remove the vocabulary projection or full-distribution normalization.
 
 Both scoring and modern one-token generation can return a result directly from prefill; generation does not inherently require an extra model forward pass. Beyond the output path, SGLang supports **single-item scoring (SIS)** and **multi-item scoring (MIS)** execution:
 
 - **SIS:** each query-plus-item pair is an independent logical sequence. One API request may still contain several items.
 - **MIS:** the runtime explicitly reuses the shared query within a request and restricts each candidate's attention to that query and its own tokens.
+
+The Score API also supports SequenceClassification models such as `Qwen3ForSequenceClassification`, `Qwen2ForSequenceClassification`, and `LlamaForClassification` out of the box, using their classification heads ([PR #22118](https://github.com/sgl-project/sglang/pull/22118)). The benchmarks below focus on next-token label scoring with causal language models.
 
 ## Benchmark: Pointwise Decisions
 
