@@ -80,4 +80,4 @@ This is only a first look at what SGLang and Miles can do on Vera Rubin. On infe
 This work was developed in close collaboration between the SGLang & Miles team at RadixArk and NVIDIA
 
 
-<p id="cognition-note"><sup>1</sup> Cognition's results come from its own private SGLang fork and benchmark settings.</p>
+<p id="cognition-note"><sup>1</sup> Cognition's results come from their own private SGLang fork and benchmark settings.</p>
