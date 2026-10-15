@@ -283,9 +283,9 @@ Multi-turn RL must preserve the token sequence actually sampled by the model. Wh
 
 ### Training Results
 
-We trained the full Muse Spark Open language model on DAPO-Math-17K using GRPO on 64 H200 GPUs, with CPU-offloaded Muon or Adam with optimizer states streamed to disk. Each step samples 16 responses for each of 32 prompts, for a batch of 512 responses, with a 4,096-token response cap and `xhigh` reasoning effort.
+We trained the full Muse Spark Open language model on DAPO-Math-17K using GRPO on 64 H200 GPUs and on 32 NVIDIA B300 GPUs, with CPU-offloaded Muon or Adam with optimizer states streamed to disk. Each step samples 16 responses for each of 32 prompts, for a batch of 512 responses, with a 4,096-token response cap and `xhigh` reasoning effort. Rollout uses the BF16 checkpoint on both H200 and B300. Rollout routing replay (R3), which reuses the rollout's expert routing in training, substantially lowers the train–rollout log-probability difference: 0.0044–0.0071 in the runs with R3, against 0.015–0.020 in the run without it. After every weight sync, all rollout engines hold bit-identical weights.
 
-![Two Muon runs and one Adam run: unsmoothed training reward, train–rollout KL, and absolute log-probability difference. The legends identify each training topology and whether rollout routing replay is enabled.](/images/blog/meta-muse-spark-open/muse-spark-rl-main.svg)
+![Two Muon runs and two Adam runs, one of them on B300: unsmoothed training reward, train–rollout KL, and absolute log-probability difference. The legends identify each GPU type, training topology and whether rollout routing replay is enabled.](/images/blog/meta-muse-spark-open/muse-spark-rl-main.svg)
 
 *Full-language-model RL on DAPO-Math-17K: training reward, train–rollout KL, and mean absolute token log-probability difference. All curves show raw per-step values.*
 
