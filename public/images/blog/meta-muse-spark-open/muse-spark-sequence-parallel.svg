@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="674" viewBox="0 0 1400 674" role="img" aria-labelledby="title description">
+  <title id="title">Sequence-parallel prefill with NVFP4 MegaMoE</title>
+  <desc id="description">Four TP/EP ranks keep distinct token shards. After attention output reduce-scatter, each rank performs normalization and pooling for its own tokens. Inside MegaMoE, all-to-all dispatch sends routed tokens to expert owners, NVFP4 expert computation applies per-expert RMSNorm before route weighting, and all-to-all combine returns complete weighted outputs to each original token rank. Unpooling and boundary normalization stay sequence-sharded until the next QKV all-gather. Lines illustrate possible routes, not measured traffic or timing.</desc>
+  <defs>
+    <marker id="green-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#34995a"/></marker>
+    <marker id="gray-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#858e99"/></marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #222426; }
+      .muted { fill: #727872; }
+      .green { fill: #2c8d4e; }
+      .label { font-size: 16px; font-weight: 600; }
+      .small { font-size: 14px; }
+    </style>
+  </defs>
+  <rect width="1400" height="674" fill="white"/>
+  <text x="40" y="43" font-size="26" text-anchor="start" font-weight="600">Sequence-parallel prefill with NVFP4 MegaMoE</text>
+  <text x="40" y="72" font-size="16" text-anchor="start" class="muted">Distribute token-local work across TP ranks; route expert work through MegaMoE’s integrated all-to-all.</text>
+  <rect x="146" y="106" width="244" height="39" rx="7" fill="#f5f6f7" stroke="#adb5bf" stroke-width="1.5" />
+  <text x="268" y="131" font-size="14" text-anchor="middle">Attention output + ReduceScatter</text>
+  <rect x="990" y="106" width="304" height="39" rx="7" fill="#f5f6f7" stroke="#adb5bf" stroke-width="1.5" />
+  <text x="1142" y="131" font-size="14" text-anchor="middle">AllGather → next QKV projection</text>
+  <text x="268" y="184" font-size="17" text-anchor="middle" font-weight="600">Local token work</text>
+  <text x="1142" y="184" font-size="17" text-anchor="middle" font-weight="600">Local token work</text>
+  <rect x="405" y="104" width="565" height="451" rx="7" fill="#fbfefc" stroke="#9ac8a8" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="688" y="132" font-size="18" text-anchor="middle" class="green" font-weight="600">NVFP4 MegaMoE</text>
+  <text x="474" y="164" font-size="14" text-anchor="middle" class="green">All-to-all</text>
+  <text x="474" y="184" font-size="14" text-anchor="middle" class="green">dispatch</text>
+  <text x="689" y="184" font-size="17" text-anchor="middle" font-weight="600">Expert work</text>
+  <text x="889" y="164" font-size="14" text-anchor="middle" class="green">All-to-all combine</text>
+  <text x="889" y="184" font-size="14" text-anchor="middle" class="green">+ weighted sum</text>
+  <path d="M 390 242 C 447 242, 490 242, 548 242" fill="none" stroke="#34995a" stroke-width="1.8" opacity="0.75" marker-end="url(#green-arrow)"/>
+  <path d="M 828 242 C 885 242, 932 242, 988 242" fill="none" stroke="#34995a" stroke-width="1.8" opacity="0.75" marker-end="url(#green-arrow)"/>
+  <path d="M 390 242 C 447 242, 490 322, 548 322" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 242 C 885 242, 932 322, 988 322" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 242 C 447 242, 490 402, 548 402" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 242 C 885 242, 932 402, 988 402" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 242 C 447 242, 490 482, 548 482" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 242 C 885 242, 932 482, 988 482" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 322 C 447 322, 490 242, 548 242" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 322 C 885 322, 932 242, 988 242" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 322 C 447 322, 490 322, 548 322" fill="none" stroke="#34995a" stroke-width="1.8" opacity="0.75" marker-end="url(#green-arrow)"/>
+  <path d="M 828 322 C 885 322, 932 322, 988 322" fill="none" stroke="#34995a" stroke-width="1.8" opacity="0.75" marker-end="url(#green-arrow)"/>
+  <path d="M 390 322 C 447 322, 490 402, 548 402" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 322 C 885 322, 932 402, 988 402" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 322 C 447 322, 490 482, 548 482" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 322 C 885 322, 932 482, 988 482" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 402 C 447 402, 490 242, 548 242" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 402 C 885 402, 932 242, 988 242" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 402 C 447 402, 490 322, 548 322" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 402 C 885 402, 932 322, 988 322" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 402 C 447 402, 490 402, 548 402" fill="none" stroke="#34995a" stroke-width="1.8" opacity="0.75" marker-end="url(#green-arrow)"/>
+  <path d="M 828 402 C 885 402, 932 402, 988 402" fill="none" stroke="#34995a" stroke-width="1.8" opacity="0.75" marker-end="url(#green-arrow)"/>
+  <path d="M 390 402 C 447 402, 490 482, 548 482" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 402 C 885 402, 932 482, 988 482" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 482 C 447 482, 490 242, 548 242" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 482 C 885 482, 932 242, 988 242" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 482 C 447 482, 490 322, 548 322" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 482 C 885 482, 932 322, 988 322" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 482 C 447 482, 490 402, 548 402" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 828 482 C 885 482, 932 402, 988 402" fill="none" stroke="#34995a" stroke-width="1.3" opacity="0.22" marker-end="url(#green-arrow)"/>
+  <path d="M 390 482 C 447 482, 490 482, 548 482" fill="none" stroke="#34995a" stroke-width="1.8" opacity="0.75" marker-end="url(#green-arrow)"/>
+  <path d="M 828 482 C 885 482, 932 482, 988 482" fill="none" stroke="#34995a" stroke-width="1.8" opacity="0.75" marker-end="url(#green-arrow)"/>
+  <text x="40" y="239" font-size="17" text-anchor="start" font-weight="600">Rank 0</text>
+  <text x="40" y="260" font-size="13" text-anchor="start">TP + EP</text>
+  <rect x="146" y="211" width="244" height="62" rx="7" fill="#e3edf7" stroke="#609bd3" stroke-width="1.5" />
+  <text x="268" y="236" font-size="16" text-anchor="middle" font-weight="500">Shard S0 · ~S/4 tokens</text>
+  <text x="268" y="258" font-size="14" text-anchor="middle">Norm · pooler · input norm</text>
+  <rect x="550" y="211" width="278" height="62" rx="7" fill="#e3edf7" stroke="#609bd3" stroke-width="1.5" />
+  <text x="689" y="236" font-size="16" text-anchor="middle" font-weight="500">Rank 0’s local experts</text>
+  <text x="689" y="258" font-size="14" text-anchor="middle">NVFP4 SwiGLU → expert RMSNorm</text>
+  <rect x="990" y="211" width="304" height="62" rx="7" fill="#e3edf7" stroke="#609bd3" stroke-width="1.5" />
+  <text x="1142" y="230" font-size="16" text-anchor="middle" font-weight="500">Combined output for shard S0</text>
+  <text x="1142" y="248" font-size="13" text-anchor="middle">Unpooler → post-norm</text>
+  <text x="1142" y="265" font-size="13" text-anchor="middle">Residual → next pre-norm</text>
+  <text x="40" y="319" font-size="17" text-anchor="start" font-weight="600">Rank 1</text>
+  <text x="40" y="340" font-size="13" text-anchor="start">TP + EP</text>
+  <rect x="146" y="291" width="244" height="62" rx="7" fill="#d2e4f5" stroke="#609bd3" stroke-width="1.5" />
+  <text x="268" y="316" font-size="16" text-anchor="middle" font-weight="500">Shard S1 · ~S/4 tokens</text>
+  <text x="268" y="338" font-size="14" text-anchor="middle">Norm · pooler · input norm</text>
+  <rect x="550" y="291" width="278" height="62" rx="7" fill="#d2e4f5" stroke="#609bd3" stroke-width="1.5" />
+  <text x="689" y="316" font-size="16" text-anchor="middle" font-weight="500">Rank 1’s local experts</text>
+  <text x="689" y="338" font-size="14" text-anchor="middle">NVFP4 SwiGLU → expert RMSNorm</text>
+  <rect x="990" y="291" width="304" height="62" rx="7" fill="#d2e4f5" stroke="#609bd3" stroke-width="1.5" />
+  <text x="1142" y="310" font-size="16" text-anchor="middle" font-weight="500">Combined output for shard S1</text>
+  <text x="1142" y="328" font-size="13" text-anchor="middle">Unpooler → post-norm</text>
+  <text x="1142" y="345" font-size="13" text-anchor="middle">Residual → next pre-norm</text>
+  <text x="40" y="399" font-size="17" text-anchor="start" font-weight="600">Rank 2</text>
+  <text x="40" y="420" font-size="13" text-anchor="start">TP + EP</text>
+  <rect x="146" y="371" width="244" height="62" rx="7" fill="#b9d8ef" stroke="#609bd3" stroke-width="1.5" />
+  <text x="268" y="396" font-size="16" text-anchor="middle" font-weight="500">Shard S2 · ~S/4 tokens</text>
+  <text x="268" y="418" font-size="14" text-anchor="middle">Norm · pooler · input norm</text>
+  <rect x="550" y="371" width="278" height="62" rx="7" fill="#b9d8ef" stroke="#609bd3" stroke-width="1.5" />
+  <text x="689" y="396" font-size="16" text-anchor="middle" font-weight="500">Rank 2’s local experts</text>
+  <text x="689" y="418" font-size="14" text-anchor="middle">NVFP4 SwiGLU → expert RMSNorm</text>
+  <rect x="990" y="371" width="304" height="62" rx="7" fill="#b9d8ef" stroke="#609bd3" stroke-width="1.5" />
+  <text x="1142" y="390" font-size="16" text-anchor="middle" font-weight="500">Combined output for shard S2</text>
+  <text x="1142" y="408" font-size="13" text-anchor="middle">Unpooler → post-norm</text>
+  <text x="1142" y="425" font-size="13" text-anchor="middle">Residual → next pre-norm</text>
+  <text x="40" y="479" font-size="17" text-anchor="start" font-weight="600">Rank 3</text>
+  <text x="40" y="500" font-size="13" text-anchor="start">TP + EP</text>
+  <rect x="146" y="451" width="244" height="62" rx="7" fill="#94c2e7" stroke="#609bd3" stroke-width="1.5" />
+  <text x="268" y="476" font-size="16" text-anchor="middle" font-weight="500">Shard S3 · ~S/4 tokens</text>
+  <text x="268" y="498" font-size="14" text-anchor="middle">Norm · pooler · input norm</text>
+  <rect x="550" y="451" width="278" height="62" rx="7" fill="#94c2e7" stroke="#609bd3" stroke-width="1.5" />
+  <text x="689" y="476" font-size="16" text-anchor="middle" font-weight="500">Rank 3’s local experts</text>
+  <text x="689" y="498" font-size="14" text-anchor="middle">NVFP4 SwiGLU → expert RMSNorm</text>
+  <rect x="990" y="451" width="304" height="62" rx="7" fill="#94c2e7" stroke="#609bd3" stroke-width="1.5" />
+  <text x="1142" y="470" font-size="16" text-anchor="middle" font-weight="500">Combined output for shard S3</text>
+  <text x="1142" y="488" font-size="13" text-anchor="middle">Unpooler → post-norm</text>
+  <text x="1142" y="505" font-size="13" text-anchor="middle">Residual → next pre-norm</text>
+  <text x="688" y="541" font-size="14" text-anchor="middle" class="green">Normalize each expert output before applying route weights.</text>
+  <text x="40" y="591" font-size="16" text-anchor="start" font-weight="600">Without SP</text>
+  <text x="165" y="591" font-size="16" text-anchor="start">Each TP rank repeats pooler, unpooler and boundary norms for all S tokens.</text>
+  <text x="40" y="625" font-size="14" text-anchor="start" class="muted">Shown for TP4/EP4. S is the prefill token count; local routing uses the full hidden width before pooling.</text>
+  <text x="40" y="647" font-size="14" text-anchor="start" class="muted">Green lines show possible expert routes, not measured traffic or timing. Decode keeps the TRT-LLM all-reduce path.</text>
+</svg>

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2100" height="990" viewBox="0 0 2100 990" role="img" aria-labelledby="title desc">
+<title id="title">Post-expert normalization: local work and NVLink communication</title><desc id="desc">Three panels with an expert GPU lane above a token-owner GPU lane. Green arrows cross the GPU boundary. The illustrative unfused baseline normalizes on the expert GPU before returning output.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#566b80"/></marker></defs>
+<rect width="2100" height="990" fill="#f8fafc"/>
+<style>text {font-family:Arial,Helvetica,sans-serif;fill:#172b42} .mono {font-family:Menlo,Consolas,monospace}</style>
+<defs><marker id="comm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#16834a"/></marker></defs>
+<text x="36" y="50" font-size="34" style="fill:#172b42" font-weight="700" text-anchor="start">Post-expert norm: local work and communication</text>
+<text x="36" y="134" font-size="28" style="fill:#172b42" font-weight="700" text-anchor="start">1  Unfused</text>
+<text x="36" y="161" font-size="18" style="fill:#566b80" font-weight="400" text-anchor="start">Conceptual baseline · separate kernels</text>
+<rect x="36" y="175" width="628" height="294" rx="13" fill="#eef4fb" stroke="#dce4ec"/>
+<text x="56" y="210" font-size="18" style="fill:#2563ad" font-weight="700" text-anchor="start">EXPERT GPU</text>
+<rect x="36" y="553" width="628" height="303" rx="13" fill="#f0f7f5" stroke="#dce4ec"/>
+<text x="56" y="589" font-size="18" style="fill:#087f78" font-weight="700" text-anchor="start">TOKEN-OWNER GPU</text>
+<path d="M36 495 L664 495" stroke="#a8b6c5" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="736" y="134" font-size="28" style="fill:#172b42" font-weight="700" text-anchor="start">2  Fused to combine</text>
+<text x="736" y="161" font-size="18" style="fill:#566b80" font-weight="400" text-anchor="start">MegaMoE · one persistent kernel per GPU</text>
+<rect x="736" y="175" width="628" height="294" rx="13" fill="#eef4fb" stroke="#dce4ec"/>
+<text x="756" y="210" font-size="18" style="fill:#2563ad" font-weight="700" text-anchor="start">EXPERT GPU</text>
+<rect x="736" y="553" width="628" height="303" rx="13" fill="#f0f7f5" stroke="#dce4ec"/>
+<text x="756" y="589" font-size="18" style="fill:#087f78" font-weight="700" text-anchor="start">TOKEN-OWNER GPU</text>
+<path d="M736 495 L1364 495" stroke="#a8b6c5" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="1436" y="134" font-size="28" style="fill:#172b42" font-weight="700" text-anchor="start">3  Partial sum</text>
+<text x="1436" y="161" font-size="18" style="fill:#566b80" font-weight="400" text-anchor="start">MegaMoE · one persistent kernel per GPU</text>
+<rect x="1436" y="175" width="628" height="294" rx="13" fill="#eef4fb" stroke="#dce4ec"/>
+<text x="1456" y="210" font-size="18" style="fill:#2563ad" font-weight="700" text-anchor="start">EXPERT GPU</text>
+<rect x="1436" y="553" width="628" height="303" rx="13" fill="#f0f7f5" stroke="#dce4ec"/>
+<text x="1750" y="589" font-size="18" style="fill:#087f78" font-weight="700" text-anchor="middle">TOKEN-OWNER GPU</text>
+<path d="M1436 495 L2064 495" stroke="#a8b6c5" stroke-width="2" stroke-dasharray="7 6"/>
+<path d="M700 119 L700 859" stroke="#c8d3df" stroke-width="2"/>
+<path d="M1400 119 L1400 859" stroke="#c8d3df" stroke-width="2"/>
+<rect x="728" y="173" width="644" height="692" rx="16" fill="none" stroke="#7552b8"/>
+<rect x="1428" y="173" width="644" height="692" rx="16" fill="none" stroke="#7552b8"/>
+<rect x="114" y="230" width="472" height="62" rx="10" fill="#edf4fc" stroke="#2563ad"/>
+<text x="350.0" y="268.0" font-size="23" style="fill:#2563ad" font-weight="600" text-anchor="middle">Second GEMM</text>
+<path d="M350 298 L350 322" fill="none" stroke="#566b80" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="114" y="331" width="472" height="77" rx="10" fill="#f1ecfa" stroke="#7552b8"/>
+<text x="350.0" y="366.5" font-size="23" style="fill:#7552b8" font-weight="600" text-anchor="middle">Separate norm kernel</text>
+<text x="350.0" y="394.5" font-size="19" style="fill:#7552b8" font-weight="400" text-anchor="middle">Read x → normalize</text>
+<text x="350" y="444" font-size="20" style="fill:#566b80" font-weight="400" text-anchor="middle">Write normalized output</text>
+<path d="M350 456 L350 615" fill="none" stroke="#16834a" stroke-width="2.5" marker-end="url(#comm)"/>
+<text x="369" y="526" font-size="19" style="fill:#16834a" font-weight="700" text-anchor="start">Normalized row</text>
+<rect x="114" y="625" width="472" height="55" rx="10" fill="#ffffff" stroke="#566b80"/>
+<text x="350.0" y="659.5" font-size="23" style="fill:#566b80" font-weight="600" text-anchor="middle">Received normalized output</text>
+<path d="M350 687 L350 718" fill="none" stroke="#566b80" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="114" y="728" width="472" height="79" rx="10" fill="#f1ecfa" stroke="#7552b8"/>
+<text x="350.0" y="764.5" font-size="23" style="fill:#7552b8" font-weight="600" text-anchor="middle">Combine</text>
+<text x="350.0" y="792.5" font-size="19" style="fill:#7552b8" font-weight="400" text-anchor="middle">Read → weight → sum</text>
+<rect x="814" y="230" width="472" height="62" rx="10" fill="#edf4fc" stroke="#2563ad"/>
+<text x="1050.0" y="268.0" font-size="23" style="fill:#2563ad" font-weight="600" text-anchor="middle">Second GEMM stage</text>
+<path d="M1050 298 L1050 337" fill="none" stroke="#566b80" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="814" y="348" width="472" height="60" rx="10" fill="#ffffff" stroke="#566b80"/>
+<text x="1050.0" y="385.0" font-size="23" style="fill:#566b80" font-weight="600" text-anchor="middle">Expert output x</text>
+<path d="M1050 416 L1050 615" fill="none" stroke="#16834a" stroke-width="2.5" marker-end="url(#comm)"/>
+<text x="1069" y="526" font-size="19" style="fill:#16834a" font-weight="700" text-anchor="start">Raw row x</text>
+<rect x="814" y="625" width="472" height="55" rx="10" fill="#ffffff" stroke="#566b80"/>
+<text x="1050.0" y="659.5" font-size="23" style="fill:#566b80" font-weight="600" text-anchor="middle">Local combine buffer: x</text>
+<path d="M1050 687 L1050 718" fill="none" stroke="#566b80" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="814" y="728" width="472" height="98" rx="10" fill="#f1ecfa" stroke="#7552b8"/>
+<text x="1050.0" y="774.0" font-size="23" style="fill:#7552b8" font-weight="600" text-anchor="middle">Combine stage</text>
+<text x="1050.0" y="802.0" font-size="19" style="fill:#7552b8" font-weight="400" text-anchor="middle">Read x for RMS → reread x for weighted sum</text>
+<rect x="1476" y="230" width="548" height="178" rx="12" fill="#edf4fc" stroke="#2563ad"/>
+<text x="1500" y="264" font-size="23" style="fill:#2563ad" font-weight="700" text-anchor="start">Second GEMM stage · tiles</text>
+<rect x="1497" y="286" width="150" height="91" rx="10" fill="#e6f5f2" stroke="#087f78"/>
+<text x="1572.0" y="328.5" font-size="23" style="fill:#087f78" font-weight="600" text-anchor="middle">Tile 0</text>
+<text x="1572.0" y="356.5" font-size="19" style="fill:#087f78" font-weight="400" text-anchor="middle">pᵢ = Σ x²</text>
+<rect x="1661" y="286" width="150" height="91" rx="10" fill="#e6f5f2" stroke="#087f78"/>
+<text x="1736.0" y="328.5" font-size="23" style="fill:#087f78" font-weight="600" text-anchor="middle">Tile 1</text>
+<text x="1736.0" y="356.5" font-size="19" style="fill:#087f78" font-weight="400" text-anchor="middle">pᵢ = Σ x²</text>
+<rect x="1825" y="286" width="150" height="91" rx="10" fill="#e6f5f2" stroke="#087f78"/>
+<text x="1900.0" y="328.5" font-size="23" style="fill:#087f78" font-weight="600" text-anchor="middle">Tile 2</text>
+<text x="1900.0" y="356.5" font-size="19" style="fill:#087f78" font-weight="400" text-anchor="middle">pᵢ = Σ x²</text>
+<path d="M1602 416 L1602 615" fill="none" stroke="#16834a" stroke-width="2.5" marker-end="url(#comm)"/>
+<text x="1461" y="526" font-size="19" style="fill:#16834a" font-weight="700" text-anchor="start">Raw row x</text>
+<path d="M1899 416 L1899 615" fill="none" stroke="#16834a" stroke-width="2.5" marker-end="url(#comm)"/>
+<text x="1712" y="526" font-size="19" style="fill:#16834a" font-weight="700" text-anchor="start">Remote atomic add</text>
+<rect x="1476" y="625" width="249" height="55" rx="10" fill="#ffffff" stroke="#566b80"/>
+<text x="1600.5" y="659.5" font-size="23" style="fill:#566b80" font-weight="600" text-anchor="middle">Local buffer: x</text>
+<rect x="1745" y="625" width="279" height="55" rx="10" fill="#e6f5f2" stroke="#087f78"/>
+<text x="1884.5" y="659.5" font-size="23" style="fill:#087f78" font-weight="600" text-anchor="middle">Local total: S = Σ pᵢ</text>
+<path d="M1602 688 L1602 718" fill="none" stroke="#566b80" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M1899 688 L1899 718" fill="none" stroke="#566b80" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="1476" y="728" width="548" height="98" rx="10" fill="#f1ecfa" stroke="#7552b8"/>
+<text x="1750.0" y="774.0" font-size="23" style="fill:#7552b8" font-weight="600" text-anchor="middle">Combine stage: read local x + S</text>
+<text x="1750.0" y="802.0" font-size="19" style="fill:#7552b8" font-weight="400" text-anchor="middle">Normalize → weight → sum</text>
+<path d="M36 898 L100 898" fill="none" stroke="#566b80" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="113" y="905" font-size="20" style="fill:#566b80" font-weight="400" text-anchor="start">Local access</text>
+<path d="M310 898 L374 898" stroke="#16834a" stroke-width="2.5" marker-end="url(#comm)"/>
+<text x="390" y="905" font-size="20" style="fill:#16834a" font-weight="400" text-anchor="start">NVLink transfer / remote atomic</text>
+<text x="850" y="905" font-size="20" style="fill:#566b80" font-weight="400" text-anchor="start">Local expert: both lanes are on the same GPU.</text>
+<text x="36" y="947" font-size="19" style="fill:#566b80" font-weight="400" text-anchor="start">Illustrative unfused baseline: norm on the expert GPU. Dispatch omitted; combine waits for peer writes.</text>
+<text x="36" y="977" font-size="18" style="fill:#566b80" font-weight="400" text-anchor="start">BF16 combine path · x = expert output row · S = sum of squares · Norm gain omitted</text>
+</svg>
