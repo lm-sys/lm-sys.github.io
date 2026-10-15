@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img" aria-labelledby="title description">
+  <title id="title">Muse Spark model architecture</title>
+  <desc id="description">Text embeddings, projected NaViT image and video features, and projected audio encoder features form the shared decoder input sequence. Decoder blocks use grouped-query attention with sliding-window or global attention and feed-forward computation. The expanded MoE layer routes on full-width hidden vectors while a pooler compresses expert input features. Each selected SwiGLU expert output receives RMSNorm before the route-weighted sum. An unpooler restores the model width. Final normalization and the language-model head generate text tokens.</desc>
+  <defs>
+    <marker id="green-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#34995a"/></marker>
+    <marker id="gray-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#858e99"/></marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #222426; }
+      .muted { fill: #727872; }
+      .green { fill: #2c8d4e; }
+    </style>
+  </defs>
+  <rect width="1400" height="930" fill="white"/>
+  <text x="40" y="43" font-size="26" text-anchor="start" font-weight="600">Muse Spark model architecture</text>
+  <text x="40" y="72" font-size="16" text-anchor="start" class="muted">Multimodal inputs feed a shared language decoder with hybrid attention and routed experts.</text>
+  <text x="225" y="119" font-size="18" text-anchor="middle" font-weight="600">Text</text>
+  <rect x="60" y="138" width="330" height="67" rx="7" fill="#e3edf7" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="225" y="165" font-size="18" text-anchor="middle" font-weight="500">Token embeddings</text>
+  <text x="225" y="188" font-size="14" text-anchor="middle">Text tokens → hidden vectors</text>
+  <path d="M225 205 V243" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <text x="700" y="119" font-size="18" text-anchor="middle" font-weight="600">Images and video frames</text>
+  <rect x="535" y="138" width="330" height="67" rx="7" fill="#b9d8ef" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="700" y="165" font-size="18" text-anchor="middle" font-weight="500">NaViT visual encoder</text>
+  <text x="700" y="188" font-size="14" text-anchor="middle">Project visual features to model width</text>
+  <path d="M700 205 V243" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <text x="1175" y="119" font-size="18" text-anchor="middle" font-weight="600">Audio</text>
+  <rect x="1010" y="138" width="330" height="67" rx="7" fill="#94c2e7" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="1175" y="165" font-size="18" text-anchor="middle" font-weight="500">Audio encoder</text>
+  <text x="1175" y="188" font-size="14" text-anchor="middle">Project audio features to model width</text>
+  <path d="M1175 205 V243" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <rect x="60" y="245" width="1280" height="55" rx="7" fill="#e3edf7" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="700" y="269" font-size="18" text-anchor="middle" font-weight="600">Shared decoder input sequence</text>
+  <text x="700" y="289" font-size="14" text-anchor="middle">Text embeddings with projected vision and audio features at their corresponding token positions</text>
+  <path d="M230 300 V343" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <rect x="45" y="345" width="370" height="342" rx="7" fill="#fbfcfd" stroke="#adb5bf" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="230" y="374" font-size="20" text-anchor="middle" font-weight="600">Decoder stack</text>
+  <text x="230" y="396" font-size="14" text-anchor="middle" class="muted">MoE layer shown</text>
+  <text x="230" y="418" font-size="14" text-anchor="middle">Pre-attention norm</text>
+  <rect x="82" y="432" width="296" height="59" rx="7" fill="#b9d8ef" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="230" y="456" font-size="17" text-anchor="middle" font-weight="500">Grouped-query attention</text>
+  <text x="230" y="478" font-size="14" text-anchor="middle">Sliding-window or global attention</text>
+  <path d="M230 491 V506" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <text x="230" y="526" font-size="14" text-anchor="middle">Post-norm → residual → pre-norm</text>
+  <path d="M230 531 V545" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <rect x="82" y="547" width="296" height="59" rx="7" fill="#94c2e7" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="230" y="571" font-size="17" text-anchor="middle" font-weight="500">MoE feed-forward block</text>
+  <text x="230" y="593" font-size="14" text-anchor="middle">Pooler · routed experts · unpooler</text>
+  <path d="M230 606 V620" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <text x="230" y="641" font-size="14" text-anchor="middle">Post-norm → residual</text>
+  <text x="230" y="667" font-size="14" text-anchor="middle" class="muted">Repeat across decoder layers</text>
+  <path d="M230 687 V731" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <rect x="82" y="733" width="296" height="55" rx="7" fill="#e3edf7" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="230" y="766" font-size="18" text-anchor="middle" font-weight="500">Final norm + LM head</text>
+  <path d="M230 788 V817" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <text x="230" y="843" font-size="20" text-anchor="middle" class="green" font-weight="600">Generated text tokens</text>
+  <path d="M378 576 H449" fill="none" stroke="#609bd3" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <rect x="450" y="345" width="910" height="525" rx="7" fill="#fbfefc" stroke="#9ac8a8" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="905" y="374" font-size="20" text-anchor="middle" class="green" font-weight="600">Inside the MoE block</text>
+  <rect x="770" y="392" width="270" height="50" rx="7" fill="#e3edf7" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="905" y="422" font-size="17" text-anchor="middle" font-weight="500">Full-width input · H features</text>
+  <path d="M905 442 V457 H635 V478" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <path d="M905 457 H1165 V478" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <rect x="520" y="480" width="230" height="58" rx="7" fill="#e8ebee" stroke="#9aa3ae" stroke-width="1.5"/>
+  <text x="635" y="505" font-size="17" text-anchor="middle" font-weight="500">Router</text>
+  <text x="635" y="527" font-size="13" text-anchor="middle">Top-k selection + route weights</text>
+  <rect x="1030" y="480" width="270" height="50" rx="7" fill="#d2e4f5" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="1165" y="510" font-size="17" text-anchor="middle" font-weight="500">Pooler · H → h</text>
+  <path d="M1165 530 V563" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <rect x="1030" y="565" width="270" height="43" rx="7" fill="#d2e4f5" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="1165" y="592" font-size="16" text-anchor="middle">Input RMSNorm</text>
+  <path d="M1165 608 V646" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <path d="M635 538 V646" fill="none" stroke="#858e99" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#gray-arrow)"/>
+  <text x="655" y="617" font-size="13" text-anchor="start" class="muted">Expert selection</text>
+  <path d="M520 509 H490 V750 H858" fill="none" stroke="#858e99" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#gray-arrow)"/>
+  <text x="635" y="737" font-size="14" text-anchor="start" class="muted">Route weights</text>
+  <rect x="610" y="648" width="670" height="57" rx="7" fill="#b9d8ef" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="945" y="671" font-size="17" text-anchor="middle" font-weight="500">For each selected expert</text>
+  <text x="945" y="693" font-size="16" text-anchor="middle">SwiGLU → per-expert RMSNorm</text>
+  <path d="M995 705 V723" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <rect x="860" y="725" width="270" height="50" rx="7" fill="#d2e4f5" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="995" y="755" font-size="17" text-anchor="middle" font-weight="500">Route-weighted sum</text>
+  <path d="M995 775 V809" fill="none" stroke="#34995a" stroke-width="1.6" marker-end="url(#green-arrow)"/>
+  <rect x="860" y="811" width="270" height="44" rx="7" fill="#94c2e7" stroke="#609bd3" stroke-width="1.5"/>
+  <text x="995" y="839" font-size="17" text-anchor="middle" font-weight="500">Unpooler · h → H</text>
+  <text x="40" y="901" font-size="14" text-anchor="start" class="muted">H = model hidden width; h = expert hidden width. Pooling changes feature width and preserves token count.</text>
+  <text x="40" y="921" font-size="14" text-anchor="start" class="muted">Green arrows show feature flow; gray dashed arrows show routing. Each expert output is normalized before the weighted sum.</text>
+</svg>
