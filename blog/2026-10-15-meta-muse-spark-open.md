@@ -299,7 +299,7 @@ We also trained a vision-language task, Geometry3K, with the ViT frozen, using t
 
 This work was a collaboration among the SGLang community, Meta, AMD, Nvidia and Intel.
 
-SGLang Community: Baizhou Zhang, Chunan Zeng, Jimmy Shong, Mao Cheng, Jiajun Li, Yuhao Yang, Alex Nails, Liangsheng Yin, Lianmin Zheng
+SGLang Community: Baizhou Zhang, Chunan Zeng, Jimmy Shong, Mao Cheng, Jiajun Li, Yuhao Yang, Alex Nails, Zijie Xia, Liangsheng Yin 
 
 Meta: Sidhartha Reddy Potu, Clement Anthonioz Blanc, Ethan Che, Beto de Paola, Varun Vontimitta
 
