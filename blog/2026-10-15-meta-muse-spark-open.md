@@ -144,6 +144,20 @@ Sharing TensorRT-LLM’s resident buffers avoids duplicate weights and scales wh
 
 Between the two GEMMs, SwiGLU output is requantized to NVFP4. Previously, each 16-element group computed the block scale’s reciprocal with `__frcp_rn`. `__frcp_rn` isn't cheap: it is IEEE round-to-nearest so it has a MUFU seed plus a Newton refinement chain plus special-case handling. Because the scale byte has only 256 encodings, a 256-entry FP32 table in shared memory replaces the repeated conversion and reciprocal calculation with a lookup. In an isolated B300 microbenchmark, the shared-memory table accelerated scale-to-reciprocal computation by approximately 2.9× with scattered accesses and 4.8× with warp-uniform accesses.
 
+## Performance Results
+
+### OpenHands Agentic Coding Sweep
+
+We collected performance results for Muse Spark Open NVFP4 on eight B300 GPUs with TP8/EP8 using an OpenHands multi-turn agentic coding workload. Each conversation starts with an around 74K token prompt and outputs around 220 tokens each turn, for a total of 13 turns. Successive turns reuse the prefix for a ~92% aggregate cache hit rate. We sweep concurrency from 1 to 128 conversations and plot per-GPU token throughput (tok/s/GPU) against p50 interactivity (tok/s/user).
+
+![Muse Spark NVFP4 throughput per GPU versus p50 interactivity on eight B300 GPUs with DFlash v2.](/images/blog/meta-muse-spark-open/openhands-b300-throughput.svg)
+
+### AgentX Agentic Coding Sweep
+
+We collected performance results for Muse Spark Open NVFP4 on eight B300 GPUs with TP8/EP8 using [AgentX](https://github.com/SemiAnalysisAI/agentx-harness), SemiAnalysis's replayer for recorded multi-turn agentic coding traces. AgentX reproduces the prompt sizes, prefix sharing, subagent fan-out and inter-turn timing of real coding-agent sessions, so the results reflect "realistic agentic load". Requests in a session share a long prefix, so 96.9% to 98.0% of input tokens hit the prefix cache. We sweep concurrency from 1 to 48 sessions and plot per-GPU token throughput (tok/s/GPU) against p90 interactivity (tok/s/user). At concurrency 48, throughput reaches 34,509 tok/s/GPU at 73.0 tok/s/user; a single session runs at 457.8 tok/s/user.
+
+![Muse Spark NVFP4 total throughput per GPU versus p90 interactivity on eight B300 GPUs with AgentX.](/images/blog/meta-muse-spark-open/agentx-throughput-interactivity.svg)
+
 ## Multi-Platform Support
 
 
@@ -254,20 +268,6 @@ Given the size of the Muse Spark Open model, SGLang CPU provides a practical dep
 For the first time, we’re bringing day-0 TPU support to an open-weights model through SGLang-TorchTPU, a native PyTorch backend for LLM, VLM, and diffusion model inference on TPUs. It combines TPU acceleration with SGLang features such as RadixAttention and HiCache to enable cost-efficient, production-ready serving for agentic workloads.
 
 TPU recipes for Muse Spark Open and access to SGLang-TorchTPU will be available soon. Sign up through this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSe2Y8hzyU3KGB2StA-0huulrVsq79A0tSxcBQwjj8vlhLhYuQ/viewform?usp=publish-editor) to receive the latest updates.
-
-## Performance Results
-
-### OpenHands Agentic Coding Sweep
-
-We collected performance results for Muse Spark Open NVFP4 on eight B300 GPUs with TP8/EP8 using an OpenHands multi-turn agentic coding workload. Each conversation starts with an around 74K token prompt and outputs around 220 tokens each turn, for a total of 13 turns. Successive turns reuse the prefix for a ~92% aggregate cache hit rate. We sweep concurrency from 1 to 128 conversations and plot per-GPU token throughput (tok/s/GPU) against p50 interactivity (tok/s/user).
-
-![Muse Spark NVFP4 throughput per GPU versus p50 interactivity on eight B300 GPUs with DFlash v2.](/images/blog/meta-muse-spark-open/openhands-b300-throughput.svg)
-
-### AgentX Agentic Coding Sweep
-
-We collected performance results for Muse Spark Open NVFP4 on eight B300 GPUs with TP8/EP8 using [AgentX](https://github.com/SemiAnalysisAI/agentx-harness), SemiAnalysis's replayer for recorded multi-turn agentic coding traces. AgentX reproduces the prompt sizes, prefix sharing, subagent fan-out and inter-turn timing of real coding-agent sessions, so the results reflect "realistic agentic load". Requests in a session share a long prefix, so 96.9% to 98.0% of input tokens hit the prefix cache. We sweep concurrency from 1 to 48 sessions and plot per-GPU token throughput (tok/s/GPU) against p90 interactivity (tok/s/user). At concurrency 48, throughput reaches 34,509 tok/s/GPU at 73.0 tok/s/user; a single session runs at 457.8 tok/s/user.
-
-![Muse Spark NVFP4 total throughput per GPU versus p90 interactivity on eight B300 GPUs with AgentX.](/images/blog/meta-muse-spark-open/agentx-throughput-interactivity.svg)
 
 ## Reinforcement Learning
 
