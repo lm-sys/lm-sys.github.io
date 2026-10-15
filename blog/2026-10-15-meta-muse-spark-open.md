@@ -2,7 +2,7 @@
 title: "SGLang and Miles Add Day-0 Support for Muse Spark Open"
 author: "SGLang Team"
 date: "October 15, 2026"
-previewImg: /images/blog/meta-muse-spark-open/openhands-b300-throughput.png
+previewImg: /images/blog/meta-muse-spark-open/muse-spark-architecture.svg
 type: blog
 ---
 
