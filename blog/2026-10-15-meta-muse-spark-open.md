@@ -1,0 +1,466 @@
+---
+title: "SGLang and Miles Add Day-0 Support for Muse Spark Open"
+author: "SGLang Team"
+date: "October 15, 2026"
+previewImg: /images/blog/meta-muse-spark-open/openhands-b300-throughput.png
+type: blog
+---
+
+## Highlights
+
+- **Model:** Muse Spark Open is an open-weight multimodal mixture-of-experts model. It uses an **816B-parameter text transformer backbone**, with approximately **42 billion active parameters per token**. It accepts **text, image, video, and audio inputs** and supports a **1M-token context window**. Checkpoints are available in **NVFP4 and BF16**.
+- **Performance:** On an [OpenHands multi-turn agentic coding replay](#openhands-agentic-coding-sweep) with the NVFP4 checkpoint on **8 NVIDIA B300 GPUs**, SGLang reaches **14.8K total tokens/sec per GPU at 543 tokens/sec per user (p50) with concurrency 1**, and **80.3K total tokens/sec per GPU at 61 tokens/sec per user (p50) with concurrency 128**.
+- **Hardware:** Target deployment platforms include NVIDIA Blackwell GPUs (**GB300, B300, GB200, B200**), **NVIDIA H200**, **AMD MI350X, MI355X**, and the **Intel® Xeon® 6 with P-core**.
+- **Features:** **Sequence parallelism + NVFP4 MegaMoE** for faster prefill, **multimodal preprocessing optimizations**, and **DFlash V2 speculative decoding** for higher interactivity.
+
+## Muse Spark Open Architecture
+
+Muse Spark Open combines a sparse language decoder with visual and audio encoders, bringing multimodal inputs into a shared token-generation pipeline.
+
+![Muse Spark Open maps text, image/video and audio inputs into a shared decoder with GQA and sliding-window/global attention; its MoE block routes full-width inputs while pooling expert features, normalizing each expert output before the weighted sum and restoring the model width with an unpooler.](/images/blog/meta-muse-spark-open/muse-spark-architecture.svg)
+
+*Multimodal encoders feed a shared language decoder. The expanded MoE block shows feature-width compression and per-expert normalization before aggregation.*
+
+### GQA and Sliding-Window Attention
+
+For its 1M-token context window, Muse Spark Open combines **grouped-query attention (GQA)** with a hybrid of **sliding-window and global attention**. GQA shares key/value heads among groups of query heads, reducing the KV-cache footprint. Sliding-window layers attend to a bounded recent context, while periodic global layers retain access to the full sequence. This balances local attention efficiency with long-range information flow, without requiring every layer to maintain full-context attention.
+
+### Text, Audio, Images and Video
+
+Muse Spark Open processes **text, audio, images and video as inputs** to its language decoder. Images and video frames share a NaViT visual encoder, while waveform audio passes through a dedicated audio encoder. Their outputs are projected into the decoder's hidden dimension and placed alongside text embeddings, allowing the language model to generate responses grounded in multiple modalities.
+
+### MoE with Pooler, Unpooler and Per-Expert Normalization
+
+The MoE block surrounds its routed SwiGLU experts with learned **pooler and unpooler projections**. The pooler compresses each token's hidden vector from the model width to a smaller expert width; the unpooler restores the model width after expert aggregation. These projections change feature width while preserving the number of tokens. The router selects experts from the full-width representation, and the pooled expert input is normalized before expert execution.
+
+A key detail is **per-expert RMSNorm**: each selected expert's output is normalized **before** multiplication by its routing weight and summation with other experts. The resulting combined vector is then unpooled. This order matters because normalizing the combined output would change the model's computation.
+
+## Feature Support
+
+### Runtime Optimization
+
+#### Sequence Parallel
+
+Sequence parallelism (SP) partitions activations along the token dimension across tensor-parallel (TP) ranks, so each rank performs token-local operations on its own part of the sequence. We adapt the approach described by [Korthikanti et al., *Reducing Activation Recomputation in Large Transformer Models*](https://arxiv.org/abs/2205.05198) to Muse Spark Open prefill.
+
+This matters because tensor parallelism alone leaves Muse Spark Open's pooler, unpooler and boundary layer normalization processing the same full token batch on every rank. With SP, each of the `P` ranks handles approximately `S/P` tokens in these regions, while retaining each token's full hidden vector. This distributes the projection and normalization work across ranks and reduces redundant activation storage during long-prompt prefill.
+
+At the attention output, **reduce-scatter** produces the token shards. Normalization, routing and pooling operate locally on those shards. **NVFP4 MegaMoE** then connects sequence parallelism to expert parallelism through its integrated all-to-all dispatch and combine: dispatch sends each token to the ranks holding its selected experts; the experts compute their outputs and apply **per-expert RMSNorm before route weighting**; combine returns the complete weighted result to the token's original rank. Unpooling and the following normalization/residual operations stay sequence-sharded until the **all-gather feeding the next QKV projection**.
+
+![Four TP/EP ranks keep token shards, dispatch them to NVFP4 MegaMoE expert owners, and combine normalized expert outputs back to the original ranks before local unpooling.](/images/blog/meta-muse-spark-open/muse-spark-sequence-parallel.svg)
+
+
+We measured three configurations on four GB300 GPUs with an NVFP4 target model, a DFlash V2 draft model, TP4/EP4 topology, FP8 KV cache and 16K prefill chunks. At each point, we send eight request groups, each containing eight requests with nominal 80K input tokens and 20 output tokens. Requests in the same group share a 73,360-token generated prefix; different groups use independently generated prefixes. Maximum client concurrency varies from 1 to 64.
+
+![p90 TTFT for TP4, TP4 with prefill SP, and TP4 with prefill SP and MegaMoE across maximum concurrency 1 to 64 on four GB300 GPUs with DFlash V2.](/images/blog/meta-muse-spark-open/sequence-parallel-p90-ttft.svg)
+
+In this sweep, SP + MegaMoE reduces p90 TTFT by 28.3–41.9% compared with TP4 across all seven concurrency levels. At concurrency 64, p90 TTFT drops from 29.03 s to 19.47 s, a 32.9% reduction.
+
+#### Multimodal Optimization
+
+Muse Spark Open's multimodal pipeline preprocesses images and video frames on the CPU with Rust or Pillow resizing, followed by vision encoding with SGLang's optimized attention backends. Cached results are reused when the same images appear across conversation turns, avoiding repeated computation.
+
+SGLang supports separate encoder, prefill and decode workers ([EPD Disaggregation](https://docs.sglang.io/docs/advanced_features/epd_disaggregation)) for Muse Spark Open. The encoder processes images and video, then passes the resulting features to prefill workers. Decode workers receive the KV cache and generate the response. Separating these stages allows deployments to allocate resources to media processing, prompt processing and generation according to the workload.
+
+#### Speculative Decoding with DFlash V2
+
+SGLang supports speculative decoding for Muse Spark Open with DFlash V2, building on [DFlash’s parallel drafting architecture](https://lmsys.org/blog/2026-06-15-next-generation-speculative-decoding-dflash-v2/). A standalone draft model uses hidden states from Muse Spark Open to populate its own KV cache, then proposes a block of future tokens in a single forward pass. It shares the target’s token embeddings and LM head, and Muse Spark Open verifies the proposed block in one forward pass, allowing multiple accepted tokens to advance together.
+
+DFlash V2 adds dynamic convolutions that mix information across neighboring positions within the draft block, along with a lightweight candidate selector that accounts for dependencies between proposed tokens. SGLang integrates drafting and candidate selection into the same CUDA graph and supports overlap scheduling to reduce CPU scheduling overhead between GPU operations. This path is available through `--speculative-algorithm DFLASH` with a compatible Muse Spark Open DFlash V2 checkpoint.
+
+For sampled DFlash V2 proposals, SGLang also supports [block verification](https://arxiv.org/abs/2403.10444), enabled with `--speculative-use-block-verification`. It evaluates draft prefixes jointly using target and draft probabilities, which can accept longer prefixes than token-wise verification. The verifier keeps the longest accepted prefix and samples a correction token after partial acceptance, or a target-model bonus token after full acceptance, preserving the target sampling distribution.
+
+
+#### Compatibility
+
+To enhance the performance at real serving scenarios, we also support Muse Spark Open with the following SGLang serving features:
+
+- **[Prefill/decode disaggregation (PD disaggregation)](https://docs.sglang.io/docs/advanced_features/pd_disaggregation):** Separating prefill and decode workers and transferring KV state between them reduces interference between the two stages, helping meet service-level objectives (SLOs) for time to first token (TTFT) and time per output token (TPOT).
+- **[HiCache](https://docs.sglang.io/docs/advanced_features/hicache):** A GPU/host KV-cache hierarchy improves serving performance through higher prefix-cache hit rates, reusing cached full-attention and sliding-window state to avoid repeated prefill computation.
+- **[Breakable CUDA graphs](https://docs.sglang.io/docs/advanced_features/breakable_cuda_graph):** Captured prefill computation replays around eager attention calls, reducing CPU launch overhead while preserving flexibility at the attention boundary.
+
+
+### Kernel Optimizations
+
+We reduced kernel launches and memory traffic, replaced the BF16 expert loop, distributed replicated projections across GPUs, and overlapped independent work. The figure shows the cumulative effect of these changes at TP4/EP4 with 8K input tokens, 1K output tokens, and no speculative decoding.
+
+- **Fuse the elementwise chain.** We combined the post-FFN norm, gated residual add, and pre-attention norm into one kernel. Q/K normalization reads the fused QKV tensor directly through row strides, avoiding layout copies, while query scaling is folded into the attention softmax scale.
+
+- **Replace the BF16 expert loop in two steps.** Layers 0 and 61 use BF16 expert weights. We first batched the 64 local experts into grouped GEMMs, capping the main intermediate at 64 MiB. We then switched to FlashInfer’s `trtllm_bf16_routed_moe` to compute only the routed expert work, with post-expert normalization bound to the finalize operation at load time.
+
+- **Fuse normalization and remove routing conversions.** The CUDA boundary kernel keeps each row in registers across both RMS reductions. Pre-expert normalization is folded into NVFP4 quantization, reusing the quantizer’s row access and avoiding a separate read/write pass. Routing also emits packed IDs and weights in the format the expert kernel consumes.
+
+- **Fuse RoPE and KV-cache updates.** Q/K normalization also applies RoPE and writes the decode KV cache, eliminating standalone kernels and repeated memory passes.
+
+- **Move routing and norm/gate to CUDA.** CUDA kernels handle top-k routing and combine per-head normalization with gating, including a fast reciprocal implementation. This step also enables a shared graph stream. Verify-KV fusion benefits the speculative verification path; it is inactive in this no-speculation benchmark.
+
+- **Parallelize RMS normalization within a row.** A cluster of CTAs cooperates through distributed shared memory, exposing more parallelism than a single CTA per row.
+
+- **Shard the unpooler, then the pooler.** These projections originally repeated the full matrix computation on every tensor-parallel rank. Each now uses the BF16 dispatcher to compute a slice of the output, followed by an all-gather to assemble the full result. We use TGV for the pooler shards, which improves the final configuration with two-stream overlap.
+
+- **Overlap independent MoE work.** The router GEMM and top-k selection can run independently of pooler and activation preparation. We place routing on a side stream and join the two branches immediately before expert execution.
+
+- **Tune BF16 projection dispatch.** We select tuned GEMM implementations for the small token counts and matrix shapes used during decode. Warp split-K kernels accelerate projections by splitting the reduction dimension across warps.
+
+- **Launch dependent kernels earlier.** We tune PDL for small kernels by moving the launch trigger after their last input load.
+
+![Cumulative kernel optimizations at BS1, TP4/EP4, 8K input and 1K output tokens, without speculative decoding](/images/blog/meta-muse-spark-open/kernel-optimizations.svg)
+
+#### MegaMoE Functionalities and Optimizations
+
+DeepGEMM’s MegaMoE fuses dispatch, both expert GEMMs, activation, and combine into one persistent kernel. Cross-rank transfers use symmetric memory, allowing communication to overlap with computation without separate all-to-all launches.
+
+Supporting Muse Spark Open requires NVFP4 expert weights and activations in 60 layers, BF16 experts in two layers, and per-expert RMS normalization before the route-weighted sum. MegaMoE must also read TensorRT-LLM’s resident weight layout so both backends can share weights.
+
+##### NVFP4 as a third MMA kind
+
+The NVFP4 path adds `nvfp4xnvfp4` alongside `fp8xfp4` and `mxfp4xmxfp4`. It retains dense FP4 operands but uses UE4M3 block scales per 16 elements instead of MXFP4’s UE8M0 scales per 32. Per-token FP32 input scales are applied to the first GEMM’s accumulators, and pre-dispatch supports BF16-to-NVFP4 quantization.
+
+Moreover we refactored the class as part of this extension. Now the MMA kind is explicit at symmetric-buffer allocation and carried through the execution path, making format selection easier to follow.
+
+##### The Fused Post-per-expert Norm
+
+Each expert output must be normalized before applying its routing weight. Because the second GEMM distributes a hidden row across CTAs, its epilogue cannot independently compute the full-row RMS. Normalization therefore runs in the combine stage, after peer writes are visible after the NVLink Barrier.
+
+**Post norm partials:** To avoid rereading full expert-output rows solely to compute their RMS in combine, each second-GEMM tile accumulates a partial sum of squares from the BF16 values it already holds in registers. These partials are atomically accumulated on the token’s originating rank; combine then reads one scalar per selected expert.
+
+![Post Expert Norm](/images/blog/meta-muse-spark-open/post-expert-norm.svg)
+
+##### Reading TensorRT-LLM's weights
+
+Sharing TensorRT-LLM’s resident buffers avoids duplicate weights and scales while preserving the option to use its MoE kernels for decode. Each layout needs a different treatment:
+
+- **NVFP4 weights**: The first GEMM’s `row ^ 8` shuffle swaps the gate and up halves within each 16-row group. MegaMoE loads the tile as stored and selects the corresponding register slots in the SwiGLU epilogue, replacing a naive way of sixteen small TMA loads per K atom with one. The second GEMM’s row permutation is handled by its tensor-map descriptor.
+
+- **NVFP4 block scales:** A 3D tensor map reads first-GEMM scales directly; a 5D map also undoes the second GEMM’s within-group permutation. Adjust shared-memory source offsets to preserve the existing `UTCCP 4×32` transpose.
+
+- **BF16 weights:** TensorRT-LLM uses `BlockMajorK` storage, physically [E, K/64, N, 64]. A 5D tensor map handles the first GEMM’s group reversal with one TMA load per 32-row block, while SwiGLU absorbs the remaining gate/up swap. The second GEMM uses a 4D map.
+
+![MegaMoE reads TRT-LLM layouts](/images/blog/meta-muse-spark-open/megamoe-layouts.svg)
+
+*TRT-LLM and MegaMoE weight and scale layouts. TMA addressing and SwiGLU register selection reconcile the layouts without duplicating resident buffers.*
+
+##### The NVFP4 requantization reciprocal table
+
+Between the two GEMMs, SwiGLU output is requantized to NVFP4. Previously, each 16-element group computed the block scale’s reciprocal with `__frcp_rn`. `__frcp_rn` isn't cheap: it is IEEE round-to-nearest so it has a MUFU seed plus a Newton refinement chain plus special-case handling. Because the scale byte has only 256 encodings, a 256-entry FP32 table in shared memory replaces the repeated conversion and reciprocal calculation with a lookup. In an isolated B300 microbenchmark, the shared-memory table accelerated scale-to-reciprocal computation by approximately 2.9× with scattered accesses and 4.8× with warp-uniform accesses.
+
+## Multi-Platform Support
+
+
+### AMD Support
+
+#### Day-0 Enablement
+- **Platforms:** MI350X, MI355X Instinct GPUs
+- **Both Meta model ckpts are supported:** `meta-models/Muse-Spark-Open-816B-A42B` (BF16) and `meta-models/Muse-Spark-Open-816B-A42B-NVFP4`.
+- **AMD/Quark aot quantized MXFP4 model is supported:** `amd/Muse-Spark-Open-816B-A42B-Quark-MXFP4` - an apple-to-apple MXFP4 quantized model from Meta NVFP4 model.
+- **Attention Kernel**: aiter unified-attention 3D for decode, with page-16 CK batch-prefill.
+- **FlyDSL MoE:** expert GEMM plus a finalize that does unpermute, per-expert RMSNorm and the weighted sum in one kernel.
+- **Kernel fusion** on the decode path: cross-layer FFN boundary, fused Q/K RMSNorm, split-K router GEMV, aiter tuned GEMM for pooler/unpooler.
+- **Prefill optimization:** replaced the atomic-add expert sort with an LDS kernel.
+- **aiter patches** required: page-scatter VM fault fix, unified-attention 3D, and the FlyDSL Muse MoE kernels. `docker/muse_spark/muse-spark-rocm.Dockerfile` applies them before the aiter kernels are prebuilt, so an image built from it needs no runtime patching. Use `3rdparty/amd/muse_spark/apply_aiter_patches.sh` only in a container built from the plain ROCm image.
+
+#### Day-0 Performance (MI355X | MI350X)
+
+`amd/Muse-Spark-Open-816B-A42B-Quark-MXFP4`, 8x MI355X TP8/EP8, IL8192/OL1024, random range ratio 0.8, 4x measured requests per point, radix cache on (**run with warmup**).
+
+**triton attn + triton moe** (baseline):
+| Concurrency | Mean ITL (ms) | Mean TPOT (ms) | Total throughput (tok/s) |
+| ----------: | ------------: | -------------: | -----------------------: |
+|           4 |         14.55 |          14.55 |                 2,384.71 |
+|           8 |         15.43 |          15.42 |                 4,317.23 |
+|          16 |         17.84 |          17.84 |                 7,460.37 |
+|          32 |         22.14 |          22.13 |                12,396.21 |
+
+**aiter attn + flydsl moe**:
+| Concurrency | Mean ITL (ms) | Mean TPOT (ms) | Total throughput (tok/s) |
+| ----------: | ------------: | -------------: | -----------------------: |
+|           4 |         12.29 |          12.29 |                 2,812.75 |
+|           8 |         13.88 |          13.87 |                 4,777.36 |
+|          16 |         16.04 |          16.03 |                 8,311.38 |
+|          32 |         19.76 |          19.75 |                13,880.93 |
+
+**aiter attn + flydsl moe + DFlash V2** (real acceptance; ITL: per verify step):
+| Concurrency | Mean ITL (ms) | Mean TPOT (ms) | Total throughput (tok/s) |
+| ----------: | ------------: | -------------: | -----------------------: |
+|           4 | 22.16         |  7.19          |                 4,544.71 |
+|           8 | 27.11         |  8.46          |                 7,542.14 |
+|          16 | 32.42         | 10.62          |                12,056.10 |
+|          32 | 45.42         | 15.11          |                17,081.46 |
+
+#### Accuracies
+
+| Benchmark          |                MXFP4 (TP4) | MXFP4 (TP8) | NVFP4 Requant (TP4) |          BF16 (TP8) |    NVFP4 Reference (GB300) |
+| ------------------ | -------------------------: | ----------: | ------------------: | ------------------: | -------------------------: |
+| GSM8K              |                     97.42% |      97.57% |              97.95% |              97.73% |                     97.80% |
+| AIME26 (30×8)      | pass@1 95.83%, pass@8 100% | pass@1 95.83%, pass@8 100% | pass@1 95.42%, pass@8 100% | pass@1 95.83%, pass@8 100% | pass@1 95.83%, pass@8 100% |
+| GPQA Diamond       |                     89.90% |       89.90%|              88.38% |              88.89% |                     90.04% |
+| MindCube tinybench |                     81.33% |       80.19%|              81.24% |              82.86% |                     81.62% |
+| Video-MME short    |                     89.67% |       88.89%|              89.11% |              88.78% |                     89.78% |
+
+
+References are the model card for GPQA Diamond and Video-MME, published SGLang test results for MindCube, and the acceptance gate for GSM8K. MindCube used the SGLang test configuration: `ff_rsn`, `reasoning_effort=high`, 300k token budget. A 24 kHz waveform transcribed correctly through both `input_audio` and `audio_url`, and the no-audio control correctly declines.
+
+All modalities confirmed working: text, image, video, audio and long context.
+
+#### Server Script
+
+```
+export SGLANG_USE_AITER=1
+export SGLANG_USE_AITER_UNIFIED_ATTN=1
+export MUSE_MOE_BACKEND=flydsl
+
+# BF16 model:  meta-models/Muse-Spark-Open-816B-A42B
+# MXFP4 model: amd/Muse-Spark-Open-816B-A42B-Quark-MXFP4
+python3 -m sglang.launch_server \
+  --model-path {MODEL_PATH} \
+  --tp-size 8 --ep-size 8 \
+  --attention-backend aiter --page-size 16 \
+  --kv-cache-dtype fp8_e4m3 \
+  --mem-fraction-static 0.85 \
+  --max-running-requests 128 \
+  --speculative-algorithm DFLASH \
+  --speculative-draft-model-path RadixArk/Muse-Spark-Open-DFlash2 \
+  --speculative-draft-attention-backend triton \
+  --speculative-num-draft-tokens 8 \
+  --reasoning-parser muse --tool-call-parser muse \
+  --host 0.0.0.0 --port {PORT}
+
+# NVFP4 model: meta-models/Muse-Spark-Open-816B-A42B-NVFP4
+python3 -m sglang.launch_server \
+  --model-path {MODEL_PATH} \
+  --quantization quark_mxfp4 \
+  --tp-size 4 --ep-size 4 \
+  --attention-backend aiter --page-size 16 \
+  --kv-cache-dtype fp8_e4m3 \
+  --mem-fraction-static 0.85 \
+  --max-running-requests 128 \
+  --speculative-algorithm DFLASH \
+  --speculative-draft-model-path RadixArk/Muse-Spark-Open-DFlash2 \
+  --speculative-draft-attention-backend triton \
+  --speculative-num-draft-tokens 8 \
+  --reasoning-parser muse --tool-call-parser muse \
+  --host 0.0.0.0 --port {PORT}
+```
+
+
+### Intel Xeon Platform Support
+SGLang supports efficient INT4 Weight-Only Quantization (WOQ) inference on Intel® Xeon® CPU platforms, significantly reducing model memory requirements while leveraging Intel® Advanced Matrix Extensions (Intel® AMX) for accelerated AI computation. To maximize efficiency without compromising model quality, Intel generated INT4 variants directly from Muse Spark Open’s original BF16 checkpoints using the [Intel AutoRound quantization algorithm](https://github.com/intel/auto-round), which has been well supported in SGLang.
+
+To fully realize the benefits of INT4 inference for Muse Spark Open, SGLang CPU leverages Intel AMX acceleration for Attention (sliding window), BF16 GEMM and INT4 WOQ FusedMoE computations. In addition, fused optimizations for some other components, including all normalizations, RoPE, MoE routing and finalizing operations, etc., further improve throughput and reduce inference overhead.
+
+Given the size of the Muse Spark Open model, SGLang CPU provides a practical deployment path for offline inference on Intel Xeon platforms, particularly on Intel® Xeon® 6 with P-core. By leveraging the large memory capacities available on Intel Xeon platforms, organizations can run private offline inference efficiently and scale deployments across existing data center infrastructure.
+
+### TPU Support
+For the first time, we’re bringing day-0 TPU support to an open-weights model through SGLang-TorchTPU, a native PyTorch backend for LLM, VLM, and diffusion model inference on TPUs. It combines TPU acceleration with SGLang features such as RadixAttention and HiCache to enable cost-efficient, production-ready serving for agentic workloads.
+
+TPU recipes for Muse Spark Open and access to SGLang-TorchTPU will be available soon. Sign up through this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSe2Y8hzyU3KGB2StA-0huulrVsq79A0tSxcBQwjj8vlhLhYuQ/viewform?usp=publish-editor) to receive the latest updates.
+
+## Performance Results
+
+### OpenHands Agentic Coding Sweep
+
+We collected performance results for Muse Spark Open NVFP4 on eight B300 GPUs with TP8/EP8 using an OpenHands multi-turn agentic coding workload. Each conversation starts with an around 74K token prompt and outputs around 220 tokens each turn, for a total of 13 turns. Successive turns reuse the prefix for a ~92% aggregate cache hit rate. We sweep concurrency from 1 to 128 conversations and plot per-GPU token throughput (tok/s/GPU) against p50 interactivity (tok/s/user).
+
+![Muse Spark NVFP4 throughput per GPU versus p50 interactivity on eight B300 GPUs with DFlash v2.](/images/blog/meta-muse-spark-open/openhands-b300-throughput.svg)
+
+### AgentX Agentic Coding Sweep
+
+We collected performance results for Muse Spark Open NVFP4 on eight B300 GPUs with TP8/EP8 using [AgentX](https://github.com/SemiAnalysisAI/agentx-harness), SemiAnalysis's replayer for recorded multi-turn agentic coding traces. AgentX reproduces the prompt sizes, prefix sharing, subagent fan-out and inter-turn timing of real coding-agent sessions, so the results reflect "realistic agentic load". Requests in a session share a long prefix, so 96.9% to 98.0% of input tokens hit the prefix cache. We sweep concurrency from 1 to 48 sessions and plot per-GPU token throughput (tok/s/GPU) against p90 interactivity (tok/s/user). At concurrency 48, throughput reaches 34,509 tok/s/GPU at 73.0 tok/s/user; a single session runs at 457.8 tok/s/user.
+
+![Muse Spark NVFP4 total throughput per GPU versus p90 interactivity on eight B300 GPUs with AgentX.](/images/blog/meta-muse-spark-open/agentx-throughput-interactivity.svg)
+
+## Reinforcement Learning
+
+### Trainable Muse Spark Open Backend
+
+Miles provides distributed training support for Muse Spark Open through Megatron-Core, covering the model's compressed MoE, normalization, and residual gating. Each expert output is normalized independently, then combined as a routing-weighted sum in FP32. The training backend preserves this computation order and these precision boundaries, with backward support for full-parameter updates.
+
+Muse Spark Open reuses Miles' existing Muon and Adam support for full-parameter RL. Miles' distributed Muon and Adam implementations support chunked GPU updates and CPU or NVMe optimizer-state offload to manage CPU memory usage for large models.
+
+### Token-Consistent Multi-Turn Rollouts
+
+Multi-turn RL must preserve the token sequence actually sampled by the model. When tool results or follow-up messages are appended, re-rendering the chat template can change the existing prefix, causing the training sequence to diverge from the original trajectory. We integrated Muse Spark Open with TITO and fixed a template behavior that retroactively changed an earlier message's end marker.
+
+### Training Results
+
+We trained the full Muse Spark Open language model on DAPO-Math-17K using GRPO on 64 H200 GPUs, with CPU-offloaded Muon or Adam with optimizer states streamed to disk. Each step samples 16 responses for each of 32 prompts, for a batch of 512 responses, with a 4,096-token response cap and `xhigh` reasoning effort.
+
+![Two Muon runs and one Adam run: unsmoothed training reward, train–rollout KL, and absolute log-probability difference. The legends identify each training topology and whether rollout routing replay is enabled.](/images/blog/meta-muse-spark-open/muse-spark-rl-main.svg)
+
+*Full-language-model RL on DAPO-Math-17K: training reward, train–rollout KL, and mean absolute token log-probability difference. All curves show raw per-step values.*
+
+We also trained a vision-language task, Geometry3K, with the ViT frozen, using the same Adam setup and `medium` reasoning effort. Test accuracy rose from 88.2% to 94.9% over 30 updates.
+
+![Geometry3K RL with the ViT frozen: test accuracy after 0, 5, …, 30 updates, and per-step train–rollout KL and absolute log-probability difference.](/images/blog/meta-muse-spark-open/muse-spark-rl-vlm.svg)
+
+*Geometry3K RL with the ViT frozen: test accuracy every five updates (601 problems, four samples each), and raw per-step train–rollout KL and mean absolute token log-probability difference.*
+
+## Acknowledgements
+
+This work was a collaboration among the SGLang community, Meta, AMD, Nvidia and Intel.
+
+SGLang Community: Baizhou Zhang, Chunan Zeng, Jimmy Shong, Mao Cheng, Jiajun Li, Yuhao Yang, Alex Nails, Liangsheng Yin, Lianmin Zheng
+
+Meta: Sidhartha Reddy Potu, Clement Anthonioz Blanc, Ethan Che, Beto de Paola, Varun Vontimitta
+
+AMD: Thomas Wang, Zijie Chen, Jacky Cheng, Wun-guo Huang, Hai Xiao
+
+Nvidia: Wookje Han, Andrew Briand, Anik Afibuzzaman
+
+Intel: Guobing Chen, Jianan Gu, Fan Zhao
+
+## Appendix
+
+### Reproduction
+
+The scripts behind the OpenHands sweep are in [`benchmark/muse_spark_openhands`](https://github.com/radixark/sglang-muse-spark/tree/bench-openhands-b300-sweep/benchmark/muse_spark_openhands) of the `bench-openhands-b300-sweep` branch. One script builds the serving environment from the `dev` branch with the `docker/muse_spark` patches, installs the client, builds the dataset and runs the concurrency ladder from 128 down to 1 on one 8 x B300 node.
+
+The server is SGLang from that branch. The client is [evalscope](https://github.com/modelscope/evalscope) at commit `acd09b44`, using its `swe_smith` multi-turn plugin.
+
+The workload is an OpenHands multi-turn agentic replay built from `nebius/SWE-rebench-openhands-trajectories` and padded with `nvidia/OpenScienceReasoning-2` text: 13 turns per conversation, a 74,160-token first turn and 753 tokens on each later turn (about 80k prompt tokens per request), 220 output tokens per turn, and a ~92% aggregate prefix-cache hit rate. The DFlash acceptance length is fixed at 4.5 through `SGLANG_SIMULATE_ACC_LEN`, so decode cost reflects that acceptance length rather than the draft's measured quality.
+
+The server launch commands are as follows, with `<cc>` set to the rung's concurrency:
+
+```bash
+export SGLANG_SIMULATE_ACC_LEN=4.5 SGLANG_SIMULATE_ACC_METHOD=match-expected SGLANG_SIMULATE_ACC_TOKEN_MODE=real-draft-token
+export SGLANG_TIMEOUT_KEEP_ALIVE=600 SPT_NOENV=1
+export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 PYTHONNOUSERSITE=1 TZ=UTC
+export SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1 SGLANG_OPT_DEEPGEMM_MEGA_MOE_NUM_MAX_TOKENS_PER_RANK=8192
+
+# concurrency 16 and above: HiCache 160 GB per rank
+python3 -m sglang.launch_server \
+    --model-path meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
+    --served-model-name meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
+    --quantization modelopt_fp4 \
+    --moe-runner-backend flashinfer_trtllm \
+    --tp-size 8 \
+    --ep-size 8 \
+    --attention-backend trtllm_mha \
+    --kv-cache-dtype fp8_e4m3 \
+    --page-size 128 \
+    --mem-fraction-static 0.9 \
+    --reasoning-parser muse \
+    --tool-call-parser muse \
+    --enable-layernorm-sp \
+    --enable-megamoe-for-layernorm-sp \
+    --speculative-algorithm DFLASH \
+    --speculative-draft-model-path RadixArk/Muse-Spark-Open-DFlash2 \
+    --speculative-draft-attention-backend fa4 \
+    --speculative-num-draft-tokens 8 \
+    --enable-hierarchical-cache \
+    --hicache-size 160 \
+    --max-running-requests <cc> \
+    --cuda-graph-max-bs-decode <cc> \
+    --context-length 131072 \
+    --enable-cache-report \
+    --tokenizer-worker-num 4 \
+    --enable-http2 \
+    --host 0.0.0.0 \
+    --port 30100
+
+# concurrency 8 and below: no HiCache
+python3 -m sglang.launch_server \
+    --model-path meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
+    --served-model-name meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
+    --quantization modelopt_fp4 \
+    --moe-runner-backend flashinfer_trtllm \
+    --tp-size 8 \
+    --ep-size 8 \
+    --attention-backend trtllm_mha \
+    --kv-cache-dtype fp8_e4m3 \
+    --page-size 128 \
+    --mem-fraction-static 0.9 \
+    --reasoning-parser muse \
+    --tool-call-parser muse \
+    --enable-layernorm-sp \
+    --enable-megamoe-for-layernorm-sp \
+    --speculative-algorithm DFLASH \
+    --speculative-draft-model-path RadixArk/Muse-Spark-Open-DFlash2 \
+    --speculative-draft-attention-backend fa4 \
+    --speculative-num-draft-tokens 8 \
+    --max-running-requests <cc> \
+    --cuda-graph-max-bs-decode <cc> \
+    --context-length 131072 \
+    --enable-cache-report \
+    --tokenizer-worker-num 4 \
+    --enable-http2 \
+    --host 0.0.0.0 \
+    --port 30100
+```
+
+### AgentX Reproduction
+
+The AgentX sweep uses AgentX at commit `89b21867` with the `semianalysis_cc_traces_weka_062126` trace in fixed-token mode, temperature 1 and top-p 0.95. Each concurrency level sends requests for one hour and is a single run. Total throughput counts input tokens, including prefix-cache hits, plus output tokens, and p90 interactivity is 1000 divided by the request-level p90 inter-token latency in milliseconds. AgentX keeps the token counts and prefix structure of the recorded traces but generates synthetic prompt text, so the draft's acceptance on the replay would not reflect real text. We therefore fix the DFlash acceptance length at 4.16 through `SGLANG_SIMULATE_ACC_LEN`. The value is measured, not chosen: it is AgentX's token-weighted acceptance length, 1 + accepted draft tokens / verify steps = 1 + 96,198 / 30,415, from the DFlash v2 draft on 80 real coding first-turn prompts of 158 to 1,581 input tokens.
+
+The server launch commands are as follows. Concurrency 16 and above enables sequence parallelism, MegaMoE and HiCache; set `<hicache_gb>` to 120 at concurrency 16 and to 216 at concurrency 32 and 48.
+
+```bash
+export SGLANG_SIMULATE_ACC_LEN=4.16 SGLANG_SIMULATE_ACC_METHOD=match-expected SGLANG_SIMULATE_ACC_TOKEN_MODE=fixed
+export SGLANG_TIMEOUT_KEEP_ALIVE=1800 OMP_NUM_THREADS=8 TVM_FFI_CUDA_ARCH_LIST=10.3a
+export SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1 SGLANG_UNIFIED_RADIX_TREE_CORE_BACKEND=python
+
+# concurrency 16 and above: sequence parallelism, MegaMoE and HiCache
+export SGLANG_OPT_DEEPGEMM_MEGA_MOE_NUM_MAX_TOKENS_PER_RANK=8192
+python3 -m sglang.launch_server \
+    --model-path meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
+    --served-model-name meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
+    --quantization modelopt_fp4 \
+    --kv-cache-dtype fp8_e4m3 \
+    --moe-runner-backend flashinfer_trtllm \
+    --tp-size 8 \
+    --ep-size 8 \
+    --attention-backend trtllm_mha \
+    --page-size 128 \
+    --mem-fraction-static 0.9 \
+    --reasoning-parser muse \
+    --tool-call-parser muse \
+    --enable-layernorm-sp \
+    --enable-megamoe-for-layernorm-sp \
+    --speculative-algorithm DFLASH \
+    --speculative-draft-model-path RadixArk/Muse-Spark-Open-DFlash2 \
+    --speculative-draft-attention-backend fa4 \
+    --speculative-num-draft-tokens 8 \
+    --speculative-use-block-verification \
+    --enable-hierarchical-cache \
+    --hicache-size <hicache_gb> \
+    --max-running-requests 192 \
+    --cuda-graph-max-bs-decode 128 \
+    --cuda-graph-backend-prefill breakable \
+    --swa-full-tokens-ratio 0.4 \
+    --enable-cache-report \
+    --enable-metrics \
+    --tokenizer-worker-num 4 \
+    --enable-http2 \
+    --host 0.0.0.0 \
+    --port 30100
+
+# concurrency 8 and below: no sequence parallelism, MegaMoE or HiCache
+python3 -m sglang.launch_server \
+    --model-path meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
+    --served-model-name meta-models/Muse-Spark-Open-816B-A42B-NVFP4 \
+    --quantization modelopt_fp4 \
+    --kv-cache-dtype fp8_e4m3 \
+    --moe-runner-backend flashinfer_trtllm \
+    --tp-size 8 \
+    --ep-size 8 \
+    --attention-backend trtllm_mha \
+    --page-size 128 \
+    --mem-fraction-static 0.9 \
+    --reasoning-parser muse \
+    --tool-call-parser muse \
+    --speculative-algorithm DFLASH \
+    --speculative-draft-model-path RadixArk/Muse-Spark-Open-DFlash2 \
+    --speculative-draft-attention-backend fa4 \
+    --speculative-num-draft-tokens 8 \
+    --speculative-use-block-verification \
+    --max-running-requests 192 \
+    --cuda-graph-max-bs-decode 128 \
+    --cuda-graph-backend-prefill breakable \
+    --swa-full-tokens-ratio 0.4 \
+    --enable-cache-report \
+    --enable-metrics \
+    --tokenizer-worker-num 4 \
+    --enable-http2 \
+    --host 0.0.0.0 \
+    --port 30100
+```
