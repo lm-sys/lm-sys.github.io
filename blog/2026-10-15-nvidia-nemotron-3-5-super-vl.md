@@ -27,7 +27,7 @@ This blog covers the quick start guide to deploy the model with SGLang.
 - **Deployment targets:** DGX Spark, 1x GB10, B200, B300, RTX PRO 6000, H200, and 2x H100
 - **Edge Device Performance:** Runs locally on a single DGX Spark and RTX 6000 PRO, achieving 243.9 tok/s on the latter
 - Download the model weights from Hugging Face: [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16) and [NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4)
-- Run Nemotron 3.5 Super VL with SGLang using the getting-started [cookbook](https://github.com/NVIDIA-NeMo/Nemotron/blob/main/usage-cookbook/NVIDIA-Nemotron-3.5-Super-VL/sglang_cookbook.ipynb).
+- Run Nemotron 3.5 Super VL with SGLang using the getting-started [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Super).
 
 ## Installation and Quick Start with SGLang
 
@@ -108,7 +108,7 @@ As shown in Figure 2, Nemotron 3.5 Super VL performs tasks 4x faster compared to
 ## Get Started
 
 - Download the model weights from Hugging Face: [BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16) and [NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4)
-- Run Nemotron 3.5 Super VL with SGLang using the getting-started [cookbook](https://github.com/NVIDIA-NeMo/Nemotron/blob/main/usage-cookbook/NVIDIA-Nemotron-3.5-Super-VL/sglang_cookbook.ipynb).
+- Run Nemotron 3.5 Super VL with SGLang using the getting-started [cookbook](https://docs.sglang.io/cookbook/autoregressive/NVIDIA/Nemotron3.5-Super).
 
 ## Acknowledgements
 
