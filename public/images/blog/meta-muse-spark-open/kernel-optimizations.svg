@@ -8,7 +8,6 @@
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
     <dc:title>Muse Spark kernel optimizations: baseline and twelve additions</dc:title>
-    <dc:description>Historical points 00–10: a6638e92bff6a34de9fe6b3bbfe851016f7e500e. Point 11: b8328f43abb52d7f1c13018f9c27b5421e266e54. Point 12: cd0a83ddbf71ad716dc0625cc345473d7d1c582d. Evidence: https://github.com/radixark/sglang-muse-spark/blob/3c5cf5ccb0/benchmark/muse_spark/kernel_steps/results/2026-10-13/REPORT.md . BS1 remains on one-shot push; no gain is attributed to PR #259. Rendered with Matplotlib 3.10.9; style follows sequence-parallel-p90-ttft.svg.</dc:description>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>

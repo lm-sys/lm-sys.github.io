@@ -313,7 +313,7 @@ Intel: Guobing Chen, Jianan Gu, Fan Zhao
 
 ### Reproduction
 
-The scripts behind the OpenHands sweep are in [`benchmark/muse_spark_openhands`](https://github.com/radixark/sglang-muse-spark/tree/bench-openhands-b300-sweep/benchmark/muse_spark_openhands) of the `bench-openhands-b300-sweep` branch. One script builds the serving environment from the `dev` branch with the `docker/muse_spark` patches, installs the client, builds the dataset and runs the concurrency ladder from 128 down to 1 on one 8 x B300 node.
+The scripts behind the OpenHands sweep are in [`benchmark/muse_spark_openhands`](https://github.com/sgl-project/sglang/tree/bench-openhands-b300-sweep/benchmark/muse_spark_openhands) of the public `bench-openhands-b300-sweep` branch. Build the serving image with the public `muse-spark` branch’s `docker/muse_spark` Dockerfile, then run the script to install the client, build the dataset and run the concurrency ladder from 128 down to 1 on one 8 x B300 node.
 
 The server is SGLang from that branch. The client is [evalscope](https://github.com/modelscope/evalscope) at commit `acd09b44`, using its `swe_smith` multi-turn plugin.
 
