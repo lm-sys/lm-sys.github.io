@@ -2,7 +2,7 @@
 title: "SGLang Low-Latency Mode: Kernels and Runtime"
 author: "SGLang, NVIDIA and AMD teams"
 date: "October 18, 2026"
-previewImg: /images/blog/sglang-vendor-kernel-runtime/runtime.svg
+previewImg: /images/blog/sglang-vendor-kernel-runtime/figure-1.svg
 type: blog
 ---
 
