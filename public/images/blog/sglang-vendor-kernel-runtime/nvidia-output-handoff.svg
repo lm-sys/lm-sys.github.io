@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="616" viewBox="0 0 960 616" role="img" aria-labelledby="t d">
+<title id="t">Attention output handoff in SGLang and in the NVIDIA plugin</title>
+<desc id="d">Both paths run two kernels per GPU. SGLang: the wo_b GEMM writes its partial; a fused kernel reads it back, pushes it to all four GPUs, waits for the peers, reduces, applies mHC and RMSNorm. Plugin: the GEMM epilogue multicasts each output vector into every GPU mailbox; the consumer only waits, reduces, applies mHC and RMSNorm.</desc>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7a8699"/></marker><marker id="ahHot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#eb6834"/></marker><marker id="ahInk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4d5866"/></marker></defs>
+<style>text{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif}.mono{font-family:SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace}</style>
+<rect width="960" height="616" fill="#ffffff"/>
+<text x="32.0" y="42.0" font-size="23" font-weight="700" fill="#1e2a3b" text-anchor="start">Attention output handoff: where the cross-GPU push happens</text>
+<text x="32.0" y="69.0" font-size="15" font-weight="400" fill="#4d5866" text-anchor="start">One of four GPUs, one verify step · two kernels per GPU in both paths, chained with PDL · boxes are not to scale</text>
+<rect x="32.00" y="89.00" width="18.00" height="13.00" rx="3" fill="#fdf0ea" stroke="#eb6834" stroke-width="1.4"/>
+<text x="58.0" y="101.0" font-size="14" font-weight="400" fill="#4d5866" text-anchor="start">cross-GPU push of the partial sum</text>
+<line x1="316.00" y1="96.00" x2="346.00" y2="96.00" stroke="#4d5866" stroke-width="1.5" stroke-linecap="round" marker-end="url(#ahInk)"/>
+<text x="354.0" y="101.0" font-size="14" font-weight="400" fill="#4d5866" text-anchor="start">PDL: the next kernel reads its input only after the whole first grid finishes</text>
+<text x="32.0" y="146.0" font-size="16" font-weight="700" fill="#1e2a3b" text-anchor="start">SGLang (measured baseline)</text>
+<rect x="32.00" y="160.00" width="262.00" height="118.00" rx="8" fill="#f1f3f6" stroke="#4d5866" stroke-width="1.6"/>
+<text x="44.0" y="182.0" font-size="15" text-anchor="start"><tspan fill="#1e2a3b" font-weight="700">Kernel 1</tspan><tspan fill="#4d5866">  wo_b GEMM</tspan></text>
+<rect x="44.00" y="196.00" width="102.82" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="95.4" y="227.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">MMA</text>
+<text x="95.4" y="245.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">main loop</text>
+<rect x="154.82" y="196.00" width="127.18" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="218.4" y="227.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">epilogue:</text>
+<text x="218.4" y="245.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">store partial</text>
+<rect x="334.00" y="160.00" width="594.00" height="118.00" rx="8" fill="#f1f3f6" stroke="#4d5866" stroke-width="1.6"/>
+<text x="346.0" y="182.0" font-size="15" text-anchor="start"><tspan fill="#1e2a3b" font-weight="700">Kernel 2</tspan><tspan fill="#4d5866">  fused all-reduce + mHC + RMSNorm</tspan></text>
+<rect x="346.00" y="196.00" width="148.35" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="420.2" y="227.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">load partial</text>
+<text x="420.2" y="245.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">from memory</text>
+<rect x="502.35" y="196.00" width="119.27" height="70.00" rx="5" fill="#fdf0ea" stroke="#eb6834" stroke-width="1.4"/>
+<text x="562.0" y="227.5" font-size="15" font-weight="600" fill="#1e2a3b" text-anchor="middle">push to</text>
+<text x="562.0" y="245.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">all 4 GPUs</text>
+<rect x="629.62" y="196.00" width="126.19" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="692.7" y="227.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">wait for</text>
+<text x="692.7" y="245.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">the 3 peers</text>
+<rect x="763.81" y="196.00" width="152.19" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="839.9" y="227.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">reduce · mHC</text>
+<text x="839.9" y="245.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">· RMSNorm</text>
+<line x1="298.00" y1="219.00" x2="329.00" y2="219.00" stroke="#4d5866" stroke-width="1.5" stroke-linecap="round" marker-end="url(#ahInk)"/>
+<rect x="228.11" y="304.00" width="182.37" height="28.00" rx="14" fill="#ffffff" stroke="#b8c1cd" stroke-width="1.2"/>
+<text x="319.3" y="323.0" font-size="14" text-anchor="middle"><tspan fill="#1e2a3b" font-weight="700">partial</tspan><tspan fill="#4d5866"> in GPU memory</tspan></text>
+<path d="M218.4 266.0 V318.0 H226.1" fill="none" stroke="#7a8699" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah)"/>
+<path d="M410.5 318.0 H420.2 V268.0" fill="none" stroke="#7a8699" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah)"/>
+<text x="319.3" y="351.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="middle">read back after the GEMM grid completes</text>
+<rect x="468.05" y="304.00" width="318.60" height="28.00" rx="14" fill="#fdf0ea" stroke="#eb6834" stroke-width="1.2"/>
+<text x="627.4" y="323.0" font-size="14" text-anchor="middle"><tspan fill="#1e2a3b" font-weight="700">slots on all 4 GPUs</tspan><tspan fill="#4d5866">  one 16-byte store each</tspan></text>
+<path d="M562.0 266.0 V304.0" fill="none" stroke="#eb6834" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ahHot)"/>
+<path d="M692.7 305.0 V268.0" fill="none" stroke="#7a8699" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah)"/>
+<text x="32.0" y="392.0" font-size="16" font-weight="700" fill="#1e2a3b" text-anchor="start">With the plugin</text>
+<rect x="32.00" y="406.00" width="540.00" height="118.00" rx="8" fill="#edf4fd" stroke="#2a78d6" stroke-width="1.6"/>
+<text x="44.0" y="428.0" font-size="15" text-anchor="start"><tspan fill="#1e2a3b" font-weight="700">Kernel 1</tspan><tspan fill="#4d5866">  publishing wo_b GEMM</tspan></text>
+<rect x="44.00" y="442.00" width="98.55" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="93.3" y="473.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">MMA</text>
+<text x="93.3" y="491.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">main loop</text>
+<rect x="150.55" y="442.00" width="170.12" height="70.00" rx="5" fill="#fdf0ea" stroke="#eb6834" stroke-width="1.4"/>
+<text x="235.6" y="473.5" font-size="15" font-weight="600" fill="#1e2a3b" text-anchor="middle">epilogue: multicast</text>
+<text x="235.6" y="491.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">into 4 mailboxes</text>
+<rect x="328.66" y="442.00" width="116.78" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="387.1" y="473.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">epilogue:</text>
+<text x="387.1" y="491.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">store output</text>
+<rect x="453.44" y="442.00" width="106.56" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="506.7" y="473.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">flag the</text>
+<text x="506.7" y="491.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">generation</text>
+<rect x="612.00" y="406.00" width="316.00" height="118.00" rx="8" fill="#edf4fd" stroke="#2a78d6" stroke-width="1.6"/>
+<text x="624.0" y="428.0" font-size="15" text-anchor="start"><tspan fill="#1e2a3b" font-weight="700">Kernel 2</tspan><tspan fill="#4d5866">  mailbox consumer</tspan></text>
+<rect x="624.00" y="442.00" width="137.75" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="692.9" y="473.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">wait for</text>
+<text x="692.9" y="491.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">mailbox slots</text>
+<rect x="769.75" y="442.00" width="146.25" height="70.00" rx="5" fill="#ffffff" stroke="#c9d1dc" stroke-width="1"/>
+<text x="842.9" y="473.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">reduce · mHC</text>
+<text x="842.9" y="491.5" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="middle">· RMSNorm</text>
+<line x1="576.00" y1="465.00" x2="607.00" y2="465.00" stroke="#4d5866" stroke-width="1.5" stroke-linecap="round" marker-end="url(#ahInk)"/>
+<rect x="32.00" y="550.00" width="457.04" height="28.00" rx="14" fill="#fdf0ea" stroke="#eb6834" stroke-width="1.2"/>
+<text x="260.5" y="569.0" font-size="14" text-anchor="middle"><tspan fill="#1e2a3b" font-weight="700">mailboxes on all 4 GPUs</tspan><tspan fill="#4d5866">  one 16-byte multicast store per vector</tspan></text>
+<path d="M235.6 512.0 V550.0" fill="none" stroke="#eb6834" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ahHot)"/>
+<path d="M489.0 564.0 H692.9 V514.0" fill="none" stroke="#7a8699" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah)"/>
+<text x="32.0" y="598.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">Each CTA publishes as soon as its tile is done (multimem.st over NVLink); consumer code unchanged.</text>
+</svg>

@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="690" viewBox="0 0 960 690" role="img" aria-labelledby="t d">
+<title id="t">Measured MoE window at one request, SGLang vs. plugin</title>
+<desc id="d">CUPTI-instrumented kernel timeline of one matched MoE window (GPU 3, second layer, second replay) with and without the NVIDIA plugin, six verify rows. Bars show measured start and duration on a shared microsecond scale.</desc>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7a8699"/></marker><marker id="ahHot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#eb6834"/></marker><marker id="ahInk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4d5866"/></marker></defs>
+<style>text{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif}.mono{font-family:SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace}</style>
+<rect width="960" height="690" fill="#ffffff"/>
+<text x="32.0" y="42.0" font-size="23" font-weight="700" fill="#1e2a3b" text-anchor="start">One MoE window at one request, measured</text>
+<text x="32.0" y="69.0" font-size="15" font-weight="400" fill="#4d5866" text-anchor="start">CUPTI-instrumented diagnostic · six verify rows · same GPU, layer and replay in both arms · durations include PDL waits</text>
+<line x1="288.65" y1="122.00" x2="288.65" y2="590.00" stroke="#e8ecf1" stroke-width="1" stroke-linecap="round"/>
+<line x1="410.84" y1="122.00" x2="410.84" y2="590.00" stroke="#e8ecf1" stroke-width="1" stroke-linecap="round"/>
+<line x1="533.02" y1="122.00" x2="533.02" y2="590.00" stroke="#e8ecf1" stroke-width="1" stroke-linecap="round"/>
+<line x1="655.20" y1="122.00" x2="655.20" y2="590.00" stroke="#e8ecf1" stroke-width="1" stroke-linecap="round"/>
+<line x1="777.38" y1="122.00" x2="777.38" y2="590.00" stroke="#e8ecf1" stroke-width="1" stroke-linecap="round"/>
+<line x1="899.56" y1="122.00" x2="899.56" y2="590.00" stroke="#e8ecf1" stroke-width="1" stroke-linecap="round"/>
+<rect x="288.65" y="132.00" width="541.90" height="132.00" rx="3" fill="#f1f3f6"/>
+<line x1="830.55" y1="132.00" x2="830.55" y2="264.00" stroke="#4d5866" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="830.55" y1="264.00" x2="830.55" y2="292.00" stroke="#4d5866" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<line x1="288.65" y1="132.00" x2="288.65" y2="264.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<text x="32.0" y="123.0" font-size="17" font-weight="700" fill="#1e2a3b" text-anchor="start">SGLang</text>
+<text x="288.7" y="122.0" font-size="14" text-anchor="start"><tspan fill="#4d5866">Window </tspan><tspan fill="#1e2a3b" font-weight="700">44.35 µs</tspan><tspan fill="#4d5866"> in this pair  ·  median over 800 windows 44.42 µs</tspan></text>
+<text x="32.0" y="151.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">Top-k</text>
+<text x="32.0" y="177.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">Routing record</text>
+<text x="32.0" y="203.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">GEMM 1 + SwiGLU</text>
+<text x="32.0" y="229.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">GEMM 2</text>
+<text x="32.0" y="255.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">Finalize, all-reduce, mHC</text>
+<text x="32.0" y="281.0" font-size="15" font-weight="400" fill="#4d5866" text-anchor="start">Next layer: first projection</text>
+<rect x="288.65" y="138.00" width="57.54" height="16.00" rx="3" fill="#4d5866"/>
+<text x="318.2" y="150.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">4.8</text>
+<rect x="348.47" y="164.00" width="62.62" height="16.00" rx="3" fill="#4d5866"/>
+<text x="380.5" y="176.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">5.2</text>
+<rect x="409.08" y="190.00" width="213.93" height="16.00" rx="3" fill="#4d5866"/>
+<text x="516.8" y="202.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">17.6</text>
+<rect x="587.36" y="216.00" width="137.30" height="16.00" rx="3" fill="#4d5866"/>
+<text x="656.8" y="228.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">11.4</text>
+<rect x="698.01" y="242.00" width="131.04" height="16.00" rx="3" fill="#4d5866"/>
+<text x="764.3" y="254.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">10.8</text>
+<rect x="826.65" y="268.00" width="92.28" height="16.00" rx="3" fill="#4d5866" fill-opacity="0.35"/>
+<rect x="826.65" y="268.00" width="92.28" height="16.00" rx="3" fill="none" stroke="#4d5866" stroke-width="1.2"/>
+<text x="32.0" y="312.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">Shared expert (side stream)</text>
+<rect x="283.57" y="303.00" width="77.87" height="9.00" rx="2" fill="#aeb7c3"/>
+<rect x="359.42" y="303.00" width="19.22" height="9.00" rx="2" fill="#aeb7c3"/>
+<rect x="379.36" y="303.00" width="29.78" height="9.00" rx="2" fill="#aeb7c3"/>
+<rect x="398.52" y="303.00" width="55.19" height="9.00" rx="2" fill="#aeb7c3"/>
+<text x="32.0" y="333.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">mHC coefficients (side stream)</text>
+<rect x="267.54" y="324.00" width="108.37" height="9.00" rx="2" fill="#aeb7c3"/>
+<rect x="384.05" y="324.00" width="130.26" height="9.00" rx="2" fill="#aeb7c3"/>
+<text x="632.5" y="203.0" font-size="14" font-weight="400" fill="#4d5866" text-anchor="start">starts as routing ends</text>
+<text x="818.6" y="281.0" font-size="14" font-weight="400" fill="#4d5866" text-anchor="end">launches as the reduction ends</text>
+<rect x="288.65" y="384.00" width="445.72" height="132.00" rx="3" fill="#edf4fd"/>
+<line x1="734.37" y1="384.00" x2="734.37" y2="516.00" stroke="#2a78d6" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="734.37" y1="516.00" x2="734.37" y2="544.00" stroke="#2a78d6" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+<line x1="288.65" y1="384.00" x2="288.65" y2="516.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<text x="32.0" y="375.0" font-size="17" font-weight="700" fill="#1e2a3b" text-anchor="start">With plugin</text>
+<text x="288.7" y="374.0" font-size="14" text-anchor="start"><tspan fill="#4d5866">Window </tspan><tspan fill="#1e2a3b" font-weight="700">36.48 µs</tspan><tspan fill="#4d5866"> in this pair  ·  median over 800 windows 36.54 µs</tspan></text>
+<text x="32.0" y="403.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">Top-k</text>
+<text x="32.0" y="429.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">Routing record</text>
+<text x="32.0" y="455.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">GEMM 1 + SwiGLU</text>
+<text x="32.0" y="481.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">GEMM 2</text>
+<text x="32.0" y="507.0" font-size="15" font-weight="400" fill="#1e2a3b" text-anchor="start">Finalize, all-reduce, mHC</text>
+<text x="32.0" y="533.0" font-size="15" font-weight="400" fill="#4d5866" text-anchor="start">Next layer: first projection</text>
+<rect x="288.65" y="390.00" width="41.51" height="16.00" rx="3" fill="#2a78d6"/>
+<text x="310.2" y="402.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">3.5</text>
+<rect x="307.03" y="416.00" width="46.59" height="16.00" rx="3" fill="#2a78d6"/>
+<text x="331.1" y="428.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">3.9</text>
+<rect x="321.89" y="442.00" width="230.74" height="16.00" rx="3" fill="#2a78d6"/>
+<text x="438.0" y="454.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">19.0</text>
+<rect x="528.72" y="468.00" width="126.35" height="16.00" rx="3" fill="#2a78d6"/>
+<text x="592.6" y="480.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">10.5</text>
+<rect x="640.93" y="494.00" width="34.08" height="16.00" rx="3" fill="#2a78d6"/>
+<text x="658.7" y="506.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">2.9</text>
+<rect x="676.12" y="494.00" width="56.76" height="16.00" rx="3" fill="#2a78d6"/>
+<text x="705.2" y="506.5" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">4.8</text>
+<rect x="695.28" y="520.00" width="71.16" height="16.00" rx="3" fill="#2a78d6" fill-opacity="0.35"/>
+<rect x="695.28" y="520.00" width="71.16" height="16.00" rx="3" fill="none" stroke="#2a78d6" stroke-width="1.2"/>
+<text x="32.0" y="564.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">Shared expert (side stream)</text>
+<rect x="291.39" y="555.00" width="101.33" height="9.00" rx="2" fill="#9cc2ef"/>
+<rect x="376.62" y="555.00" width="34.08" height="9.00" rx="2" fill="#9cc2ef"/>
+<rect x="414.94" y="555.00" width="43.07" height="9.00" rx="2" fill="#9cc2ef"/>
+<rect x="454.04" y="555.00" width="65.36" height="9.00" rx="2" fill="#9cc2ef"/>
+<text x="32.0" y="585.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">mHC coefficients (side stream)</text>
+<rect x="269.50" y="576.00" width="72.00" height="9.00" rx="2" fill="#9cc2ef"/>
+<rect x="361.77" y="576.00" width="75.91" height="9.00" rx="2" fill="#9cc2ef"/>
+<text x="562.1" y="455.0" font-size="14" font-weight="400" fill="#4d5866" text-anchor="start">launched during routing</text>
+<text x="687.3" y="533.0" font-size="14" font-weight="400" fill="#4d5866" text-anchor="end">released when the reduction kernel starts</text>
+<line x1="252.00" y1="596.00" x2="924.00" y2="596.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<line x1="288.65" y1="596.00" x2="288.65" y2="601.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<text x="288.7" y="618.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="middle">0</text>
+<line x1="410.84" y1="596.00" x2="410.84" y2="601.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<text x="410.8" y="618.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="middle">10</text>
+<line x1="533.02" y1="596.00" x2="533.02" y2="601.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<text x="533.0" y="618.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="middle">20</text>
+<line x1="655.20" y1="596.00" x2="655.20" y2="601.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<text x="655.2" y="618.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="middle">30</text>
+<line x1="777.38" y1="596.00" x2="777.38" y2="601.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<text x="777.4" y="618.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="middle">40</text>
+<line x1="899.56" y1="596.00" x2="899.56" y2="601.00" stroke="#b8c1cd" stroke-width="1" stroke-linecap="round"/>
+<text x="899.6" y="618.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="middle">50</text>
+<text x="588.0" y="642.0" font-size="15" font-weight="400" fill="#4d5866" text-anchor="middle">Microseconds since the top-k kernel started (bar labels: duration in µs)  →</text>
+<rect x="32.00" y="657.00" width="22.00" height="12.00" rx="2" fill="#4d5866" fill-opacity="1"/>
+<text x="60.0" y="668.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">main-stream kernel</text>
+<rect x="217.32" y="657.00" width="22.00" height="12.00" rx="2" fill="#aeb7c3" fill-opacity="1"/>
+<text x="245.3" y="668.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">side-stream kernel</text>
+<rect x="398.30" y="657.00" width="22.00" height="12.00" rx="2" fill="#4d5866" fill-opacity="0.35"/>
+<text x="426.3" y="668.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">next layer, outside the window</text>
+<rect x="650.82" y="657.00" width="22.00" height="12.00" rx="2" fill="#f1f3f6" stroke="#b8c1cd" stroke-width="1" fill-opacity="1"/>
+<text x="678.8" y="668.0" font-size="14" font-weight="400" fill="#7a8699" text-anchor="start">measured window</text>
+</svg>

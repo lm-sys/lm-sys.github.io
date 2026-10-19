@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+<title id="title">External kernel libraries and SGLang</title>
+<desc id="desc">AMD Mono and NVIDIA Mega provide model specifications, weight preparation and specialized kernels. SGLang registers the kernels, validates compatibility, installs forward dispatch and binds weights, then coordinates specialized and general execution in ModelRunner.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10" fill="#8190a4"/></marker></defs>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#26364c;font-size:22px}.heading{font-size:28px;font-weight:700}.library{font-size:24px;font-weight:700}.arrow{fill:none;stroke:#8190a4;stroke-width:2;marker-end:url(#arrow)}.line{fill:none;stroke:#8190a4;stroke-width:2}</style>
+<rect width="1200" height="700" fill="white"/>
+<rect x="20" y="20" width="310" height="660" rx="8" fill="#f2eff8" stroke="#dcd5e9"/>
+<rect x="370" y="20" width="810" height="660" rx="8" fill="#f1f5f9" stroke="#d5dee9"/>
+<text x="44" y="69" class="heading">External Libraries</text>
+<text x="398" y="69" class="heading">SGLang</text>
+<!-- External implementations -->
+<rect x="44" y="112" width="122" height="82" rx="5" fill="white" stroke="#dcd5e9"/>
+<rect x="184" y="112" width="122" height="82" rx="5" fill="white" stroke="#dcd5e9"/>
+<text x="105" y="146" text-anchor="middle" class="library">AMD</text>
+<text x="105" y="176" text-anchor="middle" class="library">Mono</text>
+<text x="245" y="146" text-anchor="middle" class="library">NVIDIA</text>
+<text x="245" y="176" text-anchor="middle" class="library">Mega</text>
+<path d="M105 194 V220 H245 V194 M175 220 V246" class="line"/>
+<rect x="44" y="246" width="262" height="328" rx="6" fill="#e9e3f2"/>
+<rect x="62" y="266" width="226" height="82" rx="5" fill="white" stroke="#dcd5e9"/>
+<text x="175" y="315" text-anchor="middle">Model Spec</text>
+<rect x="62" y="369" width="226" height="82" rx="5" fill="white" stroke="#dcd5e9"/>
+<text x="175" y="418" text-anchor="middle">Weight Preparation</text>
+<rect x="62" y="472" width="226" height="82" rx="5" fill="white" stroke="#dcd5e9"/>
+<text x="175" y="521" text-anchor="middle">Specialized Kernels</text>
+<path d="M288 307 H350 V153 H398" class="arrow"/>
+<!-- Equal-height, aligned integration stages -->
+<rect x="398" y="112" width="754" height="82" rx="5" fill="white" stroke="#d0dae6"/>
+<text x="420" y="161" style="font-size:20.5px"><tspan font-weight="700">Register:</tspan> Register model-specific kernels from external libraries.</text>
+<path d="M775 194 V232" class="arrow"/>
+<rect x="398" y="232" width="754" height="82" rx="5" fill="white" stroke="#d0dae6"/>
+<text x="420" y="281" style="font-size:20.5px"><tspan font-weight="700">Guard:</tspan> Validate hardware/configuration compatibility.</text>
+<path d="M775 314 V352" class="arrow"/>
+<rect x="398" y="352" width="754" height="82" rx="5" fill="white" stroke="#d0dae6"/>
+<text x="420" y="401" style="font-size:20.5px"><tspan font-weight="700">Build:</tspan> Install forward dispatch and bind weights.</text>
+<path d="M775 434 V472" class="arrow"/>
+<rect x="398" y="472" width="754" height="82" rx="5" fill="white" stroke="#d0dae6"/>
+<text x="420" y="521" style="font-size:20.5px"><tspan font-weight="700">Runtime:</tspan> Coordinate plugin and native execution in SGLang’s ModelRunner.</text>
+<!-- Execution paths -->
+<path d="M775 554 V579 H579 V606" class="arrow"/>
+<path d="M775 579 H971 V606" class="arrow"/>
+<rect x="398" y="606" width="362" height="50" rx="5" fill="#e4f0e9" stroke="#c5dace"/>
+<rect x="784" y="606" width="368" height="50" rx="5" fill="#e6ecf4" stroke="#d0dae6"/>
+<text x="579" y="638" text-anchor="middle" style="font-size:20px"><tspan font-weight="700">Plugin:</tspan> Specialized Forward</text>
+<text x="968" y="638" text-anchor="middle" style="font-size:20px"><tspan font-weight="700">Native:</tspan> SGLang General Forward</text>
+</svg>
