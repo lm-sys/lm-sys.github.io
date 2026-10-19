@@ -16,7 +16,7 @@ type: blog
 .article:has(#kernels-for-low-latency-inference) h4 .anchor svg { display: none; }
 </style>
 
-Low-latency inference offers many opportunities for optimizations tailored to specific models, hardware and workloads. These optimizations often require extensive kernel fusion and duplicate code across implementations, making them difficult to maintain. To support this specialization, we introduce **SGLang Low-Latency Mode**. It brings specialized kernels into SGLang through a plugin framework and delivers substantial latency reductions on both NVIDIA and AMD GPUs. In AgentX trace replay, these optimizations improve P90 per-user token generation speed by up to **1.38× on NVIDIA GB300** and **1.56× on AMD MI355X** compared with the respective SGLang baselines.
+Low-latency inference offers many opportunities for optimizations tailored to specific models, hardware and workloads. These optimizations often require extensive kernel fusion and duplicate code across implementations, making them difficult to maintain. To support this specialization, we introduce **SGLang Low-Latency Mode**. It brings specialized kernels into SGLang through a plugin framework and delivers substantial latency reductions on both NVIDIA and AMD GPUs. In AgentX trace replay on four NVIDIA GB300 GPUs, P90 per-user token generation speed increases from **671.2 to 928.4 tokens/s (1.38×)** at one concurrent session. On four AMD MI355X GPUs, it increases from **331.6 to 516.0 tokens/s (1.56×)** at four concurrent sessions. Each result compares low-latency mode with the SGLang baseline on the same hardware.
 
 ![AgentX performance on NVIDIA GB300 and AMD MI355X at 1, 4 and 8 concurrent sessions.](/images/blog/sglang-vendor-kernel-runtime/figure-1.svg)
 
