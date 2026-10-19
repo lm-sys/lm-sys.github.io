@@ -141,7 +141,7 @@ This design lets kernel teams ship focused optimizations without adding every sp
 
 ### Broader Model Support
 
-Megakernel development is underway for GLM-5.3, K3, MiniMax M3 and other models on both NVIDIA and AMD GPUs. We plan to integrate these implementations into the plugin framework as they become ready. These low-latency kernels show promising potential for further performance improvements.
+Megakernel/Monokernel development is underway for GLM-5.3, K3, MiniMax M3 and other models on both NVIDIA and AMD GPUs. We plan to integrate these implementations into the plugin framework as they become ready. These low-latency kernels show promising potential for further performance improvements.
 
 ### CI and Performance Validation
 
