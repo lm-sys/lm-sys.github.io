@@ -12,25 +12,27 @@
 <text x="145" y="160" font-size="18" text-anchor="start" font-weight="400">Baseline</text>
 <rect x="280" y="145" width="18" height="18" fill="#2878ce"/>
 <text x="307" y="160" font-size="18" text-anchor="start" font-weight="400">Low-Latency Mode</text>
-<line x1="676" x2="1170" y1="450.0" y2="450.0" stroke="#e3e8ee"/>
-<text x="664" y="456.0" font-size="17" text-anchor="end" font-weight="400">0</text>
-<line x1="676" x2="1170" y1="372.0" y2="372.0" stroke="#e3e8ee"/>
-<text x="664" y="378.0" font-size="17" text-anchor="end" font-weight="400">200</text>
-<line x1="676" x2="1170" y1="294.0" y2="294.0" stroke="#e3e8ee"/>
-<text x="664" y="300.0" font-size="17" text-anchor="end" font-weight="400">400</text>
-<line x1="676" x2="1170" y1="216.0" y2="216.0" stroke="#e3e8ee"/>
-<text x="664" y="222.0" font-size="17" text-anchor="end" font-weight="400">600</text>
-<rect x="714" y="291.46500000000003" width="42" height="158.535" fill="#a8b5c6"/>
-<rect x="764" y="211.983" width="42" height="238.017" fill="#2878ce"/>
-<text x="785" y="197.983" font-size="22" text-anchor="middle" font-weight="700" style="fill:#2168b1">1.50×</text>
+<line x1="676" x2="1170" y1="450" y2="450" stroke="#e3e8ee"/>
+<text x="664" y="456" font-size="17" text-anchor="end" font-weight="400">0</text>
+<line x1="676" x2="1170" y1="391.5" y2="391.5" stroke="#e3e8ee"/>
+<text x="664" y="397.5" font-size="17" text-anchor="end" font-weight="400">250</text>
+<line x1="676" x2="1170" y1="333" y2="333" stroke="#e3e8ee"/>
+<text x="664" y="339" font-size="17" text-anchor="end" font-weight="400">500</text>
+<line x1="676" x2="1170" y1="274.5" y2="274.5" stroke="#e3e8ee"/>
+<text x="664" y="280.5" font-size="17" text-anchor="end" font-weight="400">750</text>
+<line x1="676" x2="1170" y1="216" y2="216" stroke="#e3e8ee"/>
+<text x="664" y="222" font-size="17" text-anchor="end" font-weight="400">1000</text>
+<rect x="714" y="354.879" width="42" height="95.121" fill="#a8b5c6"/>
+<rect x="764" y="307.190" width="42" height="142.810" fill="#2878ce"/>
+<text x="785" y="293.190" font-size="22" text-anchor="middle" font-weight="700" style="fill:#2168b1">1.50×</text>
 <text x="760" y="480" font-size="20" text-anchor="middle" font-weight="400">1</text>
-<rect x="879" y="320.676" width="42" height="129.324" fill="#a8b5c6"/>
-<rect x="929" y="248.76" width="42" height="201.24" fill="#2878ce"/>
-<text x="950" y="234.76" font-size="22" text-anchor="middle" font-weight="700" style="fill:#2168b1">1.56×</text>
+<rect x="879" y="372.406" width="42" height="77.594" fill="#a8b5c6"/>
+<rect x="929" y="329.256" width="42" height="120.744" fill="#2878ce"/>
+<text x="950" y="315.256" font-size="22" text-anchor="middle" font-weight="700" style="fill:#2168b1">1.56×</text>
 <text x="925" y="480" font-size="20" text-anchor="middle" font-weight="400">4</text>
-<rect x="1044" y="339.942" width="42" height="110.05799999999999" fill="#a8b5c6"/>
-<rect x="1094" y="290.139" width="42" height="159.861" fill="#2878ce"/>
-<text x="1115" y="276.139" font-size="22" text-anchor="middle" font-weight="700" style="fill:#2168b1">1.45×</text>
+<rect x="1044" y="383.965" width="42" height="66.035" fill="#a8b5c6"/>
+<rect x="1094" y="354.083" width="42" height="95.917" fill="#2878ce"/>
+<text x="1115" y="340.083" font-size="22" text-anchor="middle" font-weight="700" style="fill:#2168b1">1.45×</text>
 <text x="1090" y="480" font-size="20" text-anchor="middle" font-weight="400">8</text>
 <text x="925" y="514" font-size="19" text-anchor="middle" font-weight="400">Concurrent sessions</text>
 <text x="76" y="124" font-size="18" text-anchor="start" font-weight="400">P90 tokens/s per user</text>
