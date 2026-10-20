@@ -42,7 +42,7 @@ Google built TorchTPU and worked with us on the TPU backend itself, from Pallas 
 
 ![The SGLang-TorchTPU stack: SGLang core (API server, router, scheduler, RadixAttention, model code) on top of the sglang-tpu plugin (TPU layers, Pallas kernels, KV cache pools, TPU Sync), on top of TorchTPU (tpu device, torch.compile + XLA, torch.distributed), on Cloud TPU v7x.](/images/blog/sglang-torchtpu/stack.png)
 
-*Figure 1: The SGLang-TorchTPU stack.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 1: The SGLang-TorchTPU stack.</p>
 
 Each device runs its own PyTorch process, so SGLang's scheduler, RadixAttention and API server run unchanged. The TPU work sits underneath them. The KV cache lives in a paged pool laid out for Pallas ragged paged attention, with FP8 KV by default, and Pallas kernels for attention and MoE grouped matmul are called as PyTorch custom ops inside the torch.compile graph. All of it ships as the sglang-tpu plugin, which SGLang loads when you pass `--device tpu`.
 
@@ -50,7 +50,7 @@ KV cache transfers between TPU devices and host memory can run on [TPU Sync](htt
 
 ![KV cache transfer with TPU Sync: in prefill-decode disaggregation, KV moves chunk by chunk from prefill (TP 16) to decode (TP 8); in KV cache offloading, KV is evicted from TPU HBM to host memory and reloaded.](/images/blog/sglang-torchtpu/kv-transfer.png)
 
-*Figure 2: KV cache transfer with TPU Sync.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 2: KV cache transfer with TPU Sync.</p>
 
 ## Feature and model coverage
 
@@ -93,7 +93,7 @@ Reliability is designed into how SGLang-TorchTPU is built. Every model and featu
 
 ![SGLang-TorchTPU support tiers: Experimental moves to Supported with a nightly test, and Supported moves to Optimized with accuracy and performance tests, all on TPU v7x every PR and every night.](/images/blog/sglang-torchtpu/ci-tiers.png)
 
-*Figure 3: How models and features move through the support tiers.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 3: How models and features move through the support tiers.</p>
 
 Pull requests run a TPU suite on a single-host TPU v7x slice, and together with nightly suites, CI covers 15 models on single-host and multi-host TPU v7x, with 193 TPU tests registered today. They check:
 
@@ -104,40 +104,40 @@ Pull requests run a TPU suite on a single-host TPU v7x slice, and together with 
 - Multi-host execution and PD disaggregation, including KV resharding
 - Agentic tool-call workloads on multi-host deployments
 
+If a model or feature is marked supported, it has passed these tests on TPU v7x and is retested every night, so regressions show up in CI before they reach production.
+
 ## Training with TPU on Miles
 
 Serving is half of the loop. To train models with reinforcement learning (RL), the same GPU-or-TPU choice has to hold for the trainer too, so we ran end-to-end RL training on TPU with the same PyTorch stack.
 
-The trainer is TorchTitan, PyTorch's native training library, running on TorchTPU with no TPU-specific model code. As in serving, each TPU device runs its own PyTorch process. [Miles](https://github.com/radixark/miles) (RadixArk's RL framework) ties the two sides together. SGLang-TorchTPU generates rollouts and TorchTitan trains on them. After each step, or every few steps, Miles syncs the new weights from the trainer to the engine.
+The trainer is TorchTitan, PyTorch's native training library, running on TorchTPU with no TPU-specific model code. As in serving, each TPU device runs its own PyTorch process. [Miles](https://github.com/radixark/miles), RadixArk's RL framework, ties the two sides together: SGLang-TorchTPU generates rollouts, TorchTitan trains on them, and after each step, or every few steps, Miles syncs the new weights from the trainer to the engine.
 
 ![RL training with Miles on one TPU v7x host: SGLang-TorchTPU generates rollouts on 2 chips, TorchTitan trains on 2 chips, and new weights move back to the engine through shared memory, disk or ICI (planned).](/images/blog/sglang-torchtpu/miles-rl.png)
 
-*Figure 4: RL training with Miles on one TPU v7x host.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 4: RL training with Miles on one TPU v7x host.</p>
 
 Miles can move the new weights from the trainer to the engine in three ways:
 
-- **Shared memory (today):** the trainer and engine are on one host; this is what our runs use.
-- **Disk:** writes a full checkpoint that the engine reloads; it works across hosts but is the slowest.
-- **ICI (planned):** moves weights device to device over the TPU interconnect; our test measured it about 50x faster than shared memory.
+- Shared memory, when the trainer and engine are on one host. This is what our runs use today.
+- Disk, by writing a full checkpoint that the engine reloads. It works across hosts but is the slowest.
+- ICI (planned), moving weights device to device over the TPU interconnect. Our test measured it about 50x faster than shared memory.
 
-We trained Qwen3-4B with GRPO on DAPO-Math-17k on a single TPU v7x host with 4 chips: half for the trainer, half for rollouts. As the reference, we ran the same recipe and hyperparameters on 6 H200 GPUs. Each platform ran two seeds for a parity check.
+We trained Qwen3-4B with GRPO on DAPO-Math-17k on a single TPU v7x host with 4 chips: half for the trainer, half for rollouts. As the reference, we ran the same recipe and hyperparameters on 6 H200 GPUs, with two seeds on each platform to check parity.
 
 ![Qwen3-4B GRPO on DAPO-Math-17k: 6x H200 GPU vs. 4 TPU v7x chips](/images/blog/sglang-torchtpu/qwen3-4b-grpo-tpu-vs-gpu.png)
 
-*Figure 5: Qwen3-4B GRPO on DAPO-Math-17k, 6x H200 GPUs vs. 4 TPU v7x chips.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 5: Qwen3-4B GRPO on DAPO-Math-17k, 6x H200 GPUs vs. 4 TPU v7x chips.</p>
 
 Reward and response length curves on TPU match GPU within seed-to-seed variation, and AIME-24 stays within eval noise.
 
-Limitations today and the plan ahead:
+Miles TPU training is in preview. This small-scale experiment demonstrates an end-to-end RL workflow on TPU, with early learning behavior similar to the GPU baseline. Next, we plan to work on:
 
-Miles TPU training is in preview. We demonstrate an end-to-end RL workflow and similar early learning behavior to a GPU baseline in a small-scale experiment.
-
-- **More models:** larger dense models and MoE models such as Qwen3-30B-A3B, with routing replay.
-- **Multi-host training:** scaling beyond a single TPU v7x host.
-- **Faster weight transfer:** syncing weights over ICI instead of host shared memory.
-- **Performance:** closing the step-time gap with GPU.
-- **Larger-scale validation:** parity checks on longer runs and long-horizon agentic tasks.
-- **Training and inference consistency:** bitwise-identical log-probs between training and inference.
+- More models, including larger dense models and MoE models such as Qwen3-30B-A3B with routing replay
+- Multi-host training, scaling beyond a single TPU v7x host
+- Faster weight transfer, syncing weights over ICI instead of host shared memory
+- Performance, closing the step-time gap with GPU
+- Larger-scale validation, with parity checks on longer runs and long-horizon agentic tasks
+- Training and inference consistency, with bitwise-identical log-probs between the two
 
 ## Get started
 
