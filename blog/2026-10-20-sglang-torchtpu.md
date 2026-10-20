@@ -12,9 +12,9 @@ type: blog
 
 - SGLang-TorchTPU is open source today, built by the SGLang team at RadixArk in collaboration with Google and Meta.
 - Launch models include: Muse Spark Open, GLM-5.3 Flash, GLM-5.3, Kimi K3, DeepSeek V4, Ling 3.1 Flash, Qwen3.8, Gemma 4 and MiniMax H3.
-- Production-ready for agentic workloads and large-model serving.
-- Already running in production at Meta.
-- Can serve as the rollout engine for RL training on TPU, paired with TorchTitan through Miles.
+- Its plugin design brings SGLang's production features to large agentic workloads on TPU.
+- Already in production at Meta.
+- Enables RL training on TPU with TorchTitan in Miles.
 
 ## Introduction
 
