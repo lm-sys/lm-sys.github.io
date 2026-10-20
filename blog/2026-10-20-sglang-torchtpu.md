@@ -72,7 +72,7 @@ We have been working hard to bring the most popular open models to TPU at launch
 
 Also supported: gpt-oss, Qwen3-Coder-480B, Qwen3.5, DeepSeek-V3.1 and R1, Kimi-K2.6, MiMo-V2.5-Pro and Qwen3-VL.
 
-We will keep adding new models and optimizing the ones already supported, starting with DeepSeek V4.1 Flash and Reflection Beam. Starting in Q1 2027, we aim to support new open models on TPU from Day 0.
+We will keep adding new models and optimizing the ones already supported, with DeepSeek V4.1 Flash and Reflection Beam coming next. From Q1 2027, our goal is Day 0 TPU support for new open models.
 
 The full list, with support tiers and per-model notes, is in [SUPPORT.md](https://github.com/sgl-project/sglang-torchtpu/blob/main/SUPPORT.md).
 
