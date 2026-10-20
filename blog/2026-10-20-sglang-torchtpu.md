@@ -36,7 +36,7 @@ Google built TorchTPU and worked with us on the TPU backend itself, from Pallas 
 
 > "SGLang-TorchTPU is running in production at Meta today, and getting there was a close three-way collaboration between Meta, Google, and the SGLang team to make the stack production-ready. It gives us a remarkably mature, PyTorch-native serving stack that integrates effortlessly into our existing AI infrastructure, with the performance, reliability, and flexibility we need to run frontier workloads efficiently on TPUs."
 >
-> <strong style="font-style: normal;">Zongwei Zhou, Meta</strong>
+> <strong style="font-style: normal;">Zongwei Zhou, PyTorch-TPU Lead, Meta</strong>
 
 ## How it works
 
