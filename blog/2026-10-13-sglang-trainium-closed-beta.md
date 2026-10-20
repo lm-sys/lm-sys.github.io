@@ -1,0 +1,51 @@
+---
+title: "Announcing the SGLang AWS Trainium Plugin Closed Beta"
+author: "The SGLang Team"
+date: "October 13, 2026"
+previewImg: /images/blog/2026-10-13-sglang-trainium-closed-beta/cover.png
+type: news
+excerpt: "In collaboration with AWS and alongside the TorchNeuron launch, we are announcing the closed beta of the SGLang Trainium plugin, enabling both inference serving and RL rollouts on AWS Trainium."
+---
+
+Over the past year, we have continued to expand the hardware SGLang supports, alongside launch-day support for new open models and RL rollouts in [Miles](https://github.com/radixark/miles). Now, we are collaborating with AWS to bring SGLang to AWS Trainium.
+
+As frontier AI moves toward heterogeneous hardware, AWS Trainium represents a unique opportunity. Purpose-built by AWS for AI and available at scale in the cloud, Trainium is designed to deliver strong price-performance for high-volume workloads. Open-model serving and RL rollout generation are prime examples: both run continuously, and cost per token directly determines how much capacity teams can deploy. Our goal is to make SGLang a first-class option for running these workloads on Trainium.
+
+In close collaboration with AWS, and in conjunction with the TorchNeuron launch, we are announcing the closed beta of the **SGLang Trainium plugin**, built on the newly released TorchNeuron. The beta enables both inference serving and RL rollouts on Trainium.
+
+## Built on TorchNeuron from the start
+
+TorchNeuron is AWS's native PyTorch backend for Trainium. We began building SGLang's Neuron backend on TorchNeuron during its private preview, and that decision shaped the entire effort.
+
+Because TorchNeuron is native PyTorch, SGLang's model components and core abstractions carried over to Trainium largely intact. Models on Trainium are served through the same interface developers already use on GPUs, allowing teams to move workloads between GPUs and Trainium with minimal changes.
+
+For additional performance, NKI (the Neuron Kernel Interface) enables us to write custom Trainium kernels within the PyTorch workflow. For an open-source project spanning many hardware platforms, this gives contributors a familiar programming model, along with low-level hardware control where performance requires it.
+
+## What's in the closed beta
+
+The beta supports two workloads on AWS Trainium2 and Trainium3: LLM inference serving and RL rollout generation for post-training. Initial coverage includes:
+
+- **Models:** Qwen3 (dense), Qwen3-MoE-30B-A3B, DeepSeek-V2-Lite, and GLM-4, with support for more large frontier models in progress.
+- **Features:** Data Parallel / Tensor Parallel / Expert Parallel, Radix Cache, BF16 / FP8, Async scheduler.
+- **RL rollouts:** SGLang on Trainium as the rollout engine for heterogeneous RL pipelines, described below.
+
+We will expand model and feature coverage over the course of the beta, with broader availability planned for later this year.
+
+## Early preview: heterogeneous RL
+
+In addition to inference serving, Trainium enables a new configuration for RL post-training. Each RL step consists of two distinct phases: rollout generation, an inference workload dominated by decoding, and policy updates, a training workload. Most teams run both phases on the same GPU cluster, but they place different demands on hardware.
+
+The SGLang Trainium plugin allows these phases to run on different hardware. In our first end-to-end run, SGLang generated rollouts for Qwen3-MoE-30B-A3B on Trainium3, while [Miles](https://github.com/radixark/miles), our RL post-training framework, trained the GRPO policy with Megatron on a single H200 node. Miles connects to SGLang on Trainium as an external rollout engine, and the setup completed a stable training run.
+
+This approach gives teams greater flexibility in planning RL capacity. Hardware can be selected for each phase based on its price-performance, and rollout capacity on Trainium can scale independently of the GPU training footprint.
+
+This is an early milestone. We are currently measuring cost and throughput against an all-GPU baseline and will share the results in a forthcoming technical deep dive and at PyTorch Conference.
+
+## Join the closed beta
+
+The initial beta is limited to a small group of teams so that we can work closely with each participant. It is well suited to teams that:
+
+- Run, or plan to run, LLM inference on Trainium2 or Trainium3
+- Are interested in heterogeneous RL, with rollouts on Trainium and training on GPUs
+
+To request access, please [contact us](https://docs.google.com/forms/d/e/1FAIpQLSf-YWVXi6vA-rLBSqsovDFbn_KJtVi1dUlsRMXkiwvcVFsjWA/viewform).
