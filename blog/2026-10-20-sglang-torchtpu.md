@@ -6,7 +6,7 @@ previewImg: /images/blog/sglang-torchtpu/hero.png
 type: blog
 ---
 
-![SGLang-TorchTPU](/images/blog/sglang-torchtpu/hero.png)
+<img src="/images/blog/sglang-torchtpu/hero.png" alt="SGLang-TorchTPU" style="display:block; margin: 0 auto; width: 60%;"></img>
 
 ## TL;DR
 
@@ -30,9 +30,13 @@ TorchTPU makes TPU a native PyTorch device that runs eagerly or compiles through
 
 Google built TorchTPU and worked with us on the TPU backend itself, from Pallas kernels to the TPU Sync transfer path. The SGLang team at RadixArk built the serving runtime, its TPU integration and most of the model support. Meta engineers contributed compilation and disaggregated-serving work, and brought production workloads that shaped the engine from the start.
 
-> "As agentic workloads grow, serving efficiency matters more than ever, and developers want to get there on TPU without leaving PyTorch. Co-developing SGLang-TorchTPU with RadixArk and Meta gives them a production-ready engine for popular open models, with the cost efficiency of Cloud TPU," said Qi Zhou, Tech Lead on AI Inference, Google.
+> "As agentic workloads grow, serving efficiency matters more than ever, and developers want to get there on TPU without leaving PyTorch. Co-developing SGLang-TorchTPU with RadixArk and Meta gives them a production-ready engine for popular open models, with the cost efficiency of Cloud TPU."
+>
+> **Qi Zhou, Tech Lead on AI Inference, Google**
 
-> "SGLang-TorchTPU is running in production at Meta today, and getting there was a close three-way collaboration between Meta, Google, and the SGLang team to make the stack production-ready. It gives us a remarkably mature, PyTorch-native serving stack that integrates effortlessly into our existing AI infrastructure, with the performance, reliability, and flexibility we need to run frontier workloads efficiently on TPUs," said Zongwei Zhou, Meta.
+> "SGLang-TorchTPU is running in production at Meta today, and getting there was a close three-way collaboration between Meta, Google, and the SGLang team to make the stack production-ready. It gives us a remarkably mature, PyTorch-native serving stack that integrates effortlessly into our existing AI infrastructure, with the performance, reliability, and flexibility we need to run frontier workloads efficiently on TPUs."
+>
+> **Zongwei Zhou, Meta**
 
 ## How it works
 
@@ -93,8 +97,6 @@ Pull requests run a TPU suite on a single-host TPU v7x slice, and together with 
 - Prefix caching and KV cache offloading
 - Multi-host execution and PD disaggregation, including KV resharding
 - Agentic tool-call workloads on multi-host deployments
-
-Much of this testing runs on 64 TPU chips that Meta contributed to the project's CI. We are grateful for their support.
 
 ## Training with TPU on Miles
 
