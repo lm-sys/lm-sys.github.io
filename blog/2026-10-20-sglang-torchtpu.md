@@ -157,8 +157,8 @@ To install with pip or from source instead, see the [README](https://github.com/
 
 ## Community
 
-We are working toward Day 0 TPU support for new open models by Q1 2027. Here is how to get involved:
+We are working toward Day 0 TPU support for new open models by Q1 2027.
 
-- **Free TPU compute.** RadixArk is opening a [community TPU capacity pool](https://docs.google.com/forms/d/e/1FAIpQLSenGavH0yrQWfcaMnVbcTg9cPyPHxMZG2LUegYJUYfai828hA/viewform) for developers who contribute to [SGLang-TorchTPU](https://github.com/sgl-project/sglang-torchtpu).
-- **Questions and requests.** Join #torchtpu on the [SGLang Slack](https://slack.sglang.io), or open an issue on [GitHub](https://github.com/sgl-project/sglang-torchtpu) to request a model or propose a feature.
-- **SGLang Summit 2026.** Google, Meta and RadixArk will share more on November 12 to 13 at Fort Mason, San Francisco ([sglang.io/summit](https://sglang.io/summit)).
+- RadixArk is opening a [community TPU capacity pool](https://docs.google.com/forms/d/e/1FAIpQLSenGavH0yrQWfcaMnVbcTg9cPyPHxMZG2LUegYJUYfai828hA/viewform) with free compute for developers who contribute to [SGLang-TorchTPU](https://github.com/sgl-project/sglang-torchtpu).
+- To ask questions, join #torchtpu on the [SGLang Slack](https://slack.sglang.io). To request a model or propose a feature, open an issue on [GitHub](https://github.com/sgl-project/sglang-torchtpu).
+- Google, Meta and RadixArk will share more at SGLang Summit 2026, November 12 to 13 at Fort Mason, San Francisco ([sglang.io/summit](https://sglang.io/summit)).
