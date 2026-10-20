@@ -6,7 +6,7 @@ previewImg: /images/blog/sglang-torchtpu/hero.png
 type: blog
 ---
 
-<img src="/images/blog/sglang-torchtpu/hero.png" alt="SGLang-TorchTPU" style="display:block; margin: 0 auto; width: 60%;"></img>
+![SGLang-TorchTPU](/images/blog/sglang-torchtpu/banner.png)
 
 ## TL;DR
 
