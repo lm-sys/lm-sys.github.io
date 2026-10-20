@@ -32,11 +32,11 @@ Google built TorchTPU and worked with us on the TPU backend itself, from Pallas 
 
 > "As agentic workloads grow, serving efficiency matters more than ever, and developers want to get there on TPU without leaving PyTorch. Co-developing SGLang-TorchTPU with RadixArk and Meta gives them a production-ready engine for popular open models, with the cost efficiency of Cloud TPU."
 >
-> **Qi Zhou, Tech Lead on AI Inference, Google**
+> <strong style="font-style: normal;">Qi Zhou, Tech Lead on AI Inference, Google</strong>
 
 > "SGLang-TorchTPU is running in production at Meta today, and getting there was a close three-way collaboration between Meta, Google, and the SGLang team to make the stack production-ready. It gives us a remarkably mature, PyTorch-native serving stack that integrates effortlessly into our existing AI infrastructure, with the performance, reliability, and flexibility we need to run frontier workloads efficiently on TPUs."
 >
-> **Zongwei Zhou, Meta**
+> <strong style="font-style: normal;">Zongwei Zhou, Meta</strong>
 
 ## How it works
 
