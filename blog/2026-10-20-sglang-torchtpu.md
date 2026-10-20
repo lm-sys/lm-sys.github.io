@@ -104,6 +104,8 @@ Pull requests run a TPU suite on a single-host TPU v7x slice, and together with 
 - Multi-host execution and PD disaggregation, including KV resharding
 - Agentic tool-call workloads on multi-host deployments
 
+If a model or feature is marked supported, it has passed these tests on TPU v7x and is retested every night, so regressions show up in CI before they reach production.
+
 ## Training with TPU on Miles
 
 Serving is half of the loop. To train models with reinforcement learning (RL), the same GPU-or-TPU choice has to hold for the trainer too, so we ran end-to-end RL training on TPU with the same PyTorch stack.
