@@ -1,8 +1,8 @@
 ---
 title: "Announcing the SGLang AWS Trainium Plugin Closed Beta"
 author: "The SGLang Team"
-date: "October 13, 2026"
-previewImg: /images/blog/2026-10-13-sglang-trainium-closed-beta/cover.png
+date: "October 20, 2026"
+previewImg: /images/blog/2026-10-20-sglang-trainium-closed-beta/cover.png
 type: news
 excerpt: "In collaboration with AWS and alongside the TorchNeuron launch, we are announcing the closed beta of the SGLang Trainium plugin, enabling both inference serving and RL rollouts on AWS Trainium."
 ---
