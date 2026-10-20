@@ -42,7 +42,7 @@ Google built TorchTPU and worked with us on the TPU backend itself, from Pallas 
 
 ![The SGLang-TorchTPU stack: SGLang core (API server, router, scheduler, RadixAttention, model code) on top of the sglang-tpu plugin (TPU layers, Pallas kernels, KV cache pools, TPU Sync), on top of TorchTPU (tpu device, torch.compile + XLA, torch.distributed), on Cloud TPU v7x.](/images/blog/sglang-torchtpu/stack.png)
 
-*Figure 1: The SGLang-TorchTPU stack.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 1: The SGLang-TorchTPU stack.</p>
 
 Each device runs its own PyTorch process, so SGLang's scheduler, RadixAttention and API server run unchanged. The TPU work sits underneath them. The KV cache lives in a paged pool laid out for Pallas ragged paged attention, with FP8 KV by default, and Pallas kernels for attention and MoE grouped matmul are called as PyTorch custom ops inside the torch.compile graph. All of it ships as the sglang-tpu plugin, which SGLang loads when you pass `--device tpu`.
 
@@ -50,7 +50,7 @@ KV cache transfers between TPU devices and host memory can run on [TPU Sync](htt
 
 ![KV cache transfer with TPU Sync: in prefill-decode disaggregation, KV moves chunk by chunk from prefill (TP 16) to decode (TP 8); in KV cache offloading, KV is evicted from TPU HBM to host memory and reloaded.](/images/blog/sglang-torchtpu/kv-transfer.png)
 
-*Figure 2: KV cache transfer with TPU Sync.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 2: KV cache transfer with TPU Sync.</p>
 
 ## Feature and model coverage
 
@@ -93,7 +93,7 @@ Reliability is designed into how SGLang-TorchTPU is built. Every model and featu
 
 ![SGLang-TorchTPU support tiers: Experimental moves to Supported with a nightly test, and Supported moves to Optimized with accuracy and performance tests, all on TPU v7x every PR and every night.](/images/blog/sglang-torchtpu/ci-tiers.png)
 
-*Figure 3: How models and features move through the support tiers.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 3: How models and features move through the support tiers.</p>
 
 Pull requests run a TPU suite on a single-host TPU v7x slice, and together with nightly suites, CI covers 15 models on single-host and multi-host TPU v7x, with 193 TPU tests registered today. They check:
 
@@ -112,7 +112,7 @@ The trainer is TorchTitan, PyTorch's native training library, running on TorchTP
 
 ![RL training with Miles on one TPU v7x host: SGLang-TorchTPU generates rollouts on 2 chips, TorchTitan trains on 2 chips, and new weights move back to the engine through shared memory, disk or ICI (planned).](/images/blog/sglang-torchtpu/miles-rl.png)
 
-*Figure 4: RL training with Miles on one TPU v7x host.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 4: RL training with Miles on one TPU v7x host.</p>
 
 Miles can move the new weights from the trainer to the engine in three ways:
 
@@ -124,7 +124,7 @@ We trained Qwen3-4B with GRPO on DAPO-Math-17k on a single TPU v7x host with 4 c
 
 ![Qwen3-4B GRPO on DAPO-Math-17k: 6x H200 GPU vs. 4 TPU v7x chips](/images/blog/sglang-torchtpu/qwen3-4b-grpo-tpu-vs-gpu.png)
 
-*Figure 5: Qwen3-4B GRPO on DAPO-Math-17k, 6x H200 GPUs vs. 4 TPU v7x chips.*
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">Figure 5: Qwen3-4B GRPO on DAPO-Math-17k, 6x H200 GPUs vs. 4 TPU v7x chips.</p>
 
 Reward and response length curves on TPU match GPU within seed-to-seed variation, and AIME-24 stays within eval noise.
 
