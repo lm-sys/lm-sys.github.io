@@ -19,11 +19,9 @@ type: blog
 
 ## Introduction
 
-Today we are launching SGLang-TorchTPU, a native PyTorch backend that brings SGLang's full serving stack to Google Cloud TPU. It enables the same SGLang engine to serve models on both GPUs and TPUs, so you can pick the hardware that best fits each workload and its deployment economics.
+Today we are launching SGLang-TorchTPU, a native PyTorch backend that brings SGLang's full serving stack to Google Cloud TPU. SGLang's serving engine and model implementations are built on PyTorch, and with TorchTPU the same codebase serves on both GPUs and TPUs, so you can pick the hardware that best fits each workload and its deployment economics.
 
-## Why TorchTPU
-
-SGLang's serving engine and model implementations are built on PyTorch. With TorchTPU, the same codebase serves on both GPUs and TPUs, and TPU-specific components remain isolated in the plugin. New models and features added to SGLang could therefore become available on TPU through a single implementation.
+TPU-specific components remain isolated in the plugin. New models and features added to SGLang could therefore become available on TPU through a single implementation.
 
 ## How it works
 
@@ -42,18 +40,6 @@ When KV has to leave the device, for KV cache offloading to host memory or for p
 ![KV cache transfer with TPU Sync: decode pulls each prefill chunk while the next computes, so only the last chunk waits; TP 16 to TP 8 reshards strided KV heads; offload moves KV pages between TPU HBM and a host pool by DMA.](/images/blog/sglang-torchtpu/kv-transfer.png)
 
 <p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem;">Figure 2: KV cache transfer with TPU Sync.</p>
-
-## Built with Google and Meta
-
-SGLang-TorchTPU was developed jointly by Google, Meta and the SGLang team at RadixArk.
-
-> "As agentic workloads grow, serving efficiency matters more than ever, and developers want to get there on TPU without leaving PyTorch. Co-developing SGLang-TorchTPU with RadixArk and Meta gives them a production-ready engine for popular open models, with the cost efficiency of Cloud TPU."
->
-> <strong style="font-style: normal;">Qi Zhou, Tech Lead on AI Inference, Google</strong>
-
-> "SGLang-TorchTPU is running in production at Meta today, and getting there was a close three-way collaboration between Meta, Google, and the SGLang team to make the stack production-ready. It gives us a remarkably mature, PyTorch-native serving stack that integrates effortlessly into our existing AI infrastructure, with the performance, reliability, and flexibility we need to run frontier workloads efficiently on TPUs."
->
-> <strong style="font-style: normal;">Zongwei Zhou, PyTorch-TPU Lead, Meta</strong>
 
 ## Feature and model coverage
 
@@ -140,6 +126,18 @@ Miles TPU training is in preview. This small-scale experiment demonstrates an en
 - Performance, closing the step-time gap with GPU
 - Larger-scale validation, with parity checks on longer runs and long-horizon agentic tasks
 - Training and inference consistency, with bitwise-identical log-probs between the two
+
+## Built with Google and Meta
+
+SGLang-TorchTPU was developed jointly by Google, Meta and the SGLang team at RadixArk.
+
+> "As agentic workloads grow, serving efficiency matters more than ever, and developers want to get there on TPU without leaving PyTorch. Co-developing SGLang-TorchTPU with RadixArk and Meta gives them a production-ready engine for popular open models, with the cost efficiency of Cloud TPU."
+>
+> <strong style="font-style: normal;">Qi Zhou, Tech Lead on AI Inference, Google</strong>
+
+> "SGLang-TorchTPU is running in production at Meta today, and getting there was a close three-way collaboration between Meta, Google, and the SGLang team to make the stack production-ready. It gives us a remarkably mature, PyTorch-native serving stack that integrates effortlessly into our existing AI infrastructure, with the performance, reliability, and flexibility we need to run frontier workloads efficiently on TPUs."
+>
+> <strong style="font-style: normal;">Zongwei Zhou, PyTorch-TPU Lead, Meta</strong>
 
 ## Get started
 
