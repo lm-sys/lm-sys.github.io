@@ -23,8 +23,6 @@ Today we are launching SGLang-TorchTPU, a native PyTorch backend that brings SGL
 
 TPU-specific components remain isolated in the plugin. New models and features added to SGLang could therefore become available on TPU through a single implementation.
 
-SGLang-TorchTPU joins [SGLang-JAX](https://github.com/sgl-project/sglang-jax), SGLang's JAX-based engine for TPU, so TPU users can choose the framework that fits their stack.
-
 ## How it works
 
 ![SGLang core (scheduler, RadixAttention, API server) on top of the sglang-tpu plugin (Pallas ragged paged attention, paged KV cache pools, Pallas grouped matmul MoE, a graph runner that compiles once per bucket), on TorchTPU (one PyTorch process per TPU core, torch.compile to XLA), on Cloud TPU v7x.](/images/blog/sglang-torchtpu/stack.png)
@@ -167,5 +165,7 @@ To install with pip or from source, see the [README](https://github.com/sgl-proj
 RadixArk is offering free TPU compute to developers who contribute to SGLang-TorchTPU. [Apply for the community TPU capacity pool here](https://docs.google.com/forms/d/e/1FAIpQLSenGavH0yrQWfcaMnVbcTg9cPyPHxMZG2LUegYJUYfai828hA/viewform).
 
 For questions, join #torchtpu on the [SGLang Slack](https://slack.sglang.io). To request a model or propose a feature, [open an issue on GitHub](https://github.com/sgl-project/sglang-torchtpu/issues).
+
+[SGLang-JAX](https://github.com/sgl-project/sglang-jax) remains an important project for SGLang on TPU. It will continue to be maintained, supported and available for the community to use and adapt.
 
 Google, Meta and RadixArk will share more at [SGLang Summit 2026](https://sglang.io/summit), November 12 to 13 at Fort Mason, San Francisco.
