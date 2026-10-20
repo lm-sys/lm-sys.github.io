@@ -45,7 +45,7 @@ When KV has to leave the device, for KV cache offloading to host memory or for p
 
 ## Built with Google and Meta
 
-Google, Meta and the SGLang team at RadixArk built SGLang-TorchTPU together.
+SGLang-TorchTPU was developed jointly by Google, Meta and the SGLang team at RadixArk.
 
 > "As agentic workloads grow, serving efficiency matters more than ever, and developers want to get there on TPU without leaving PyTorch. Co-developing SGLang-TorchTPU with RadixArk and Meta gives them a production-ready engine for popular open models, with the cost efficiency of Cloud TPU."
 >
