@@ -23,6 +23,8 @@ Today we are launching SGLang-TorchTPU, a native PyTorch backend that brings SGL
 
 TPU-specific components remain isolated in the plugin. New models and features added to SGLang could therefore become available on TPU through a single implementation.
 
+SGLang-TorchTPU joins [SGLang-JAX](https://github.com/sgl-project/sglang-jax), SGLang's JAX-based engine for TPU, so TPU users can choose the framework that fits their stack.
+
 ## How it works
 
 ![SGLang core (scheduler, RadixAttention, API server) on top of the sglang-tpu plugin (Pallas ragged paged attention, paged KV cache pools, Pallas grouped matmul MoE, a graph runner that compiles once per bucket), on TorchTPU (one PyTorch process per TPU core, torch.compile to XLA), on Cloud TPU v7x.](/images/blog/sglang-torchtpu/stack.png)
@@ -43,7 +45,7 @@ When KV has to leave the device, for KV cache offloading to host memory or for p
 
 ## Feature and model coverage
 
-These are the SGLang serving features available on TPU at launch:
+These are the major SGLang serving features available on TPU at launch:
 
 | Area | Supported features |
 | --- | --- |
@@ -72,7 +74,7 @@ We have been working hard to bring the most popular open models to TPU at launch
 
 Also supported: gpt-oss, Qwen3-Coder-480B, Qwen3.5, DeepSeek-V3.1 and R1, Kimi-K2.6, MiMo-V2.5-Pro and Qwen3-VL.
 
-We will keep adding new models and optimizing the ones already supported, starting with DeepSeek V4.1 Flash and Reflection Beam, and we are working toward Day 0 TPU support for new open models by Q1 2027.
+We will keep adding new models and optimizing the ones already supported, starting with DeepSeek V4.1 Flash and Reflection Beam. Starting in Q1 2027, we aim to support new open models on TPU from Day 0.
 
 The full list, with support tiers and per-model notes, is in [SUPPORT.md](https://github.com/sgl-project/sglang-torchtpu/blob/main/SUPPORT.md).
 
