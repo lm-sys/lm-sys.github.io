@@ -43,7 +43,7 @@ When KV has to leave the device, for KV cache offloading to host memory or for p
 
 ## Feature and model coverage
 
-These are the SGLang serving features available on TPU at launch:
+These are the major SGLang serving features available on TPU at launch:
 
 | Area | Supported features |
 | --- | --- |
@@ -72,7 +72,7 @@ We have been working hard to bring the most popular open models to TPU at launch
 
 Also supported: gpt-oss, Qwen3-Coder-480B, Qwen3.5, DeepSeek-V3.1 and R1, Kimi-K2.6, MiMo-V2.5-Pro and Qwen3-VL.
 
-We will keep adding new models and optimizing the ones already supported, starting with DeepSeek V4.1 Flash and Reflection Beam, and we are working toward Day 0 TPU support for new open models by Q1 2027.
+We will keep adding new models and optimizing the ones already supported, with DeepSeek V4.1 Flash and Reflection Beam coming next. From Q1 2027, our goal is Day 0 TPU support for new open models.
 
 The full list, with support tiers and per-model notes, is in [SUPPORT.md](https://github.com/sgl-project/sglang-torchtpu/blob/main/SUPPORT.md).
 
@@ -166,4 +166,16 @@ RadixArk is offering free TPU compute to developers who contribute to SGLang-Tor
 
 For questions, join #torchtpu on the [SGLang Slack](https://slack.sglang.io). To request a model or propose a feature, [open an issue on GitHub](https://github.com/sgl-project/sglang-torchtpu/issues).
 
+[SGLang-JAX](https://github.com/sgl-project/sglang-jax) remains an important project for SGLang on TPU. It will continue to be maintained, supported and available for the community to use and adapt.
+
 Google, Meta and RadixArk will share more at [SGLang Summit 2026](https://sglang.io/summit), November 12 to 13 at Fort Mason, San Francisco.
+
+## Acknowledgments
+
+SGLang-TorchTPU was built and maintained by amazing people across RadixArk, Google and Meta.
+
+**RadixArk:** Haolin Fu, Qinghan Chen, Wenhao Zhang, Yunlong Liu, Alex Nails, Cheng Wan, Baizhou Zhang, Khoa Pham, Haoguang Cai, Mingyi Lu
+
+**Google:** Wangyuan Zhang, Yin Lin, Parker Holloway, Charles Chen, Jincheng Chen, Junyan Xu, Benliang Wang, Kai Maeda, Chintan Shah, Brittany Rockwell, Chris Chan, Qi Zhou
+
+**Meta:** Zongwei Zhou, Jongsok Choi, Richard Zou, Angela Yi, Chenran Li, Dunfan Lu, Frederik Gossen, Bangsheng Tang, Jaewon Lee, Yanning Chen, Chengji Yao, Chris Thi, Praj Bhargava, Ravieta Chinta, Rupeng Liu, Yejin Lee, Yichao Fu, Alban Desmaison
