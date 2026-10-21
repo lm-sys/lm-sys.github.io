@@ -174,8 +174,8 @@ Google, Meta and RadixArk will share more at [SGLang Summit 2026](https://sglang
 
 SGLang-TorchTPU was built and maintained by amazing people across RadixArk, Google and Meta.
 
-**RadixArk:** Haolin Fu, Qinghan Chen, Wenhao Zhang, Yunlong Liu, Alex Nails, Cheng Wan, Baizhou Zhang, Khoa Pham, Haoguang Cai, Mingyi Lu
+**RadixArk:** Haolin Fu, Qinghan Chen, Wenhao Zhang, Yunlong Liu, Alex Nails, Cheng Wan, Zhichen Zheng, Hejian Sang, Baizhou Zhang, Khoa Pham, Haoguang Cai, Mingyi Lu, Katherine Wang
 
-**Google:** Wangyuan Zhang, Yin Lin, Parker Holloway, Charles Chen, Jincheng Chen, Junyan Xu, Benliang Wang, Kai Maeda, Chintan Shah, Brittany Rockwell, Chris Chan, Qi Zhou
+**Google:** Wangyuan Zhang, Yin Lin, Parker Holloway, Charles Chen, Jincheng Chen, Junyan Xu, Benliang Wang, Kai Maeda, Chandra Devarakonda, Yixin Shi, Linkun Chen, Richard Liu, Chintan Shah, Brittany Rockwell, Chris Chan, Qi Zhou
 
 **Meta:** Zongwei Zhou, Jongsok Choi, Richard Zou, Angela Yi, Chenran Li, Dunfan Lu, Frederik Gossen, Bangsheng Tang, Jaewon Lee, Yanning Chen, Chengji Yao, Chris Thi, Praj Bhargava, Ravieta Chinta, Rupeng Liu, Yejin Lee, Yichao Fu, Alban Desmaison
