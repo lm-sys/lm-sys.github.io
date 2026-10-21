@@ -10,7 +10,7 @@ type: blog
 
 ## TL;DR
 
-- SGLang-TorchTPU is open source today, built by the SGLang team at RadixArk in collaboration with Google and Meta.
+- [SGLang-TorchTPU](https://github.com/sgl-project/sglang-torchtpu) is open source today, built by the SGLang team at RadixArk in collaboration with Google and Meta.
 - Launch models include Muse Spark Open, GLM-5.3 Flash, GLM-5.3, Kimi K3, DeepSeek V4, Ling 3.1 Flash, Qwen3.8, Gemma 4 and MiniMax H3.
 - The plugin brings the full SGLang feature set to TPU, ready for agentic workloads.
 - It is already proven in large-scale production at Meta.
