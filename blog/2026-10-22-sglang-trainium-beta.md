@@ -4,14 +4,14 @@ author: "The SGLang Team"
 date: "October 22, 2026"
 previewImg: /images/blog/2026-10-22-sglang-trainium-beta/cover.png
 type: news
-excerpt: "In collaboration with AWS and alongside the TorchNeuron launch, we are announcing the closed beta of the SGLang Trainium plugin, enabling both inference serving and RL rollouts on AWS Trainium."
+excerpt: "In collaboration with AWS and alongside the TorchNeuron launch, we are announcing the beta of the SGLang Trainium plugin, enabling both inference serving and RL rollouts on AWS Trainium."
 ---
 
 Over the past year, we have continued to expand the hardware SGLang supports, alongside launch-day support for new open models and RL rollouts in [Miles](https://github.com/radixark/miles). Now, we are collaborating with AWS to bring SGLang to [AWS Trainium](https://aws.amazon.com/ai/machine-learning/trainium/).
 
 As frontier AI moves toward heterogeneous hardware, AWS Trainium represents a unique opportunity. Purpose-built by AWS for AI and available at scale in the cloud, Trainium is designed to deliver strong price-performance for high-volume workloads. Open-model serving and RL rollout generation are prime examples: both run continuously, and cost per token directly determines how much capacity teams can deploy. Our goal is to make SGLang a first-class option for running these workloads on Trainium.
 
-In close collaboration with AWS, and in conjunction with the TorchNeuron launch, we are announcing the closed beta of the **SGLang Trainium plugin**, built on the newly released TorchNeuron. The beta enables both inference serving and RL rollouts on Trainium.
+In close collaboration with AWS, and in conjunction with the TorchNeuron launch, we are announcing the beta of the **SGLang Trainium plugin**, built on the newly released TorchNeuron. The beta enables both inference serving and RL rollouts on Trainium.
 
 ## Built on TorchNeuron from the start
 
