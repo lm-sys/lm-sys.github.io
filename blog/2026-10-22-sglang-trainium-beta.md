@@ -1,13 +1,13 @@
 ---
-title: "Announcing the SGLang AWS Trainium Plugin Closed Beta"
+title: "Announcing the SGLang AWS Trainium Plugin Beta"
 author: "The SGLang Team"
-date: "October 20, 2026"
-previewImg: /images/blog/2026-10-20-sglang-trainium-closed-beta/cover.png
+date: "October 22, 2026"
+previewImg: /images/blog/2026-10-22-sglang-trainium-beta/cover.png
 type: news
 excerpt: "In collaboration with AWS and alongside the TorchNeuron launch, we are announcing the closed beta of the SGLang Trainium plugin, enabling both inference serving and RL rollouts on AWS Trainium."
 ---
 
-Over the past year, we have continued to expand the hardware SGLang supports, alongside launch-day support for new open models and RL rollouts in [Miles](https://github.com/radixark/miles). Now, we are collaborating with AWS to bring SGLang to AWS Trainium.
+Over the past year, we have continued to expand the hardware SGLang supports, alongside launch-day support for new open models and RL rollouts in [Miles](https://github.com/radixark/miles). Now, we are collaborating with AWS to bring SGLang to [AWS Trainium](https://aws.amazon.com/ai/machine-learning/trainium/).
 
 As frontier AI moves toward heterogeneous hardware, AWS Trainium represents a unique opportunity. Purpose-built by AWS for AI and available at scale in the cloud, Trainium is designed to deliver strong price-performance for high-volume workloads. Open-model serving and RL rollout generation are prime examples: both run continuously, and cost per token directly determines how much capacity teams can deploy. Our goal is to make SGLang a first-class option for running these workloads on Trainium.
 
@@ -15,13 +15,13 @@ In close collaboration with AWS, and in conjunction with the TorchNeuron launch,
 
 ## Built on TorchNeuron from the start
 
-TorchNeuron is AWS's native PyTorch backend for Trainium. We began building SGLang's Neuron backend on TorchNeuron during its private preview, and that decision shaped the entire effort.
+[TorchNeuron](https://pytorch.org/blog/introducing-torchneuron-native-pytorch-backend-for-aws-trainium/) is AWS's native PyTorch backend for Trainium. We began building SGLang's Neuron backend on TorchNeuron during its private preview, and that decision shaped the entire effort.
 
 Because TorchNeuron is native PyTorch, SGLang's model components and core abstractions carried over to Trainium largely intact. Models on Trainium are served through the same interface developers already use on GPUs, allowing teams to move workloads between GPUs and Trainium with minimal changes.
 
-For additional performance, NKI (the Neuron Kernel Interface) enables us to write custom Trainium kernels within the PyTorch workflow. For an open-source project spanning many hardware platforms, this gives contributors a familiar programming model, along with low-level hardware control where performance requires it.
+For additional performance, [NKI (the Neuron Kernel Interface)](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/library/index.html) enables us to write custom Trainium kernels within the PyTorch workflow. For an open-source project spanning many hardware platforms, this gives contributors a familiar programming model, along with low-level hardware control where performance requires it.
 
-## What's in the closed beta
+## What's in the beta
 
 The beta supports two workloads on AWS Trainium2 and Trainium3: LLM inference serving and RL rollout generation for post-training. Initial coverage includes:
 
@@ -41,7 +41,7 @@ This approach gives teams greater flexibility in planning RL capacity. Hardware 
 
 This is an early milestone. We are currently measuring cost and throughput against an all-GPU baseline and will share the results in a forthcoming technical deep dive and at PyTorch Conference.
 
-## Join the closed beta
+## Join the beta
 
 The initial beta is limited to a small group of teams so that we can work closely with each participant. It is well suited to teams that:
 
