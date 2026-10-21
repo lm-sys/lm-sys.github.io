@@ -169,3 +169,13 @@ For questions, join #torchtpu on the [SGLang Slack](https://slack.sglang.io). To
 [SGLang-JAX](https://github.com/sgl-project/sglang-jax) remains an important project for SGLang on TPU. It will continue to be maintained, supported and available for the community to use and adapt.
 
 Google, Meta and RadixArk will share more at [SGLang Summit 2026](https://sglang.io/summit), November 12 to 13 at Fort Mason, San Francisco.
+
+## Acknowledgments
+
+SGLang-TorchTPU was built by engineers across RadixArk, Google and Meta.
+
+**RadixArk:** Haolin Fu, Qinghan Chen, Wenhao Zhang, Yunlong Liu, Alex Nails, Cheng Wan, Baizhou Zhang, Khoa Pham, Haoguang Cai, Mingyi Lu
+
+**Google:** Wangyuan Zhang, Yin Lin, Parker Holloway, Charles Chen, Jincheng Chen, Junyan Xu, Benliang Wang, Kai Maeda, Chintan Shah, Brittany Rockwell, Chris Chan, Qi Zhou
+
+**Meta:** Zongwei Zhou, Jongsok Choi, Richard Zou, Angela Yi, Chenran Li, Dunfan Lu, Frederik Gossen, Bangsheng Tang, Jaewon Lee, Yanning Chen, Chengji Yao, Chris Thi, Praj Bhargava, Ravieta Chinta, Rupeng Liu, Yejin Lee, Yichao Fu, Alban Desmaison
