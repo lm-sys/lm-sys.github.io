@@ -1,17 +1,17 @@
 ---
-title: "Announcing the SGLang AWS Trainium Plugin Private Beta"
+title: "Announcing the SGLang AWS Trainium Plugin Closed Beta"
 author: "The SGLang Team"
 date: "October 20, 2026"
-previewImg: /images/blog/2026-10-20-sglang-trainium-private-beta/cover.png
+previewImg: /images/blog/2026-10-20-sglang-trainium-closed-beta/cover.png
 type: news
-excerpt: "In collaboration with AWS and alongside the TorchNeuron launch, we are announcing the private beta of the SGLang Trainium plugin, enabling both inference serving and RL rollouts on AWS Trainium."
+excerpt: "In collaboration with AWS and alongside the TorchNeuron launch, we are announcing the closed beta of the SGLang Trainium plugin, enabling both inference serving and RL rollouts on AWS Trainium."
 ---
 
 Over the past year, we have continued to expand the hardware SGLang supports, alongside launch-day support for new open models and RL rollouts in [Miles](https://github.com/radixark/miles). Now, we are collaborating with AWS to bring SGLang to AWS Trainium.
 
 As frontier AI moves toward heterogeneous hardware, AWS Trainium represents a unique opportunity. Purpose-built by AWS for AI and available at scale in the cloud, Trainium is designed to deliver strong price-performance for high-volume workloads. Open-model serving and RL rollout generation are prime examples: both run continuously, and cost per token directly determines how much capacity teams can deploy. Our goal is to make SGLang a first-class option for running these workloads on Trainium.
 
-In close collaboration with AWS, and in conjunction with the TorchNeuron launch, we are announcing the private beta of the **SGLang Trainium plugin**, built on the newly released TorchNeuron. The beta enables both inference serving and RL rollouts on Trainium.
+In close collaboration with AWS, and in conjunction with the TorchNeuron launch, we are announcing the closed beta of the **SGLang Trainium plugin**, built on the newly released TorchNeuron. The beta enables both inference serving and RL rollouts on Trainium.
 
 ## Built on TorchNeuron from the start
 
@@ -21,7 +21,7 @@ Because TorchNeuron is native PyTorch, SGLang's model components and core abstra
 
 For additional performance, NKI (the Neuron Kernel Interface) enables us to write custom Trainium kernels within the PyTorch workflow. For an open-source project spanning many hardware platforms, this gives contributors a familiar programming model, along with low-level hardware control where performance requires it.
 
-## What's in the private beta
+## What's in the closed beta
 
 The beta supports two workloads on AWS Trainium2 and Trainium3: LLM inference serving and RL rollout generation for post-training. Initial coverage includes:
 
@@ -41,7 +41,7 @@ This approach gives teams greater flexibility in planning RL capacity. Hardware 
 
 This is an early milestone. We are currently measuring cost and throughput against an all-GPU baseline and will share the results in a forthcoming technical deep dive and at PyTorch Conference.
 
-## Join the private beta
+## Join the closed beta
 
 The initial beta is limited to a small group of teams so that we can work closely with each participant. It is well suited to teams that:
 
