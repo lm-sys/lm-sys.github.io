@@ -172,7 +172,7 @@ Google, Meta and RadixArk will share more at [SGLang Summit 2026](https://sglang
 
 ## Acknowledgments
 
-SGLang-TorchTPU was built by engineers across RadixArk, Google and Meta.
+SGLang-TorchTPU was built and maintained by amazing people across RadixArk, Google and Meta.
 
 **RadixArk:** Haolin Fu, Qinghan Chen, Wenhao Zhang, Yunlong Liu, Alex Nails, Cheng Wan, Baizhou Zhang, Khoa Pham, Haoguang Cai, Mingyi Lu
 
