@@ -25,7 +25,7 @@ For additional performance, [NKI (the Neuron Kernel Interface)](https://awsdocs-
 
 The beta supports two workloads on AWS Trainium2 and Trainium3: LLM inference serving and RL rollout generation for post-training. Initial coverage includes:
 
-- **Models:** Qwen3 (dense), Qwen3-MoE-30B-A3B, DeepSeek-V2-Lite, and GLM-4, with support for more large frontier models in progress.
+- **Models:** Qwen3 (dense), Qwen3-MoE-30B-A3B, DeepSeek-V2-Lite, GLM-4, and GLM-5.2/5.3, with support for more large frontier models in progress.
 - **Features:** Data Parallel / Tensor Parallel / Expert Parallel, Radix Cache, BF16 / FP8, Async scheduler.
 - **RL rollouts:** SGLang on Trainium as the rollout engine for heterogeneous RL pipelines, described below.
 
