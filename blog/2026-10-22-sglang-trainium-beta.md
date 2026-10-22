@@ -35,11 +35,11 @@ We will expand model and feature coverage over the course of the beta, with broa
 
 In addition to inference serving, Trainium enables a new configuration for RL post-training. Each RL step consists of two distinct phases: rollout generation, an inference workload dominated by decoding, and policy updates, a training workload. Most teams run both phases on the same GPU cluster, but they place different demands on hardware.
 
-The SGLang Trainium plugin allows these phases to run on different hardware. In our first end-to-end run, SGLang generated rollouts for Qwen3-MoE-30B-A3B on Trainium3, while [Miles](https://github.com/radixark/miles), our RL post-training framework, trained the GRPO policy with Megatron on a single H200 node. Miles connects to SGLang on Trainium as an external rollout engine, and the setup completed a stable training run.
+The SGLang Trainium plugin allows these phases to run on different hardware. In our first end-to-end run, SGLang generated rollouts for Qwen3-MoE-30B-A3B on Trainium3, while Miles, our RL post-training framework, trained the GRPO policy with Megatron on a single H200 node. Miles connects to SGLang on Trainium as an external rollout engine, and the setup completed a stable training run.
 
 This approach gives teams greater flexibility in planning RL capacity. Hardware can be selected for each phase based on its price-performance, and rollout capacity on Trainium can scale independently of the GPU training footprint.
 
-This is an early milestone. We are currently measuring cost and throughput against an all-GPU baseline and will share the results in a forthcoming technical deep dive and at PyTorch Conference.
+This is an early milestone. Performance work on Trainium is ongoing, and we will share updates at [SGLang Summit](https://www.sglang.io/summit) in November.
 
 ## Join the beta
 
