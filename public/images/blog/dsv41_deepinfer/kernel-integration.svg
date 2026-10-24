@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1392" height="555" viewBox="24 0 1392 555" role="img" aria-labelledby="title desc">
+<title id="title">Kernel Integration</title>
+<desc id="desc">MegaAttention, MegaMoE, MegaGate and Mega-mHC form the Mega series. FlashMLA, DeepGEMM, DeepEP, DeepSelect and TileLang kernels form the kernel libraries. Both groups are integrated into SGLang; the arrows show integration, not an execution pipeline.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#eb6834" stroke-width="1.6"/></marker></defs>
+<rect x="24" width="1392" height="555" fill="#fff"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#171717">
+<text x="720" y="55" text-anchor="middle" font-size="34" font-weight="600">Kernel Integration</text>
+<g text-anchor="middle" fill="#19599e">
+<text x="370" y="135" font-size="25" font-weight="600">Mega Kernels</text>
+<text x="230" y="210" font-size="29">MegaAttention</text>
+<text x="510" y="210" font-size="29">MegaMoE</text>
+<text x="230" y="278" font-size="29">MegaGate</text>
+<text x="510" y="278" font-size="29">Mega-mHC</text>
+</g>
+<g text-anchor="middle" fill="#287346">
+<text x="1070" y="135" font-size="25" font-weight="600">Kernel Libraries</text>
+<text x="930" y="203" font-size="27">FlashMLA</text>
+<text x="1210" y="203" font-size="27">DeepGEMM</text>
+<text x="930" y="259" font-size="27">DeepEP</text>
+<text x="1210" y="259" font-size="27">DeepSelect</text>
+<text x="1070" y="315" font-size="27">TileLang kernels</text>
+</g>
+<path d="M370 350 L620 414" fill="none" stroke="#eb6834" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1070 350 L820 414" fill="none" stroke="#eb6834" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="720" y="469" text-anchor="middle" font-size="48" font-weight="600" fill="#d65221">SGLang</text>
+<text x="720" y="510" text-anchor="middle" font-size="24" fill="#924321">All Integrated</text>
+</g></svg>
