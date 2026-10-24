@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1392" height="690" viewBox="24 0 1392 690" role="img" aria-labelledby="title desc">
+<title id="title">SGLang Serving Stack</title>
+<desc id="desc">Frontend and DeepSeek Recipe handle the API, prompt encoding and output parsing. Prefill and decode each have a local Unified Radix Tree, Linker and an L1 GPU cache. Linker connects L1 directly to configured shared L3 storage, without an L2 host tier. Prefill transfers KV to decode through Mooncake or NIXL.</desc>
+<defs>
+<marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2a78d6" stroke-width="1.6"/></marker>
+<marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#368354" stroke-width="1.6"/></marker>
+</defs>
+<rect x="24" width="1392" height="690" fill="#fff"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#171717">
+<text x="720" y="58" text-anchor="middle" font-size="34" font-weight="600">SGLang Serving Stack</text>
+<rect x="160" y="100" width="460" height="82" fill="#fff3eb"/>
+<rect x="820" y="100" width="460" height="82" fill="#f1f5fa"/>
+<text x="390" y="135" text-anchor="middle" font-size="28" font-weight="600" fill="#d65221">Frontend</text>
+<text x="390" y="164" text-anchor="middle" font-size="22" fill="#924321">OpenAI-Compatible API</text>
+<text x="1050" y="135" text-anchor="middle" font-size="28" font-weight="600" fill="#19599e">DeepSeek Recipe</text>
+<text x="1050" y="164" text-anchor="middle" font-size="22" fill="#52514e">Encode / Parse</text>
+<path d="M638 141 H802" fill="none" stroke="#2a78d6" stroke-width="2.2" marker-start="url(#blue-arrow)" marker-end="url(#blue-arrow)"/>
+<path d="M920 188 V222 H390 V260" fill="none" stroke="#2a78d6" stroke-width="2.2" marker-end="url(#blue-arrow)"/>
+<text x="645" y="211" text-anchor="middle" font-size="21" fill="#52514e">Input Tokens</text>
+<path d="M1130 260 V192" fill="none" stroke="#2a78d6" stroke-width="2.2" marker-end="url(#blue-arrow)"/>
+<text x="1150" y="232" font-size="21" fill="#52514e">Output Tokens</text>
+<rect x="160" y="274" width="460" height="242" fill="#f1f5fa"/>
+<text x="390" y="313" text-anchor="middle" font-size="30" font-weight="600" fill="#19599e">Prefill</text>
+<g fill="#4c9365" stroke="#368354" stroke-width="2">
+<path d="M390 337 V349 M345 361 V349 H435 V361 M390 349 V361" fill="none"/>
+<rect x="382" y="329" width="16" height="12" stroke="none"/>
+<rect x="337" y="359" width="16" height="12" stroke="none"/>
+<rect x="382" y="359" width="16" height="12" stroke="none"/>
+<rect x="427" y="359" width="16" height="12" stroke="none"/>
+</g>
+<text x="390" y="405" text-anchor="middle" font-size="26" font-weight="600" fill="#287346">Unified Radix Tree</text>
+<text x="390" y="438" text-anchor="middle" font-size="24" fill="#287346">Linker</text>
+<rect x="280" y="454" width="220" height="40" fill="#e9f2eb"/>
+<text x="390" y="482" text-anchor="middle" font-size="23" font-weight="600" fill="#287346">L1 GPU</text>
+<path d="M390 502 V559" fill="none" stroke="#368354" stroke-width="2.2" marker-start="url(#green-arrow)" marker-end="url(#green-arrow)"/>
+<rect x="820" y="274" width="460" height="242" fill="#f1f5fa"/>
+<text x="1050" y="313" text-anchor="middle" font-size="30" font-weight="600" fill="#19599e">Decode</text>
+<g fill="#4c9365" stroke="#368354" stroke-width="2">
+<path d="M1050 337 V349 M1005 361 V349 H1095 V361 M1050 349 V361" fill="none"/>
+<rect x="1042" y="329" width="16" height="12" stroke="none"/>
+<rect x="997" y="359" width="16" height="12" stroke="none"/>
+<rect x="1042" y="359" width="16" height="12" stroke="none"/>
+<rect x="1087" y="359" width="16" height="12" stroke="none"/>
+</g>
+<text x="1050" y="405" text-anchor="middle" font-size="26" font-weight="600" fill="#287346">Unified Radix Tree</text>
+<text x="1050" y="438" text-anchor="middle" font-size="24" fill="#287346">Linker</text>
+<rect x="940" y="454" width="220" height="40" fill="#e9f2eb"/>
+<text x="1050" y="482" text-anchor="middle" font-size="23" font-weight="600" fill="#287346">L1 GPU</text>
+<path d="M1050 502 V559" fill="none" stroke="#368354" stroke-width="2.2" marker-start="url(#green-arrow)" marker-end="url(#green-arrow)"/>
+<text x="720" y="342" text-anchor="middle" font-size="23" font-weight="600" fill="#19599e">KV Transfer</text>
+<text x="720" y="372" text-anchor="middle" font-size="20" fill="#52514e">Mooncake / NIXL</text>
+<path d="M638 394 H802" fill="none" stroke="#2a78d6" stroke-width="2.2" marker-end="url(#blue-arrow)"/>
+<rect x="160" y="572" width="1120" height="86" fill="#e9f2eb"/>
+<text x="720" y="608" text-anchor="middle" font-size="29" font-weight="600" fill="#287346">L3 Shared Storage</text>
+<text x="720" y="639" text-anchor="middle" font-size="23" fill="#287346">3FS / Mooncake / NIXL</text>
+</g></svg>
