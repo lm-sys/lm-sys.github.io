@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 562" role="img" aria-label="Complete Learner Throughput Across Repeated Runs"><style>text{font-family:Inter,Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#35513e} [data-tip]{cursor:default}</style><rect width="760" height="562" fill="white"/><text x="25" y="28" font-size="17" font-weight="600">Complete Learner Throughput Across Repeated Runs</text><g transform="translate(0 44)"><rect width="760" height="384" fill="white"></rect><text x="200" y="20" fill="#35513e" font-size="13">Complete learner throughput / tokens/s (higher is better)</text><line x1="200" y1="35" x2="200" y2="340" stroke="#dbe4dc"></line><text x="200" y="361" fill="#35513e" text-anchor="middle" font-size="12">0</text><line x1="316.25" y1="35" x2="316.25" y2="340" stroke="#dbe4dc"></line><text x="316.25" y="361" fill="#35513e" text-anchor="middle" font-size="12">10,340</text><line x1="432.5" y1="35" x2="432.5" y2="340" stroke="#dbe4dc"></line><text x="432.5" y="361" fill="#35513e" text-anchor="middle" font-size="12">20,679</text><line x1="548.75" y1="35" x2="548.75" y2="340" stroke="#dbe4dc"></line><text x="548.75" y="361" fill="#35513e" text-anchor="middle" font-size="12">31,019</text><line x1="665" y1="35" x2="665" y2="340" stroke="#dbe4dc"></line><text x="665" y="361" fill="#35513e" text-anchor="middle" font-size="12">41,359</text><text x="188" y="64" fill="#35513e" text-anchor="end" font-size="12">TE BF16</text><rect x="200" y="44" width="271.9954096031879" height="30" rx="4" fill="#64748b" opacity=".86" data-tip="TE BF16
+Trimmed mean of 10 independent runs: 24,192.1 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+Trimmed mean of 10 independent runs: 24,192.1 tokens/s"><title>TE BF16
+Trimmed mean of 10 independent runs: 24,192.1 tokens/s</title></rect><text x="743" y="64" fill="#35513e" font-size="12" text-anchor="end">24,192.1tokens/s</text><circle cx="487.209640210495" cy="48.2" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 0: 25,545.3 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 0: 25,545.3 tokens/s"><title>TE BF16
+trial 0: 25,545.3 tokens/s</title></circle><circle cx="475.8000915700167" cy="50.6" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 1: 24,530.5 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 1: 24,530.5 tokens/s"><title>TE BF16
+trial 1: 24,530.5 tokens/s</title></circle><circle cx="462.9199389068989" cy="53" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 2: 23,384.9 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 2: 23,384.9 tokens/s"><title>TE BF16
+trial 2: 23,384.9 tokens/s</title></circle><circle cx="467.61732698532995" cy="55.4" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 3: 23,802.7 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 3: 23,802.7 tokens/s"><title>TE BF16
+trial 3: 23,802.7 tokens/s</title></circle><circle cx="463.5079556529543" cy="57.8" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 4: 23,437.2 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 4: 23,437.2 tokens/s"><title>TE BF16
+trial 4: 23,437.2 tokens/s</title></circle><circle cx="484.3696205153976" cy="60.2" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 5: 25,292.7 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 5: 25,292.7 tokens/s"><title>TE BF16
+trial 5: 25,292.7 tokens/s</title></circle><circle cx="473.79431360641667" cy="62.6" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 6: 24,352.1 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 6: 24,352.1 tokens/s"><title>TE BF16
+trial 6: 24,352.1 tokens/s</title></circle><circle cx="455.5590485886873" cy="65" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 7: 22,730.2 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 7: 22,730.2 tokens/s"><title>TE BF16
+trial 7: 22,730.2 tokens/s</title></circle><circle cx="460.74551369299616" cy="67.4" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 8: 23,191.5 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 8: 23,191.5 tokens/s"><title>TE BF16
+trial 8: 23,191.5 tokens/s</title></circle><circle cx="495.44637191527863" cy="69.8" r="3.6" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16
+trial 9: 26,277.9 tokens/s" tabindex="0" role="img" aria-label="TE BF16
+trial 9: 26,277.9 tokens/s"><title>TE BF16
+trial 9: 26,277.9 tokens/s</title></circle><text x="188" y="122" fill="#35513e" text-anchor="end" font-size="12">TE NVFP4</text><rect x="200" y="102" width="261.8923149950545" height="30" rx="4" fill="#d18a35" opacity=".86" data-tip="TE NVFP4
+Trimmed mean of 10 independent runs: 23,293.5 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+Trimmed mean of 10 independent runs: 23,293.5 tokens/s"><title>TE NVFP4
+Trimmed mean of 10 independent runs: 23,293.5 tokens/s</title></rect><text x="743" y="122" fill="#35513e" font-size="12" text-anchor="end">23,293.5tokens/s</text><circle cx="490.78383760191014" cy="106.2" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 0: 25,863.2 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 0: 25,863.2 tokens/s"><title>TE NVFP4
+trial 0: 25,863.2 tokens/s</title></circle><circle cx="465.93535174231107" cy="108.6" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 1: 23,653.1 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 1: 23,653.1 tokens/s"><title>TE NVFP4
+trial 1: 23,653.1 tokens/s</title></circle><circle cx="461.8687043800121" cy="111" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 2: 23,291.4 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 2: 23,291.4 tokens/s"><title>TE NVFP4
+trial 2: 23,291.4 tokens/s</title></circle><circle cx="436.08141549372806" cy="113.4" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 3: 20,997.8 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 3: 20,997.8 tokens/s"><title>TE NVFP4
+trial 3: 20,997.8 tokens/s</title></circle><circle cx="463.9138333686828" cy="115.8" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 4: 23,473.3 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 4: 23,473.3 tokens/s"><title>TE NVFP4
+trial 4: 23,473.3 tokens/s</title></circle><circle cx="442.3292339599419" cy="118.2" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 5: 21,553.5 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 5: 21,553.5 tokens/s"><title>TE NVFP4
+trial 5: 21,553.5 tokens/s</title></circle><circle cx="451.6408108066547" cy="120.6" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 6: 22,381.7 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 6: 22,381.7 tokens/s"><title>TE NVFP4
+trial 6: 22,381.7 tokens/s</title></circle><circle cx="460.1462537969206" cy="123" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 7: 23,138.2 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 7: 23,138.2 tokens/s"><title>TE NVFP4
+trial 7: 23,138.2 tokens/s</title></circle><circle cx="499.8840432282435" cy="125.4" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 8: 26,672.6 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 8: 26,672.6 tokens/s"><title>TE NVFP4
+trial 8: 26,672.6 tokens/s</title></circle><circle cx="458.5193699890006" cy="127.8" r="3.6" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4
+trial 9: 22,993.5 tokens/s" tabindex="0" role="img" aria-label="TE NVFP4
+trial 9: 22,993.5 tokens/s"><title>TE NVFP4
+trial 9: 22,993.5 tokens/s</title></circle><text x="188" y="172" fill="#35513e" text-anchor="end" font-size="12">miniTE CUTLASS</text><text x="188" y="188" fill="#35513e" text-anchor="end" font-size="11">MXFP8 bwd</text><rect x="200" y="160" width="310.39413986710747" height="30" rx="4" fill="#309576" opacity=".86" data-tip="miniTE CUTLASS / MXFP8 bwd
+Trimmed mean of 10 independent runs: 27,607.4 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+Trimmed mean of 10 independent runs: 27,607.4 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+Trimmed mean of 10 independent runs: 27,607.4 tokens/s</title></rect><text x="743" y="180" fill="#35513e" font-size="12" text-anchor="end">27,607.4tokens/s</text><circle cx="538.0815211068018" cy="164.2" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 0: 30,070 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 0: 30,070 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 0: 30,070 tokens/s</title></circle><circle cx="512.2582541404532" cy="166.6" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 1: 27,773.2 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 1: 27,773.2 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 1: 27,773.2 tokens/s</title></circle><circle cx="509.20573890997446" cy="169" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 2: 27,501.7 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 2: 27,501.7 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 2: 27,501.7 tokens/s</title></circle><circle cx="479.56879545678095" cy="171.4" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 3: 24,865.7 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 3: 24,865.7 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 3: 24,865.7 tokens/s</title></circle><circle cx="498.52249776079975" cy="173.8" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 4: 26,551.5 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 4: 26,551.5 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 4: 26,551.5 tokens/s</title></circle><circle cx="512.1019743551727" cy="176.2" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 5: 27,759.3 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 5: 27,759.3 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 5: 27,759.3 tokens/s</title></circle><circle cx="498.036793679928" cy="178.6" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 6: 26,508.3 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 6: 26,508.3 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 6: 26,508.3 tokens/s</title></circle><circle cx="491.48765879317335" cy="181" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 7: 25,925.8 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 7: 25,925.8 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 7: 25,925.8 tokens/s</title></circle><circle cx="523.4541829305481" cy="183.4" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 8: 28,769 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 8: 28,769 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 8: 28,769 tokens/s</title></circle><circle cx="586.2291867532192" cy="185.8" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / MXFP8 bwd
+trial 9: 34,352.4 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / MXFP8 bwd
+trial 9: 34,352.4 tokens/s"><title>miniTE CUTLASS / MXFP8 bwd
+trial 9: 34,352.4 tokens/s</title></circle><text x="188" y="230" fill="#35513e" text-anchor="end" font-size="12">miniTE CUTLASS</text><text x="188" y="246" fill="#35513e" text-anchor="end" font-size="11">BF16 bwd</text><rect x="200" y="218" width="372.60024029875734" height="30" rx="4" fill="#309576" opacity=".86" data-tip="miniTE CUTLASS / BF16 bwd
+Trimmed mean of 10 independent runs: 33,140.2 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+Trimmed mean of 10 independent runs: 33,140.2 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+Trimmed mean of 10 independent runs: 33,140.2 tokens/s</title></rect><text x="743" y="238" fill="#35513e" font-size="12" text-anchor="end">33,140.2tokens/s</text><circle cx="550.7480539195362" cy="222.2" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 0: 31,196.6 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 0: 31,196.6 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 0: 31,196.6 tokens/s</title></circle><circle cx="589.7145632594747" cy="224.6" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 1: 34,662.4 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 1: 34,662.4 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 1: 34,662.4 tokens/s</title></circle><circle cx="574.26759944675" cy="227" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 2: 33,288.5 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 2: 33,288.5 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 2: 33,288.5 tokens/s</title></circle><circle cx="528.5102274946229" cy="229.4" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 3: 29,218.7 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 3: 29,218.7 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 3: 29,218.7 tokens/s</title></circle><circle cx="591.0041525667893" cy="231.8" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 4: 34,777.1 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 4: 34,777.1 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 4: 34,777.1 tokens/s</title></circle><circle cx="549.7631539777685" cy="234.2" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 5: 31,109 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 5: 31,109 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 5: 31,109 tokens/s</title></circle><circle cx="584.6810049954404" cy="236.6" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 6: 34,214.7 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 6: 34,214.7 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 6: 34,214.7 tokens/s</title></circle><circle cx="560.6633879223326" cy="239" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 7: 32,078.5 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 7: 32,078.5 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 7: 32,078.5 tokens/s</title></circle><circle cx="579.956633356961" cy="241.4" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 8: 33,794.5 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 8: 33,794.5 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 8: 33,794.5 tokens/s</title></circle><circle cx="607.8947368421053" cy="243.8" r="3.6" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS / BF16 bwd
+trial 9: 36,279.4 tokens/s" tabindex="0" role="img" aria-label="miniTE CUTLASS / BF16 bwd
+trial 9: 36,279.4 tokens/s"><title>miniTE CUTLASS / BF16 bwd
+trial 9: 36,279.4 tokens/s</title></circle><text x="188" y="288" fill="#35513e" text-anchor="end" font-size="12">miniTE per-token</text><text x="188" y="304" fill="#35513e" text-anchor="end" font-size="11">BF16 bwd</text><rect x="200" y="276" width="365.5878876311713" height="30" rx="4" fill="#537bb9" opacity=".86" data-tip="miniTE per-token / BF16 bwd
+Trimmed mean of 10 independent runs: 32,516.5 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+Trimmed mean of 10 independent runs: 32,516.5 tokens/s"><title>miniTE per-token / BF16 bwd
+Trimmed mean of 10 independent runs: 32,516.5 tokens/s</title></rect><text x="743" y="296" fill="#35513e" font-size="12" text-anchor="end">32,516.5tokens/s</text><circle cx="576.2351507002815" cy="280.2" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 0: 33,463.5 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 0: 33,463.5 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 0: 33,463.5 tokens/s</title></circle><circle cx="553.2215469239757" cy="282.6" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 1: 31,416.6 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 1: 31,416.6 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 1: 31,416.6 tokens/s</title></circle><circle cx="587.0892877297629" cy="285" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 2: 34,428.9 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 2: 34,428.9 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 2: 34,428.9 tokens/s</title></circle><circle cx="525.5937543793883" cy="287.4" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 3: 28,959.3 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 3: 28,959.3 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 3: 28,959.3 tokens/s</title></circle><circle cx="561.626925879062" cy="289.8" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 4: 32,164.2 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 4: 32,164.2 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 4: 32,164.2 tokens/s</title></circle><circle cx="569.1002476974754" cy="292.2" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 5: 32,828.9 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 5: 32,828.9 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 5: 32,828.9 tokens/s</title></circle><circle cx="547.9563797695256" cy="294.6" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 6: 30,948.3 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 6: 30,948.3 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 6: 30,948.3 tokens/s</title></circle><circle cx="574.5666672372868" cy="297" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 7: 33,315.1 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 7: 33,315.1 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 7: 33,315.1 tokens/s</title></circle><circle cx="561.5752073889691" cy="299.4" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 8: 32,159.6 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 8: 32,159.6 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 8: 32,159.6 tokens/s</title></circle><circle cx="580.4187268227903" cy="301.8" r="3.6" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token / BF16 bwd
+trial 9: 33,835.6 tokens/s" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+trial 9: 33,835.6 tokens/s"><title>miniTE per-token / BF16 bwd
+trial 9: 33,835.6 tokens/s</title></circle></g><text x="25" y="452" font-size="11">Bars show trimmed means; dots show all 10 independent runs. Throughput and paired speed ratios retain</text><text x="25" y="472" font-size="11">their original estimators. Sampling and weight sync are excluded. · The figure shows the ten-run</text><text x="25" y="492" font-size="11">experiment and the separate single-process optimization experiment. The main test shows all independent</text><text x="25" y="512" font-size="11">run values and trimmed means. Switch to paired speedups or the single-process optimization run. Protocols</text><text x="25" y="532" font-size="11">remain separate; no confidence intervals are added. The static version shows main-test throughput.</text></svg>
