@@ -1,0 +1,263 @@
+---
+title: "SGLang security update: improving request isolation"
+author: "SGLang Team"
+date: "October 26, 2026"
+previewImg: /images/blog/cf-security/kv-cache-race.png
+type: blog
+---
+
+On September 9, 2026, Cloudflare notified us of cross-request KV cache exposure in its GLM-5.3 deployment on Workers AI. We worked with Cloudflare to address the request-rejection path involved and strengthen related cache-lifetime handling in disaggregated serving.
+
+We are publishing this disclosure in coordination with Cloudflare and the researcher who reported the issue through Cloudflare’s HackerOne program. Cloudflare’s report covers its production incident and customer impact, and the researcher’s report describes the discovery and external validation. This post focuses on the underlying mechanisms, the changes we made, and guidance for SGLang operators.
+
+[Read Cloudflare’s report here.](https://blog.cloudflare.com/kv-cache-exposure-remediation/)
+
+## Impact and affected deployments
+
+Cloudflare reports that the incident affected `@cf/zai-org/glm-5.3` on Workers AI between August 27 and September 9, 2026\. Its investigation found no other Workers AI model affected.
+
+Cloudflare’s investigation found that requests exceeding the prefill KV cache capacity could return content from another user’s session. For details on the incident’s scope and customer impact, see Cloudflare’s incident report.
+
+The issue occurred in disaggregated prefill/decode serving, where separate workers process the prompt and generate the response. The single-node rejection path returned an error instead.
+
+## What happened
+
+Cloudflare’s deployment had a configured context length of 1,048,576 tokens, but its prefill KV cache pool could hold 681,280 tokens. A request could therefore fit the configured context window while exceeding the memory available to process it.
+
+In SGLang’s disaggregated prefill/decode path, a request marked for rejection could still proceed through the handoff. Decode could then read cache pages that had not been populated for that request. The configuration mismatch made the rejection path reachable. The admission fix described below ensures that a rejected request returns an error before entering the disaggregated handoff. It complements deployment checks that compare pool capacity with the configured context length.
+
+## Immediate remediation and upstream fix
+
+Cloudflare disabled public access to the model on September 9\. It increased the prefill pool to accommodate the configured context window and deployed a Cloudflare-authored engine patch that returned errors for rejected requests. Cloudflare reports that it validated these changes against the researcher’s reproduction and its own canary-marker tests before restoring the model that evening.
+
+The upstream fix, [\#36988](https://github.com/sgl-project/sglang/pull/36988), retires aborted requests when their final prefill result is processed. Follow-up change [\#38935](https://github.com/sgl-project/sglang/pull/38935) stops intake-rejected requests earlier, before they enter the disaggregated handoff, avoiding unnecessary work and delays.
+
+## Related KV cache lifetime issues
+
+Alongside the admission fix, we worked with Cloudflare on how SGLang handles KV cache transfers when requests are interrupted.
+
+In prefill-decode (PD) disaggregated serving, an aborted request can still have RDMA writes in flight. If decode releases and reassigns the destination slots before those writes complete, the late writes can overwrite another request’s KVCache and corrupt its output.
+
+Cloudflare’s report also describes our joint work on related KV cache lifetime issues. The following sections explain the deferred-release mechanism, additional transfer safeguards, and integrity checks, along with our validation results and guidance for operators.
+
+## Background
+
+In PD-disaggregated serving, the prefill and decode phases run on separate engines, and each request's KVCache must move from the prefill engine into the decode engine's memory pool. For performance, this transfer is asynchronous. Transfer engines such as Mooncake, NIXL, or MORI issue it as one-sided RDMA WRITE operations that stream KVCache chunks into pre-reserved destination slots while prefill computation is still in progress.
+
+Because the transfer is asynchronous, a request can die while some of its writes are in flight. Prefill can then drop the chunks still waiting in its software queues, but it cannot stop a write it has launched toward the destination, such as the chunk in progress at that moment. In earlier implementations, when a request terminated mid-transfer (a client disconnect, a timeout, a transport fault), decode returned its destination slots to the allocator at termination, without waiting for such a write to finish. If the allocator reassigned the slots before the write landed, the dead request's KVCache landed in another request's KVCache. In typical workloads the corruption was rare, although long contexts make it far more likely (see fact 4 below). Each occurrence was silent. The transfer reported success, and no component raised an exception or logged an error. A single contaminated slot derails an entire generation, because attention reads every position.
+
+As a result, a request asking the model to count from 1 to 15 comes back as an incoherent stream of unrelated tokens. We then set out to make the race reproducible on demand and to fix it end to end, from the transfer engine layer up to the serving engine.
+
+## The Problem: When Is a KVCache Slot Actually Free?
+
+The failure takes four steps:
+
+1. A client disconnect, an admission rejection, or a transfer fault aborts request A mid-transfer while at least one launched write has not yet landed.
+2. Decode frees A's KVCache slots at abort time. The allocator marks them free while the remote writer is still writing to them.
+3. The allocator hands those slots to victim request B.
+4. A's launched writes land inside B's KVCache, and B decodes on foreign keys and values with no error.
+
+These steps apply to any PD implementation that moves KVCache between engines with asynchronous DMA, push or pull, because each one has to decide when a slot is free. We diagnosed and fixed the family in SGLang.
+
+![An aborted request's launched writes land in KV cache slots that have already been reassigned to another request.](/images/blog/cf-security/kv-cache-race.png)
+
+*Figure 1: The race. The abort frees A's slots while A's launched writes are still landing; B inherits the slots and the late writes land inside its KVCache.*
+
+Four facts about the system make each step possible.
+
+**1\. The allocator can mark a slot free while writes to it are in flight.** In PD disaggregation, the decode engine pre-reserves destination KVCache slots for each incoming request, and its allocator tracks them as allocated or free. But "free" has a second, hidden condition: A slot is safe to reuse only when *no remote writer can still touch it*. The bugs in this class come from the gap between these two definitions. Each one is a distributed use-after-free, where the dangling pointer is a write request sitting in a NIC queue on another machine. The fix makes the second condition explicit, observable, and bounded.
+
+**2\. Launched RDMA work cannot be cancelled, for push and pull alike.** SGLang's KVCache transfer is push-based \[3\]. Prefill *writes* KVCache into decode's memory, because prefill knows the moment it produces each chunk and can overlap transfer with ongoing computation, chunk by chunk. At and below the NIC, cancellation is hard to achieve without hurting availability. The RDMA API has no call that cancels an individual work request already posted to the NIC's queue pair. Python cannot interrupt the transfer engine's blocking C++ call (e.g., Mooncake's `batch_transfer_sync`) mid-call. If that call times out, its work requests stay posted with no completion accounting, so those writes may land at an unknown later time. One-sided RDMA WRITE bypasses the receiver's CPU, so decode gets no signal for each write that it could wait on. The NIC also places data per packet: A write interrupted mid-flight still leaves a partially written prefix at the destination, so even the paths that look like cancellation can mutate destination memory.
+
+A pull-based design would not escape this. If decode issued RDMA READs instead, an abort arriving mid-pull would leave decode's *own* posted reads landing in slots it just freed, because a posted READ is as impossible to take back as a posted WRITE. Under pull, the hazard also runs the other way: If prefill frees its source pages at abort time and the allocator reassigns them while a READ is still in flight, that read fetches another request's KVCache into decode. Freed-then-reassigned slots corrupt the transfer at either end.
+
+![The transfer stack below the Python scheduler: aborts stop future chunks while launched transfers and posted NIC writes continue.](/images/blog/cf-security/transfer-stack.png)
+
+*Figure 2: The transfer stack below the Python scheduler. An abort can stop future chunks, but everything already handed to the C++ engine or the NIC is beyond recall, and the receiving CPU never sees the writes at all.*
+
+**3\. Complete liveness handling starts at the router but cannot end there.** An abort is only safe when *both* halves of a P/D pair learn about it. A well-designed PD router cancels the pair together, so neither side waits out a 300-second timeout for a peer that is never coming. In `sgl-router`, [\#41612](https://github.com/sgl-project/sglang/pull/41612) builds the PD pairing on top of the abort-on-disconnect of [\#39461](https://github.com/sgl-project/sglang/pull/39461). The pair shares one router-minted request id. A client disconnect aborts decode, a prefill failure drops the decode request so the engine aborts it, and prefill learns of the abort through decode's engine-side `ABORT` notification. `sgl-model-gateway` pairs the same two events ([\#19524](https://github.com/sgl-project/sglang/pull/19524) for disconnects, [\#29017](https://github.com/sgl-project/sglang/pull/29017) for prefill failures). Before that engine-side notification existed, a router that aborted only one side guaranteed the race: Decode released its slots while prefill, never told, kept pushing. Even a perfect router only narrows the window. The abort reaches prefill asynchronously, after some scheduling and network delay, and whatever the transfer engine already launched (an in-flight C++ call, posted work requests) continues regardless. The router decides who dies (abort orchestration), and the engine decides when memory is safe (drain correctness).
+
+**4\. The race window scales with prefill context length.** SGLang chunks transfers and overlaps them with prefill computation, so the exposure window spans much of the prefill itself. A short prompt is in flight for milliseconds. A 128K–1M-token context, at tens to hundreds of kilobytes of KVCache per token depending on the model, keeps writes in flight for seconds to minutes, across many chunks and many posted work requests. The tail *after* the abort grows with it. A long context means more chunks in flight and more work requests still draining at the moment the abort lands, so launched writes can keep landing well after the allocator has reclaimed the freed slots. Under memory pressure, aborting a long request makes a write-after-reuse the expected outcome. Long-context workloads are also the ones where clients time out and disconnect mid-request. Long contexts therefore widen the window, lengthen the post-abort tail, and raise the abort rate all at once, so this bug class surfaces as deployments move to long-context serving.
+
+### Impact and Exposure
+
+The aborted-transfer race described here requires three conditions:
+
+1. PD disaggregation is enabled with a KVCache transfer backend (Mooncake, NIXL, MORI, or a custom `CommonKVManager` backend). A single-instance deployment without this cross-engine transfer path is not affected by this specific race.
+2. A request terminates mid-transfer (client disconnect, router cancel, timeout, transport fault, prefill failure, or hicache restore failure) while at least one of its writes is launched and not yet landed.
+3. The allocator reassigns the freed slots to another request before the launched writes land, which under memory pressure happens in milliseconds.
+
+Remove any one of the three and the corruption cannot occur. Within PD deployments, default configurations were affected from the v0.4.x line (early 2025), when PD disaggregation shipped with RDMA backends, until v0.5.21, or v0.5.22 for MORI. A separate variant with the same signature required decode-side hierarchical cache offload, which is not on by default (fixed by [\#24226](https://github.com/sgl-project/sglang/pull/24226) and [\#30899](https://github.com/sgl-project/sglang/pull/30899)).
+
+**Deterministic or probabilistic?** In production the race is probabilistic, so operators saw occasional corrupted outputs that they could not reproduce. Once the window is held open, it reproduces on demand (our harness in the next section, and the community reproducer in [\#32564](https://github.com/sgl-project/sglang/pull/32564)). A client can raise the odds on purpose by sending long-context requests and disconnecting mid-transfer, which maximizes the race window and abort rate. The client cannot choose the victim or the landing slots, and the flow runs one way. The aborted request's KVCache lands *in* another request's KVCache, and nothing flows back to the aborter. The realistic impact is therefore one-way cross-request leakage, in which fragments of the aborted request’s context can surface in another client’s output, as they did in our reproduction. The aborter learns nothing, but in multi-tenant serving this is a data-leakage concern as well as an integrity one.
+
+**Can a deployer tell whether exposure already occurred?** A deployer has no reliable way to tell, because the corruption leaves no error or log line. The opt-in PD checksum ([\#39500](https://github.com/sgl-project/sglang/pull/39500)) can catch some late writes (see PD Checksum). After upgrading, use the [\#41128](https://github.com/sgl-project/sglang/pull/41128) metrics to confirm the protection is working (see Getting Started).
+
+## Deterministic Reproduction
+
+We needed to reproduce the race before we could claim a fix, so we built a harness that triggers it on demand on a 1P1D pair. An env-gated delay inside prefill's `send_kvcache` holds a launched write in flight, `--max-total-tokens 96` forces immediate slot reuse, and instrumentation logs every request's slot range and every free-or-hold decision.
+
+With the window held open, the overlap appears every time: Decode frees request A's slots `[14..44]` while its write is in flight, request B allocates `[1..32]`, and the two ranges collide on `[14..32]`. A software delay cannot make the write itself land late on a single P/D pair, because the transfer queue serializes writes to the same decode engine. To show *wrong output*, not only overlapping slot numbers, we copied the aborted request's freed page over the overlap at the victim's commit point, which is what a late write does. Without the fix, the victim's output was garbage. With the fix, decode held the donor's slots, the victim got fresh slots, and the output was identical to the baseline.
+
+The real late landing also reproduces end to end on live hardware once two prefill engines share one decode, so nothing serializes their writes. We ran it on a 2×H200 pair (Mooncake over RDMA) with the hold disabled. A one-sided abort freed the donor's 430 slots, the victim preallocated `[1..105]` inside them, and the donor's launched write landed mid-decode. The victim counted correctly up to 80, then its output turned into the donor's prompt text: Another request's KVCache, read back out of its generation. With the hold enabled and the same timing, decode logged hold, drain-ack, and release, and the victim waited for the release and then produced output identical to the baseline, byte for byte. The full recipe (harness patch, launch script, driver, and the observed outputs) is in a [public gist](https://gist.github.com/ShangmingCai/bdcfb3131b000a17810b4dca256d40cf).
+
+## The Fix: Deferred KVCache Release
+
+Decode cannot cancel prefill’s launched writes, so it keeps the aborted request’s slots reserved for longer than those writes can keep landing:
+
+```
+T_hold  >  t_abort_propagation + t_remaining_chunks + t_in_flight_call
+```
+
+The fix is safe only if this inequality holds on every abort path. The rest of the design makes every abort path hold the slots (the left side) and bounds each term on the right (detailed in [\#44186](https://github.com/sgl-project/sglang/issues/44186)). Waiting for completion also fits the hardware: Reliable-connection RDMA executes work requests in order, so "all writes drained" is a single completion-queue observation on the sender.
+
+### Deferred Release
+
+We built the mechanism in three steps:
+
+- **Notify prefill on abort** ([\#27372](https://github.com/sgl-project/sglang/pull/27372)). On a decode-side abort, decode sends `ABORT` to every prefill rank, and each rank drops every chunk still waiting in the software queue for that room. That cuts `t_remaining_chunks` to near zero. Without the notification, every remaining chunk of the transfer launches and lands, so the term covers the entire rest of the prefill. `t_in_flight_call` is a separate term for the call already executing when the abort takes effect. On Mooncake's serial per-room queue, the notification leaves nothing beyond that call, while a backend that posts chunks asynchronously, like NIXL, can still have several launched chunks outstanding. Either way, launched work keeps writing; the notification stops only what has not launched.
+- **Deferred decode-side KVCache release** ([\#35049](https://github.com/sgl-project/sglang/pull/35049), NIXL port [\#35360](https://github.com/sgl-project/sglang/pull/35360)). On abort, decode *holds* everything the request owns instead of freeing it: its KVCache slots, its row in the request pool, and its metadata buffer entry. That makes writer liveness explicit. Each prefill rank tracks its outstanding work per room and counts chunks at dequeue, so a count of zero proves that nothing already dequeued is still in flight. Chunks still waiting in the queue are safe for a different reason: Prefill marks the room failed before it arms the ack, so the worker drops them at dequeue. The rank replies `ABORT_ACK` only when that count drains to zero. Decode releases only when every notified rank has acked (the positive drain signal) or when a timeout fires (the bounded fallback). The timeout is a practical backstop, not a proof. Its length (30 seconds by default in [\#35049](https://github.com/sgl-project/sglang/pull/35049)) matches the transfer engine's per-call budget, which starts before the abort, and on a healthy path every launched write lands well inside it. A call that times out on a degraded path can leave writes that the engine is still retrying, so prefill never acknowledges a failed call as drained ([\#43719](https://github.com/sgl-project/sglang/pull/43719)), and the release waits out the full timeout. Decode never inserts slots released this way into the radix tree; it quarantines a failed room's KVCache and discards it unread.
+- **Capability gating and default-on** ([\#37454](https://github.com/sgl-project/sglang/pull/37454), [\#41023](https://github.com/sgl-project/sglang/pull/41023)). The hold only helps on backends that ack. It shipped as an opt-in with a per-backend gate and became the default in v0.5.21, once Mooncake and NIXL both supported the drain ack.
+
+In [\#35049](https://github.com/sgl-project/sglang/pull/35049), all chunks for a room go to the same transfer queue, served by a single worker thread. That worker is the room’s only writer, and it sends `ABORT_ACK` itself rather than leaving that to the bootstrap thread. Decode counts acknowledgments from dummy ranks too; those ranks acknowledge immediately. Once all expected acknowledgments arrive, no prefill rank can still write to the slots.
+
+Room IDs are reused across requests, so decode creates a new ack tracker for each abort and ignores acks for rooms it isn’t tracking. [\#37077](https://github.com/sgl-project/sglang/pull/37077) later added generation tags to the messages themselves.
+
+We tested this on 2×H200 by aborting 132 requests mid-transfer through the hold path. There were no crashes, and every held slot was returned once its hold resolved.
+
+![Deferred KV cache release: decode holds slots until all required drain acknowledgments arrive or the configured timeout expires.](/images/blog/cf-security/deferred-release.png)
+
+*Figure 3: The fix. On abort, decode holds A's slots instead of freeing them. Every prefill rank drains its launched writes and replies `ABORT_ACK`, and the slots release on the last ack, in milliseconds. The timeout is a bounded fallback that can only lengthen the hold, never shorten it.*
+
+Decode retains the slots until all required drain acknowledgements arrive or the release timeout expires. A missing acknowledgement makes decode wait for the timeout. Timeout-based release is safe only if outstanding writes have stopped by then; expiry alone does not confirm that they have drained. The mechanism holds slots only on the abort path (see Performance Impact). Even on the abort path, the hold costs nothing unless the pool is near exhaustion and an incoming request cannot allocate until those slots return; then it shows up as a short admission delay. A feature under development will cut this cost further: Decode will receive the KVCache into host memory first and copy it into VRAM only when the transfer is done and the request is about to start decoding. The hold will then occupy host memory instead of GPU KVCache capacity.
+
+#### Failed Mooncake Sends
+
+[\#43719](https://github.com/sgl-project/sglang/pull/43719), merged on October 12, 2026, closes an early-release path in the Mooncake drain ack. Before it, if a submitted Mooncake send returned an error, prefill marked the room failed and still acked it as drained once decode's `ABORT` arrived. An error from `batch_transfer_sync` does not mean the writes stopped: After a timeout, the slices keep retrying, and after a failed batch, other tasks can still be in flight. Decode freed the slots on that ack, and the leftover writes could land in another request's KVCache. \#43719 withholds the drain ack for any room whose KVCache, state, or aux send failed, so decode holds the slots until its release timeout. Every failed send now costs that hold, until Mooncake can report whether a failed batch has drained. \#43719 is on main, for release in v0.5.22.
+
+### Admission Fix
+
+Admission control starts at the router. A PD router sends each request to a prefill worker and a decode worker together, and decode cannot produce a token without prefill's KVCache. If prefill rejected or failed a request, the decode half used to wait out its 300-second timeout while it held a decode slot, so a burst of prefill failures could pin many decode slots at once. [\#29017](https://github.com/sgl-project/sglang/pull/29017) in `sgl-model-gateway` and [\#41612](https://github.com/sgl-project/sglang/pull/41612) in `sgl-router` now drop the decode request as soon as prefill returns an error, and the decode engine aborts it within seconds.
+
+Inside the engines, [\#38935](https://github.com/sgl-project/sglang/pull/38935), merged on September 16, 2026, retires a request that a worker rejects at intake when it enters either admission queue (`PrefillBootstrapQueue.add` or `DecodePreallocQueue.add`), before any handoff state exists. Before it, a rejected request still reported itself as live, so it completed a bootstrap handshake, reserved a metadata buffer, and ran a forward pass on a one-token stub; [\#36988](https://github.com/sgl-project/sglang/pull/36988) retired it only after that pass. If both workers reject a request, decode now returns 400 at once instead of timing out after 300 seconds. This keeps rejected requests out of the disaggregation handoff.
+
+### Mooncake Transfer Batch Size Tuning
+
+Two settings guard a Mooncake transfer call. The first is Mooncake's own `MC_TRANSFER_TIMEOUT` (30 seconds by default), which fails any `batch_transfer_sync` call that takes longer. A call that fails this way can still leave writes in flight (fact 2), which is why prefill withholds the drain ack after a failed send.
+
+The second is <code style="overflow-wrap: anywhere">SGLANG_MOONCAKE_MAX_TRANSFER_BATCH_INDICES</code>, added in [\#32758](https://github.com/sgl-project/sglang/pull/32758) (merged September 8, 2026), which caps the data volume, and with it the duration, of each call. At its default of 0, SGLang sends a chunk's whole KVCache in one call, the efficient path. A positive value splits the transfer into ordered calls of at most that many indices, so a hung call strands at most one batch of posted writes, and the first failed call ends the loop before the remaining batches post. Smaller batches cost throughput and TTFT, so lower the limit only as an extra safeguard for extreme context lengths. In \#32758's tests, a single call for an 800K-token request carried 30 GB.
+
+<code style="overflow-wrap: anywhere">SGLANG_DISAGGREGATION_DEFERRED_DECODE_KV_RELEASE_TIMEOUT</code> then sets `T_hold`. A value of 60 to 120 s gives the hold a wide margin. A larger value adds little safety and multiplies held KVCache during abort storms. If releases fall to the timeout, held capacity is about abort rate × `T_hold` × pages per request, so size the decode pool for that product.
+
+### PD Checksum
+
+[\#39500](https://github.com/sgl-project/sglang/pull/39500), merged on September 16, 2026, adds an optional integrity check for the transferred KVCache, off by default. Prefill computes an Adler-32 checksum on the GPU, over contiguous regions and over indexed KVCache and state pages, and sends it with the final chunk. Decode records it when it commits the transfer and checks the received KVCache against it before the request joins a running batch, so it catches late writes that land before that point; the hold keeps later writes out of reused slots. Decode keeps the checksum across retraction. A mismatch aborts the request and increments the transfer-failure counter; in CI, a mismatch raises an error instead. Health-check requests skip the check.
+
+To turn it on, pass <code style="overflow-wrap: anywhere">--disaggregation-enable-kv-checksum</code> to both the prefill and the decode engine; their KVCache layouts must match. The flag adds an optional metadata buffer. It stays off by default because every transfer pays for an extra GPU read of the KVCache and an extra synchronization point when flipped on.
+
+We also evaluated a commit-time check of the transferred length and declined it: The published length derives from the same prefill accounting that gates Success, so the two sides can only agree.
+
+## Performance Impact
+
+Across 21 runs on 2×H100 (1P1D Mooncake, 1024 requests at concurrency 256, 7 repetitions per arm), throughput with the feature off, on, and pre-patch was statistically indistinguishable. All deltas were within ±2%, and every 95% confidence interval spanned zero. Five weeks before the default flipped, a separate 16-run sweep on 2×H200 measured the cost of defaulting the feature on at −0.38% (CI −2.12 to \+1.36, not significant).
+
+On the abort path itself, the cost depends on the ack fast path. With it alive, a held request releases milliseconds after the drain; with it dead, every abort pays the full release timeout.
+
+## Recommended actions for operators
+
+For PD deployments, we recommend the following:
+
+- **Upgrade.** v0.5.21 protects Mooncake and NIXL deployments by default, for every failure kind. We have not backported this fix line to earlier release branches. MORI deployments, and the generation-tagged ack hygiene, need a build at or past the merge of [\#37077](https://github.com/sgl-project/sglang/pull/37077) (2026-10-03, in v0.5.22). In practice, cut the build past [\#41128](https://github.com/sgl-project/sglang/pull/41128), merged twelve hours later the same day, so it also carries the release metrics described below. When prefill and decode use different acknowledgement formats, the drain handshake can fail and releases fall back to the configured timeout. A new decode drops generation-less acknowledgements from an old prefill, and an old decode receives no acknowledgement from a new prefill. In these cases, safe release depends on outstanding writes stopping within the hold period.
+- **Run a router that pairs aborts.** Engine-side holds protect a deployment only after the abort reaches the engine. A router that cancels both halves of the pair (as `sgl-router`'s PD mode does) is the first layer of defense.
+- **On v0.5.19 or v0.5.20**, set <code style="overflow-wrap: anywhere">SGLANG_DISAGGREGATION_DEFERRED_DECODE_KV_RELEASE=1</code> on both prefill and decode servers. This enables the hold for decode-initiated aborts (the most common kind), though most releases wait out the timeout. On v0.5.20, also set <code style="overflow-wrap: anywhere">SGLANG_MOONCAKE_MAX_TRANSFER_BATCH_INDICES</code> ([\#32758](https://github.com/sgl-project/sglang/pull/32758)) and a generous <code style="overflow-wrap: anywhere">SGLANG_DISAGGREGATION_DEFERRED_DECODE_KV_RELEASE_TIMEOUT</code> (60–120 s), sized as described under Mooncake Transfer Batch Size Tuning. Neither replaces upgrading, because failure kinds other than decode-initiated aborts stay unprotected before v0.5.21. On current builds the defaults are correct, and the knobs add margin.
+- **Watch <code style="overflow-wrap: anywhere">sglang:decode_deferred_kv_release_total{outcome}</code>** after rollout. The metric ships in v0.5.22 ([\#41128](https://github.com/sgl-project/sglang/pull/41128)). A healthy deployment releases almost all holds through `drained`. A timeout-heavy ratio means the ack path needs attention and every abort is waiting out the full hold.
+
+## Conclusion
+
+These rules apply wherever KVCache moves asynchronously, whether between engines, memory tiers, or pipeline stages:
+
+1. Never free a slot an async engine may still touch.
+2. Hold until a positive drain signal or a bounded timeout.
+3. Make every degradation lengthen the hold.
+4. Ship each fix small enough that its regression test proves exactly one thing.
+
+If a PD deployment shows output corruption that these fixes do not explain, or anything that looks like this family, open an issue on [sgl-project/sglang](https://github.com/sgl-project/sglang/issues) with the topology (prefill/decode parallelism, transfer backend, version), the request pattern around the incident, and the decode\_deferred\_kv\_release metrics if available. The maintainers treat this class of report with priority.
+
+## Acknowledgement
+
+We thank the reporting researcher for identifying the exposure, providing a reproducible report, and coordinating disclosure. We are especially grateful to Cloudflare, whose engineers shared the production context, developed the initial incident patch, and worked with us through the upstream fixes and hardening audit.
+
+We thank the following people for their work on these fixes:
+
+- SGLang Community/RadixArk: Shangming Cai, Banruo Liu, Wenbo Jiang, Cheng Wan, Shiyang Chen, and many others
+- Cloudflare: Kevin Flansburg, Kastan Day
+
+We also thank [@AsterWang](https://github.com/AsterWang) and [@KastanDay](https://github.com/KastanDay), whose early PRs ([\#24580](https://github.com/sgl-project/sglang/pull/24580), [\#32564](https://github.com/sgl-project/sglang/pull/32564)) called out this race and proposed holding pages before reuse.
+
+### Pull Request List
+
+- Router abort pairing: [\#41612](https://github.com/sgl-project/sglang/pull/41612), [\#39461](https://github.com/sgl-project/sglang/pull/39461), [\#19524](https://github.com/sgl-project/sglang/pull/19524), [\#29017](https://github.com/sgl-project/sglang/pull/29017)
+- Admission fix: [\#36988](https://github.com/sgl-project/sglang/pull/36988), [\#38935](https://github.com/sgl-project/sglang/pull/38935)
+- Abort notification to prefill: [\#27372](https://github.com/sgl-project/sglang/pull/27372)
+- Deferred decode-side KVCache release: [\#35049](https://github.com/sgl-project/sglang/pull/35049), [\#35360](https://github.com/sgl-project/sglang/pull/35360)
+- Capability gating and default-on: [\#37454](https://github.com/sgl-project/sglang/pull/37454), [\#41023](https://github.com/sgl-project/sglang/pull/41023)
+- Ack fast path: [\#40645](https://github.com/sgl-project/sglang/pull/40645), [\#41402](https://github.com/sgl-project/sglang/pull/41402)
+- Hold on every failure kind: [\#41404](https://github.com/sgl-project/sglang/pull/41404)
+- Failed Mooncake send never acks as drained: [\#43719](https://github.com/sgl-project/sglang/pull/43719)
+- FakeKVReceiver regression fix: [\#41618](https://github.com/sgl-project/sglang/pull/41618)
+- Generation-tagged acks and MORI support: [\#37077](https://github.com/sgl-project/sglang/pull/37077)
+- Cross-backend protocol alignment: [\#35281](https://github.com/sgl-project/sglang/pull/35281), [\#36612](https://github.com/sgl-project/sglang/pull/36612)
+- Hicache retraction race: [\#24226](https://github.com/sgl-project/sglang/pull/24226), [\#30899](https://github.com/sgl-project/sglang/pull/30899)
+- Hicache restore rank consensus: [\#43562](https://github.com/sgl-project/sglang/pull/43562)
+- Mooncake transfer batch size: [\#32758](https://github.com/sgl-project/sglang/pull/32758)
+- PD checksum: [\#39500](https://github.com/sgl-project/sglang/pull/39500)
+- Release metrics: [\#41128](https://github.com/sgl-project/sglang/pull/41128)
+- Early proposals, reproducer, and audit (not merged): [\#24580](https://github.com/sgl-project/sglang/pull/24580) ([@AsterWang](https://github.com/AsterWang)), [\#32564](https://github.com/sgl-project/sglang/pull/32564) ([@KastanDay](https://github.com/KastanDay)), [\#38961](https://github.com/sgl-project/sglang/pull/38961) ([@kflansburg](https://github.com/kflansburg))
+
+## Reference
+
+\[1\] Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving. [https\://github.com/kvcache-ai/Mooncake](https://github.com/kvcache-ai/Mooncake)
+
+\[2\] SGLang PD Disaggregation documentation. [https\://docs.sglang.io](https://docs.sglang.io)
+
+\[3\] Deploying DeepSeek with PD Disaggregation and Large-Scale Expert Parallelism on 96 H100 GPUs. [https\://www\.lmsys.org/blog/2025-05-05-large-scale-ep/](https://www.lmsys.org/blog/2025-05-05-large-scale-ep/)
+
+## Appendix
+
+### Related issues and fixes
+
+The table below summarizes the issues and fixes discussed above, starting with request routing and moving through KV cache handling.
+
+| Layer | Problem | Fix |
+| :---- | :---- | :---- |
+| Router | One-sided aborts, where decode dies and prefill keeps pushing (or vice versa, each waiting 300 s for a dead peer) | The PD router cancels the pair: [\#41612](https://github.com/sgl-project/sglang/pull/41612) in `sgl-router` (on top of [\#39461](https://github.com/sgl-project/sglang/pull/39461)); [\#19524](https://github.com/sgl-project/sglang/pull/19524) and [\#29017](https://github.com/sgl-project/sglang/pull/29017) in `sgl-model-gateway` |
+| Admission | Requests rejected at intake still entered bootstrap, reserved buffers, and ran a stub forward | Reject and clean up at the admission doors, before any handoff state exists ([\#38935](https://github.com/sgl-project/sglang/pull/38935), building on [\#36988](https://github.com/sgl-project/sglang/pull/36988), which cleans up aborted requests after the forward pass) |
+| Stop new writes | Prefill, unaware of a decode abort, keeps queueing chunks | Decode-side abort notifies every prefill rank ([\#27372](https://github.com/sgl-project/sglang/pull/27372)) |
+| Hold until drain | Launched writes cannot be cancelled | Deferred slot release until per-rank drain `ABORT_ACK` or timeout ([\#35049](https://github.com/sgl-project/sglang/pull/35049), [\#35360](https://github.com/sgl-project/sglang/pull/35360)) |
+| Keep the fast path alive | Ack lost to a `clear()` race → every abort pays the full timeout | Keep the ack target until outstanding writes drain ([\#40645](https://github.com/sgl-project/sglang/pull/40645)) |
+|  | One ack slot per room → MLA fan-out ranks (prefill TP \< decode TP) never acked | Fan the ack out to every decode peer the room knows ([\#41402](https://github.com/sgl-project/sglang/pull/41402)) |
+|  | Ack arrives before the decode tracker is armed → dropped | Arm the tracker *before* sending `ABORT` ([\#41402](https://github.com/sgl-project/sglang/pull/41402)) |
+| Hold on every path | The hold armed only for decode-initiated aborts; transport/prefill faults released at t=0 | Defer on every failure kind ([\#41404](https://github.com/sgl-project/sglang/pull/41404)) |
+| Protocol hygiene | A reused room id could consume a stale ack; MORI had no ack at all | Generation-tagged `ABORT`/`ABORT_ACK` in the common layer; MORI opts into the hold ([\#37077](https://github.com/sgl-project/sglang/pull/37077)) |
+| Sibling pipes | The hicache retraction path freed device slots under an active device→host offload copy, so poisoned KVCache persisted into the host tier | Retraction waits for the offload to drain ([\#24226](https://github.com/sgl-project/sglang/pull/24226), [\#30899](https://github.com/sgl-project/sglang/pull/30899)) |
+| Rank consensus | TP ranks branched on the rank-local hicache restore status after the MIN-reduced KVCache poll. One rank's failed restore desynchronized the group (queue-length mismatch, scheduler crash), and its admission accounting diverged one tick later | Fold the restore outcome into the already-reduced KVCache poll, so every rank makes one decision ([\#43562](https://github.com/sgl-project/sglang/pull/43562)) |
+| Detect | Corruption that slips past prevention is invisible | Opt-in transfer checksums ([\#39500](https://github.com/sgl-project/sglang/pull/39500)); a commit-time length validation was evaluated and declined (see PD Checksum) |
+| Observe | No way to tell if the ack fast path is alive in production | Hold count, duration, and `drained`/`timeout`/`error` outcome metrics ([\#41128](https://github.com/sgl-project/sglang/pull/41128)) |
+
+The middle rows came from a community audit. In the audit, published on September 11, 2026 ([\#38961](https://github.com/sgl-project/sglang/pull/38961)), [@kflansburg](https://github.com/kflansburg) found two more ways the race could reopen. The drain ack often failed to arrive, so releases fell back to the timeout. A fault that decode did not itself initiate never armed the hold, which reopened the original bug by another path. We closed both on main between September 22 and 28, 2026: The hold now arms on every failure kind, and the drain ack now reaches decode. The audit also flagged prefill's own source pages, and our analysis showed that path was already safe, because those bytes can only land in slots the decode hold is quarantining. [\#43562](https://github.com/sgl-project/sglang/pull/43562), merged on October 11, 2026, fixes a further finding, a rank-divergent HiCache restore.
+
+### Disclosure Timeline
+
+| Date | Event |
+| :---- | :---- |
+| 2026-09-09 | Cloudflare notifies the SGLang maintainers of a cross-request KVCache exposure in production and shares follow-up safety checks in [\#38704](https://github.com/sgl-project/sglang/pull/38704) |
+| 2026-09-10 | SGLang maintainers meet with Cloudflare to agree on upstream fixes |
+| 2026-09-11 | Hardening audit ([\#38961](https://github.com/sgl-project/sglang/pull/38961)) finds the ack fast path often falling back to the timeout in production shapes |
+| 2026-09-16 | Admission fix ([\#38935](https://github.com/sgl-project/sglang/pull/38935)) and opt-in PD checksum ([\#39500](https://github.com/sgl-project/sglang/pull/39500)) merged |
+| 2026-09-22 → 09-28 | Fast path restored ([\#40645](https://github.com/sgl-project/sglang/pull/40645), [\#41402](https://github.com/sgl-project/sglang/pull/41402)); every failure kind defers ([\#41404](https://github.com/sgl-project/sglang/pull/41404)); default-on ([\#41023](https://github.com/sgl-project/sglang/pull/41023)); hicache fix ([\#30899](https://github.com/sgl-project/sglang/pull/30899)) |
+| 2026-10-02 | v0.5.21 released, protected by default (Mooncake, NIXL) |
+| 2026-10-03 | MORI and generation-tagged acks merged ([\#37077](https://github.com/sgl-project/sglang/pull/37077)); ships in v0.5.22 |
+| 2026-10-11 | Rank-consensus fix for decode HiCache restore merged ([\#43562](https://github.com/sgl-project/sglang/pull/43562)) |
+| 2026-10-12 | Failed Mooncake sends no longer ack as drained ([\#43719](https://github.com/sgl-project/sglang/pull/43719)); ships in v0.5.22 |
+| 2026-10-22 | Failed NIXL and MORI sends no longer ack as drained ([\#45973](https://github.com/sgl-project/sglang/pull/45973)); ships in v0.5.22 |
+| 2026-10-26 | Coordinated disclosure by SGLang, Cloudflare, and the reporting researcher. |
