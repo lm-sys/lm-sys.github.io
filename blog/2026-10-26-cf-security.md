@@ -91,7 +91,7 @@ Remove any one of the three and the corruption cannot occur. Within PD deploymen
 
 **Deterministic or probabilistic?** In production the race is probabilistic, so operators saw occasional corrupted outputs that they could not reproduce. Once the window is held open, it reproduces on demand (our harness in the next section, and the community reproducer in [\#32564](https://github.com/sgl-project/sglang/pull/32564)). A client can raise the odds on purpose by sending long-context requests and disconnecting mid-transfer, which maximizes the race window and abort rate. The client cannot choose the victim or the landing slots, and the flow runs one way. The aborted request's KVCache lands *in* another request's KVCache, and nothing flows back to the aborter. The realistic impact is therefore one-way cross-request leakage, in which fragments of the aborted request’s context can surface in another client’s output, as they did in our reproduction. The aborter learns nothing, but in multi-tenant serving this is a data-leakage concern as well as an integrity one.
 
-**Can a deployer tell whether exposure already occurred?** A deployer has no reliable way to tell, because the corruption leaves no error or log line. The opt-in PD checksum ([\#39500](https://github.com/sgl-project/sglang/pull/39500)) can catch some late writes (see PD Checksum). After upgrading, use the [\#41128](https://github.com/sgl-project/sglang/pull/41128) metrics to confirm the protection is working (see Getting Started).
+**Can a deployer tell whether exposure already occurred?** A deployer has no reliable way to tell, because the corruption leaves no error or log line. The opt-in PD checksum ([\#39500](https://github.com/sgl-project/sglang/pull/39500)) can catch some late writes (see PD Checksum). After upgrading, use the [\#41128](https://github.com/sgl-project/sglang/pull/41128) metrics to confirm the protection is working (see Recommended actions for operators).
 
 ## Deterministic Reproduction
 
@@ -127,7 +127,7 @@ We tested this on 2×H200 by aborting 132 requests mid-transfer through the hold
 
 ![Deferred KV cache release: decode holds slots until all required drain acknowledgments arrive or the configured timeout expires.](/images/blog/cf-security/deferred-release.png)
 
-*Figure 3: The fix. On abort, decode holds A's slots instead of freeing them. Every prefill rank drains its launched writes and replies `ABORT_ACK`, and the slots release on the last ack, in milliseconds. The timeout is a bounded fallback that can only lengthen the hold, never shorten it.*
+*Figure 3: The fix. On abort, decode holds A's slots instead of freeing them. Every prefill rank drains its launched writes and replies `ABORT_ACK`, and the slots are released on the last ack, in milliseconds. The timeout is a bounded fallback that can only lengthen the hold, never shorten it.*
 
 Decode retains the slots until all required drain acknowledgements arrive or the release timeout expires. A missing acknowledgement makes decode wait for the timeout. Timeout-based release is safe only if outstanding writes have stopped by then; expiry alone does not confirm that they have drained. The mechanism holds slots only on the abort path (see Performance Impact). Even on the abort path, the hold costs nothing unless the pool is near exhaustion and an incoming request cannot allocate until those slots return; then it shows up as a short admission delay. A feature under development will cut this cost further: Decode will receive the KVCache into host memory first and copy it into VRAM only when the transfer is done and the request is about to start decoding. The hold will then occupy host memory instead of GPU KVCache capacity.
 
@@ -153,13 +153,13 @@ The second is <code style="overflow-wrap: anywhere">SGLANG_MOONCAKE_MAX_TRANSFER
 
 [\#39500](https://github.com/sgl-project/sglang/pull/39500), merged on September 16, 2026, adds an optional integrity check for the transferred KVCache, off by default. Prefill computes an Adler-32 checksum on the GPU, over contiguous regions and over indexed KVCache and state pages, and sends it with the final chunk. Decode records it when it commits the transfer and checks the received KVCache against it before the request joins a running batch, so it catches late writes that land before that point; the hold keeps later writes out of reused slots. Decode keeps the checksum across retraction. A mismatch aborts the request and increments the transfer-failure counter; in CI, a mismatch raises an error instead. Health-check requests skip the check.
 
-To turn it on, pass <code style="overflow-wrap: anywhere">--disaggregation-enable-kv-checksum</code> to both the prefill and the decode engine; their KVCache layouts must match. The flag adds an optional metadata buffer. It stays off by default because every transfer pays for an extra GPU read of the KVCache and an extra synchronization point when flipped on.
+To turn it on, pass <code style="overflow-wrap: anywhere">--disaggregation-enable-kv-checksum</code> to both the prefill and decode engines; their KVCache layouts must match. The flag adds an optional metadata buffer. It stays off by default because every transfer pays for an extra GPU read of the KVCache and an extra synchronization point when flipped on.
 
 We also evaluated a commit-time check of the transferred length and declined it: The published length derives from the same prefill accounting that gates Success, so the two sides can only agree.
 
 ## Performance Impact
 
-Across 21 runs on 2×H100 (1P1D Mooncake, 1024 requests at concurrency 256, 7 repetitions per arm), throughput with the feature off, on, and pre-patch was statistically indistinguishable. All deltas were within ±2%, and every 95% confidence interval spanned zero. Five weeks before the default flipped, a separate 16-run sweep on 2×H200 measured the cost of defaulting the feature on at −0.38% (CI −2.12 to \+1.36, not significant).
+Across 21 runs on 2×H100 (1P1D Mooncake, 1024 requests at concurrency 256, 7 repetitions per arm), throughput was statistically indistinguishable before the patch and with the feature enabled or disabled. All deltas were within ±2%, and every 95% confidence interval spanned zero. Five weeks before the default flipped, a separate 16-run sweep on 2×H200 measured the cost of defaulting the feature on at −0.38% (CI −2.12 to \+1.36, not significant).
 
 On the abort path itself, the cost depends on the ack fast path. With it alive, a held request releases milliseconds after the drain; with it dead, every abort pays the full release timeout.
 
