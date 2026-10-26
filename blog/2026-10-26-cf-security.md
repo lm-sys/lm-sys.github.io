@@ -259,5 +259,5 @@ The middle rows came from a community audit. In the audit, published on Septembe
 | 2026-10-03 | MORI and generation-tagged acks merged ([\#37077](https://github.com/sgl-project/sglang/pull/37077)); ships in v0.5.22 |
 | 2026-10-11 | Rank-consensus fix for decode HiCache restore merged ([\#43562](https://github.com/sgl-project/sglang/pull/43562)) |
 | 2026-10-12 | Failed Mooncake sends no longer ack as drained ([\#43719](https://github.com/sgl-project/sglang/pull/43719)); ships in v0.5.22 |
-| 2026-10-22 | Failed NIXL and MORI sends no longer ack as drained ([\#45973](https://github.com/sgl-project/sglang/pull/45973)); on main, expected in v0.5.23 |
+| 2026-10-22 | Failed NIXL and MORI sends no longer ack as drained ([\#45973](https://github.com/sgl-project/sglang/pull/45973)); ships in v0.5.23 |
 | 2026-10-26 | Coordinated disclosure by SGLang, Cloudflare, and the reporting researcher. |
