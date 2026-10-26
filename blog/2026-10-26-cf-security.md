@@ -8,7 +8,7 @@ type: blog
 
 On September 9, 2026, Cloudflare notified us of cross-request KV cache exposure in its GLM-5.3 deployment on Workers AI. We worked with Cloudflare to address the request-rejection path involved and strengthen related cache-lifetime handling in disaggregated serving.
 
-We are publishing this disclosure in coordination with Cloudflare and the researcher who reported the issue through Cloudflare’s HackerOne program. Cloudflare’s report covers its production incident and customer impact, and the researcher’s report describes the discovery and external validation. This post focuses on the underlying mechanisms, the changes we made, and guidance for SGLang operators.
+We are publishing this disclosure in coordination with Cloudflare and the researcher who reported the issue through Cloudflare’s HackerOne program. Cloudflare’s report covers its production incident and customer impact, and the researcher’s report (available soon) will describe the discovery and external validation. This post focuses on the underlying mechanisms, the changes we made, and guidance for SGLang operators.
 
 [Read Cloudflare’s report here.](https://blog.cloudflare.com/kv-cache-exposure-remediation/)
 
@@ -260,4 +260,4 @@ The middle rows came from a community audit. In the audit, published on Septembe
 | 2026-10-11 | Rank-consensus fix for decode HiCache restore merged ([\#43562](https://github.com/sgl-project/sglang/pull/43562)) |
 | 2026-10-12 | Failed Mooncake sends no longer ack as drained ([\#43719](https://github.com/sgl-project/sglang/pull/43719)); ships in v0.5.22 |
 | 2026-10-22 | Failed NIXL and MORI sends no longer ack as drained ([\#45973](https://github.com/sgl-project/sglang/pull/45973)); ships in v0.5.23 |
-| 2026-10-26 | Coordinated disclosure by SGLang, Cloudflare, and the reporting researcher. |
+| 2026-10-26 | Coordinated disclosure by SGLang and Cloudflare. |
