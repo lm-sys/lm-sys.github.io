@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 523" role="img" aria-label="How the Scaling Domain Introduces Context Dependence"><style>text{font-family:Inter,Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#35513e} [data-tip]{cursor:default}</style><rect width="760" height="523" fill="white"/><text x="25" y="28" font-size="17" font-weight="600">How the Scaling Domain Introduces Context Dependence</text><g transform="translate(0 44)"><rect width="760" height="305" fill="white"></rect><line x1="55" y1="245" x2="715" y2="245" stroke="#dbe4dc"></line><text x="42" y="250" fill="#35513e" font-size="14" text-anchor="end">-1.0</text><line x1="55" y1="195" x2="715" y2="195" stroke="#dbe4dc"></line><text x="42" y="200" fill="#35513e" font-size="14" text-anchor="end">-0.5</text><line x1="55" y1="145" x2="715" y2="145" stroke="#dbe4dc"></line><text x="42" y="150" fill="#35513e" font-size="14" text-anchor="end">0.0</text><line x1="55" y1="95" x2="715" y2="95" stroke="#dbe4dc"></line><text x="42" y="100" fill="#35513e" font-size="14" text-anchor="end">0.5</text><line x1="55" y1="45" x2="715" y2="45" stroke="#dbe4dc"></line><text x="42" y="50" fill="#35513e" font-size="14" text-anchor="end">1.0</text><polyline points="55,45.833518954753146 76.29032258064515,170.55411020268312 97.58064516129032,237.58146823277326 118.87096774193549,95.58866488613918 140.16129032258064,65.15128873765097 161.4516129032258,214.98746875935421 182.74193548387098,206.81371122370334 204.03225806451613,59.083818514350426 225.32258064516128,105.32594268693863 246.61290322580646,241.1397491879557 267.9032258064516,159.8999025814199 289.1935483870968,45.02070998573308 310.48387096774195,155.86365954240762 331.77419354838713,242.17984457438632 353.06451612903226,109.09416459778316 374.35483870967744,57.07269383492758 395.64516129032256,159.05529615938315 416.9354838709677,162.4806584279583 438.2258064516129,126.44013065041071 459.51612903225805,132.30201553311943 480.80645161290323,166.8320001240046 502.09677419354836,152.07211843600618 523.3870967741937,121.34559282902481 544.6774193548388,144.02336182360324 565.9677419354839,168.90607607487027 587.258064516129,139.8163056114828 608.5483870967743,122.42970488927186 629.8387096774194,155.99981090780238 651.1290322580645,164.7357649632038 672.4193548387096,128.914499779759 693.7096774193549,129.40929131953118 715,165.10305417152867" fill="none" stroke="#64748b" stroke-width="1.5" opacity=".7"></polyline><circle cx="55" cy="45.833518954753146" r="3.2" fill="#64748b" data-tip="Constructed example; element 1
+Value: 0.99166481" tabindex="0" aria-label="Constructed example; element 1
+Value: 0.99166481"></circle><circle cx="76.29032258064515" cy="170.55411020268312" r="3.2" fill="#64748b" data-tip="Constructed example; element 2
+Value: -0.25554110" tabindex="0" aria-label="Constructed example; element 2
+Value: -0.25554110"></circle><circle cx="97.58064516129032" cy="237.58146823277326" r="3.2" fill="#64748b" data-tip="Constructed example; element 3
+Value: -0.92581468" tabindex="0" aria-label="Constructed example; element 3
+Value: -0.92581468"></circle><circle cx="118.87096774193549" cy="95.58866488613918" r="3.2" fill="#64748b" data-tip="Constructed example; element 4
+Value: 0.49411335" tabindex="0" aria-label="Constructed example; element 4
+Value: 0.49411335"></circle><circle cx="140.16129032258064" cy="65.15128873765097" r="3.2" fill="#64748b" data-tip="Constructed example; element 5
+Value: 0.79848711" tabindex="0" aria-label="Constructed example; element 5
+Value: 0.79848711"></circle><circle cx="161.4516129032258" cy="214.98746875935421" r="3.2" fill="#64748b" data-tip="Constructed example; element 6
+Value: -0.69987469" tabindex="0" aria-label="Constructed example; element 6
+Value: -0.69987469"></circle><circle cx="182.74193548387098" cy="206.81371122370334" r="3.2" fill="#64748b" data-tip="Constructed example; element 7
+Value: -0.61813711" tabindex="0" aria-label="Constructed example; element 7
+Value: -0.61813711"></circle><circle cx="204.03225806451613" cy="59.083818514350426" r="3.2" fill="#64748b" data-tip="Constructed example; element 8
+Value: 0.85916181" tabindex="0" aria-label="Constructed example; element 8
+Value: 0.85916181"></circle><circle cx="225.32258064516128" cy="105.32594268693863" r="3.2" fill="#64748b" data-tip="Constructed example; element 9
+Value: 0.39674057" tabindex="0" aria-label="Constructed example; element 9
+Value: 0.39674057"></circle><circle cx="246.61290322580646" cy="241.1397491879557" r="3.2" fill="#64748b" data-tip="Constructed example; element 10
+Value: -0.96139749" tabindex="0" aria-label="Constructed example; element 10
+Value: -0.96139749"></circle><circle cx="267.9032258064516" cy="159.8999025814199" r="3.2" fill="#64748b" data-tip="Constructed example; element 11
+Value: -0.14899903" tabindex="0" aria-label="Constructed example; element 11
+Value: -0.14899903"></circle><circle cx="289.1935483870968" cy="45.02070998573308" r="3.2" fill="#64748b" data-tip="Constructed example; element 12
+Value: 0.99979290" tabindex="0" aria-label="Constructed example; element 12
+Value: 0.99979290"></circle><circle cx="310.48387096774195" cy="155.86365954240762" r="3.2" fill="#64748b" data-tip="Constructed example; element 13
+Value: -0.10863660" tabindex="0" aria-label="Constructed example; element 13
+Value: -0.10863660"></circle><circle cx="331.77419354838713" cy="242.17984457438632" r="3.2" fill="#64748b" data-tip="Constructed example; element 14
+Value: -0.97179845" tabindex="0" aria-label="Constructed example; element 14
+Value: -0.97179845"></circle><circle cx="353.06451612903226" cy="109.09416459778316" r="3.2" fill="#64748b" data-tip="Constructed example; element 15
+Value: 0.35905835" tabindex="0" aria-label="Constructed example; element 15
+Value: 0.35905835"></circle><circle cx="374.35483870967744" cy="57.07269383492758" r="3.2" fill="#64748b" data-tip="Constructed example; element 16
+Value: 0.87927306" tabindex="0" aria-label="Constructed example; element 16
+Value: 0.87927306"></circle><circle cx="395.64516129032256" cy="159.05529615938315" r="3.2" fill="#64748b" data-tip="Constructed example; element 17
+Value: -0.14055296" tabindex="0" aria-label="Constructed example; element 17
+Value: -0.14055296"></circle><circle cx="416.9354838709677" cy="162.4806584279583" r="3.2" fill="#64748b" data-tip="Constructed example; element 18
+Value: -0.17480658" tabindex="0" aria-label="Constructed example; element 18
+Value: -0.17480658"></circle><circle cx="438.2258064516129" cy="126.44013065041071" r="3.2" fill="#64748b" data-tip="Constructed example; element 19
+Value: 0.18559869" tabindex="0" aria-label="Constructed example; element 19
+Value: 0.18559869"></circle><circle cx="459.51612903225805" cy="132.30201553311943" r="3.2" fill="#64748b" data-tip="Constructed example; element 20
+Value: 0.12697984" tabindex="0" aria-label="Constructed example; element 20
+Value: 0.12697984"></circle><circle cx="480.80645161290323" cy="166.8320001240046" r="3.2" fill="#64748b" data-tip="Constructed example; element 21
+Value: -0.21832000" tabindex="0" aria-label="Constructed example; element 21
+Value: -0.21832000"></circle><circle cx="502.09677419354836" cy="152.07211843600618" r="3.2" fill="#64748b" data-tip="Constructed example; element 22
+Value: -0.070721184" tabindex="0" aria-label="Constructed example; element 22
+Value: -0.070721184"></circle><circle cx="523.3870967741937" cy="121.34559282902481" r="3.2" fill="#64748b" data-tip="Constructed example; element 23
+Value: 0.23654407" tabindex="0" aria-label="Constructed example; element 23
+Value: 0.23654407"></circle><circle cx="544.6774193548388" cy="144.02336182360324" r="3.2" fill="#64748b" data-tip="Constructed example; element 24
+Value: 0.0097663818" tabindex="0" aria-label="Constructed example; element 24
+Value: 0.0097663818"></circle><circle cx="565.9677419354839" cy="168.90607607487027" r="3.2" fill="#64748b" data-tip="Constructed example; element 25
+Value: -0.23906076" tabindex="0" aria-label="Constructed example; element 25
+Value: -0.23906076"></circle><circle cx="587.258064516129" cy="139.8163056114828" r="3.2" fill="#64748b" data-tip="Constructed example; element 26
+Value: 0.051836944" tabindex="0" aria-label="Constructed example; element 26
+Value: 0.051836944"></circle><circle cx="608.5483870967743" cy="122.42970488927186" r="3.2" fill="#64748b" data-tip="Constructed example; element 27
+Value: 0.22570295" tabindex="0" aria-label="Constructed example; element 27
+Value: 0.22570295"></circle><circle cx="629.8387096774194" cy="155.99981090780238" r="3.2" fill="#64748b" data-tip="Constructed example; element 28
+Value: -0.10999811" tabindex="0" aria-label="Constructed example; element 28
+Value: -0.10999811"></circle><circle cx="651.1290322580645" cy="164.7357649632038" r="3.2" fill="#64748b" data-tip="Constructed example; element 29
+Value: -0.19735765" tabindex="0" aria-label="Constructed example; element 29
+Value: -0.19735765"></circle><circle cx="672.4193548387096" cy="128.914499779759" r="3.2" fill="#64748b" data-tip="Constructed example; element 30
+Value: 0.16085500" tabindex="0" aria-label="Constructed example; element 30
+Value: 0.16085500"></circle><circle cx="693.7096774193549" cy="129.40929131953118" r="3.2" fill="#64748b" data-tip="Constructed example; element 31
+Value: 0.15590709" tabindex="0" aria-label="Constructed example; element 31
+Value: 0.15590709"></circle><circle cx="715" cy="165.10305417152867" r="3.2" fill="#64748b" data-tip="Constructed example; element 32
+Value: -0.20103054" tabindex="0" aria-label="Constructed example; element 32
+Value: -0.20103054"></circle><polyline points="55,49.08761160714285 76.29032258064515,168.97809709821428 97.58064516129032,240.91238839285717 118.87096774193549,97.04380580357142 140.16129032258064,81.05840773809524 161.4516129032258,208.94159226190476 182.74193548387098,208.94159226190476 204.03225806451613,49.08761160714285 225.32258064516128,113.02920386904762 246.61290322580646,240.91238839285717 267.9032258064516,160.9853980654762 289.1935483870968,49.08761160714285 310.48387096774195,152.9926990327381 331.77419354838713,240.91238839285717 353.06451612903226,113.02920386904762 374.35483870967744,49.08761160714285 395.64516129032256,159.5321800595238 416.9354838709677,159.5321800595238 438.2258064516129,123.20172991071428 459.51612903225805,134.10086495535714 480.80645161290323,166.79827008928572 502.09677419354836,152.2660900297619 523.3870967741937,123.20172991071428 544.6774193548388,143.18347749255952 565.9677419354839,166.79827008928572 587.258064516129,139.55043247767858 608.5483870967743,123.20172991071428 629.8387096774194,155.89913504464286 651.1290322580645,166.79827008928572 672.4193548387096,130.4678199404762 693.7096774193549,130.4678199404762 715,166.79827008928572" fill="none" stroke="#cf8a36" stroke-width="1.5" opacity=".7"></polyline><circle cx="55" cy="49.08761160714285" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 1
+Value: 0.95912388" tabindex="0" aria-label="Constructed example; element 1
+Value: 0.95912388"></circle><circle cx="76.29032258064515" cy="168.97809709821428" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 2
+Value: -0.23978097" tabindex="0" aria-label="Constructed example; element 2
+Value: -0.23978097"></circle><circle cx="97.58064516129032" cy="240.91238839285717" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 3
+Value: -0.95912388" tabindex="0" aria-label="Constructed example; element 3
+Value: -0.95912388"></circle><circle cx="118.87096774193549" cy="97.04380580357142" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 4
+Value: 0.47956194" tabindex="0" aria-label="Constructed example; element 4
+Value: 0.47956194"></circle><circle cx="140.16129032258064" cy="81.05840773809524" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 5
+Value: 0.63941592" tabindex="0" aria-label="Constructed example; element 5
+Value: 0.63941592"></circle><circle cx="161.4516129032258" cy="208.94159226190476" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 6
+Value: -0.63941592" tabindex="0" aria-label="Constructed example; element 6
+Value: -0.63941592"></circle><circle cx="182.74193548387098" cy="208.94159226190476" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 7
+Value: -0.63941592" tabindex="0" aria-label="Constructed example; element 7
+Value: -0.63941592"></circle><circle cx="204.03225806451613" cy="49.08761160714285" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 8
+Value: 0.95912388" tabindex="0" aria-label="Constructed example; element 8
+Value: 0.95912388"></circle><circle cx="225.32258064516128" cy="113.02920386904762" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 9
+Value: 0.31970796" tabindex="0" aria-label="Constructed example; element 9
+Value: 0.31970796"></circle><circle cx="246.61290322580646" cy="240.91238839285717" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 10
+Value: -0.95912388" tabindex="0" aria-label="Constructed example; element 10
+Value: -0.95912388"></circle><circle cx="267.9032258064516" cy="160.9853980654762" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 11
+Value: -0.15985398" tabindex="0" aria-label="Constructed example; element 11
+Value: -0.15985398"></circle><circle cx="289.1935483870968" cy="49.08761160714285" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 12
+Value: 0.95912388" tabindex="0" aria-label="Constructed example; element 12
+Value: 0.95912388"></circle><circle cx="310.48387096774195" cy="152.9926990327381" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 13
+Value: -0.079926990" tabindex="0" aria-label="Constructed example; element 13
+Value: -0.079926990"></circle><circle cx="331.77419354838713" cy="240.91238839285717" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 14
+Value: -0.95912388" tabindex="0" aria-label="Constructed example; element 14
+Value: -0.95912388"></circle><circle cx="353.06451612903226" cy="113.02920386904762" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 15
+Value: 0.31970796" tabindex="0" aria-label="Constructed example; element 15
+Value: 0.31970796"></circle><circle cx="374.35483870967744" cy="49.08761160714285" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 16
+Value: 0.95912388" tabindex="0" aria-label="Constructed example; element 16
+Value: 0.95912388"></circle><circle cx="395.64516129032256" cy="159.5321800595238" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 17
+Value: -0.14532180" tabindex="0" aria-label="Constructed example; element 17
+Value: -0.14532180"></circle><circle cx="416.9354838709677" cy="159.5321800595238" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 18
+Value: -0.14532180" tabindex="0" aria-label="Constructed example; element 18
+Value: -0.14532180"></circle><circle cx="438.2258064516129" cy="123.20172991071428" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 19
+Value: 0.21798270" tabindex="0" aria-label="Constructed example; element 19
+Value: 0.21798270"></circle><circle cx="459.51612903225805" cy="134.10086495535714" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 20
+Value: 0.10899135" tabindex="0" aria-label="Constructed example; element 20
+Value: 0.10899135"></circle><circle cx="480.80645161290323" cy="166.79827008928572" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 21
+Value: -0.21798270" tabindex="0" aria-label="Constructed example; element 21
+Value: -0.21798270"></circle><circle cx="502.09677419354836" cy="152.2660900297619" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 22
+Value: -0.072660900" tabindex="0" aria-label="Constructed example; element 22
+Value: -0.072660900"></circle><circle cx="523.3870967741937" cy="123.20172991071428" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 23
+Value: 0.21798270" tabindex="0" aria-label="Constructed example; element 23
+Value: 0.21798270"></circle><circle cx="544.6774193548388" cy="143.18347749255952" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 24
+Value: 0.018165225" tabindex="0" aria-label="Constructed example; element 24
+Value: 0.018165225"></circle><circle cx="565.9677419354839" cy="166.79827008928572" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 25
+Value: -0.21798270" tabindex="0" aria-label="Constructed example; element 25
+Value: -0.21798270"></circle><circle cx="587.258064516129" cy="139.55043247767858" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 26
+Value: 0.054495675" tabindex="0" aria-label="Constructed example; element 26
+Value: 0.054495675"></circle><circle cx="608.5483870967743" cy="123.20172991071428" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 27
+Value: 0.21798270" tabindex="0" aria-label="Constructed example; element 27
+Value: 0.21798270"></circle><circle cx="629.8387096774194" cy="155.89913504464286" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 28
+Value: -0.10899135" tabindex="0" aria-label="Constructed example; element 28
+Value: -0.10899135"></circle><circle cx="651.1290322580645" cy="166.79827008928572" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 29
+Value: -0.21798270" tabindex="0" aria-label="Constructed example; element 29
+Value: -0.21798270"></circle><circle cx="672.4193548387096" cy="130.4678199404762" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 30
+Value: 0.14532180" tabindex="0" aria-label="Constructed example; element 30
+Value: 0.14532180"></circle><circle cx="693.7096774193549" cy="130.4678199404762" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 31
+Value: 0.14532180" tabindex="0" aria-label="Constructed example; element 31
+Value: 0.14532180"></circle><circle cx="715" cy="166.79827008928572" r="3.2" fill="#cf8a36" data-tip="Constructed example; element 32
+Value: -0.21798270" tabindex="0" aria-label="Constructed example; element 32
+Value: -0.21798270"></circle><polyline points="55,45.02070998573308 76.29032258064515,169.99482250356672 97.58064516129032,244.97929001426692 118.87096774193549,95.01035499286654 140.16129032258064,78.34713999048871 161.4516129032258,211.6528600095113 182.74193548387098,211.6528600095113 204.03225806451613,45.02070998573308 225.32258064516128,111.67356999524435 246.61290322580646,244.97929001426692 267.9032258064516,161.66321500237783 289.1935483870968,45.02070998573308 310.48387096774195,153.3316075011889 331.77419354838713,244.97929001426692 353.06451612903226,111.67356999524435 374.35483870967744,45.02070998573308 395.64516129032256,160.47298535935084 416.9354838709677,160.47298535935084 438.2258064516129,129.52701464064916 459.51612903225805,133.39526098048688 480.80645161290323,168.20947803902624 502.09677419354836,152.73649267967542 523.3870967741937,121.79052196097375 544.6774193548388,143.06587683008115 565.9677419354839,168.20947803902624 587.258064516129,139.19763049024343 608.5483870967743,121.79052196097375 629.8387096774194,156.60473901951312 651.1290322580645,168.20947803902624 672.4193548387096,129.52701464064916 693.7096774193549,129.52701464064916 715,168.20947803902624" fill="none" stroke="#309576" stroke-width="1.5" opacity=".7"></polyline><circle cx="55" cy="45.02070998573308" r="3.2" fill="#309576" data-tip="Constructed example; element 1
+Value: 0.99979290" tabindex="0" aria-label="Constructed example; element 1
+Value: 0.99979290"></circle><circle cx="76.29032258064515" cy="169.99482250356672" r="3.2" fill="#309576" data-tip="Constructed example; element 2
+Value: -0.24994823" tabindex="0" aria-label="Constructed example; element 2
+Value: -0.24994823"></circle><circle cx="97.58064516129032" cy="244.97929001426692" r="3.2" fill="#309576" data-tip="Constructed example; element 3
+Value: -0.99979290" tabindex="0" aria-label="Constructed example; element 3
+Value: -0.99979290"></circle><circle cx="118.87096774193549" cy="95.01035499286654" r="3.2" fill="#309576" data-tip="Constructed example; element 4
+Value: 0.49989645" tabindex="0" aria-label="Constructed example; element 4
+Value: 0.49989645"></circle><circle cx="140.16129032258064" cy="78.34713999048871" r="3.2" fill="#309576" data-tip="Constructed example; element 5
+Value: 0.66652860" tabindex="0" aria-label="Constructed example; element 5
+Value: 0.66652860"></circle><circle cx="161.4516129032258" cy="211.6528600095113" r="3.2" fill="#309576" data-tip="Constructed example; element 6
+Value: -0.66652860" tabindex="0" aria-label="Constructed example; element 6
+Value: -0.66652860"></circle><circle cx="182.74193548387098" cy="211.6528600095113" r="3.2" fill="#309576" data-tip="Constructed example; element 7
+Value: -0.66652860" tabindex="0" aria-label="Constructed example; element 7
+Value: -0.66652860"></circle><circle cx="204.03225806451613" cy="45.02070998573308" r="3.2" fill="#309576" data-tip="Constructed example; element 8
+Value: 0.99979290" tabindex="0" aria-label="Constructed example; element 8
+Value: 0.99979290"></circle><circle cx="225.32258064516128" cy="111.67356999524435" r="3.2" fill="#309576" data-tip="Constructed example; element 9
+Value: 0.33326430" tabindex="0" aria-label="Constructed example; element 9
+Value: 0.33326430"></circle><circle cx="246.61290322580646" cy="244.97929001426692" r="3.2" fill="#309576" data-tip="Constructed example; element 10
+Value: -0.99979290" tabindex="0" aria-label="Constructed example; element 10
+Value: -0.99979290"></circle><circle cx="267.9032258064516" cy="161.66321500237783" r="3.2" fill="#309576" data-tip="Constructed example; element 11
+Value: -0.16663215" tabindex="0" aria-label="Constructed example; element 11
+Value: -0.16663215"></circle><circle cx="289.1935483870968" cy="45.02070998573308" r="3.2" fill="#309576" data-tip="Constructed example; element 12
+Value: 0.99979290" tabindex="0" aria-label="Constructed example; element 12
+Value: 0.99979290"></circle><circle cx="310.48387096774195" cy="153.3316075011889" r="3.2" fill="#309576" data-tip="Constructed example; element 13
+Value: -0.083316075" tabindex="0" aria-label="Constructed example; element 13
+Value: -0.083316075"></circle><circle cx="331.77419354838713" cy="244.97929001426692" r="3.2" fill="#309576" data-tip="Constructed example; element 14
+Value: -0.99979290" tabindex="0" aria-label="Constructed example; element 14
+Value: -0.99979290"></circle><circle cx="353.06451612903226" cy="111.67356999524435" r="3.2" fill="#309576" data-tip="Constructed example; element 15
+Value: 0.33326430" tabindex="0" aria-label="Constructed example; element 15
+Value: 0.33326430"></circle><circle cx="374.35483870967744" cy="45.02070998573308" r="3.2" fill="#309576" data-tip="Constructed example; element 16
+Value: 0.99979290" tabindex="0" aria-label="Constructed example; element 16
+Value: 0.99979290"></circle><circle cx="395.64516129032256" cy="160.47298535935084" r="3.2" fill="#309576" data-tip="Constructed example; element 17
+Value: -0.15472985" tabindex="0" aria-label="Constructed example; element 17
+Value: -0.15472985"></circle><circle cx="416.9354838709677" cy="160.47298535935084" r="3.2" fill="#309576" data-tip="Constructed example; element 18
+Value: -0.15472985" tabindex="0" aria-label="Constructed example; element 18
+Value: -0.15472985"></circle><circle cx="438.2258064516129" cy="129.52701464064916" r="3.2" fill="#309576" data-tip="Constructed example; element 19
+Value: 0.15472985" tabindex="0" aria-label="Constructed example; element 19
+Value: 0.15472985"></circle><circle cx="459.51612903225805" cy="133.39526098048688" r="3.2" fill="#309576" data-tip="Constructed example; element 20
+Value: 0.11604739" tabindex="0" aria-label="Constructed example; element 20
+Value: 0.11604739"></circle><circle cx="480.80645161290323" cy="168.20947803902624" r="3.2" fill="#309576" data-tip="Constructed example; element 21
+Value: -0.23209478" tabindex="0" aria-label="Constructed example; element 21
+Value: -0.23209478"></circle><circle cx="502.09677419354836" cy="152.73649267967542" r="3.2" fill="#309576" data-tip="Constructed example; element 22
+Value: -0.077364927" tabindex="0" aria-label="Constructed example; element 22
+Value: -0.077364927"></circle><circle cx="523.3870967741937" cy="121.79052196097375" r="3.2" fill="#309576" data-tip="Constructed example; element 23
+Value: 0.23209478" tabindex="0" aria-label="Constructed example; element 23
+Value: 0.23209478"></circle><circle cx="544.6774193548388" cy="143.06587683008115" r="3.2" fill="#309576" data-tip="Constructed example; element 24
+Value: 0.019341232" tabindex="0" aria-label="Constructed example; element 24
+Value: 0.019341232"></circle><circle cx="565.9677419354839" cy="168.20947803902624" r="3.2" fill="#309576" data-tip="Constructed example; element 25
+Value: -0.23209478" tabindex="0" aria-label="Constructed example; element 25
+Value: -0.23209478"></circle><circle cx="587.258064516129" cy="139.19763049024343" r="3.2" fill="#309576" data-tip="Constructed example; element 26
+Value: 0.058023695" tabindex="0" aria-label="Constructed example; element 26
+Value: 0.058023695"></circle><circle cx="608.5483870967743" cy="121.79052196097375" r="3.2" fill="#309576" data-tip="Constructed example; element 27
+Value: 0.23209478" tabindex="0" aria-label="Constructed example; element 27
+Value: 0.23209478"></circle><circle cx="629.8387096774194" cy="156.60473901951312" r="3.2" fill="#309576" data-tip="Constructed example; element 28
+Value: -0.11604739" tabindex="0" aria-label="Constructed example; element 28
+Value: -0.11604739"></circle><circle cx="651.1290322580645" cy="168.20947803902624" r="3.2" fill="#309576" data-tip="Constructed example; element 29
+Value: -0.23209478" tabindex="0" aria-label="Constructed example; element 29
+Value: -0.23209478"></circle><circle cx="672.4193548387096" cy="129.52701464064916" r="3.2" fill="#309576" data-tip="Constructed example; element 30
+Value: 0.15472985" tabindex="0" aria-label="Constructed example; element 30
+Value: 0.15472985"></circle><circle cx="693.7096774193549" cy="129.52701464064916" r="3.2" fill="#309576" data-tip="Constructed example; element 31
+Value: 0.15472985" tabindex="0" aria-label="Constructed example; element 31
+Value: 0.15472985"></circle><circle cx="715" cy="168.20947803902624" r="3.2" fill="#309576" data-tip="Constructed example; element 32
+Value: -0.23209478" tabindex="0" aria-label="Constructed example; element 32
+Value: -0.23209478"></circle><line x1="385" y1="35" x2="385" y2="255" stroke="#839a8c" stroke-dasharray="4 4"></line><text x="180" y="280" fill="#35513e" font-size="14">Block 1: 16 elements</text><text x="515" y="280" fill="#35513e" font-size="14">Block 2: 16 elements</text><text x="28" y="22" fill="#35513e" font-size="14">Fixed target token: inputs and reconstructed values</text></g><text x="25" y="373" font-size="11">Fixed original inputs / per-tensor / per-token · Target-token relative L2: per-tensor 8.45%; per-token</text><text x="25" y="393" font-size="11">9.10%.Target tokenFP32 outer scaleTwo E4M3 block scalesper-tensor3.720e+00.04296875 /</text><text x="25" y="413" font-size="11">0.009765625per-token3.719e-4448 / 104 · The target token&#39;s 32 inputs remain fixed; the slider changes</text><text x="25" y="433" font-size="11">only another token&#39;s amax in the batch. A finite E2M1/E4M3 codebook with round-to-nearest-even shows</text><text x="25" y="453" font-size="11">block scales, reconstructed values, and relative L2 error. This is a mathematical example rather than a</text><text x="25" y="473" font-size="11">model or GPU measurement; it excludes RHT, SR, FTZ, and padding. The print version shows the constructed</text><text x="25" y="493" font-size="11">inputs and reconstructed values at the default amplitude.</text></svg>

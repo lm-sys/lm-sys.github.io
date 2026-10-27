@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 492" role="img" aria-label="Compute Gains and Conversion/Synchronization Cost"><style>text{font-family:Inter,Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#35513e} [data-tip]{cursor:default}</style><rect width="760" height="492" fill="white"/><text x="25" y="28" font-size="17" font-weight="600">Compute Gains and Conversion/Synchronization Cost</text><g transform="translate(0 44)"><rect width="760" height="274" fill="white"></rect><text x="193" y="21" fill="#35513e" font-size="13">Measured stage time / s (rollout excluded)</text><line x1="193" y1="40" x2="193" y2="223" stroke="#dbe4dc"></line><text x="193" y="247" fill="#35513e" text-anchor="middle" font-size="12">0.0</text><line x1="314.75" y1="40" x2="314.75" y2="223" stroke="#dbe4dc"></line><text x="314.75" y="247" fill="#35513e" text-anchor="middle" font-size="12">27.5</text><line x1="436.5" y1="40" x2="436.5" y2="223" stroke="#dbe4dc"></line><text x="436.5" y="247" fill="#35513e" text-anchor="middle" font-size="12">55.0</text><line x1="558.25" y1="40" x2="558.25" y2="223" stroke="#dbe4dc"></line><text x="558.25" y="247" fill="#35513e" text-anchor="middle" font-size="12">82.5</text><line x1="680" y1="40" x2="680" y2="223" stroke="#dbe4dc"></line><text x="680" y="247" fill="#35513e" text-anchor="middle" font-size="12">110.0</text><text x="181" y="74" fill="#35513e" text-anchor="end" font-size="12">BF16</text><rect x="193" y="52" width="208.2589090909091" height="34" rx="4" fill="#309576" opacity=".86" data-tip="BF16
+Train: 47.04 s
+n=11" tabindex="0" role="img" aria-label="BF16
+Train: 47.04 s
+n=11"><title>BF16
+Train: 47.04 s
+n=11</title></rect><rect x="401.2589090909091" y="52" width="44.007090909090905" height="34" rx="4" fill="#d18a35" opacity=".86" data-tip="BF16
+Convert / sync: 9.94 s
+n=11" tabindex="0" role="img" aria-label="BF16
+Convert / sync: 9.94 s
+n=11"><title>BF16
+Convert / sync: 9.94 s
+n=11</title></rect><text x="741" y="74" fill="#35513e" text-anchor="end" font-size="12">56.98 s</text><text x="181" y="140" fill="#35513e" text-anchor="end" font-size="12">TE NVFP4</text><rect x="193" y="118" width="197.89909090909092" height="34" rx="4" fill="#309576" opacity=".86" data-tip="TE NVFP4
+Train: 44.7 s
+n=10" tabindex="0" role="img" aria-label="TE NVFP4
+Train: 44.7 s
+n=10"><title>TE NVFP4
+Train: 44.7 s
+n=10</title></rect><rect x="390.8990909090909" y="118" width="225.2596363636364" height="34" rx="4" fill="#d18a35" opacity=".86" data-tip="TE NVFP4
+Convert / sync: 50.88 s
+n=10" tabindex="0" role="img" aria-label="TE NVFP4
+Convert / sync: 50.88 s
+n=10"><title>TE NVFP4
+Convert / sync: 50.88 s
+n=10</title></rect><text x="741" y="140" fill="#35513e" text-anchor="end" font-size="12">95.58 s</text><text x="181" y="198" fill="#35513e" text-anchor="end" font-size="12">miniTE per-token</text><text x="181" y="214" fill="#35513e" text-anchor="end" font-size="11">BF16 bwd</text><rect x="193" y="184" width="188.4247272727273" height="34" rx="4" fill="#309576" opacity=".86" data-tip="miniTE per-token / BF16 bwd
+Train: 42.56 s
+n=10" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+Train: 42.56 s
+n=10"><title>miniTE per-token / BF16 bwd
+Train: 42.56 s
+n=10</title></rect><rect x="381.4247272727273" y="184" width="244.6510909090909" height="34" rx="4" fill="#d18a35" opacity=".86" data-tip="miniTE per-token / BF16 bwd
+Convert / sync: 55.26 s
+n=10" tabindex="0" role="img" aria-label="miniTE per-token / BF16 bwd
+Convert / sync: 55.26 s
+n=10"><title>miniTE per-token / BF16 bwd
+Convert / sync: 55.26 s
+n=10</title></rect><text x="741" y="206" fill="#35513e" text-anchor="end" font-size="12">97.82 s</text></g><text x="25" y="342" font-size="11">Train / Convert / sync · Conditional estimate: miniTE per-token / BF16 bwd adds 40.84 s over BF16 in the</text><text x="25" y="362" font-size="11">two measured stages. Assuming 0.0 s saved in rollout, the sequential flow adds 40.84 s. The slider</text><text x="25" y="382" font-size="11">changes the conditional estimate, not measured values. · Stacked bars use measured stage means from Table</text><text x="25" y="402" font-size="11">6-19: 11 steady-state steps for BF16, 10 for TE NVFP4/miniTE per-token. Rollout time is excluded from</text><text x="25" y="422" font-size="11">this plot. The slider calculates how much rollout time must be saved to cover the recorded two-stage</text><text x="25" y="442" font-size="11">overhead, assuming no overlap and unchanged other costs. It is conditional arithmetic, not a full-RL</text><text x="25" y="462" font-size="11">speed prediction. Printing shows measured stages only.</text></svg>

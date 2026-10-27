@@ -1,0 +1,289 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 565" role="img" aria-label="GroupedLinear Forward and Direct F+B Trends"><style>text{font-family:Inter,Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#35513e} [data-tip]{cursor:default}</style><rect width="760" height="565" fill="white"/><text x="25" y="28" font-size="17" font-weight="600">GroupedLinear Forward and Direct F+B Trends</text><g transform="translate(0 44)"><rect width="760" height="407" fill="white"></rect><text x="64" y="20" fill="#35513e" font-size="13">FC1 · Directly measured latency / ms</text><line x1="64" y1="290" x2="702" y2="290" stroke="#dbe4dc"></line><text x="54" y="294" fill="#35513e" text-anchor="end" font-size="12">0.00</text><line x1="64" y1="228.5" x2="702" y2="228.5" stroke="#dbe4dc"></line><text x="54" y="232.5" fill="#35513e" text-anchor="end" font-size="12">1.59</text><line x1="64" y1="167" x2="702" y2="167" stroke="#dbe4dc"></line><text x="54" y="171" fill="#35513e" text-anchor="end" font-size="12">3.17</text><line x1="64" y1="105.5" x2="702" y2="105.5" stroke="#dbe4dc"></line><text x="54" y="109.5" fill="#35513e" text-anchor="end" font-size="12">4.76</text><line x1="64" y1="44" x2="702" y2="44" stroke="#dbe4dc"></line><text x="54" y="48" fill="#35513e" text-anchor="end" font-size="12">6.35</text><line x1="64" y1="290" x2="702" y2="290" stroke="#acbfb1"></line><text x="64" y="315" fill="#35513e" font-size="12" text-anchor="middle">4,096</text><text x="276.66666666666663" y="315" fill="#35513e" font-size="12" text-anchor="middle">16,384</text><text x="489.3333333333333" y="315" fill="#35513e" font-size="12" text-anchor="middle">65,536</text><text x="702" y="315" fill="#35513e" font-size="12" text-anchor="middle">131,072</text><polyline points="64,270.4573518582731 276.66666666666663,270.03343924018156 489.3333333333333,258.9579046975022 702,238.49411999293727" fill="none" stroke="#64748b" stroke-width="2"></polyline><circle cx="64" cy="270.4573518582731" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · forward · FC1
+4096 tokens
+Median: 0.504168 ms
+min–max: 0.46365778–0.55970893 ms" tabindex="0" role="img" aria-label="TE BF16 · forward · FC1
+4096 tokens
+Median: 0.504168 ms
+min–max: 0.46365778–0.55970893 ms"><title>TE BF16 · forward · FC1
+4096 tokens
+Median: 0.504168 ms
+min–max: 0.46365778–0.55970893 ms</title></circle><circle cx="276.66666666666663" cy="270.03343924018156" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · forward · FC1
+16384 tokens
+Median: 0.51510425 ms
+min–max: 0.4637832–0.53347737 ms" tabindex="0" role="img" aria-label="TE BF16 · forward · FC1
+16384 tokens
+Median: 0.51510425 ms
+min–max: 0.4637832–0.53347737 ms"><title>TE BF16 · forward · FC1
+16384 tokens
+Median: 0.51510425 ms
+min–max: 0.4637832–0.53347737 ms</title></circle><circle cx="489.3333333333333" cy="258.9579046975022" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · forward · FC1
+65536 tokens
+Median: 0.80083472 ms
+min–max: 0.76805606–0.82781154 ms" tabindex="0" role="img" aria-label="TE BF16 · forward · FC1
+65536 tokens
+Median: 0.80083472 ms
+min–max: 0.76805606–0.82781154 ms"><title>TE BF16 · forward · FC1
+65536 tokens
+Median: 0.80083472 ms
+min–max: 0.76805606–0.82781154 ms</title></circle><circle cx="702" cy="238.49411999293727" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · forward · FC1
+131072 tokens
+Median: 1.32876653 ms
+min–max: 1.31667005–1.36469198 ms" tabindex="0" role="img" aria-label="TE BF16 · forward · FC1
+131072 tokens
+Median: 1.32876653 ms
+min–max: 1.31667005–1.36469198 ms"><title>TE BF16 · forward · FC1
+131072 tokens
+Median: 1.32876653 ms
+min–max: 1.31667005–1.36469198 ms</title></circle><polyline points="64,239.81606288536085 276.66666666666663,237.6984387018084 489.3333333333333,241.54370978717077 702,238.56129320065082" fill="none" stroke="#d18a35" stroke-width="2"></polyline><circle cx="64" cy="239.81606288536085" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · forward · FC1
+4096 tokens
+Median: 1.29466259 ms
+min–max: 1.16891272–1.3862683 ms" tabindex="0" role="img" aria-label="TE NVFP4 · forward · FC1
+4096 tokens
+Median: 1.29466259 ms
+min–max: 1.16891272–1.3862683 ms"><title>TE NVFP4 · forward · FC1
+4096 tokens
+Median: 1.29466259 ms
+min–max: 1.16891272–1.3862683 ms</title></circle><circle cx="276.66666666666663" cy="237.6984387018084" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · forward · FC1
+16384 tokens
+Median: 1.34929379 ms
+min–max: 1.11553606–1.53237374 ms" tabindex="0" role="img" aria-label="TE NVFP4 · forward · FC1
+16384 tokens
+Median: 1.34929379 ms
+min–max: 1.11553606–1.53237374 ms"><title>TE NVFP4 · forward · FC1
+16384 tokens
+Median: 1.34929379 ms
+min–max: 1.11553606–1.53237374 ms</title></circle><circle cx="489.3333333333333" cy="241.54370978717077" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · forward · FC1
+65536 tokens
+Median: 1.25009215 ms
+min–max: 1.20390594–1.34356526 ms" tabindex="0" role="img" aria-label="TE NVFP4 · forward · FC1
+65536 tokens
+Median: 1.25009215 ms
+min–max: 1.20390594–1.34356526 ms"><title>TE NVFP4 · forward · FC1
+65536 tokens
+Median: 1.25009215 ms
+min–max: 1.20390594–1.34356526 ms</title></circle><circle cx="702" cy="238.56129320065082" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · forward · FC1
+131072 tokens
+Median: 1.32703357 ms
+min–max: 1.30305851–1.35326786 ms" tabindex="0" role="img" aria-label="TE NVFP4 · forward · FC1
+131072 tokens
+Median: 1.32703357 ms
+min–max: 1.30305851–1.35326786 ms"><title>TE NVFP4 · forward · FC1
+131072 tokens
+Median: 1.32703357 ms
+min–max: 1.30305851–1.35326786 ms</title></circle><polyline points="64,276.9656674560252 276.66666666666663,274.637044681603 489.3333333333333,255.28959507142315 702,231.5276035541181" fill="none" stroke="#309576" stroke-width="2"></polyline><circle cx="64" cy="276.9656674560252" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · forward · FC1
+4096 tokens
+Median: 0.33626422 ms
+min–max: 0.32852419–0.35317421 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · forward · FC1
+4096 tokens
+Median: 0.33626422 ms
+min–max: 0.32852419–0.35317421 ms"><title>miniTE CUTLASS · forward · FC1
+4096 tokens
+Median: 0.33626422 ms
+min–max: 0.32852419–0.35317421 ms</title></circle><circle cx="276.66666666666663" cy="274.637044681603" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · forward · FC1
+16384 tokens
+Median: 0.39633884 ms
+min–max: 0.38933071–0.40712208 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · forward · FC1
+16384 tokens
+Median: 0.39633884 ms
+min–max: 0.38933071–0.40712208 ms"><title>miniTE CUTLASS · forward · FC1
+16384 tokens
+Median: 0.39633884 ms
+min–max: 0.38933071–0.40712208 ms</title></circle><circle cx="489.3333333333333" cy="255.28959507142315" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · forward · FC1
+65536 tokens
+Median: 0.89547105 ms
+min–max: 0.88620803–0.9077182 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · forward · FC1
+65536 tokens
+Median: 0.89547105 ms
+min–max: 0.88620803–0.9077182 ms"><title>miniTE CUTLASS · forward · FC1
+65536 tokens
+Median: 0.89547105 ms
+min–max: 0.88620803–0.9077182 ms</title></circle><circle cx="702" cy="231.5276035541181" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · forward · FC1
+131072 tokens
+Median: 1.50849113 ms
+min–max: 1.50304599–1.51126157 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · forward · FC1
+131072 tokens
+Median: 1.50849113 ms
+min–max: 1.50304599–1.51126157 ms"><title>miniTE CUTLASS · forward · FC1
+131072 tokens
+Median: 1.50849113 ms
+min–max: 1.50304599–1.51126157 ms</title></circle><polyline points="64,275.5808275771755 276.66666666666663,273.55978411671816 489.3333333333333,267.4300416220271 702,253.8776727462863" fill="none" stroke="#537bb9" stroke-width="2"></polyline><circle cx="64" cy="275.5808275771755" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · forward · FC1
+4096 tokens
+Median: 0.3719908 ms
+min–max: 0.37095695–0.39816381 ms" tabindex="0" role="img" aria-label="miniTE per-token · forward · FC1
+4096 tokens
+Median: 0.3719908 ms
+min–max: 0.37095695–0.39816381 ms"><title>miniTE per-token · forward · FC1
+4096 tokens
+Median: 0.3719908 ms
+min–max: 0.37095695–0.39816381 ms</title></circle><circle cx="276.66666666666663" cy="273.55978411671816" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · forward · FC1
+16384 tokens
+Median: 0.42413038 ms
+min–max: 0.41783605–0.42689293 ms" tabindex="0" role="img" aria-label="miniTE per-token · forward · FC1
+16384 tokens
+Median: 0.42413038 ms
+min–max: 0.41783605–0.42689293 ms"><title>miniTE per-token · forward · FC1
+16384 tokens
+Median: 0.42413038 ms
+min–max: 0.41783605–0.42689293 ms</title></circle><circle cx="489.3333333333333" cy="267.4300416220271" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · forward · FC1
+65536 tokens
+Median: 0.5822676 ms
+min–max: 0.56555317–0.59594293 ms" tabindex="0" role="img" aria-label="miniTE per-token · forward · FC1
+65536 tokens
+Median: 0.5822676 ms
+min–max: 0.56555317–0.59594293 ms"><title>miniTE per-token · forward · FC1
+65536 tokens
+Median: 0.5822676 ms
+min–max: 0.56555317–0.59594293 ms</title></circle><circle cx="702" cy="253.8776727462863" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · forward · FC1
+131072 tokens
+Median: 0.93189631 ms
+min–max: 0.92871822–0.95079183 ms" tabindex="0" role="img" aria-label="miniTE per-token · forward · FC1
+131072 tokens
+Median: 0.93189631 ms
+min–max: 0.92871822–0.95079183 ms"><title>miniTE per-token · forward · FC1
+131072 tokens
+Median: 0.93189631 ms
+min–max: 0.92871822–0.95079183 ms</title></circle><polyline points="64,194.624986256469 276.66666666666663,191.41421553512734 489.3333333333333,190.3057071626166 702,122.97773016084841" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="7 4"></polyline><circle cx="64" cy="194.624986256469" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · fwb · FC1
+4096 tokens
+Median: 2.46051763 ms
+min–max: 2.06813365–2.65593301 ms" tabindex="0" role="img" aria-label="TE BF16 · fwb · FC1
+4096 tokens
+Median: 2.46051763 ms
+min–max: 2.06813365–2.65593301 ms"><title>TE BF16 · fwb · FC1
+4096 tokens
+Median: 2.46051763 ms
+min–max: 2.06813365–2.65593301 ms</title></circle><circle cx="276.66666666666663" cy="191.41421553512734" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · fwb · FC1
+16384 tokens
+Median: 2.5433502 ms
+min–max: 2.41597147–2.88113822 ms" tabindex="0" role="img" aria-label="TE BF16 · fwb · FC1
+16384 tokens
+Median: 2.5433502 ms
+min–max: 2.41597147–2.88113822 ms"><title>TE BF16 · fwb · FC1
+16384 tokens
+Median: 2.5433502 ms
+min–max: 2.41597147–2.88113822 ms</title></circle><circle cx="489.3333333333333" cy="190.3057071626166" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · fwb · FC1
+65536 tokens
+Median: 2.57194789 ms
+min–max: 2.55239564–2.6237372 ms" tabindex="0" role="img" aria-label="TE BF16 · fwb · FC1
+65536 tokens
+Median: 2.57194789 ms
+min–max: 2.55239564–2.6237372 ms"><title>TE BF16 · fwb · FC1
+65536 tokens
+Median: 2.57194789 ms
+min–max: 2.55239564–2.6237372 ms</title></circle><circle cx="702" cy="122.97773016084841" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · fwb · FC1
+131072 tokens
+Median: 4.30889835 ms
+min–max: 4.24512352–4.32551086 ms" tabindex="0" role="img" aria-label="TE BF16 · fwb · FC1
+131072 tokens
+Median: 4.30889835 ms
+min–max: 4.24512352–4.32551086 ms"><title>TE BF16 · fwb · FC1
+131072 tokens
+Median: 4.30889835 ms
+min–max: 4.24512352–4.32551086 ms</title></circle><polyline points="64,128.22240662355964 276.66666666666663,135.48758245823285 489.3333333333333,134.50946561114336 702,112.3518045852216" fill="none" stroke="#d18a35" stroke-width="2" stroke-dasharray="7 4"></polyline><circle cx="64" cy="128.22240662355964" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · fwb · FC1
+4096 tokens
+Median: 4.17359437 ms
+min–max: 3.99453536–4.32705384 ms" tabindex="0" role="img" aria-label="TE NVFP4 · fwb · FC1
+4096 tokens
+Median: 4.17359437 ms
+min–max: 3.99453536–4.32705384 ms"><title>TE NVFP4 · fwb · FC1
+4096 tokens
+Median: 4.17359437 ms
+min–max: 3.99453536–4.32705384 ms</title></circle><circle cx="276.66666666666663" cy="135.48758245823285" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · fwb · FC1
+16384 tokens
+Median: 3.98616485 ms
+min–max: 3.41763582–4.34001646 ms" tabindex="0" role="img" aria-label="TE NVFP4 · fwb · FC1
+16384 tokens
+Median: 3.98616485 ms
+min–max: 3.41763582–4.34001646 ms"><title>TE NVFP4 · fwb · FC1
+16384 tokens
+Median: 3.98616485 ms
+min–max: 3.41763582–4.34001646 ms</title></circle><circle cx="489.3333333333333" cy="134.50946561114336" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · fwb · FC1
+65536 tokens
+Median: 4.01139865 ms
+min–max: 3.48888532–4.2890325 ms" tabindex="0" role="img" aria-label="TE NVFP4 · fwb · FC1
+65536 tokens
+Median: 4.01139865 ms
+min–max: 3.48888532–4.2890325 ms"><title>TE NVFP4 · fwb · FC1
+65536 tokens
+Median: 4.01139865 ms
+min–max: 3.48888532–4.2890325 ms</title></circle><circle cx="702" cy="112.3518045852216" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · fwb · FC1
+131072 tokens
+Median: 4.58302966 ms
+min–max: 4.42609466–4.65631305 ms" tabindex="0" role="img" aria-label="TE NVFP4 · fwb · FC1
+131072 tokens
+Median: 4.58302966 ms
+min–max: 4.42609466–4.65631305 ms"><title>TE NVFP4 · fwb · FC1
+131072 tokens
+Median: 4.58302966 ms
+min–max: 4.42609466–4.65631305 ms</title></circle><polyline points="64,134.70068552189045 276.66666666666663,135.4678266849853 489.3333333333333,137.9183059341271 702,71.73441198633344" fill="none" stroke="#309576" stroke-width="2" stroke-dasharray="7 4"></polyline><circle cx="64" cy="134.70068552189045" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · fwb · FC1
+4096 tokens
+Median: 4.00646549 ms
+min–max: 3.84094597–4.46787283 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · fwb · FC1
+4096 tokens
+Median: 4.00646549 ms
+min–max: 3.84094597–4.46787283 ms"><title>miniTE CUTLASS · fwb · FC1
+4096 tokens
+Median: 4.00646549 ms
+min–max: 3.84094597–4.46787283 ms</title></circle><circle cx="276.66666666666663" cy="135.4678266849853" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · fwb · FC1
+16384 tokens
+Median: 3.98667452 ms
+min–max: 3.77338867–4.53019266 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · fwb · FC1
+16384 tokens
+Median: 3.98667452 ms
+min–max: 3.77338867–4.53019266 ms"><title>miniTE CUTLASS · fwb · FC1
+16384 tokens
+Median: 3.98667452 ms
+min–max: 3.77338867–4.53019266 ms</title></circle><circle cx="489.3333333333333" cy="137.9183059341271" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · fwb · FC1
+65536 tokens
+Median: 3.9234562 ms
+min–max: 3.72875631–4.03921617 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · fwb · FC1
+65536 tokens
+Median: 3.9234562 ms
+min–max: 3.72875631–4.03921617 ms"><title>miniTE CUTLASS · fwb · FC1
+65536 tokens
+Median: 3.9234562 ms
+min–max: 3.72875631–4.03921617 ms</title></circle><circle cx="702" cy="71.73441198633344" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · fwb · FC1
+131072 tokens
+Median: 5.63089122 ms
+min–max: 5.4891145–5.66642248 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · fwb · FC1
+131072 tokens
+Median: 5.63089122 ms
+min–max: 5.4891145–5.66642248 ms"><title>miniTE CUTLASS · fwb · FC1
+131072 tokens
+Median: 5.63089122 ms
+min–max: 5.4891145–5.66642248 ms</title></circle><polyline points="64,146.10873680554073 276.66666666666663,141.52835085057583 489.3333333333333,143.81639248842927 702,96.62231403108925" fill="none" stroke="#537bb9" stroke-width="2" stroke-dasharray="7 4"></polyline><circle cx="64" cy="146.10873680554073" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · fwb · FC1
+4096 tokens
+Median: 3.71215663 ms
+min–max: 3.18732767–3.89848502 ms" tabindex="0" role="img" aria-label="miniTE per-token · fwb · FC1
+4096 tokens
+Median: 3.71215663 ms
+min–max: 3.18732767–3.89848502 ms"><title>miniTE per-token · fwb · FC1
+4096 tokens
+Median: 3.71215663 ms
+min–max: 3.18732767–3.89848502 ms</title></circle><circle cx="276.66666666666663" cy="141.52835085057583" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · fwb · FC1
+16384 tokens
+Median: 3.83032302 ms
+min–max: 3.64607276–3.90799923 ms" tabindex="0" role="img" aria-label="miniTE per-token · fwb · FC1
+16384 tokens
+Median: 3.83032302 ms
+min–max: 3.64607276–3.90799923 ms"><title>miniTE per-token · fwb · FC1
+16384 tokens
+Median: 3.83032302 ms
+min–max: 3.64607276–3.90799923 ms</title></circle><circle cx="489.3333333333333" cy="143.81639248842927" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · fwb · FC1
+65536 tokens
+Median: 3.77129532 ms
+min–max: 3.44135513–3.91552537 ms" tabindex="0" role="img" aria-label="miniTE per-token · fwb · FC1
+65536 tokens
+Median: 3.77129532 ms
+min–max: 3.44135513–3.91552537 ms"><title>miniTE per-token · fwb · FC1
+65536 tokens
+Median: 3.77129532 ms
+min–max: 3.44135513–3.91552537 ms</title></circle><circle cx="702" cy="96.62231403108925" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · fwb · FC1
+131072 tokens
+Median: 4.9888245 ms
+min–max: 4.85360487–5.09486903 ms" tabindex="0" role="img" aria-label="miniTE per-token · fwb · FC1
+131072 tokens
+Median: 4.9888245 ms
+min–max: 4.85360487–5.09486903 ms"><title>miniTE per-token · fwb · FC1
+131072 tokens
+Median: 4.9888245 ms
+min–max: 4.85360487–5.09486903 ms</title></circle><text x="382" y="341" fill="#35513e" font-size="13" text-anchor="middle">Pre-dispatch token scale</text><rect x="68" y="370" width="10" height="10" rx="6" fill="#64748b"></rect><text x="86" y="379" fill="#35513e" font-size="12">TE BF16</text><rect x="203" y="370" width="10" height="10" rx="6" fill="#d18a35"></rect><text x="221" y="379" fill="#35513e" font-size="12">TE NVFP4</text><rect x="338" y="370" width="10" height="10" rx="6" fill="#309576"></rect><text x="356" y="379" fill="#35513e" font-size="12">miniTE CUTLASS</text><rect x="473" y="370" width="10" height="10" rx="6" fill="#537bb9"></rect><text x="491" y="379" fill="#35513e" font-size="12">miniTE per-token</text></g><text x="25" y="475" font-size="11">Solid: forward; dashed: directly timed F+B. Switch FC1/FC2; every point comes from C1 five-trial</text><text x="25" y="495" font-size="11">summaries. Direct F+B is not a sum of separate forward and backward timings. miniTE CUTLASS/miniTE</text><text x="25" y="515" font-size="11">per-token use the recorded MXFP8 backward. · Forward and complete forward-plus-backward (F+B) are timed</text><text x="25" y="535" font-size="11">directly.</text></svg>
