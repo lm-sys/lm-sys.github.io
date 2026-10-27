@@ -1,0 +1,241 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 580" role="img" aria-label="Module Cost Across Workloads and Backward Precisions"><style>text{font-family:Inter,Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#35513e} [data-tip]{cursor:default}</style><rect width="760" height="580" fill="white"/><text x="25" y="28" font-size="17" font-weight="600">Module Cost Across Workloads and Backward Precisions</text><g transform="translate(0 44)"><rect width="760" height="382" fill="white"></rect><text x="64" y="20" fill="#35513e" font-size="13">FC1 · F+B / ms (lower is better)</text><line x1="64" y1="267" x2="702" y2="267" stroke="#dbe4dc"></line><text x="54" y="271" fill="#35513e" text-anchor="end" font-size="12">0.00</text><line x1="64" y1="211.5" x2="702" y2="211.5" stroke="#dbe4dc"></line><text x="54" y="215.5" fill="#35513e" text-anchor="end" font-size="12">1.64</text><line x1="64" y1="156" x2="702" y2="156" stroke="#dbe4dc"></line><text x="54" y="160" fill="#35513e" text-anchor="end" font-size="12">3.29</text><line x1="64" y1="100.5" x2="702" y2="100.5" stroke="#dbe4dc"></line><text x="54" y="104.5" fill="#35513e" text-anchor="end" font-size="12">4.93</text><line x1="64" y1="45" x2="702" y2="45" stroke="#dbe4dc"></line><text x="54" y="49" fill="#35513e" text-anchor="end" font-size="12">6.57</text><line x1="64" y1="267" x2="702" y2="267" stroke="#acbfb1"></line><text x="64" y="292" fill="#35513e" font-size="12" text-anchor="middle">4,096</text><text x="276.66666666666663" y="292" fill="#35513e" font-size="12" text-anchor="middle">16,384</text><text x="489.3333333333333" y="292" fill="#35513e" font-size="12" text-anchor="middle">65,536</text><text x="702" y="292" fill="#35513e" font-size="12" text-anchor="middle">131,072</text><polyline points="64,183.89780131345825 276.66666666666663,181.10019116433295 489.3333333333333,180.13432516439929 702,121.470082797846" fill="none" stroke="#64748b" stroke-width="2"></polyline><line x1="64" y1="197.15028580533667" x2="64" y2="177.29778839267803" stroke="#64748b" stroke-width="2"></line><line x1="60" y1="197.15028580533667" x2="68" y2="197.15028580533667" stroke="#64748b"></line><line x1="60" y1="177.29778839267803" x2="68" y2="177.29778839267803" stroke="#64748b"></line><circle cx="64" cy="183.89780131345825" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · FC1 · fwb
+Scale: 4096 tokens
+Median: 2.46051763 ms
+min–max: 2.06813365–2.65593301 ms
+Backward: MXFP8
+5 trials: 2.65593301, 2.46051763, 2.15114751, 2.06813365, 2.47055878 ms" tabindex="0" role="img" aria-label="TE BF16 · FC1 · fwb
+Scale: 4096 tokens
+Median: 2.46051763 ms
+min–max: 2.06813365–2.65593301 ms
+Backward: MXFP8
+5 trials: 2.65593301, 2.46051763, 2.15114751, 2.06813365, 2.47055878 ms"><title>TE BF16 · FC1 · fwb
+Scale: 4096 tokens
+Median: 2.46051763 ms
+min–max: 2.06813365–2.65593301 ms
+Backward: MXFP8
+5 trials: 2.65593301, 2.46051763, 2.15114751, 2.06813365, 2.47055878 ms</title></circle><line x1="276.66666666666663" y1="185.40231556185236" x2="276.66666666666663" y2="169.69164582613018" stroke="#64748b" stroke-width="2"></line><line x1="272.66666666666663" y1="185.40231556185236" x2="280.66666666666663" y2="185.40231556185236" stroke="#64748b"></line><line x1="272.66666666666663" y1="169.69164582613018" x2="280.66666666666663" y2="169.69164582613018" stroke="#64748b"></line><circle cx="276.66666666666663" cy="181.10019116433295" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · FC1 · fwb
+Scale: 16384 tokens
+Median: 2.5433502 ms
+min–max: 2.41597147–2.88113822 ms
+Backward: MXFP8
+5 trials: 2.48108328, 2.88113822, 2.54545778, 2.5433502, 2.41597147 ms" tabindex="0" role="img" aria-label="TE BF16 · FC1 · fwb
+Scale: 16384 tokens
+Median: 2.5433502 ms
+min–max: 2.41597147–2.88113822 ms
+Backward: MXFP8
+5 trials: 2.48108328, 2.88113822, 2.54545778, 2.5433502, 2.41597147 ms"><title>TE BF16 · FC1 · fwb
+Scale: 16384 tokens
+Median: 2.5433502 ms
+min–max: 2.41597147–2.88113822 ms
+Backward: MXFP8
+5 trials: 2.48108328, 2.88113822, 2.54545778, 2.5433502, 2.41597147 ms</title></circle><line x1="489.3333333333333" y1="180.79468803859618" x2="489.3333333333333" y2="178.38517881543933" stroke="#64748b" stroke-width="2"></line><line x1="485.3333333333333" y1="180.79468803859618" x2="493.3333333333333" y2="180.79468803859618" stroke="#64748b"></line><line x1="485.3333333333333" y1="178.38517881543933" x2="493.3333333333333" y2="178.38517881543933" stroke="#64748b"></line><circle cx="489.3333333333333" cy="180.13432516439929" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · FC1 · fwb
+Scale: 65536 tokens
+Median: 2.57194789 ms
+min–max: 2.55239564–2.6237372 ms
+Backward: MXFP8
+5 trials: 2.55239564, 2.58625826, 2.6237372, 2.57194789, 2.56127711 ms" tabindex="0" role="img" aria-label="TE BF16 · FC1 · fwb
+Scale: 65536 tokens
+Median: 2.57194789 ms
+min–max: 2.55239564–2.6237372 ms
+Backward: MXFP8
+5 trials: 2.55239564, 2.58625826, 2.6237372, 2.57194789, 2.56127711 ms"><title>TE BF16 · FC1 · fwb
+Scale: 65536 tokens
+Median: 2.57194789 ms
+min–max: 2.55239564–2.6237372 ms
+Backward: MXFP8
+5 trials: 2.55239564, 2.58625826, 2.6237372, 2.57194789, 2.56127711 ms</title></circle><line x1="702" y1="123.62403162473058" x2="702" y2="120.90900748030768" stroke="#64748b" stroke-width="2"></line><line x1="698" y1="123.62403162473058" x2="706" y2="123.62403162473058" stroke="#64748b"></line><line x1="698" y1="120.90900748030768" x2="706" y2="120.90900748030768" stroke="#64748b"></line><circle cx="702" cy="121.470082797846" r="4" fill="#64748b" stroke="white" stroke-width="1" data-tip="TE BF16 · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.30889835 ms
+min–max: 4.24512352–4.32551086 ms
+Backward: MXFP8
+5 trials: 4.30889835, 4.30978617, 4.32551086, 4.27514163, 4.24512352 ms" tabindex="0" role="img" aria-label="TE BF16 · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.30889835 ms
+min–max: 4.24512352–4.32551086 ms
+Backward: MXFP8
+5 trials: 4.30889835, 4.30978617, 4.32551086, 4.27514163, 4.24512352 ms"><title>TE BF16 · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.30889835 ms
+min–max: 4.24512352–4.32551086 ms
+Backward: MXFP8
+5 trials: 4.30889835, 4.30978617, 4.32551086, 4.27514163, 4.24512352 ms</title></circle><polyline points="64,126.03987658705447 276.66666666666663,132.37017277269067 489.3333333333333,131.51791957371276 702,112.21149667812409" fill="none" stroke="#d18a35" stroke-width="2"></polyline><line x1="64" y1="132.08746473654364" x2="64" y2="120.8568941768732" stroke="#d18a35" stroke-width="2"></line><line x1="60" y1="132.08746473654364" x2="68" y2="132.08746473654364" stroke="#d18a35"></line><line x1="60" y1="120.8568941768732" x2="68" y2="120.8568941768732" stroke="#d18a35"></line><circle cx="64" cy="126.03987658705447" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · FC1 · fwb
+Scale: 4096 tokens
+Median: 4.17359437 ms
+min–max: 3.99453536–4.32705384 ms
+Backward: MXFP8
+5 trials: 4.17359437, 4.24803716, 3.99670001, 4.32705384, 3.99453536 ms" tabindex="0" role="img" aria-label="TE NVFP4 · FC1 · fwb
+Scale: 4096 tokens
+Median: 4.17359437 ms
+min–max: 3.99453536–4.32705384 ms
+Backward: MXFP8
+5 trials: 4.17359437, 4.24803716, 3.99670001, 4.32705384, 3.99453536 ms"><title>TE NVFP4 · FC1 · fwb
+Scale: 4096 tokens
+Median: 4.17359437 ms
+min–max: 3.99453536–4.32705384 ms
+Backward: MXFP8
+5 trials: 4.17359437, 4.24803716, 3.99670001, 4.32705384, 3.99453536 ms</title></circle><line x1="276.66666666666663" y1="151.5718284329874" x2="276.66666666666663" y2="120.41909131406331" stroke="#d18a35" stroke-width="2"></line><line x1="272.66666666666663" y1="151.5718284329874" x2="280.66666666666663" y2="151.5718284329874" stroke="#d18a35"></line><line x1="272.66666666666663" y1="120.41909131406331" x2="280.66666666666663" y2="120.41909131406331" stroke="#d18a35"></line><circle cx="276.66666666666663" cy="132.37017277269067" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.98616485 ms
+min–max: 3.41763582–4.34001646 ms
+Backward: MXFP8
+5 trials: 4.170827, 4.34001646, 3.98160149, 3.98616485, 3.41763582 ms" tabindex="0" role="img" aria-label="TE NVFP4 · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.98616485 ms
+min–max: 3.41763582–4.34001646 ms
+Backward: MXFP8
+5 trials: 4.170827, 4.34001646, 3.98160149, 3.98616485, 3.41763582 ms"><title>TE NVFP4 · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.98616485 ms
+min–max: 3.41763582–4.34001646 ms
+Backward: MXFP8
+5 trials: 4.170827, 4.34001646, 3.98160149, 3.98616485, 3.41763582 ms</title></circle><line x1="489.3333333333333" y1="149.16542841303885" x2="489.3333333333333" y2="122.14103740198203" stroke="#d18a35" stroke-width="2"></line><line x1="485.3333333333333" y1="149.16542841303885" x2="493.3333333333333" y2="149.16542841303885" stroke="#d18a35"></line><line x1="485.3333333333333" y1="122.14103740198203" x2="493.3333333333333" y2="122.14103740198203" stroke="#d18a35"></line><circle cx="489.3333333333333" cy="131.51791957371276" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · FC1 · fwb
+Scale: 65536 tokens
+Median: 4.01139865 ms
+min–max: 3.48888532–4.2890325 ms
+Backward: MXFP8
+5 trials: 4.20900636, 4.2890325, 3.93290952, 4.01139865, 3.48888532 ms" tabindex="0" role="img" aria-label="TE NVFP4 · FC1 · fwb
+Scale: 65536 tokens
+Median: 4.01139865 ms
+min–max: 3.48888532–4.2890325 ms
+Backward: MXFP8
+5 trials: 4.20900636, 4.2890325, 3.93290952, 4.01139865, 3.48888532 ms"><title>TE NVFP4 · FC1 · fwb
+Scale: 65536 tokens
+Median: 4.01139865 ms
+min–max: 3.48888532–4.2890325 ms
+Backward: MXFP8
+5 trials: 4.20900636, 4.2890325, 3.93290952, 4.01139865, 3.48888532 ms</title></circle><line x1="702" y1="117.51186229741336" x2="702" y2="109.73640342779734" stroke="#d18a35" stroke-width="2"></line><line x1="698" y1="117.51186229741336" x2="706" y2="117.51186229741336" stroke="#d18a35"></line><line x1="698" y1="109.73640342779734" x2="706" y2="109.73640342779734" stroke="#d18a35"></line><circle cx="702" cy="112.21149667812409" r="4" fill="#d18a35" stroke="white" stroke-width="1" data-tip="TE NVFP4 · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.58302966 ms
+min–max: 4.42609466–4.65631305 ms
+Backward: MXFP8
+5 trials: 4.65286102, 4.65631305, 4.51357932, 4.58302966, 4.42609466 ms" tabindex="0" role="img" aria-label="TE NVFP4 · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.58302966 ms
+min–max: 4.42609466–4.65631305 ms
+Backward: MXFP8
+5 trials: 4.65286102, 4.65631305, 4.51357932, 4.58302966, 4.42609466 ms"><title>TE NVFP4 · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.58302966 ms
+min–max: 4.42609466–4.65631305 ms
+Backward: MXFP8
+5 trials: 4.65286102, 4.65631305, 4.51357932, 4.58302966, 4.42609466 ms</title></circle><polyline points="64,131.6845333899735 276.66666666666663,132.35295916370455 489.3333333333333,134.48811181476503 702,76.82073239515674" fill="none" stroke="#309576" stroke-width="2"></polyline><line x1="64" y1="137.2748350835976" x2="64" y2="116.10083521971086" stroke="#309576" stroke-width="2"></line><line x1="60" y1="137.2748350835976" x2="68" y2="137.2748350835976" stroke="#309576"></line><line x1="60" y1="116.10083521971086" x2="68" y2="116.10083521971086" stroke="#309576"></line><circle cx="64" cy="131.6845333899735" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · FC1 · fwb
+Scale: 4096 tokens
+Median: 4.00646549 ms
+min–max: 3.84094597–4.46787283 ms
+Backward: MXFP8
+5 trials: 4.46787283, 4.01091384, 4.00646549, 3.94675122, 3.84094597 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · FC1 · fwb
+Scale: 4096 tokens
+Median: 4.00646549 ms
+min–max: 3.84094597–4.46787283 ms
+Backward: MXFP8
+5 trials: 4.46787283, 4.01091384, 4.00646549, 3.94675122, 3.84094597 ms"><title>miniTE CUTLASS · FC1 · fwb
+Scale: 4096 tokens
+Median: 4.00646549 ms
+min–max: 3.84094597–4.46787283 ms
+Backward: MXFP8
+5 trials: 4.46787283, 4.01091384, 4.00646549, 3.94675122, 3.84094597 ms</title></circle><line x1="276.66666666666663" y1="139.55653407916677" x2="276.66666666666663" y2="113.99602787820268" stroke="#309576" stroke-width="2"></line><line x1="272.66666666666663" y1="139.55653407916677" x2="280.66666666666663" y2="139.55653407916677" stroke="#309576"></line><line x1="272.66666666666663" y1="113.99602787820268" x2="280.66666666666663" y2="113.99602787820268" stroke="#309576"></line><circle cx="276.66666666666663" cy="132.35295916370455" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.98667452 ms
+min–max: 3.77338867–4.53019266 ms
+Backward: MXFP8
+5 trials: 3.77338867, 4.53019266, 3.98667452, 4.01124801, 3.8382027 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.98667452 ms
+min–max: 3.77338867–4.53019266 ms
+Backward: MXFP8
+5 trials: 3.77338867, 4.53019266, 3.98667452, 4.01124801, 3.8382027 ms"><title>miniTE CUTLASS · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.98667452 ms
+min–max: 3.77338867–4.53019266 ms
+Backward: MXFP8
+5 trials: 3.77338867, 4.53019266, 3.98667452, 4.01124801, 3.8382027 ms</title></circle><line x1="489.3333333333333" y1="141.06395946417427" x2="489.3333333333333" y2="130.5784030495094" stroke="#309576" stroke-width="2"></line><line x1="485.3333333333333" y1="141.06395946417427" x2="493.3333333333333" y2="141.06395946417427" stroke="#309576"></line><line x1="485.3333333333333" y1="130.5784030495094" x2="493.3333333333333" y2="130.5784030495094" stroke="#309576"></line><circle cx="489.3333333333333" cy="134.48811181476503" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · FC1 · fwb
+Scale: 65536 tokens
+Median: 3.9234562 ms
+min–max: 3.72875631–4.03921617 ms
+Backward: MXFP8
+5 trials: 3.72875631, 4.03921617, 4.00685265, 3.9234562, 3.81458485 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · FC1 · fwb
+Scale: 65536 tokens
+Median: 3.9234562 ms
+min–max: 3.72875631–4.03921617 ms
+Backward: MXFP8
+5 trials: 3.72875631, 4.03921617, 4.00685265, 3.9234562, 3.81458485 ms"><title>miniTE CUTLASS · FC1 · fwb
+Scale: 65536 tokens
+Median: 3.9234562 ms
+min–max: 3.72875631–4.03921617 ms
+Backward: MXFP8
+5 trials: 3.72875631, 4.03921617, 4.00685265, 3.9234562, 3.81458485 ms</title></circle><line x1="702" y1="81.60913829765047" x2="702" y2="75.62068965517238" stroke="#309576" stroke-width="2"></line><line x1="698" y1="81.60913829765047" x2="706" y2="81.60913829765047" stroke="#309576"></line><line x1="698" y1="75.62068965517238" x2="706" y2="75.62068965517238" stroke="#309576"></line><circle cx="702" cy="76.82073239515674" r="4" fill="#309576" stroke="white" stroke-width="1" data-tip="miniTE CUTLASS · FC1 · fwb
+Scale: 131072 tokens
+Median: 5.63089122 ms
+min–max: 5.4891145–5.66642248 ms
+Backward: MXFP8
+5 trials: 5.4891145, 5.63484523, 5.66642248, 5.61301172, 5.63089122 ms" tabindex="0" role="img" aria-label="miniTE CUTLASS · FC1 · fwb
+Scale: 131072 tokens
+Median: 5.63089122 ms
+min–max: 5.4891145–5.66642248 ms
+Backward: MXFP8
+5 trials: 5.4891145, 5.63484523, 5.66642248, 5.61301172, 5.63089122 ms"><title>miniTE CUTLASS · FC1 · fwb
+Scale: 131072 tokens
+Median: 5.63089122 ms
+min–max: 5.4891145–5.66642248 ms
+Backward: MXFP8
+5 trials: 5.4891145, 5.63484523, 5.66642248, 5.61301172, 5.63089122 ms</title></circle><polyline points="64,141.62460162366705 276.66666666666663,137.63361773019054 489.3333333333333,139.62723517074238 702,98.50607008932582" fill="none" stroke="#537bb9" stroke-width="2"></polyline><line x1="64" y1="159.35031940892208" x2="64" y2="135.33149543107098" stroke="#537bb9" stroke-width="2"></line><line x1="60" y1="159.35031940892208" x2="68" y2="159.35031940892208" stroke="#537bb9"></line><line x1="60" y1="135.33149543107098" x2="68" y2="135.33149543107098" stroke="#537bb9"></line><circle cx="64" cy="141.62460162366705" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · FC1 · fwb
+Scale: 4096 tokens
+Median: 3.71215663 ms
+min–max: 3.18732767–3.89848502 ms
+Backward: MXFP8
+5 trials: 3.18732767, 3.71215663, 3.89848502, 3.76472164, 3.70955335 ms" tabindex="0" role="img" aria-label="miniTE per-token · FC1 · fwb
+Scale: 4096 tokens
+Median: 3.71215663 ms
+min–max: 3.18732767–3.89848502 ms
+Backward: MXFP8
+5 trials: 3.18732767, 3.71215663, 3.89848502, 3.76472164, 3.70955335 ms"><title>miniTE per-token · FC1 · fwb
+Scale: 4096 tokens
+Median: 3.71215663 ms
+min–max: 3.18732767–3.89848502 ms
+Backward: MXFP8
+5 trials: 3.18732767, 3.71215663, 3.89848502, 3.76472164, 3.70955335 ms</title></circle><line x1="276.66666666666663" y1="143.85653659203956" x2="276.66666666666663" y2="135.01015998558603" stroke="#537bb9" stroke-width="2"></line><line x1="272.66666666666663" y1="143.85653659203956" x2="280.66666666666663" y2="143.85653659203956" stroke="#537bb9"></line><line x1="272.66666666666663" y1="135.01015998558603" x2="280.66666666666663" y2="135.01015998558603" stroke="#537bb9"></line><circle cx="276.66666666666663" cy="137.63361773019054" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.83032302 ms
+min–max: 3.64607276–3.90799923 ms
+Backward: MXFP8
+5 trials: 3.7602828, 3.83032302, 3.90799923, 3.83332783, 3.64607276 ms" tabindex="0" role="img" aria-label="miniTE per-token · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.83032302 ms
+min–max: 3.64607276–3.90799923 ms
+Backward: MXFP8
+5 trials: 3.7602828, 3.83032302, 3.90799923, 3.83332783, 3.64607276 ms"><title>miniTE per-token · FC1 · fwb
+Scale: 16384 tokens
+Median: 3.83032302 ms
+min–max: 3.64607276–3.90799923 ms
+Backward: MXFP8
+5 trials: 3.7602828, 3.83032302, 3.90799923, 3.83332783, 3.64607276 ms</title></circle><line x1="489.3333333333333" y1="150.77072589119757" x2="489.3333333333333" y2="134.75596993492172" stroke="#537bb9" stroke-width="2"></line><line x1="485.3333333333333" y1="150.77072589119757" x2="493.3333333333333" y2="150.77072589119757" stroke="#537bb9"></line><line x1="485.3333333333333" y1="134.75596993492172" x2="493.3333333333333" y2="134.75596993492172" stroke="#537bb9"></line><circle cx="489.3333333333333" cy="139.62723517074238" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · FC1 · fwb
+Scale: 65536 tokens
+Median: 3.77129532 ms
+min–max: 3.44135513–3.91552537 ms
+Backward: MXFP8
+5 trials: 3.91552537, 3.73774701, 3.88331531, 3.77129532, 3.44135513 ms" tabindex="0" role="img" aria-label="miniTE per-token · FC1 · fwb
+Scale: 65536 tokens
+Median: 3.77129532 ms
+min–max: 3.44135513–3.91552537 ms
+Backward: MXFP8
+5 trials: 3.91552537, 3.73774701, 3.88331531, 3.77129532, 3.44135513 ms"><title>miniTE per-token · FC1 · fwb
+Scale: 65536 tokens
+Median: 3.77129532 ms
+min–max: 3.44135513–3.91552537 ms
+Backward: MXFP8
+5 trials: 3.91552537, 3.73774701, 3.88331531, 3.77129532, 3.44135513 ms</title></circle><line x1="702" y1="103.07301525822587" x2="702" y2="94.92449296031177" stroke="#537bb9" stroke-width="2"></line><line x1="698" y1="103.07301525822587" x2="706" y2="103.07301525822587" stroke="#537bb9"></line><line x1="698" y1="94.92449296031177" x2="706" y2="94.92449296031177" stroke="#537bb9"></line><circle cx="702" cy="98.50607008932582" r="4" fill="#537bb9" stroke="white" stroke-width="1" data-tip="miniTE per-token · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.9888245 ms
+min–max: 4.85360487–5.09486903 ms
+Backward: MXFP8
+5 trials: 4.9888245, 4.85360487, 5.09486903, 4.97287296, 5.06072424 ms" tabindex="0" role="img" aria-label="miniTE per-token · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.9888245 ms
+min–max: 4.85360487–5.09486903 ms
+Backward: MXFP8
+5 trials: 4.9888245, 4.85360487, 5.09486903, 4.97287296, 5.06072424 ms"><title>miniTE per-token · FC1 · fwb
+Scale: 131072 tokens
+Median: 4.9888245 ms
+min–max: 4.85360487–5.09486903 ms
+Backward: MXFP8
+5 trials: 4.9888245, 4.85360487, 5.09486903, 4.97287296, 5.06072424 ms</title></circle><text x="383" y="318" fill="#35513e" font-size="13" text-anchor="middle">Pre-dispatch token scale (four measured sizes)</text><rect x="68" y="348" width="10" height="10" rx="6" fill="#64748b"></rect><text x="86" y="357" fill="#35513e" font-size="12">TE BF16</text><rect x="203" y="348" width="10" height="10" rx="6" fill="#d18a35"></rect><text x="221" y="357" fill="#35513e" font-size="12">TE NVFP4</text><rect x="338" y="348" width="10" height="10" rx="6" fill="#309576"></rect><text x="356" y="357" fill="#35513e" font-size="12">miniTE CUTLASS</text><rect x="473" y="348" width="10" height="10" rx="6" fill="#537bb9"></rect><text x="491" y="357" fill="#35513e" font-size="12">miniTE per-token</text></g><text x="25" y="450" font-size="11">Points are medians of five trials; whiskers show min–max. Lines connect four measured sizes. The backward</text><text x="25" y="470" font-size="11">selector changes miniTE CUTLASS/miniTE per-token; TE NVFP4/TE per-token retain their recorded recipes. ·</text><text x="25" y="490" font-size="11">Select FC1/FC2, forward/direct F+B, miniTE backward precision, and the upstream reference. Points are</text><text x="25" y="510" font-size="11">medians of five runs; whiskers show minima and maxima, not confidence intervals. Lines connect the four</text><text x="25" y="530" font-size="11">measured pre-dispatch token scales. The default view shows FC1 direct F+B with MXFP8 backward for both</text><text x="25" y="550" font-size="11">miniTE paths; FC2 is selectable. Figure 6 provides the forward/F+B overview.</text></svg>
