@@ -1,7 +1,7 @@
 ---
 title: "Training SWE agents with Miles on MI355X: taming long-tail trajectories and complex sandbox coordination"
 author: "AMD & Miles Team"
-date: "October 22, 2026"
+date: "October 29, 2026"
 previewImg: /images/blog/miles-mi355x-agentic-rl/architecture.png
 type: blog
 ---
