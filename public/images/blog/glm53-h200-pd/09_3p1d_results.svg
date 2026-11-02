@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="830" viewBox="0 0 1100 830" role="img" aria-labelledby="title desc">
+<title id="title">3P1D: end-to-end performance across shared-prefix ratios</title><desc id="desc">16 H200 total: 12 for Prefill + 4 for Decode · 64K/1K · actual system throughput. All quantitative axes begin at zero. Gray bars are baseline and blue bars are optimized.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif}</style>
+<rect width="1100" height="830" fill="white" rx="12"/>
+<text x="35" y="38" font-size="24" font-weight="bold" text-anchor="start" fill="#17324d">3P1D: end-to-end performance across shared-prefix ratios</text>
+<text x="35" y="68" font-size="15" font-weight="normal" text-anchor="start" fill="#596f83">16 H200 total: 12 for Prefill + 4 for Decode · 64K/1K · actual system throughput</text>
+<rect x="35" y="83" width="17" height="15" fill="#a9bbc9"/>
+<text x="61" y="96" font-size="15" font-weight="normal" text-anchor="start" fill="#17324d">Baseline</text>
+<rect x="175" y="83" width="17" height="15" fill="#2374b8"/>
+<text x="201" y="96" font-size="15" font-weight="normal" text-anchor="start" fill="#17324d">Optimized</text>
+<text x="25" y="142" font-size="18" font-weight="bold" text-anchor="start" fill="#17324d">Logical input throughput (K token/s) ↑</text>
+<line x1="77" x2="502" y1="372.0" y2="372.0" stroke="#e7edf2"/>
+<text x="67" y="377.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">0</text>
+<line x1="77" x2="502" y1="334.0" y2="334.0" stroke="#e7edf2"/>
+<text x="67" y="339.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">200</text>
+<line x1="77" x2="502" y1="296.0" y2="296.0" stroke="#e7edf2"/>
+<text x="67" y="301.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">400</text>
+<line x1="77" x2="502" y1="258.0" y2="258.0" stroke="#e7edf2"/>
+<text x="67" y="263.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">600</text>
+<line x1="77" x2="502" y1="220.0" y2="220.0" stroke="#e7edf2"/>
+<text x="67" y="225.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">800</text>
+<line x1="77" x2="502" y1="182.0" y2="182.0" stroke="#e7edf2"/>
+<text x="67" y="187.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">1000</text>
+<rect x="99.83333333333331" y="360.3550691" width="44" height="11.6449309" fill="#a9bbc9" rx="3"/>
+<text x="121.83333333333331" y="351.3550691" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">61.29</text>
+<rect x="151.83333333333331" y="345.2069391" width="44" height="26.7930609" fill="#2374b8" rx="3"/>
+<text x="173.83333333333331" y="336.2069391" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">141.02</text>
+<text x="147.83333333333331" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">0%</text>
+<rect x="241.5" y="346.8535456" width="44" height="25.146454400000003" fill="#a9bbc9" rx="3"/>
+<text x="263.5" y="337.8535456" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">132.35</text>
+<rect x="293.5" y="318.96891" width="44" height="53.03109" fill="#2374b8" rx="3"/>
+<text x="315.5" y="309.96891" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">279.11</text>
+<text x="289.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">50%</text>
+<rect x="383.1666666666667" y="336.324498" width="44" height="35.675502" fill="#a9bbc9" rx="3"/>
+<text x="405.1666666666667" y="327.324498" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">187.77</text>
+<rect x="435.1666666666667" y="219.325405" width="44" height="152.674595" fill="#2374b8" rx="3"/>
+<text x="457.1666666666667" y="210.325405" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">803.55</text>
+<text x="431.1666666666667" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">93.75%</text>
+<text x="289.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">Shared-prefix ratio</text>
+<text x="575" y="142" font-size="18" font-weight="bold" text-anchor="start" fill="#17324d">Output throughput (K token/s) ↑</text>
+<line x1="627" x2="1052" y1="372.0" y2="372.0" stroke="#e7edf2"/>
+<text x="617" y="377.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">0</text>
+<line x1="627" x2="1052" y1="334.0" y2="334.0" stroke="#e7edf2"/>
+<text x="617" y="339.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">3</text>
+<line x1="627" x2="1052" y1="296.0" y2="296.0" stroke="#e7edf2"/>
+<text x="617" y="301.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">6</text>
+<line x1="627" x2="1052" y1="258.0" y2="258.0" stroke="#e7edf2"/>
+<text x="617" y="263.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">9</text>
+<line x1="627" x2="1052" y1="220.0" y2="220.0" stroke="#e7edf2"/>
+<text x="617" y="225.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">12</text>
+<line x1="627" x2="1052" y1="182.0" y2="182.0" stroke="#e7edf2"/>
+<text x="617" y="187.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">15</text>
+<rect x="649.8333333333334" y="359.8698933333333" width="44" height="12.130106666666668" fill="#a9bbc9" rx="3"/>
+<text x="671.8333333333334" y="350.8698933333333" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">0.96</text>
+<rect x="701.8333333333334" y="344.09052" width="44" height="27.90948" fill="#2374b8" rx="3"/>
+<text x="723.8333333333334" y="335.09052" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.20</text>
+<text x="697.8333333333334" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">0%</text>
+<rect x="791.5" y="346.8421" width="44" height="25.1579" fill="#a9bbc9" rx="3"/>
+<text x="813.5" y="337.8421" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">1.99</text>
+<rect x="843.5" y="318.94465333333335" width="44" height="53.05534666666667" fill="#2374b8" rx="3"/>
+<text x="865.5" y="309.94465333333335" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">4.19</text>
+<text x="839.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">50%</text>
+<rect x="933.1666666666667" y="336.32522" width="44" height="35.674780000000005" fill="#a9bbc9" rx="3"/>
+<text x="955.1666666666667" y="327.32522" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.82</text>
+<rect x="985.1666666666667" y="219.32778000000002" width="44" height="152.67221999999998" fill="#2374b8" rx="3"/>
+<text x="1007.1666666666667" y="210.32778000000002" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">12.05</text>
+<text x="981.1666666666667" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">93.75%</text>
+<text x="697.83" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">2.30×</text>
+<text x="839.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">2.11×</text>
+<text x="981.17" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">4.28×</text>
+<text x="25" y="490" font-size="18" font-weight="bold" text-anchor="start" fill="#17324d">Mean TTFT (s) ↓</text>
+<line x1="77" x2="502" y1="720.0" y2="720.0" stroke="#e7edf2"/>
+<text x="67" y="725.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">0</text>
+<line x1="77" x2="502" y1="692.8571428571429" y2="692.8571428571429" stroke="#e7edf2"/>
+<text x="67" y="697.8571428571429" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">1</text>
+<line x1="77" x2="502" y1="665.7142857142857" y2="665.7142857142857" stroke="#e7edf2"/>
+<text x="67" y="670.7142857142857" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">2</text>
+<line x1="77" x2="502" y1="638.5714285714286" y2="638.5714285714286" stroke="#e7edf2"/>
+<text x="67" y="643.5714285714286" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">3</text>
+<line x1="77" x2="502" y1="611.4285714285714" y2="611.4285714285714" stroke="#e7edf2"/>
+<text x="67" y="616.4285714285714" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">4</text>
+<line x1="77" x2="502" y1="584.2857142857142" y2="584.2857142857142" stroke="#e7edf2"/>
+<text x="67" y="589.2857142857142" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">5</text>
+<line x1="77" x2="502" y1="557.1428571428571" y2="557.1428571428571" stroke="#e7edf2"/>
+<text x="67" y="562.1428571428571" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">6</text>
+<line x1="77" x2="502" y1="530.0" y2="530.0" stroke="#e7edf2"/>
+<text x="67" y="535.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">7</text>
+<rect x="99.83333333333331" y="622.8923571428571" width="44" height="97.10764285714285" fill="#a9bbc9" rx="3"/>
+<text x="121.83333333333331" y="613.8923571428571" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">3.58</text>
+<rect x="151.83333333333331" y="611.3859571428571" width="44" height="108.61404285714286" fill="#2374b8" rx="3"/>
+<text x="173.83333333333331" y="602.3859571428571" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">4.00</text>
+<text x="147.83333333333331" y="747" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">0%</text>
+<rect x="241.5" y="649.7578142857143" width="44" height="70.24218571428571" fill="#a9bbc9" rx="3"/>
+<text x="263.5" y="640.7578142857143" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.59</text>
+<rect x="293.5" y="592.0043285714286" width="44" height="127.99567142857141" fill="#2374b8" rx="3"/>
+<text x="315.5" y="583.0043285714286" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">4.72</text>
+<text x="289.5" y="747" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">50%</text>
+<rect x="383.1666666666667" y="643.8447428571428" width="44" height="76.15525714285715" fill="#a9bbc9" rx="3"/>
+<text x="405.1666666666667" y="634.8447428571428" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.81</text>
+<rect x="435.1666666666667" y="691.0898714285714" width="44" height="28.91012857142857" fill="#2374b8" rx="3"/>
+<text x="457.1666666666667" y="682.0898714285714" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">1.07</text>
+<text x="431.1666666666667" y="747" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">93.75%</text>
+<line x1="77" x2="502" y1="557.1428571428571" y2="557.1428571428571" stroke="#d89123" stroke-dasharray="5 4" stroke-width="1.5"/>
+<text x="502" y="549.1428571428571" font-size="12" font-weight="normal" text-anchor="end" fill="#a56610">SLA limit</text>
+<text x="575" y="490" font-size="18" font-weight="bold" text-anchor="start" fill="#17324d">Mean TPOT (ms) ↓</text>
+<line x1="627" x2="1052" y1="720.0" y2="720.0" stroke="#e7edf2"/>
+<text x="617" y="725.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">0</text>
+<line x1="627" x2="1052" y1="688.3333333333334" y2="688.3333333333334" stroke="#e7edf2"/>
+<text x="617" y="693.3333333333334" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">5</text>
+<line x1="627" x2="1052" y1="656.6666666666666" y2="656.6666666666666" stroke="#e7edf2"/>
+<text x="617" y="661.6666666666666" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">10</text>
+<line x1="627" x2="1052" y1="625.0" y2="625.0" stroke="#e7edf2"/>
+<text x="617" y="630.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">15</text>
+<line x1="627" x2="1052" y1="593.3333333333334" y2="593.3333333333334" stroke="#e7edf2"/>
+<text x="617" y="598.3333333333334" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">20</text>
+<line x1="627" x2="1052" y1="561.6666666666666" y2="561.6666666666666" stroke="#e7edf2"/>
+<text x="617" y="566.6666666666666" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">25</text>
+<line x1="627" x2="1052" y1="530.0" y2="530.0" stroke="#e7edf2"/>
+<text x="617" y="535.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">30</text>
+<rect x="649.8333333333334" y="625.2533333333333" width="44" height="94.74666666666667" fill="#a9bbc9" rx="3"/>
+<text x="671.8333333333334" y="616.2533333333333" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">14.96</text>
+<rect x="701.8333333333334" y="710.5633333333334" width="44" height="9.436666666666666" fill="#2374b8" rx="3"/>
+<text x="723.8333333333334" y="701.5633333333334" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">1.49</text>
+<text x="697.8333333333334" y="747" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">0%</text>
+<rect x="791.5" y="608.9766666666667" width="44" height="111.02333333333334" fill="#a9bbc9" rx="3"/>
+<text x="813.5" y="599.9766666666667" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">17.53</text>
+<rect x="843.5" y="699.9233333333333" width="44" height="20.076666666666664" fill="#2374b8" rx="3"/>
+<text x="865.5" y="690.9233333333333" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">3.17</text>
+<text x="839.5" y="747" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">50%</text>
+<rect x="933.1666666666667" y="598.78" width="44" height="121.22" fill="#a9bbc9" rx="3"/>
+<text x="955.1666666666667" y="589.78" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">19.14</text>
+<rect x="985.1666666666667" y="654.5766666666667" width="44" height="65.42333333333333" fill="#2374b8" rx="3"/>
+<text x="1007.1666666666667" y="645.5766666666667" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">10.33</text>
+<text x="981.1666666666667" y="747" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">93.75%</text>
+<line x1="627" x2="1052" y1="561.6666666666666" y2="561.6666666666666" stroke="#d89123" stroke-dasharray="5 4" stroke-width="1.5"/>
+<text x="1052" y="553.6666666666666" font-size="12" font-weight="normal" text-anchor="end" fill="#a56610">SLA limit</text>
+<text x="35" y="803" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Each configuration uses a measured high-throughput operating point within mean latency limits.</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="510" viewBox="0 0 1100 510" role="img" aria-labelledby="title desc">
+<title id="title">CP MoE FP8 transport and quantization reuse</title><desc id="desc">Before: CP gathers BF16 activations, after which ranks repeat routing and activation quantization. After: each rank routes from its local original BF16 activations and quantizes locally, packs FP8 activations, scales and route metadata, and gathers that packet. Fused unpack writes the consumer layout and the expert path reuses quantized activations. The measured47.5 percent reduction applies to AllGather payload in the tested configuration.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#596f83"/></marker></defs>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#17324d} .sub{fill:#596f83}</style>
+<rect width="1100" height="510" rx="12" fill="white"/>
+<text x="35" y="42" font-size="24" font-weight="bold" text-anchor="start">Prefill MoE: communicate the representation the experts consume</text>
+<text x="35" y="95" font-size="20" font-weight="bold" text-anchor="start">Before</text>
+<rect x="35" y="120" width="210" height="80" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="140.0" y="151" font-size="19" font-weight="bold" text-anchor="middle">Local BF16 input</text>
+<text x="140.0" y="177" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">CP token shard</text>
+<rect x="300" y="120" width="210" height="80" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="405.0" y="151" font-size="19" font-weight="bold" text-anchor="middle">BF16 AllGather</text>
+<text x="405.0" y="177" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">Full activation payload</text>
+<rect x="565" y="120" width="220" height="80" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="675.0" y="151" font-size="19" font-weight="bold" text-anchor="middle">Route + quantize</text>
+<text x="675.0" y="177" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">Repeated on each rank</text>
+<rect x="840" y="120" width="225" height="80" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="952.5" y="151" font-size="19" font-weight="bold" text-anchor="middle">Expert GEMMs</text>
+<text x="952.5" y="177" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">FP8 inputs</text>
+<path d="M245 160 L290 160" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M510 160 L555 160" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M785 160 L830 160" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="35" y="265" font-size="20" font-weight="bold" text-anchor="start">After</text>
+<rect x="35" y="290" width="210" height="80" rx="10" fill="#e9f6f2" stroke="#158579" stroke-width="1.5"/>
+<text x="140.0" y="321" font-size="19" font-weight="bold" text-anchor="middle">Route + quantize</text>
+<text x="140.0" y="347" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">Route from local BF16</text>
+<rect x="300" y="290" width="210" height="80" rx="10" fill="#e9f6f2" stroke="#158579" stroke-width="1.5"/>
+<text x="405.0" y="321" font-size="19" font-weight="bold" text-anchor="middle">Fused pack</text>
+<text x="405.0" y="347" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">FP8 + scales + routes</text>
+<rect x="565" y="290" width="220" height="80" rx="10" fill="#e9f6f2" stroke="#158579" stroke-width="1.5"/>
+<text x="675.0" y="321" font-size="19" font-weight="bold" text-anchor="middle">Packet AllGather</text>
+<text x="675.0" y="347" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">Same CP collective</text>
+<rect x="840" y="290" width="225" height="80" rx="10" fill="#e9f6f2" stroke="#158579" stroke-width="1.5"/>
+<text x="952.5" y="321" font-size="19" font-weight="bold" text-anchor="middle">Unpack + GEMMs</text>
+<text x="952.5" y="347" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">Reuse FP8 activation</text>
+<path d="M245 330 L290 330" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M510 330 L555 330" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M785 330 L830 330" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="35" y="435" font-size="19" font-weight="bold" text-anchor="start">Measured AllGather payload reduction: approximately 47.5% in the tested configuration.</text>
+<text x="35" y="475" font-size="17" font-weight="normal" text-anchor="start">FP32 scales and routing metadata remain in the packet; numerical contracts are preserved.</text>
+</svg>
