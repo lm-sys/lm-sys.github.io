@@ -213,23 +213,86 @@ In Figure 5, the 12K-token prompt contains three 4K spans. A is already on the d
 
 Both local restoration and remote reception must finish before decoding begins. If restoration cannot supply the prefix promised to prefill, the request fails. The example uses Full-KV caching. Reuse boundaries must respect page alignment and the cache state required by the model. Hybrid models may need additional transfers, such as a fresh SWA tail.
 
-**Enabling decode-side reuse**
-
-To enable the GPU/host reuse shown in Figure 5, add the following options to the decode worker's launch command. The radix-cache flag enables GPU prefix reuse, and `--enable-hierarchical-cache` extends it to host-cached prefixes:
-
-```bash
---disaggregation-mode decode \
---disaggregation-decode-enable-radix-cache \
---enable-hierarchical-cache
-```
-
-Size the host pool with `--hicache-size` or `--hicache-ratio`. External-storage reuse additionally requires `--hicache-storage-backend` and the chosen backend's configuration.
-
 **Effect on multi-turn requests**
 
 To measure the benefit for repeated prefixes, the evaluation used GLM-5.2-FP8 with eight NVIDIA B300 GPUs per worker and TP8/EP8 on both prefill and decode. It ran 32 concurrent conversations over 86 rounds. Four groups of eight conversations each shared a 32K-token initial prefix. Each subsequent round added 1K input tokens and generated 512 output tokens per response, reaching a final context of 160K tokens per conversation.
 
 We compared decode-side GPU and host prefix reuse against a baseline with decode-side prefix reuse disabled. Under this workload, enabling both cache tiers reduced average TTFT by 25.4% (2.07 → 1.54 s) and median TTFT by 60.3% (0.681 → 0.271 s), while increasing output throughput by 2.9%. These results reflect the combined benefit of GPU and host prefix reuse.
+
+<details>
+<summary>Reproduction configuration</summary>
+
+Use the GLM-5.2-FP8 setup above (eight NVIDIA B300 GPUs per worker, TP8/EP8). Run these commands in Bash, define the shared options on both hosts, and use an already configured P/D router. Compare one decode configuration at a time, keeping prefill unchanged.
+
+**Environment (Bash)**
+
+```bash
+export MODEL=/path/to/GLM-5.2-FP8
+export SERVED_MODEL_NAME=your-served-model-name
+export IB_DEVICES=your-comma-separated-rdma-device-names
+export PREFILL_URL=http://your-prefill-host:30000
+export DECODE_URL=http://your-decode-host:30000
+export ROUTER_HOST=your-pd-router-host
+export ROUTER_PORT=your-pd-router-port
+```
+
+**Shared server options**
+
+```bash
+COMMON="--trust-remote-code --model-path $MODEL \
+  --served-model-name $SERVED_MODEL_NAME --tp-size 8 --ep-size 8 \
+  --context-length 262144 --max-running-requests 64 \
+  --host 0.0.0.0 --port 30000 --schedule-policy fcfs \
+  --reasoning-parser glm45 --kv-cache-dtype fp8_e4m3 \
+  --disaggregation-transfer-backend mooncake \
+  --disaggregation-bootstrap-port 30200 \
+  --disaggregation-decode-retraction-backup cpu_tensor \
+  --disaggregation-ib-device $IB_DEVICES"
+HICACHE="--disaggregation-decode-enable-radix-cache \
+  --enable-hierarchical-cache --hicache-host-memory-fraction 1.0"
+```
+
+**Launch prefill and one decode configuration**
+
+```bash
+# Prefill host: unchanged for both runs.
+python3 -m sglang.launch_server $COMMON \
+  --disaggregation-mode prefill --mem-fraction-static 0.899 \
+  --enable-hierarchical-cache
+
+# Decode host: baseline.
+# Radix caching is off by default in the tested version.
+python3 -m sglang.launch_server $COMMON \
+  --disaggregation-mode decode --mem-fraction-static 0.963
+
+# Stop baseline services, then restart both hosts.
+# Keep prefill unchanged; use this decode command for GPU + host reuse.
+python3 -m sglang.launch_server $COMMON $HICACHE \
+  --disaggregation-mode decode --mem-fraction-static 0.963
+```
+
+**Flush and benchmark**
+
+```bash
+# Before each measured run: no active requests; flush both caches.
+curl --fail-with-body -X POST "$PREFILL_URL/flush_cache"
+curl --fail-with-body -X POST "$DECODE_URL/flush_cache"
+
+# Use the configured P/D router; set ARM=tree for the second run.
+ARM=baseline
+python3 -m sglang.bench_serving \
+  --backend sglang-oai-chat --host "$ROUTER_HOST" --port "$ROUTER_PORT" \
+  --model "$MODEL" --served-model-name "$SERVED_MODEL_NAME" \
+  --tokenizer "$MODEL" --dataset-name generated-shared-prefix \
+  --gsp-num-groups 4 --gsp-prompts-per-group 8 \
+  --gsp-system-prompt-len 32768 --gsp-question-len 1024 \
+  --gsp-output-len 512 --gsp-num-turns 86 --gsp-range-ratio 1 \
+  --max-concurrency 32 --num-prompts 32 --request-rate inf \
+  --seed 1 --warmup-requests 0 --output-details \
+  --output-file "${ARM}-full.jsonl"
+```
+
+</details>
 
 ## Closing perspective
 
