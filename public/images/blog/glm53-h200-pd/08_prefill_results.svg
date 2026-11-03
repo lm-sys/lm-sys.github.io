@@ -1,9 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="490" viewBox="0 0 1100 490" role="img" aria-labelledby="title desc">
-<title id="title">Prefill: faster processing of uncached long inputs</title><desc id="desc">4 H200 · 64K/10 · 0% shared prefix · C2 · baseline already enables BCG. All quantitative axes begin at zero. Gray bars are baseline and blue bars are optimized.</desc>
+<title id="title">Prefill: faster processing of uncached long inputs</title>
+<desc id="desc">4 H200 · 64K/10 · 0% shared prefix · C2. Axes start at zero. Gray is baseline; blue is optimized.</desc>
 <style>text{font-family:Arial,Helvetica,sans-serif}</style>
 <rect width="1100" height="490" fill="white" rx="12"/>
 <text x="35" y="38" font-size="24" font-weight="bold" text-anchor="start" fill="#17324d">Prefill: faster processing of uncached long inputs</text>
-<text x="35" y="68" font-size="15" font-weight="normal" text-anchor="start" fill="#596f83">4 H200 · 64K/10 · 0% shared prefix · C2 · baseline already enables BCG</text>
+<text x="35" y="68" font-size="15" font-weight="normal" text-anchor="start" fill="#596f83">4 H200 · 64K/10 · 0% shared prefix · C2</text>
 <rect x="35" y="83" width="17" height="15" fill="#a9bbc9"/>
 <text x="61" y="96" font-size="15" font-weight="normal" text-anchor="start" fill="#17324d">Baseline</text>
 <rect x="175" y="83" width="17" height="15" fill="#2374b8"/>
@@ -52,5 +53,5 @@
 <text x="882.5" y="289.12474285714285" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.72</text>
 <text x="839.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">Prefill</text>
 <text x="839.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">−51.48%</text>
-<text x="35" y="472" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Short output isolates Prefill input-processing capacity from long Decode residence time.</text>
+<text x="35" y="472" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Baseline: BCG enabled. Optimized: DeepGEMM, BCG disabled.</text>
 </svg>

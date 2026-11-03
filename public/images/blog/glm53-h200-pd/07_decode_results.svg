@@ -1,9 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="490" viewBox="0 0 1100 490" role="img" aria-labelledby="title desc">
-<title id="title">Decode: higher throughput with lower TPOT</title><desc id="desc">4 H200 · 64K/1K · 99.9% shared prefix · capacity-adjusted baseline. All quantitative axes begin at zero. Gray bars are baseline and blue bars are optimized.</desc>
+<title id="title">Decode: higher throughput with lower TPOT</title>
+<desc id="desc">4 H200 · 64K/1K · 99.9% shared prefix. Axes start at zero. Gray is baseline; blue is optimized.</desc>
 <style>text{font-family:Arial,Helvetica,sans-serif}</style>
 <rect width="1100" height="490" fill="white" rx="12"/>
 <text x="35" y="38" font-size="24" font-weight="bold" text-anchor="start" fill="#17324d">Decode: higher throughput with lower TPOT</text>
-<text x="35" y="68" font-size="15" font-weight="normal" text-anchor="start" fill="#596f83">4 H200 · 64K/1K · 99.9% shared prefix · capacity-adjusted baseline</text>
+<text x="35" y="68" font-size="15" font-weight="normal" text-anchor="start" fill="#596f83">4 H200 · 64K/1K · 99.9% shared prefix</text>
 <rect x="35" y="83" width="17" height="15" fill="#a9bbc9"/>
 <text x="61" y="96" font-size="15" font-weight="normal" text-anchor="start" fill="#17324d">Baseline</text>
 <rect x="175" y="83" width="17" height="15" fill="#2374b8"/>
@@ -25,12 +26,12 @@
 <text x="67" y="214.14285714285714" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">12</text>
 <line x1="77" x2="502" y1="182.0" y2="182.0" stroke="#e7edf2"/>
 <text x="67" y="187.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">14</text>
-<rect x="207.5" y="332.3984357142857" width="78" height="39.60156428571429" fill="#a9bbc9" rx="3"/>
-<text x="246.5" y="323.3984357142857" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.92</text>
+<rect x="207.5" y="334.24591428571426" width="78" height="37.754085714285715" fill="#a9bbc9" rx="3"/>
+<text x="246.5" y="325.24591428571426" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.78</text>
 <rect x="293.5" y="212.11540714285712" width="78" height="159.88459285714288" fill="#2374b8" rx="3"/>
 <text x="332.5" y="203.11540714285712" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">11.78</text>
 <text x="289.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">Decode</text>
-<text x="289.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">+303.73% · 4.04×</text>
+<text x="289.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">+323.49% · 4.23×</text>
 <text x="575" y="142" font-size="18" font-weight="bold" text-anchor="start" fill="#17324d">Mean TPOT (ms) ↓</text>
 <line x1="627" x2="1052" y1="372.0" y2="372.0" stroke="#e7edf2"/>
 <text x="617" y="377.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">0</text>
@@ -42,11 +43,11 @@
 <text x="617" y="234.5" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">15</text>
 <line x1="627" x2="1052" y1="182.0" y2="182.0" stroke="#e7edf2"/>
 <text x="617" y="187.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">20</text>
-<rect x="757.5" y="211.92499999999998" width="78" height="160.07500000000002" fill="#a9bbc9" rx="3"/>
-<text x="796.5" y="202.92499999999998" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">16.85</text>
+<rect x="757.5" y="217.33999999999997" width="78" height="154.66000000000003" fill="#a9bbc9" rx="3"/>
+<text x="796.5" y="208.33999999999997" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">16.28</text>
 <rect x="843.5" y="277.28499999999997" width="78" height="94.715" fill="#2374b8" rx="3"/>
 <text x="882.5" y="268.28499999999997" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">9.97</text>
 <text x="839.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">Decode</text>
-<text x="839.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">−40.83%</text>
-<text x="35" y="472" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Running-request limit: 56 → 128. Gains include capacity and execution improvements.</text>
+<text x="839.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">−38.76%</text>
+<text x="35" y="472" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Request limits: 56 → 128 · client concurrency: 64 → 136 · requests: 256 → 2,048.</text>
 </svg>
