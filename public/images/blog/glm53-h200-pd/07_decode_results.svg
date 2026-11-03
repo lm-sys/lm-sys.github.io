@@ -28,10 +28,10 @@
 <text x="67" y="187.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">14</text>
 <rect x="207.5" y="334.24591428571426" width="78" height="37.754085714285715" fill="#a9bbc9" rx="3"/>
 <text x="246.5" y="325.24591428571426" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.78</text>
-<rect x="293.5" y="212.11540714285712" width="78" height="159.88459285714288" fill="#2374b8" rx="3"/>
-<text x="332.5" y="203.11540714285712" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">11.78</text>
+<rect x="293.5" y="208.7815857142857" width="78" height="163.2184142857143" fill="#2374b8" rx="3"/>
+<text x="332.5" y="199.7815857142857" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">12.03</text>
 <text x="289.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">Decode</text>
-<text x="289.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">+323.49% · 4.23×</text>
+<text x="289.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">+332.32% · 4.32×</text>
 <text x="575" y="142" font-size="18" font-weight="bold" text-anchor="start" fill="#17324d">Mean TPOT (ms) ↓</text>
 <line x1="627" x2="1052" y1="372.0" y2="372.0" stroke="#e7edf2"/>
 <text x="617" y="377.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">0</text>
@@ -45,9 +45,9 @@
 <text x="617" y="187.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">20</text>
 <rect x="757.5" y="217.33999999999997" width="78" height="154.66000000000003" fill="#a9bbc9" rx="3"/>
 <text x="796.5" y="208.33999999999997" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">16.28</text>
-<rect x="843.5" y="277.28499999999997" width="78" height="94.715" fill="#2374b8" rx="3"/>
-<text x="882.5" y="268.28499999999997" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">9.97</text>
+<rect x="843.5" y="276.335" width="78" height="95.665" fill="#2374b8" rx="3"/>
+<text x="882.5" y="267.335" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">10.07</text>
 <text x="839.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">Decode</text>
-<text x="839.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">−38.76%</text>
-<text x="35" y="472" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Request limits: 56 → 128 · client concurrency: 64 → 136 · requests: 256 → 2,048.</text>
+<text x="839.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">−38.14%</text>
+<text x="35" y="472" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Request limits: 56 → 132 · client concurrency: 64 → 140.</text>
 </svg>

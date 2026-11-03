@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
 <title id="title">GLM-5.3-Flash on H200: throughput improvements</title>
-<desc id="desc">Prefill input throughput2.06 times baseline, decode output4.23 times baseline, and3P1D output2.11 to4.28 times baseline. Each result uses its own workload and baseline, as documented in the article.</desc>
+<desc id="desc">Prefill input throughput2.06 times baseline, decode output4.32 times baseline, and3P1D output2.11 to4.28 times baseline. Each result uses its own workload and baseline, as documented in the article.</desc>
 <rect width="1200" height="630" fill="#f4f8fb"/>
 <style>text{font-family:Arial,Helvetica,sans-serif;fill:#17324d}</style>
 <text x="50" y="76" font-size="45" font-weight="bold" text-anchor="start" fill="#17324d">GLM-5.3-Flash on H200</text>
@@ -12,7 +12,7 @@
 <text x="225" y="396" font-size="20" font-weight="normal" text-anchor="middle" fill="#596f83">4 H200</text>
 <text x="225" y="430" font-size="17" font-weight="normal" text-anchor="middle" fill="#596f83">64K/10 · 0% shared prefix</text>
 <rect x="425" y="225" width="350" height="245" rx="14" fill="white" stroke="#cedbe5"/>
-<text x="600" y="310" font-size="48" font-weight="bold" text-anchor="middle" fill="#2374b8">4.23×</text>
+<text x="600" y="310" font-size="48" font-weight="bold" text-anchor="middle" fill="#2374b8">4.32×</text>
 <text x="600" y="354" font-size="21" font-weight="bold" text-anchor="middle" fill="#17324d">Decode output throughput</text>
 <text x="600" y="396" font-size="20" font-weight="normal" text-anchor="middle" fill="#596f83">4 H200</text>
 <text x="600" y="430" font-size="17" font-weight="normal" text-anchor="middle" fill="#596f83">64K/1K · 99.9% shared prefix</text>

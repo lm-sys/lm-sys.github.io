@@ -134,5 +134,4 @@
 <text x="981.1666666666667" y="747" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">93.75%</text>
 <line x1="627" x2="1052" y1="561.6666666666666" y2="561.6666666666666" stroke="#d89123" stroke-dasharray="5 4" stroke-width="1.5"/>
 <text x="1052" y="553.6666666666666" font-size="12" font-weight="normal" text-anchor="end" fill="#a56610">SLA limit</text>
-<text x="35" y="803" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Each configuration uses a measured high-throughput operating point within mean latency limits.</text>
 </svg>
