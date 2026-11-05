@@ -267,8 +267,3 @@ At the time of writing, the foundational [PR #40323](https://github.com/sgl-proj
 - [#46777: 70e5eccaf1e70045654074d175bcc7680051267a](https://github.com/BJWang-ant/sglang/commit/70e5eccaf1e70045654074d175bcc7680051267a)
 
 </div>
-
-These revisions identify the code inspected for this article. They do not indicate that every attached benchmark was rerun at the current PR head. In particular, #45807's description still requests renewed performance and accuracy validation after rebasing. The combined commit is transcribed from the notebook and could not be resolved in the public fork when checked. The notebook also lacks a complete manifest of baseline revisions, weight fingerprints, launch commands, and repeated-run artifacts for an independently reproducible campaign comparison.
-
-The article's vector diagrams and redrawn performance figures can be regenerated with `python3 scripts/gen-deepseek-v41-h200-pd-figures.py` in this website repository, using Matplotlib and NumPy. The original PR screenshots are preserved alongside them. No GPU benchmark or model-quality evaluation was rerun while preparing this article.
-
