@@ -2,7 +2,7 @@
 title: "Optimizing DeepSeek-V4.1 on H200 with SGLang PD Disaggregation"
 author: "Bingjia Wang, Siyuan Chen — Ant International AI Infra Team"
 date: "November 5, 2026"
-previewImg: ../public/images/blog/deepseek-v41-h200-pd/combined-performance.png
+previewImg: /images/blog/deepseek-v41-h200-pd/combined-performance.png
 type: blog
 ---
 
@@ -19,7 +19,7 @@ We optimized DeepSeek-V4.1-Flash on an eight-GPU H200 SGLang deployment with a 1
 
 The experiment notebook also records an October 30 combined configuration with **up to 63.9% lower E2E latency and 79.0% lower TTFT** than the early baseline. This historical comparison includes changes to the checkpoint and Prefill chunk configuration; it measures the campaign's resulting configuration rather than the individual contributions of the changes. TPOT increased in that comparison, so the improvement is primarily on the input side.
 
-![Historical combined configuration compared with the early baseline, showing TTFT and E2E](../public/images/blog/deepseek-v41-h200-pd/combined-performance.png)
+![Historical combined configuration compared with the early baseline, showing TTFT and E2E](/images/blog/deepseek-v41-h200-pd/combined-performance.png)
 
 *Figure 0. Historical combined TTFT and E2E results from the author's H200 experiment notebook, §2.8, October 30. Both configurations use the same reported cache-hit label and concurrency in each row. The early baseline and combined configuration use the same eight-GPU resource count, with checkpoint and chunk changes during the campaign.*
 
@@ -29,7 +29,7 @@ The [DeepSeek-V4.1 day-0 post](/blog/2026-09-10-deepseek-v41/) describes the mod
 
 The deployment separates prompt processing from token generation. The Prefill worker uses TP4 / CP4 / EP4; the Decode worker uses TP4 / DP4 / EP4. TP shards tensor computation, CP partitions the prompt computation, EP distributes experts, and DP supplies independent attention replicas on the Decode side. These parallel dimensions share the four GPUs assigned to each worker.
 
-![Eight-H200 PD serving topology with four GPUs assigned to each worker](../public/images/blog/deepseek-v41-h200-pd/pd-topology.svg)
+![Eight-H200 PD serving topology with four GPUs assigned to each worker](/images/blog/deepseek-v41-h200-pd/pd-topology.svg)
 
 *Figure 1. The measured 1P1D topology. The handoff includes the KV and model state required to continue generation. Client-visible TTFT includes queueing and handoff costs as well as Prefill computation.*
 
@@ -37,7 +37,7 @@ The notebook first identified a supply problem on the P side. Requests accumulat
 
 The evaluated H200 configuration uses the Torch BF16 Prefill Indexer scoring path. Its bottlenecks differ from the Blackwell path that uses DeepGEMM for the relevant Indexer operations. A representative early profile attributed **209.47 ms, or 39.06% of the reported per-forward breakdown, to the Indexer**. MoE computation and NCCL each accounted for approximately another 18%.
 
-![Early Prefill profile, highlighting Indexer computation and the remaining major costs](../public/images/blog/deepseek-v41-h200-pd/initial-profile.png)
+![Early Prefill profile, highlighting Indexer computation and the remaining major costs](/images/blog/deepseek-v41-h200-pd/initial-profile.png)
 
 *Figure 2. Redrawn from the H200 notebook, §2.3–2.4. This is a representative Prefill profile, separate from request E2E latency. NCCL attribution includes waiting for other ranks. The Attention category combines the reported projection and core-attention categories; the smaller remaining compute categories are grouped together.*
 
@@ -61,7 +61,7 @@ The scoring operation takes query rows across heads and compares them with the r
 
 For CUDA BF16 keys with at least 1,024 visible positions, the patch pads the dequantized key tensor to `ceil(visible_keys / 64) × 64`. It does this once per request and reuses that tensor across query chunks. Scores are sliced back to the logical extent before causal masking and top-k selection. The chunk-size calculation uses the padded width, keeping the existing intermediate-memory budget intact.
 
-![Score-width alignment before and after, retaining the logical selection range](../public/images/blog/deepseek-v41-h200-pd/score-alignment.svg)
+![Score-width alignment before and after, retaining the logical selection range](/images/blog/deepseek-v41-h200-pd/score-alignment.svg)
 
 *Figure 3. Physical padding improves the GEMM shape while selection still operates on the original logical positions. Padded columns never become eligible candidates.*
 
@@ -81,7 +81,7 @@ The PR's scoring microbenchmark includes the epilogue and the padding cost:
 
 The patch also reconstructs rank-local request-row mappings when CP supplies no explicit `req_rows`. Both the baseline and optimized runs include that mapping fix, isolating the score-width change in this experiment.
 
-![Original serving benchmark table from PR 45794](../public/images/blog/deepseek-v41-h200-pd/pr-45794-source.png)
+![Original serving benchmark table from PR 45794](/images/blog/deepseek-v41-h200-pd/pr-45794-source.png)
 
 *Figure 4. Original [PR #45794 performance screenshot](https://github.com/sgl-project/sglang/pull/45794). Optimized values appear before their baseline columns; all latency values are milliseconds, and TPOT is milliseconds per token.*
 
@@ -95,7 +95,7 @@ DeepSeek-V4.1's final compressed-KV source is layer 20. Later layers reuse that 
 
 With CP and DSpark auxiliary-state capture, the model returns compact tail outputs. The eager CP runner previously gathered them with the original full-chunk layout. For a single 16,384-token chunk at CP4, that layout expects 4,096 local rows; a 128-token tail supplies only 32 rows per rank. The output tensor and the gather metadata therefore describe different token sets.
 
-![Tail-aware CP gathering for bounded replay and DSpark](../public/images/blog/deepseek-v41-h200-pd/bounded-replay.svg)
+![Tail-aware CP gathering for bounded replay and DSpark](/images/blog/deepseek-v41-h200-pd/bounded-replay.svg)
 
 *Figure 5. The compatibility fix preserves compact hidden states, DSpark auxiliary states, and their original global token indices. The illustrated 32-row local tail is a single-request example; mixed requests require their own tail metadata.*
 
@@ -103,7 +103,7 @@ The patch adds a model-specific `postprocess_cp_output` hook. DeepSeek's hook ga
 
 This allows bounded replay to be explicitly enabled for eager CP Prefill. The default CP policy is unchanged, and the combination of CP, bounded replay, and Prefill CUDA graphs remains unsupported.
 
-![Original serving benchmark table from PR 47406](../public/images/blog/deepseek-v41-h200-pd/pr-47406-source.png)
+![Original serving benchmark table from PR 47406](/images/blog/deepseek-v41-h200-pd/pr-47406-source.png)
 
 *Figure 6. Original [PR #47406 performance screenshot](https://github.com/sgl-project/sglang/pull/47406). This comparison has a later baseline than the first Indexer experiment.*
 
@@ -121,7 +121,7 @@ On the supported contiguous CP path, the original implementation first all-reduc
 
 Reduce-scatter expresses that requirement directly: reduce the full input contributions and return only the rows owned by the receiving rank. The optimization removes full-result replication and the subsequent local output slicing/copying step.
 
-![All-reduce followed by slicing compared with direct reduce-scatter](../public/images/blog/deepseek-v41-h200-pd/moe-reduce-scatter.svg)
+![All-reduce followed by slicing compared with direct reduce-scatter](/images/blog/deepseek-v41-h200-pd/moe-reduce-scatter.svg)
 
 *Figure 7. The change targets contiguous CP output transport with no MoE all-to-all backend. The interleaved CP path already uses a separate reduce-scatter implementation.*
 
@@ -129,7 +129,7 @@ The gate requires CUDA/non-HIP tensors, matching TP/CP/group sizes, and a nonzer
 
 In matched profiled steps with a BF16 input of shape `[16240, 5120]` and 40 MoE output collectives per rank, the total duration of the communication kernels decreased by **15.4%–25.7%**, depending on the rank. Across nearby sampled steps, the mean per-rank reduction was **19.4%–21.7%**. The mean GPU time per forward pass, measured using the slowest rank for each step, decreased from **606.244 to 595.320 ms**, a reduction of approximately **1.8%**.
 
-![Original serving benchmark table from PR 47247](../public/images/blog/deepseek-v41-h200-pd/pr-47247-source.png)
+![Original serving benchmark table from PR 47247](/images/blog/deepseek-v41-h200-pd/pr-47247-source.png)
 
 *Figure 8. Original [PR #47247 performance screenshot](https://github.com/sgl-project/sglang/pull/47247). Percentages discussed here are recalculated from the displayed absolute values.*
 
@@ -145,7 +145,7 @@ DeepSeek-V4.1 shares candidate blocks across Indexer source layers. A publisher 
 
 The patch moves the restriction before scoring. A Triton kernel uses the block IDs to load the corresponding keys directly, producing a compact per-head score tensor of width `C` rather than the full visible width `L`. ReLU, head weighting, and head reduction retain the reference operations. Causal and invalid-candidate masking operate on compact scores before top-k.
 
-![Candidate-aware key loading and compact score selection](../public/images/blog/deepseek-v41-h200-pd/candidate-scoring.svg)
+![Candidate-aware key loading and compact score selection](/images/blog/deepseek-v41-h200-pd/candidate-scoring.svg)
 
 *Figure 9. Candidate filtering moves ahead of the dot product. The publisher, candidate budget, and consumer selection domain remain unchanged.*
 
@@ -153,7 +153,7 @@ Selected compact columns must then be translated back correctly. Each pick ident
 
 The optimized path requires CUDA BF16 operands, a head dimension of 128, at most 64 heads, and **a candidate width no greater than half the visible key length**. Wider candidate sets use the original path. This avoids paying the indirect-load cost when candidate restriction removes too little scoring work.
 
-![Original serving benchmark table from PR 46003](../public/images/blog/deepseek-v41-h200-pd/pr-46003-source.png)
+![Original serving benchmark table from PR 46003](/images/blog/deepseek-v41-h200-pd/pr-46003-source.png)
 
 *Figure 10. Original [PR #46003 performance screenshot](https://github.com/sgl-project/sglang/pull/46003). It reports the configuration associated with candidate-only scoring; it should not be interpreted as the next cumulative step after Figures 6 and 8.*
 
@@ -169,7 +169,7 @@ The original sequence materializes the large BF16 per-head scores, applies ReLU,
 
 The patch replaces that epilogue with one Triton kernel for the supported 32-head CUDA BF16 path. The GEMM's per-head output still exists; the later full-sized intermediates disappear.
 
-![Separate score postprocessing operations compared with one fused Triton epilogue](../public/images/blog/deepseek-v41-h200-pd/epilogue-fusion.svg)
+![Separate score postprocessing operations compared with one fused Triton epilogue](/images/blog/deepseek-v41-h200-pd/epilogue-fusion.svg)
 
 *Figure 11. Fusion removes intermediate memory traffic and launches after GEMM. It preserves the numerical effects of the reference operations.*
 
@@ -177,7 +177,7 @@ Numerical behavior matters because top-k consumes these scores. The kernel prese
 
 Context-dependent row and head strides remain runtime arguments, avoiding a separate kernel specialization for each context-dependent stride. The implementation uses the Torch fallback for unsupported devices, dtypes, head counts, widths, and layouts. In particular, width-one and head-contiguous reduction layouts require their own fallback because the reference reduction order differs.
 
-![Original serving benchmark table from PR 45807](../public/images/blog/deepseek-v41-h200-pd/pr-45807-source.png)
+![Original serving benchmark table from PR 45807](/images/blog/deepseek-v41-h200-pd/pr-45807-source.png)
 
 *Figure 12. Original [PR #45807 performance screenshot](https://github.com/sgl-project/sglang/pull/45807). The fused epilogue comparison retains the existing GEMM.*
 
@@ -193,7 +193,7 @@ The same investigation exposed a Decode-side CUDA graph metadata problem: readin
 
 The merged PR prevents the draft metadata glue graph from running when a backend requires host sequence lengths and removes an unused `seq_lens.sum().item()` read during Decode graph capture. Its description notes that the original host-read fixes landed separately in #46891 and #46897. Under the current DSpark configuration, the host-length guard is defensive because `needs_cpu_seq_lens` is already false. The table below reports the notebook's chunk-size experiment; it does not isolate the performance impact of the guard.
 
-![Larger Prefill chunks reduce scheduling rounds, while Decode graph metadata avoids unnecessary host reads](../public/images/blog/deepseek-v41-h200-pd/chunk-prefill-graph.svg)
+![Larger Prefill chunks reduce scheduling rounds, while Decode graph metadata avoids unnecessary host reads](/images/blog/deepseek-v41-h200-pd/chunk-prefill-graph.svg)
 
 *Figure 13. An illustrative 16,384-token uncached suffix requires two 8,192-token chunks or one 16,384-token chunk. The Decode metadata work tracked in [PR #46777](https://github.com/sgl-project/sglang/pull/46777) addresses graph-capture constraints separately from the choice of Prefill chunk size.*
 
@@ -228,7 +228,7 @@ Controlling for the checkpoint was important here. Earlier trials in the noteboo
 
 The first five changes act at different levels: tensor shape, late-layer token extent, collective output ownership, candidate scoring domain, and memory traffic. Their benefits overlap and their reported baselines differ. The chunk-size experiment above is reported separately because it also involves configuration and graph-metadata work.
 
-![Per-PR E2E reductions across the eight reported cache-hit and concurrency cases](../public/images/blog/deepseek-v41-h200-pd/pr-e2e-comparison.png)
+![Per-PR E2E reductions across the eight reported cache-hit and concurrency cases](/images/blog/deepseek-v41-h200-pd/pr-e2e-comparison.png)
 
 *Figure 14. Redrawn from the five initial PR screenshots in the same order as Sections 1–5. Each cell shows the reduction and baseline → optimized E2E latency in milliseconds. Each row retains its source comparison. The row percentages cannot be added or multiplied to infer a combined result.*
 
