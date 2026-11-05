@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="410" viewBox="0 0 1200 410" role="img" aria-labelledby="title description">
+<title id="title">The measured 1P1D serving topology</title>
+<desc id="description">Client and router feed a four-H200 prefill worker, transfer KV and required state, then use a separate four-H200 decode worker.</desc>
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#50627a"/></marker></defs>
+<rect width="1200" height="410" fill="white"/>
+<g font-family="DejaVu Sans, Arial, sans-serif"><text x="40" y="55" font-size="34" fill="#18283e" font-weight="700" text-anchor="start"><tspan x="40" dy="0">DeepSeek-V4.1-Flash: 1P1D on 8 H200 GPUs</tspan></text>
+<rect x="40" y="130" width="210" height="100" rx="10" fill="#edf3fc" stroke="#cbd7e4"/><text x="145.0" y="171.35999999999999" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="145.0" dy="0">Client</tspan><tspan x="145.0" dy="33.599999999999994">+ router</tspan></text>
+<path d="M255,180 L316,180" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="325" y="110" width="330" height="140" rx="10" fill="#edf3fc" stroke="#cbd7e4"/><text x="490.0" y="153.5" font-size="25" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="490.0" dy="0">Prefill: 4 H200</tspan><tspan x="490.0" dy="35.0">TP4 / CP4 / EP4</tspan><tspan x="490.0" dy="35.0">Prompt processing</tspan></text>
+<path d="M662,180 L824,180" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<text x="745" y="138" font-size="20" fill="#50627a" font-weight="400" text-anchor="middle"><tspan x="745" dy="0">KV + required</tspan><tspan x="745" dy="28.0">model state</tspan></text>
+<rect x="835" y="110" width="325" height="140" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="997.5" y="153.5" font-size="25" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="997.5" dy="0">Decode: 4 H200</tspan><tspan x="997.5" dy="35.0">TP4 / DP4 / EP4</tspan><tspan x="997.5" dy="35.0">Token generation</tspan></text>
+<text x="40" y="315" font-size="26" fill="#18283e" font-weight="600" text-anchor="start"><tspan x="40" dy="0">The first five changes primarily target the Prefill worker.</tspan></text>
+<text x="40" y="360" font-size="23" fill="#50627a" font-weight="400" text-anchor="start"><tspan x="40" dy="0">Client TTFT also includes queueing, handoff, and the first Decode step.</tspan></text></g>
+</svg>
