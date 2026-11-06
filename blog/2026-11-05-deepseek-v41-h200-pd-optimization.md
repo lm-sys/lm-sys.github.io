@@ -253,6 +253,191 @@ The following table compares the historical combined configuration with the earl
 
 The highest E2E reduction is **63.9%** at the 70% label and concurrency 16, with a **baseline/combined latency ratio of 2.77** for that recorded case. The largest TTFT reduction is **79.0%** at the 90% label and concurrency 32. These maxima occur in different cases. They do not establish a throughput increase or a joint tail-latency SLA.
 
+## Reproduction
+
+To reproduce the 1P1D experiments, launch the Prefill and Decode servers, start the router, and run the accuracy and performance evaluations below. Record the SGLang revision, target and draft checkpoint revisions, tokenizer version, and CUDA and dependency versions for each comparison. Use the configuration associated with the experiment being reproduced, since the individual and combined comparisons use different baselines.
+
+### Server Launch Commands
+
+#### Prefill Server
+
+Assign four H200 GPUs to the Prefill worker with TP4 / CP4 / EP4. Match the chunk size, attention and MoE backends, and bounded-replay settings to the selected comparison.
+
+```bash
+    GLOO_SOCKET_IFNAME=bond0 \
+    NCCL_SOCKET_IFNAME=bond0 \
+    CUDA_VISIBLE_DEVICES=0,1,2,3 \
+    MC_TE_METRIC=1 \
+    MC_SLICE_SIZE=262144 \
+    MC_TE_METRIC_INTERVAL_SECONDS=1 \
+    MC_INTRA_NVLINK=true \
+    MC_INTRANODE_NVLINK=true \
+    SGLANG_MOONCAKE_CUSTOM_MEM_POOL=INTRA_NODE_NVLINK \
+    SGLANG_DISAGGREGATION_ALL_CP_RANKS_TRANSFER=1 \
+    SGLANG_HUMMING_INPUT_QUANT_CONFIG='{"dtype": "float8e4m3"}' \
+    SGLANG_UVICORN_WORKER_HEALTHCHECK_TIMEOUT=120 \
+    SGLANG_ENABLE_DSV41_ENGRAM_HOST_TABLE=1 \
+    SGLANG_DSV41_ENGRAM_HOST_TABLE_LAYOUT=per_rank \
+    sglang serve \
+    --trust-remote-code \
+    --model-path /models/DeepSeek-V4.1-Flash/ \
+    --tp 4 \
+    --ep 4 \
+    --enable-prefill-cp \
+    --cp-strategy interleave \
+    --cuda-graph-backend-prefill breakable \
+    --cuda-graph-max-bs-prefill 16384 \
+    --cuda-graph-prefill-max-context 1024000 \
+    --moe-runner-backend humming \
+    --moe-a2a-backend none \
+    --nnodes 1 \
+    --node-rank 0 \
+    --disaggregation-mode prefill \
+    --disaggregation-transfer-backend mooncake \
+    --disaggregation-bootstrap-port 8761 \
+    --speculative-algorithm DSPARK \
+    --enable-decoder-swa-bounded-replay \
+    --max-running-requests 256 \
+    --chunked-prefill-size 16384 \
+    --max-prefill-tokens 16384 \
+    --swa-full-tokens-ratio 0.05 \
+    --mem-fraction-static 0.85 \
+    --detokenizer-worker-num 8 \
+    --tokenizer-worker-num 8 \
+    --watchdog-timeout 1200 \
+    --dist-init-addr 127.0.0.1:5557 \
+    --host 127.0.0.1 \
+    --port 30011 
+```
+
+#### Decode Server
+
+Assign the remaining four H200 GPUs to the Decode worker with TP4 / DP4 / EP4. Use compatible model and KV-transfer configurations on both workers, and match the Decode CUDA graph and DSpark settings to the experiment being reproduced.
+
+```bash
+    GLOO_SOCKET_IFNAME=bond0 \
+    NCCL_SOCKET_IFNAME=bond0 \
+    CUDA_VISIBLE_DEVICES=4,5,6,7 \
+    MC_TE_METRIC=1 \
+    MC_SLICE_SIZE=262144 \
+    MC_TE_METRIC_INTERVAL_SECONDS=1 \
+    MC_TE_METRIC_INTERVAL_SECONDS=1 \
+    MC_INTRA_NVLINK=true \
+    MC_INTRANODE_NVLINK=true \
+    SGLANG_MOONCAKE_CUSTOM_MEM_POOL=INTRA_NODE_NVLINK \
+    SGLANG_DISAGGREGATION_ALL_CP_RANKS_TRANSFER=1 \
+    SGLANG_HUMMING_INPUT_QUANT_CONFIG='{"dtype": "float8e4m3"}' \
+    SGLANG_UVICORN_WORKER_HEALTHCHECK_TIMEOUT=120 \
+    SGLANG_ENABLE_DSV41_ENGRAM_HOST_TABLE=1 \
+    SGLANG_DSV41_ENGRAM_HOST_TABLE_LAYOUT=per_rank \
+    sglang serve \
+    --trust-remote-code \
+    --language-model-only \
+    --model-path /models/DeepSeek-V4.1-Flash/ \
+    --tp 4 \
+    --dp 4 \
+    --ep 4 \
+    --enable-dp-attention \
+    --enable-dp-lm-head \
+    --moe-runner-backend humming \
+    --moe-a2a-backend none \
+    --disaggregation-mode decode \
+    --cuda-graph-max-bs-decode 256 \
+    --disaggregation-transfer-backend mooncake \
+    --speculative-algorithm DSPARK \
+    --max-running-requests 384 \
+    --swa-full-tokens-ratio 0.05 \
+    --mem-fraction-static 0.85 \
+    --detokenizer-worker-num 8 \
+    --tokenizer-worker-num 8 \
+    --watchdog-timeout 1200 \
+    --host 127.0.0.1 \
+    --dist-init-addr 127.0.0.1:5757 \
+    --port 30012
+```
+
+### Router Launch Command
+
+Start the router after both workers are ready, using their respective Prefill and Decode endpoints. Send the accuracy and performance requests through the router so that they exercise the complete PD serving path. Keep the router configuration fixed within each baseline/optimized comparison.
+
+```bash
+python -m sglang_router.launch_router \
+    --pd-disaggregation \
+    --prefill-policy round_robin \
+    --decode-policy round_robin \
+    --prefill http://127.0.0.1:30011 8761 \
+    --decode http://127.0.0.1:30012 \
+    --host 127.0.0.1 \
+    --disable-circuit-breaker \
+    --port 8009
+```
+
+### Accuracy Evaluation Script
+
+Run GSM8K through the router endpoint. Use the evaluation configuration and sample count associated with the result being reproduced, and keep the prompt format and generation settings consistent across baseline and optimized runs. Record accuracy, request errors, and truncated outputs.
+
+```bash
+sgl-eval run gsm8k --base-url http://127.0.0.1:8009/v1 --num-threads 64 --max-tokens 2048
+```
+
+### Performance Benchmark Script
+
+Run the performance workload through the router and sweep the cache-hit cases and concurrency levels listed in Measurement Setup. Keep the input data, checkpoints, generation settings, and streaming configuration fixed when isolating an optimization. Match the warmup and repetition protocol to the selected experiment, and report TTFT, TPOT, E2E latency, and the numbers of successful and failed requests.
+
+```bash
+MODEL_PATH="/models/DeepSeek-V4.1-Flash"
+DATASET_PATH="/dataset/ShareGPT_V3_unfiltered_cleaned_split.json"
+
+HOST="127.0.0.1"
+PORT="8009"
+BACKEND="sglang"
+
+SYS_INPUT_LENS=(61440 46080 32768)
+QUE_INPUT_LENS=(4096 19456 32768)
+OUTPUT_LENS=(512)
+NUM_PROMPTS=512
+
+for i in "${!SYS_INPUT_LENS[@]}"; do
+  sys_input_len=${SYS_INPUT_LENS[$i]}
+  que_input_len=${QUE_INPUT_LENS[$i]}
+
+  if [[ $i -eq 0 ]]; then
+    CONCURRENCY_LIST=(8 16 24 32)
+    NUM_PROMPTS=512
+  elif [[ $i -eq 1 ]]; then
+    CONCURRENCY_LIST=(8 16)
+    NUM_PROMPTS=256
+  else
+    CONCURRENCY_LIST=(4 8)
+    NUM_PROMPTS=128
+  fi
+
+  for osl in "${OUTPUT_LENS[@]}"; do
+    for concurrency in "${CONCURRENCY_LIST[@]}"; do
+
+      for ((iii=1; iii<=1; iii++)); do
+        python3 -m sglang.bench_serving \
+          --model "${MODEL_PATH}" \
+          --host "${HOST}" \
+          --port "${PORT}" \
+          --backend "${BACKEND}" \
+          --dataset-path "${DATASET_PATH}" \
+          --num-prompts "${NUM_PROMPTS}" \
+          --dataset-name generated-shared-prefix \
+          --gsp-num-groups 1 \
+          --gsp-prompts-per-group "${NUM_PROMPTS}" \
+          --flush-cache \
+          --gsp-system-prompt-len "${sys_input_len}"  \
+          --gsp-question-len "${que_input_len}"  \
+          --gsp-output-len "${osl}" \
+          --max-concurrency "${concurrency}" \
+          --warmup-requests 10
+      done
+    done
+  done
+done
+```
+
 ## Appendix: Evidence and PR Links
 
 At the time of writing, the foundational [PR #40323](https://github.com/sgl-project/sglang/pull/40323), #45794, and [#46777](https://github.com/sgl-project/sglang/pull/46777) are merged; #47406, #47247, #46003, and #45807 are open. The inspected PR head revisions are:
