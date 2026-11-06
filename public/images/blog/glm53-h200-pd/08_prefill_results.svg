@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="490" viewBox="0 0 1100 490" role="img" aria-labelledby="title desc">
+<title id="title">Prefill: faster processing of uncached long inputs</title>
+<desc id="desc">4 H200 · 64K/10 · 0% shared prefix · C2. Axes start at zero. Gray is baseline; blue is optimized.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif}</style>
+<rect width="1100" height="490" fill="white" rx="12"/>
+<text x="35" y="38" font-size="24" font-weight="bold" text-anchor="start" fill="#17324d">Prefill: faster processing of uncached long inputs</text>
+<text x="35" y="68" font-size="15" font-weight="normal" text-anchor="start" fill="#596f83">4 H200 · 64K/10 · 0% shared prefix · C2</text>
+<rect x="35" y="83" width="17" height="15" fill="#a9bbc9"/>
+<text x="61" y="96" font-size="15" font-weight="normal" text-anchor="start" fill="#17324d">Baseline</text>
+<rect x="175" y="83" width="17" height="15" fill="#2374b8"/>
+<text x="201" y="96" font-size="15" font-weight="normal" text-anchor="start" fill="#17324d">Optimized</text>
+<text x="25" y="142" font-size="18" font-weight="bold" text-anchor="start" fill="#17324d">Input throughput (K token/s) ↑</text>
+<line x1="77" x2="502" y1="372.0" y2="372.0" stroke="#e7edf2"/>
+<text x="67" y="377.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">0</text>
+<line x1="77" x2="502" y1="340.3333333333333" y2="340.3333333333333" stroke="#e7edf2"/>
+<text x="67" y="345.3333333333333" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">10</text>
+<line x1="77" x2="502" y1="308.6666666666667" y2="308.6666666666667" stroke="#e7edf2"/>
+<text x="67" y="313.6666666666667" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">20</text>
+<line x1="77" x2="502" y1="277.0" y2="277.0" stroke="#e7edf2"/>
+<text x="67" y="282.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">30</text>
+<line x1="77" x2="502" y1="245.33333333333334" y2="245.33333333333334" stroke="#e7edf2"/>
+<text x="67" y="250.33333333333334" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">40</text>
+<line x1="77" x2="502" y1="213.66666666666666" y2="213.66666666666666" stroke="#e7edf2"/>
+<text x="67" y="218.66666666666666" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">50</text>
+<line x1="77" x2="502" y1="182.0" y2="182.0" stroke="#e7edf2"/>
+<text x="67" y="187.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">60</text>
+<rect x="207.5" y="298.20096" width="78" height="73.79904" fill="#a9bbc9" rx="3"/>
+<text x="246.5" y="289.20096" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">23.30</text>
+<rect x="293.5" y="219.79657333333336" width="78" height="152.20342666666664" fill="#2374b8" rx="3"/>
+<text x="332.5" y="210.79657333333336" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">48.06</text>
+<text x="289.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">Prefill</text>
+<text x="289.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">+106.24% · 2.06×</text>
+<text x="575" y="142" font-size="18" font-weight="bold" text-anchor="start" fill="#17324d">Mean TTFT (s) ↓</text>
+<line x1="627" x2="1052" y1="372.0" y2="372.0" stroke="#e7edf2"/>
+<text x="617" y="377.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">0</text>
+<line x1="627" x2="1052" y1="344.85714285714283" y2="344.85714285714283" stroke="#e7edf2"/>
+<text x="617" y="349.85714285714283" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">1</text>
+<line x1="627" x2="1052" y1="317.7142857142857" y2="317.7142857142857" stroke="#e7edf2"/>
+<text x="617" y="322.7142857142857" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">2</text>
+<line x1="627" x2="1052" y1="290.57142857142856" y2="290.57142857142856" stroke="#e7edf2"/>
+<text x="617" y="295.57142857142856" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">3</text>
+<line x1="627" x2="1052" y1="263.42857142857144" y2="263.42857142857144" stroke="#e7edf2"/>
+<text x="617" y="268.42857142857144" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">4</text>
+<line x1="627" x2="1052" y1="236.28571428571428" y2="236.28571428571428" stroke="#e7edf2"/>
+<text x="617" y="241.28571428571428" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">5</text>
+<line x1="627" x2="1052" y1="209.14285714285714" y2="209.14285714285714" stroke="#e7edf2"/>
+<text x="617" y="214.14285714285714" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">6</text>
+<line x1="627" x2="1052" y1="182.0" y2="182.0" stroke="#e7edf2"/>
+<text x="617" y="187.0" font-size="12" font-weight="normal" text-anchor="end" fill="#596f83">7</text>
+<rect x="757.5" y="219.7302" width="78" height="152.2698" fill="#a9bbc9" rx="3"/>
+<text x="796.5" y="210.7302" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">5.61</text>
+<rect x="843.5" y="298.12474285714285" width="78" height="73.87525714285714" fill="#2374b8" rx="3"/>
+<text x="882.5" y="289.12474285714285" font-size="13" font-weight="bold" text-anchor="middle" fill="#17324d">2.72</text>
+<text x="839.5" y="399" font-size="14" font-weight="normal" text-anchor="middle" fill="#17324d">Prefill</text>
+<text x="839.5" y="434" font-size="17" font-weight="bold" text-anchor="middle" fill="#17324d">−51.48%</text>
+<text x="35" y="472" font-size="14" font-weight="normal" text-anchor="start" fill="#596f83">Prefill BCG disabled in both configurations. Optimized MoE: DeepGEMM.</text>
+</svg>

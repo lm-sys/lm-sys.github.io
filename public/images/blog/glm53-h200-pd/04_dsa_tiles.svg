@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500" role="img" aria-labelledby="title desc">
+<title id="title">Larger KV tiles reduce sparse attention loop overhead</title><desc id="desc">The same selected KV positions are processed with block32 or block128. An index width of2112 requires66 iterations at block32 or17 iterations with a virtual extent of2176 at block128. Extra indices are masked. Split remains one and each CUDA block uses128 threads.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#596f83"/></marker></defs>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#17324d} .sub{fill:#596f83}</style>
+<rect width="1100" height="500" rx="12" fill="white"/>
+<text x="35" y="42" font-size="25" font-weight="bold" text-anchor="start">Sparse attention: larger tiles, fewer online-softmax updates</text>
+<rect x="35" y="88" width="220" height="76" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="145.0" y="119" font-size="19" font-weight="bold" text-anchor="middle">Indexer + top-k</text>
+<text x="145.0" y="145" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">Select KV positions</text>
+<path d="M255 126 L300 126" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="315" y="88" width="330" height="76" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="480.0" y="119" font-size="19" font-weight="bold" text-anchor="middle">Partial</text>
+<text x="480.0" y="145" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">QKᵀ → online softmax → weighted V</text>
+<path d="M645 126 L690 126" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="705" y="88" width="185" height="76" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="797.5" y="119" font-size="19" font-weight="bold" text-anchor="middle">Combine</text>
+<text x="797.5" y="145" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">Merge split outputs</text>
+<text x="35" y="219" font-size="19" font-weight="bold" text-anchor="start">Index-table width = 2,112; valid selected positions are unchanged.</text>
+<text x="35" y="283" font-size="19" font-weight="bold" text-anchor="start">block32: 66 iterations</text>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<text x="35" y="363" font-size="19" font-weight="bold" text-anchor="start">block128: 17 iterations</text>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<text x="35" y="424" font-size="18" font-weight="normal" text-anchor="start">block128 virtually covers 2,176 positions; out-of-range indices are masked.</text>
+<text x="35" y="463" font-size="18" font-weight="bold" text-anchor="start">split = 1 · 128 threads / CUDA block · same effective KV positions</text>
+<rect x="340.000" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="350.294" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="360.588" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="370.882" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="381.176" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="391.471" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="401.765" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="412.059" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="422.353" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="432.647" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="442.941" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="453.235" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="463.529" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="473.824" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="484.118" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="494.412" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="504.706" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="515.000" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="525.294" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="535.588" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="545.882" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="556.176" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="566.471" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="576.765" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="587.059" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="597.353" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="607.647" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="617.941" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="628.235" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="638.529" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="648.824" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="659.118" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="669.412" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="679.706" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="690.000" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="700.294" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="710.588" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="720.882" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="731.176" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="741.471" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="751.765" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="762.059" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="772.353" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="782.647" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="792.941" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="803.235" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="813.529" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="823.824" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="834.118" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="844.412" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="854.706" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="865.000" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="875.294" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="885.588" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="895.882" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="906.176" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="916.471" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="926.765" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="937.059" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="947.353" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="957.647" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="967.941" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="978.235" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="988.529" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="998.824" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="1009.118" y="255" width="8.294" height="38" rx="2" fill="#2374b8"/>
+<rect x="340.000" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="381.176" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="422.353" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="463.529" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="504.706" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="545.882" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="587.059" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="628.235" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="669.412" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="710.588" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="751.765" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="792.941" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="834.118" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="875.294" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="916.471" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="957.647" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="998.824" y="335" width="39.176" height="38" rx="2" fill="#158579"/>
+<rect x="1019.412" y="335" width="18.588" height="38" fill="#c9d5df"/>
+<path d="M1028.412 377 L1028.412 386" stroke="#596f83"/>
+<text x="1028.412" y="402" font-size="14" text-anchor="middle" style="fill:#596f83">64 masked</text>
+</svg>
