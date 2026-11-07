@@ -23,7 +23,7 @@ Even with speculative decoding, our baseline serves only 517 tok/s. Our megakern
 
 - [First, what is a megakernel?](#first-what-is-a-megakernel)
 - [The model](#the-model)
-    - [Not your Tensor Parallelism](#not-your-tensor-parallelism)
+    - [A new tensor parallelism](#a-new-tensor-parallelism)
 - [Megakernel](#megakernel)
     - [One launch per layer](#one-launch-per-layer)
     - [Twelve warps, different roles](#twelve-warps-different-roles)
@@ -71,7 +71,7 @@ Muse Spark Open is a traditional MoE model where every tokens is routed to 8 of 
 
 Each stop lasts until the slowest GPU arrives. Even when we perfectly distribute work, GPUs can lag from each other by upto 4us.
 
-### Not your Tensor Parallelism
+### A new tensor parallelism
 
 ![The expert GEMMs across eight GPUs: vanilla TP splits GEMM 1 on N and GEMM 2 on K and ends with one bf16 all-reduce; ours splits both on N, with an fp4 all-gather after GEMM 1 and a bf16 all-gather after GEMM 2](/images/blog/muse-spark-open-ultrafast/fig_tp.png)
 
