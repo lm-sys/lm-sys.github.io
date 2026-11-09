@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="412" viewBox="0 0 1100 412" role="img" aria-labelledby="title desc">
+  <title id="title">Keep prefill context parallelism and split decode by query row</title>
+  <desc id="desc">On one four-rank worker, both configurations interleave prefill tokens across ranks. Previously decode processed every query on each rank with a subset of attention heads. Decode DP gives each rank its own query rows and all heads, then gathers results in order.</desc>
+  <defs>
+    <rect id="card" width="178" height="48" rx="7"/>
+    <g id="allq" fill="#e8af4b"><rect width="15" height="11" rx="2"/><rect x="20" width="15" height="11" rx="2"/><rect x="40" width="15" height="11" rx="2"/><rect x="60" width="15" height="11" rx="2"/></g>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="m0 0 10 5-10 5z" fill="#54728a"/></marker>
+  </defs>
+  <rect width="1100" height="412" fill="#fff"/>
+  <g font-family="system-ui, sans-serif" fill="#1a3149">
+    <text x="34" y="43" font-size="28" font-weight="700">One worker, two ways to split attention</text>
+    <g font-size="17" fill="#4c6278" text-anchor="middle">
+      <text x="353" y="88">GPU 0</text><text x="551" y="88">GPU 1</text><text x="749" y="88">GPU 2</text><text x="947" y="88">GPU 3</text>
+    </g>
+    <g fill="#eaf2fc">
+      <use href="#card" x="264" y="104"/><use href="#card" x="462" y="104"/><use href="#card" x="660" y="104"/><use href="#card" x="858" y="104"/>
+    </g>
+    <g fill="#f7f2e8">
+      <use href="#card" x="264" y="190"/><use href="#card" x="462" y="190"/><use href="#card" x="660" y="190"/><use href="#card" x="858" y="190"/>
+    </g>
+    <g fill="#e4f4ee">
+      <use href="#card" x="264" y="276"/><use href="#card" x="462" y="276"/><use href="#card" x="660" y="276"/><use href="#card" x="858" y="276"/>
+    </g>
+    <g font-size="19" font-weight="700">
+      <text x="34" y="124">Prefill CP · both</text>
+      <text x="34" y="210">Decode TP · before</text>
+      <text x="34" y="296">Decode DP · after</text>
+    </g>
+    <g font-size="17" fill="#4c6278">
+      <text x="34" y="147">Interleave prompt tokens</text>
+      <text x="34" y="233">Split attention heads</text>
+      <text x="34" y="319">Split query rows</text>
+    </g>
+    <g font-size="18" text-anchor="middle">
+      <text x="353" y="135">tokens 0, 4, …</text><text x="551" y="135">tokens 1, 5, …</text><text x="749" y="135">tokens 2, 6, …</text><text x="947" y="135">tokens 3, 7, …</text>
+    </g>
+    <use href="#allq" x="316" y="198"/><use href="#allq" x="514" y="198"/><use href="#allq" x="712" y="198"/><use href="#allq" x="910" y="198"/>
+    <g font-size="16" text-anchor="middle">
+      <text x="353" y="229">head shard 0</text><text x="551" y="229">head shard 1</text><text x="749" y="229">head shard 2</text><text x="947" y="229">head shard 3</text>
+    </g>
+    <g font-size="17" text-anchor="middle" font-weight="650">
+      <text x="353" y="297">query slice 0</text><text x="551" y="297">query slice 1</text><text x="749" y="297">query slice 2</text><text x="947" y="297">query slice 3</text>
+    </g>
+    <g font-size="16" text-anchor="middle" fill="#2e6657">
+      <text x="353" y="317">all heads</text><text x="551" y="317">all heads</text><text x="749" y="317">all heads</text><text x="947" y="317">all heads</text>
+    </g>
+    <path d="M353 328v13h594v-13m-396 0v13m198-13v13m-99 0v16" fill="none" stroke="#54728a" stroke-width="2"/>
+    <path d="M650 341v16" stroke="#54728a" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="650" y="384" font-size="19" text-anchor="middle" font-weight="650">Gather attention outputs back into batch order</text>
+    <rect x="37" y="367" width="13" height="11" rx="2" fill="#e8af4b"/><text x="58" y="378" font-size="16" fill="#4c6278">One query slice</text>
+  </g>
+</svg>
