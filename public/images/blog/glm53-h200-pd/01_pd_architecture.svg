@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="465" viewBox="0 0 1100 465" role="img" aria-labelledby="title desc">
+<title id="title">GLM-5.3-Flash: Text-only PD Serving</title><desc id="desc">Text-only requests are routed to one of n prefill workers. The image encoder is outside the scope of this diagram. Each has four H200 GPUs. NIXL transfers missing KV and request-local recurrent state to a four-GPU decode worker. Prefix reuse reduces KV storage, but does not share final recurrent state.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#596f83"/></marker></defs>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#17324d} .sub{fill:#596f83}</style>
+<rect width="1100" height="465" rx="12" fill="white"/>
+<text x="35" y="42" font-size="26" font-weight="bold" text-anchor="start">GLM-5.3-Flash: Text-only PD Serving</text>
+<rect x="35" y="205" width="165" height="80" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="117.5" y="236" font-size="19" font-weight="bold" text-anchor="middle">Router</text>
+<text x="117.5" y="262" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">Request routing</text>
+<rect x="285" y="100" width="245" height="80" rx="10" fill="#e9f6f2" stroke="#158579" stroke-width="1.5"/>
+<text x="407.5" y="131" font-size="19" font-weight="bold" text-anchor="middle">P0: Prefill</text>
+<text x="407.5" y="157" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">4 H200 · TP + CP</text>
+<path d="M200 245 L270 140" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M530 140 L645 140" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="285" y="215" width="245" height="80" rx="10" fill="#e9f6f2" stroke="#158579" stroke-width="1.5"/>
+<text x="407.5" y="246" font-size="19" font-weight="bold" text-anchor="middle">P1: Prefill</text>
+<text x="407.5" y="272" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">4 H200 · TP + CP</text>
+<path d="M200 245 L270 255" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M530 255 L645 255" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="285" y="330" width="245" height="80" rx="10" fill="#e9f6f2" stroke="#158579" stroke-width="1.5"/>
+<text x="407.5" y="361" font-size="19" font-weight="bold" text-anchor="middle">P2: Prefill</text>
+<text x="407.5" y="387" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">4 H200 · TP + CP</text>
+<path d="M200 245 L270 370" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M530 370 L645 370" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M645 140 L645 370" fill="none" stroke="#596f83" stroke-width="2"/>
+<path d="M645 255 L780 255" fill="none" stroke="#596f83" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="655" y="198" font-size="19" font-weight="bold" text-anchor="start">NIXL</text>
+<text x="655" y="224" font-size="15" font-weight="normal" text-anchor="start">Missing KV</text>
+<text x="655" y="280" font-size="15" font-weight="normal" text-anchor="start">Per-request</text>
+<text x="655" y="303" font-size="15" font-weight="normal" text-anchor="start">KDA state</text>
+<rect x="795" y="208" width="270" height="90" rx="10" fill="#eaf3fb" stroke="#2374b8" stroke-width="1.5"/>
+<text x="930.0" y="239" font-size="19" font-weight="bold" text-anchor="middle">D: Decode</text>
+<text x="930.0" y="265" font-size="15" font-weight="normal" text-anchor="middle" style="fill:#596f83">4 H200 · speculative decoding</text>
+<text x="285" y="440" font-size="17" font-weight="normal" text-anchor="start">Number of P workers depends on workload and prefix reuse.</text>
+</svg>
