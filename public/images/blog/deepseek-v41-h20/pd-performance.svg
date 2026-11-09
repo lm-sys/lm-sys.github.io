@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="370" viewBox="0 0 1100 370" role="img" aria-labelledby="title desc">
   <title id="title">Final H20 PD configuration versus the TP4 baseline</title>
-  <desc id="desc">With baseline normalized to one, mean E2E is 0.35, output throughput is 2.93, and input throughput is 2.93.</desc>
+  <desc id="desc">With baseline normalized to one, mean E2E is 0.35, output throughput is 2.93, and mean time to first token is 0.17.</desc>
   <rect width="1100" height="370" fill="#fff"/>
   <g font-family="system-ui, sans-serif" fill="#162941">
     <text x="28" y="45" font-size="29" font-weight="700">DeepSeek-V4.1-Flash on 8× H20-3e</text>
@@ -26,11 +26,11 @@
     <rect x="272" y="175" width="208" height="20" rx="2" fill="#a0afc3"/>
     <rect x="272" y="200" width="609.25" height="22" rx="2" fill="#1764b3"/>
     <text x="891.25" y="217" font-size="19" font-weight="700" fill="#145495">2.93× (+192.91%)</text>
-    <text x="30" y="259" font-size="22" font-weight="650">Input throughput</text>
-    <text x="30" y="283" font-size="17" fill="#4f6177">higher is better</text>
+    <text x="30" y="259" font-size="22" font-weight="650">Mean TTFT</text>
+    <text x="30" y="283" font-size="17" fill="#4f6177">lower is better</text>
     <rect x="272" y="241" width="208" height="20" rx="2" fill="#a0afc3"/>
-    <rect x="272" y="266" width="609.25" height="22" rx="2" fill="#1764b3"/>
-    <text x="891.25" y="283" font-size="19" font-weight="700" fill="#145495">2.93× (+192.91%)</text>
+    <rect x="272" y="266" width="34.72" height="22" rx="2" fill="#1764b3"/>
+    <text x="316.72" y="283" font-size="19" font-weight="700" fill="#145495">0.17× (−83.31%)</text>
     <text x="584" y="354" font-size="17" text-anchor="middle" fill="#4f6177">Relative to baseline (1×)</text>
   </g>
 </svg>

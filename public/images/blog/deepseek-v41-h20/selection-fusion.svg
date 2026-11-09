@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="433" viewBox="0 0 1100 433" role="img" aria-labelledby="title desc">
   <title id="title">Fuse two independent parts of prefill selection</title>
-  <desc id="desc">Separate Torch operations and intermediate writes become two distinct Triton kernels. One reduces scores and publishes candidate blocks. The other sorts and validates selected positions and maps them to physical cache slots.</desc>
+  <desc id="desc">Triton reduces scores and publishes candidate blocks, using a separate reduction launch for wider inputs. The writeback kernel sorts and validates selected positions and maps them to physical cache slots.</desc>
   <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="m0 0 10 5-10 5z" fill="#6c5e7a"/></marker></defs>
   <rect width="1100" height="433" fill="#fff"/>
   <g font-family="system-ui, sans-serif" fill="#222641">
     <text x="34" y="43" font-size="28" font-weight="700">Remove intermediate writes at two Indexer steps</text>
     <text x="239" y="90" font-size="17" font-weight="750" fill="#64546e">BEFORE · SEPARATE OPERATIONS</text>
-    <text x="679" y="90" font-size="17" font-weight="750" fill="#65428d">AFTER · ONE TRITON LAUNCH PER STEP</text>
+    <text x="679" y="90" font-size="17" font-weight="750" fill="#65428d">AFTER · TRITON PATHS</text>
     <path d="M34 252h1032" stroke="#ddd9e4"/>
     <g font-size="20" font-weight="700">
       <text x="34" y="150">Publish</text><text x="34" y="176">candidate blocks</text>
