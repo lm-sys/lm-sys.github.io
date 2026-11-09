@@ -1,26 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="710" viewBox="0 0 1200 710" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="845" viewBox="0 0 1200 845" role="img" aria-labelledby="title description">
 <title id="title">PR 47406: gather compact tails with their own CP metadata</title>
-<desc id="description">For a 16384-token chunk and CP4, early layers process full local chunks. Late layers return 32 of 128 tail rows per rank. Tail-aware gather preserves global token indices and DSpark auxiliary states.</desc>
+<desc id="description">Layer 20 publishes the final compressed history. Layers 21 through 39 reuse it and reconstruct a 128-token SWA tail. For a no-prefix 16384-token request, compact rows 0 through 127 map to prompt positions 16256 through 16383. Tail-aware CP gather aligns final and auxiliary states.</desc>
 <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#50627a"/></marker></defs>
-<rect width="1200" height="710" fill="white"/>
-<g font-family="DejaVu Sans, Arial, sans-serif"><text x="40" y="55" font-size="30" fill="#18283e" font-weight="700" text-anchor="start"><tspan x="40" dy="0">2. Make late-layer tail execution compatible with CP + DSpark</tspan></text>
+<rect width="1200" height="845" fill="white"/>
+<g font-family="DejaVu Sans, Arial, sans-serif"><text x="40" y="55" font-size="30" fill="#18283e" font-weight="700" text-anchor="start"><tspan x="40" dy="0">6. Make late-layer tail execution compatible with CP + DSpark</tspan></text>
 <rect x="40" y="110" width="310" height="100" rx="10" fill="#edf3fc" stroke="#cbd7e4"/><text x="195.0" y="151.35999999999999" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="195.0" dy="0">16,384-token chunk</tspan><tspan x="195.0" dy="33.599999999999994">CP4: 4,096 rows / rank</tspan></text>
 <path d="M360,160 L411,160" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
 <rect x="420" y="110" width="320" height="100" rx="10" fill="#edf3fc" stroke="#cbd7e4"/><text x="580.0" y="151.35999999999999" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="580.0" dy="0">Layers 0–20</tspan><tspan x="580.0" dy="33.599999999999994">Full local chunk</tspan></text>
 <path d="M750,160 L801,160" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
 <rect x="810" y="110" width="350" height="100" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="985.0" y="151.35999999999999" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="985.0" dy="0">Layers 21–39</tspan><tspan x="985.0" dy="33.599999999999994">At most 128 tail tokens</tspan></text>
-<text x="40" y="267" font-size="25" fill="#50627a" font-weight="400" text-anchor="start"><tspan x="40" dy="0">Illustrative single-request tail: 128 global rows / CP4 = 32 rows per rank</tspan></text>
-<text x="40" y="328" font-size="26" fill="#b46218" font-weight="700" text-anchor="start"><tspan x="40" dy="0">Before</tspan></text>
-<rect x="40" y="350" width="310" height="90" rx="10" fill="#edf3fc" stroke="#cbd7e4"/><text x="195.0" y="386.36" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="195.0" dy="0">Compact hidden states</tspan><tspan x="195.0" dy="33.599999999999994">+ DSpark auxiliary states</tspan></text>
-<path d="M360,395 L411,395" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
-<rect x="420" y="350" width="320" height="90" rx="10" fill="#edf3fc" stroke="#cbd7e4"/><text x="580.0" y="386.36" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="580.0" dy="0">Full-chunk CP metadata</tspan><tspan x="580.0" dy="33.599999999999994">Expects 4,096 local rows</tspan></text>
-<path d="M750,395 L801,395" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
-<rect x="810" y="350" width="350" height="90" rx="10" fill="#fff1e7" stroke="#cbd7e4"/><text x="985.0" y="386.36" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="985.0" dy="0">Gather layout mismatch</tspan><tspan x="985.0" dy="33.599999999999994">Received only 32 rows</tspan></text>
-<text x="40" y="498" font-size="26" fill="#087e79" font-weight="700" text-anchor="start"><tspan x="40" dy="0">After</tspan></text>
-<rect x="40" y="520" width="310" height="95" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="195.0" y="558.86" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="195.0" dy="0">Model-specific</tspan><tspan x="195.0" dy="33.599999999999994">postprocess_cp_output</tspan></text>
-<path d="M360,568 L411,568" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
-<rect x="420" y="520" width="320" height="95" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="580.0" y="558.86" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="580.0" dy="0">Tail-aware CP gather</tspan><tspan x="580.0" dy="33.599999999999994">Preserve global row IDs</tspan></text>
-<path d="M750,568 L801,568" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
-<rect x="810" y="520" width="350" height="95" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="985.0" y="558.86" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="985.0" dy="0">Aligned logits + DSpark</tspan><tspan x="985.0" dy="33.599999999999994">Restore original metadata</tspan></text>
-<text x="40" y="675" font-size="23" fill="#50627a" font-weight="400" text-anchor="start"><tspan x="40" dy="0">Explicit opt-in for eager CP Prefill; combining CP with Prefill CUDA graphs remains unsupported.</tspan></text></g>
+<text x="40" y="260" font-size="23" fill="#50627a" font-weight="400" text-anchor="start"><tspan x="40" dy="0">Layer 20&#x27;s compressed history remains available; late layers rebuild their own SWA KV.</tspan></text>
+<text x="40" y="298" font-size="23" fill="#50627a" font-weight="400" text-anchor="start"><tspan x="40" dy="0">Single request: 128 global rows / CP4 = 32 local rows per rank</tspan></text>
+<text x="40" y="350" font-size="26" fill="#b46218" font-weight="700" text-anchor="start"><tspan x="40" dy="0">Before</tspan></text>
+<rect x="40" y="375" width="310" height="90" rx="10" fill="#edf3fc" stroke="#cbd7e4"/><text x="195.0" y="411.36" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="195.0" dy="0">Compact hidden states</tspan><tspan x="195.0" dy="33.599999999999994">+ DSpark auxiliary states</tspan></text>
+<path d="M360,420 L411,420" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="420" y="375" width="320" height="90" rx="10" fill="#edf3fc" stroke="#cbd7e4"/><text x="580.0" y="411.36" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="580.0" dy="0">Full-chunk CP metadata</tspan><tspan x="580.0" dy="33.599999999999994">Expects 4,096 local rows</tspan></text>
+<path d="M750,420 L801,420" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="810" y="375" width="350" height="90" rx="10" fill="#fff1e7" stroke="#cbd7e4"/><text x="985.0" y="411.36" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="985.0" dy="0">Gather layout mismatch</tspan><tspan x="985.0" dy="33.599999999999994">Received only 32 rows</tspan></text>
+<text x="40" y="520" font-size="26" fill="#087e79" font-weight="700" text-anchor="start"><tspan x="40" dy="0">After</tspan></text>
+<rect x="40" y="545" width="310" height="95" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="195.0" y="583.86" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="195.0" dy="0">Model-specific</tspan><tspan x="195.0" dy="33.599999999999994">postprocess_cp_output</tspan></text>
+<path d="M360,593 L411,593" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="420" y="545" width="320" height="95" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="580.0" y="583.86" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="580.0" dy="0">Tail-aware CP gather</tspan><tspan x="580.0" dy="33.599999999999994">Preserve global row IDs</tspan></text>
+<path d="M750,593 L801,593" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="810" y="545" width="350" height="95" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="985.0" y="583.86" font-size="24" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="985.0" dy="0">Aligned logits + DSpark</tspan><tspan x="985.0" dy="33.599999999999994">Restore original metadata</tspan></text>
+<text x="40" y="692" font-size="24" fill="#087e79" font-weight="600" text-anchor="start"><tspan x="40" dy="0">No-prefix example: compact rows 0…127 → original prompt positions 16,256…16,383</tspan></text>
+<text x="40" y="739" font-size="22" fill="#50627a" font-weight="400" text-anchor="start"><tspan x="40" dy="0">The 128-token bound is the SWA window; omitting earlier local keys creates a boundary approximation.</tspan></text>
+<text x="40" y="793" font-size="23" fill="#50627a" font-weight="400" text-anchor="start"><tspan x="40" dy="0">Explicit opt-in for eager CP Prefill; CP + Prefill CUDA graphs remains unsupported.</tspan></text></g>
 </svg>

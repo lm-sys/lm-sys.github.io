@@ -10,6 +10,6 @@
 <path d="M662,180 L824,180" stroke="#50627a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
 <text x="745" y="138" font-size="20" fill="#50627a" font-weight="400" text-anchor="middle"><tspan x="745" dy="0">KV + required</tspan><tspan x="745" dy="28.0">model state</tspan></text>
 <rect x="835" y="110" width="325" height="140" rx="10" fill="#e8f5f0" stroke="#cbd7e4"/><text x="997.5" y="153.5" font-size="25" fill="#18283e" font-weight="400" text-anchor="middle"><tspan x="997.5" dy="0">Decode: 4 H200</tspan><tspan x="997.5" dy="35.0">TP4 / DP4 / EP4</tspan><tspan x="997.5" dy="35.0">Token generation</tspan></text>
-<text x="40" y="315" font-size="26" fill="#18283e" font-weight="600" text-anchor="start"><tspan x="40" dy="0">The first five changes primarily target the Prefill worker.</tspan></text>
+<text x="40" y="315" font-size="26" fill="#18283e" font-weight="600" text-anchor="start"><tspan x="40" dy="0">Prefill uses CP; Decode uses attention DP on its own four GPUs.</tspan></text>
 <text x="40" y="360" font-size="23" fill="#50627a" font-weight="400" text-anchor="start"><tspan x="40" dy="0">Client TTFT also includes queueing, handoff, and the first Decode step.</tspan></text></g>
 </svg>
