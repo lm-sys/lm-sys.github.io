@@ -8,11 +8,7 @@ type: blog
 
 In this post, we explain why SGLang (and ML infra in general) is moving towards larger GPU kernels, called **megakernels**, and what makes one different from a normal kernel. We built one for [Muse Spark Open](https://www.lmsys.org/blog/2026-10-15-meta-muse-spark-open), from scratch in CUDA C++ and PTX, and it takes decoding **517 → 1,109 tok/s** on Blackwell GPUs.
 
-Our motivation is to reach peak GPU utilization. For one conversation, the ideal speed is a single formula: every token reads the model's active weights once, at full memory bandwidth.
-
-<img src="/images/blog/muse-spark-open-ultrafast/fig_ideal.png" alt="The ideal speed of one conversation: 8 × 8 TB/s of memory bandwidth on 8 GB300 GPUs, divided by the 54 GB of weights each token reads (42B active parameters), is about 1,200 tokens per second, one token at a time" width="292" style="width:292px">
-
-Even with speculative decoding, our baseline serves only 517 tok/s. Our megakernel achieves 1,109 tok/s by running each layer (attention + MoE) as one kernel, with extreme latency hiding so every memory load overlaps other work.
+The goal is to keep every part of the GPU busy. Even with speculative decoding, our baseline serves only 517 tok/s. Our megakernel achieves 1,109 tok/s by running each layer (attention + MoE) as one kernel, with extreme latency hiding so every memory load overlaps other work.
 
 ![Decode tokens per second, one request at a time: baseline 517, megakernel 1,109, 2.1 times as fast](/images/blog/muse-spark-open-ultrafast/fig_tps.png)
 
