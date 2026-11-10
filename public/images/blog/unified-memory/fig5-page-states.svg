@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="788" viewBox="0 0 880 788" font-family="system-ui, -apple-system, Segoe UI, sans-serif" role="img" aria-label="State transitions for unified memory. Beyond frontier grows into Live. Hole allocates to Live. Live frees straight to Hole when nothing is in flight, or to Pending when a forward may read or write it; Pending becomes Hole after the forward is processed or settled. Below, moving a page copies and remaps it into a Live destination whose new readers follow the copy; the destination never enters source protection. Two dashed source-side protections hang off the Live source. Vacated: the source stays in band and old readers may still read it; after readers finish it becomes a Hole. Fenced: an old reader continues and the frontier retreats beyond the source; the next writer waits for the fence. Vacated and Fenced are source protections, not ordinary allocation states. Fenced bytes become Live again once the next writer has waited for the fence. A hole at the edge of a band can leave the band again when the frontier retreats over it, returning to Beyond frontier.">
+  <rect width="880" height="788" fill="#FFFFFF"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52514E"/>
+    </marker>
+  </defs>
+  <text x="440" y="34" text-anchor="middle" font-size="21" font-weight="700" fill="#0B0B0B">Logical free is immediate. Physical reuse waits.</text>
+
+  <!-- Ordinary allocation states only. -->
+  <text x="40" y="70" font-size="15" font-weight="700" fill="#52514E">FOUR ORDINARY ALLOCATION STATES</text>
+  <g transform="translate(0,64)">
+  <rect x="70" y="112" width="140" height="54" rx="6" fill="#E1E0D9"/>
+  <text x="140" y="145" text-anchor="middle" font-size="16" font-weight="700" fill="#0B0B0B">Beyond frontier</text>
+  <rect x="370" y="112" width="140" height="54" rx="6" fill="#3C4A5C"/>
+  <text x="440" y="145" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Live</text>
+  <rect x="670" y="112" width="140" height="54" rx="6" fill="#FFFFFF" stroke="#898781"/>
+  <text x="740" y="145" text-anchor="middle" font-size="17" font-weight="700" fill="#0B0B0B">Hole</text>
+
+  <g fill="none" stroke="#52514E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M210 139H366" marker-end="url(#arrow)"/>
+    <path d="M440 112V62H740V108" marker-end="url(#arrow)"/>
+    <path d="M790 112V26H140V108" marker-end="url(#arrow)"/>
+    <path d="M670 139H514" marker-end="url(#arrow)"/>
+    <path d="M440 166V234" marker-end="url(#arrow)"/>
+    <path d="M540 265H740V170" marker-end="url(#arrow)"/>
+  </g>
+  <text x="288" y="129" text-anchor="middle" font-size="15" fill="#52514E">grow</text>
+  <text x="590" y="54" text-anchor="middle" font-size="15" fill="#52514E">free · nothing in flight</text>
+  <text x="465" y="18" text-anchor="middle" font-size="15" fill="#52514E">frontier retreats over boundary holes</text>
+  <text x="590" y="129" text-anchor="middle" font-size="15" fill="#52514E">allocate</text>
+  <text x="418" y="205" text-anchor="end" font-size="15" fill="#52514E">free · forward may read or write</text>
+
+  <rect x="340" y="238" width="200" height="54" rx="6" fill="#FBEFC5" stroke="#B28704"/>
+  <text x="440" y="271" text-anchor="middle" font-size="17" font-weight="700" fill="#0B0B0B">Pending</text>
+  <text x="728" y="240" text-anchor="end" font-size="15" fill="#52514E">forward processed</text>
+  <text x="728" y="257" text-anchor="end" font-size="15" fill="#52514E">or settled</text>
+  <text x="440" y="316" text-anchor="middle" font-size="15" fill="#52514E">Pending counts free now; physical reuse waits.</text>
+
+  <line x1="40" y1="340" x2="840" y2="340" stroke="#E1E0D9"/>
+
+  <!-- Move: destination and source protections are separate branches. -->
+  <text x="40" y="369" font-size="15" font-weight="700" fill="#52514E">MOVE · old readers keep reading the source; an old writer goes first</text>
+  <rect x="40" y="396" width="200" height="54" rx="6" fill="#3C4A5C"/>
+  <text x="140" y="429" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Live source</text>
+
+  <path d="M240 423H696" stroke="#52514E" stroke-width="2" stroke-linecap="round" fill="none" marker-end="url(#arrow)"/>
+  <text x="470" y="413" text-anchor="middle" font-size="15" fill="#52514E">copy + remap</text>
+  <rect x="700" y="396" width="140" height="54" rx="6" fill="#3C4A5C"/>
+  <text x="770" y="429" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Live destination</text>
+  <text x="840" y="470" text-anchor="end" font-size="15" fill="#52514E">new readers after copy/remap</text>
+
+  <!-- Source-side branches: one trunk from Live source, one labelled arrow per branch. -->
+  <text x="300" y="484" font-size="15" font-weight="700" fill="#52514E">TWO SOURCE-SIDE HAZARDS</text>
+  <g fill="none" stroke="#52514E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 450V617"/>
+    <path d="M60 527H296" marker-end="url(#arrow)"/>
+    <path d="M60 617H296" marker-end="url(#arrow)"/>
+  </g>
+  <text x="76" y="505" font-size="15" fill="#52514E">source stays in band,</text>
+  <text x="76" y="519" font-size="15" fill="#52514E">old readers may still read it</text>
+  <text x="76" y="595" font-size="15" fill="#52514E">old reader continues,</text>
+  <text x="76" y="609" font-size="15" fill="#52514E">frontier retreats beyond it</text>
+
+  <rect x="300" y="500" width="140" height="54" rx="6" fill="#FCFCFB" stroke="#B28704" stroke-dasharray="5 3"/>
+  <text x="370" y="533" text-anchor="middle" font-size="16" font-weight="700" fill="#0B0B0B">Vacated</text>
+  <path d="M444 527H600" stroke="#52514E" stroke-width="2" stroke-linecap="round" fill="none" marker-end="url(#arrow)"/>
+  <text x="522" y="517" text-anchor="middle" font-size="15" fill="#52514E">after readers finish</text>
+  <rect x="604" y="502" width="110" height="50" rx="6" fill="#FFFFFF" stroke="#898781"/>
+  <text x="659" y="533" text-anchor="middle" font-size="16" font-weight="700" fill="#0B0B0B">Hole</text>
+
+  <rect x="300" y="590" width="140" height="54" rx="6" fill="#FCFCFB" stroke="#B28704" stroke-dasharray="5 3"/>
+  <text x="370" y="623" text-anchor="middle" font-size="16" font-weight="700" fill="#0B0B0B">Fenced</text>
+  <path d="M444 617H600" stroke="#52514E" stroke-width="2" stroke-linecap="round" fill="none" marker-end="url(#arrow)"/>
+  <text x="522" y="595" text-anchor="middle" font-size="15" fill="#52514E">next writer waits</text>
+  <text x="522" y="609" text-anchor="middle" font-size="15" fill="#52514E">for the fence</text>
+  <rect x="604" y="592" width="110" height="50" rx="6" fill="#3C4A5C"/>
+  <text x="659" y="623" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">Live</text>
+
+  <text x="440" y="684" text-anchor="middle" font-size="15" font-weight="600" fill="#0B0B0B">Dashed boxes protect old source bytes; they are not normal allocation states.</text>
+  <text x="440" y="704" text-anchor="middle" font-size="15" fill="#52514E">The destination stays live and never enters Vacated or Fenced.</text>
+  </g>
+</svg>
