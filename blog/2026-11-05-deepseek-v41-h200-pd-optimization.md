@@ -2,7 +2,7 @@
 title: "Optimizing DeepSeek-V4.1 on H200 with SGLang PD Disaggregation"
 author: "Bingjia Wang, Siyuan Chen — Ant International AI Infra Team"
 date: "November 10, 2026"
-previewImg: ../public/images/blog/deepseek-v41-h200-pd/combined-performance.png
+previewImg: /images/blog/deepseek-v41-h200-pd/combined-performance.png
 type: blog
 ---
 
@@ -24,7 +24,7 @@ The [DeepSeek-V4.1 day-0 post](/blog/2026-09-10-deepseek-v41/) describes the mod
 
 The deployment separates prompt processing from token generation. The Prefill worker uses TP4 / CP4 / EP4; the Decode worker uses TP4 / DP4 / EP4. TP shards tensor computation, CP partitions the prompt computation, EP distributes experts, and DP supplies independent attention replicas on the Decode side. These parallel dimensions share the four GPUs assigned to each worker.
 
-![Eight-H200 PD serving topology with four GPUs assigned to each worker](../public/images/blog/deepseek-v41-h200-pd/pd-topology.svg)
+![Eight-H200 PD serving topology with four GPUs assigned to each worker](/images/blog/deepseek-v41-h200-pd/pd-topology.svg)
 
 *Figure 1. The measured 1P1D topology. The handoff includes the KV and model state required to continue generation. Client-visible TTFT includes queueing and handoff costs as well as Prefill computation.*
 
@@ -32,7 +32,7 @@ The notebook first identified a supply problem on the P side. Requests accumulat
 
 The evaluated H200 configuration uses the Torch BF16 Prefill Indexer scoring path. Its bottlenecks differ from the Blackwell path that uses DeepGEMM for the relevant Indexer operations. A representative early profile attributed **209.47 ms, or 39.06% of the reported per-forward breakdown, to the Indexer**. MoE computation and NCCL each accounted for approximately another 18%.
 
-![Early Prefill profile, highlighting Indexer computation and the remaining major costs](../public/images/blog/deepseek-v41-h200-pd/initial-profile.png)
+![Early Prefill profile, highlighting Indexer computation and the remaining major costs](/images/blog/deepseek-v41-h200-pd/initial-profile.png)
 
 *Figure 2. Redrawn from the H200 notebook, §2.3–2.4. This is a representative Prefill profile, separate from request E2E latency. NCCL attribution includes waiting for other ranks. The Attention category combines the reported projection and core-attention categories; the smaller remaining compute categories are grouped together.*
 
@@ -54,7 +54,7 @@ The experiments share a development starting point. Sections 1–3 each start fr
 
 The baseline GSM8K evaluation shown below uses **1,319 single-shot examples** and scores **96.74%**, with no request errors or truncated outputs.
 
-![Baseline GSM8K single-shot accuracy on 1,319 examples](../public/images/blog/deepseek-v41-h200-pd/baseline-acc.png)
+![Baseline GSM8K single-shot accuracy on 1,319 examples](/images/blog/deepseek-v41-h200-pd/baseline-acc.png)
 
 *Figure 3. Baseline GSM8K evaluation: 96.74% accuracy on 1,319 single-shot examples, with 0.00% error and truncated rates.*
 
@@ -68,7 +68,7 @@ Sharing has two distinct meanings here. KV consumers share compressed KV and Ind
 
 **Bounded replay** uses the fixed late-layer compressed history to limit Prefill computation in layers 21–39 to each request's trailing window. It reconstructs those layers' local SWA KV and retained hidden states; the compressed history is already available. **DSpark**, the speculative block drafter, additionally uses hidden states captured from selected target-model layers to populate its draft KV state and condition proposals. Its auxiliary states must refer to the same token positions as the retained model outputs. Section 6 explains the approximation at the replay boundary and the CP output fix. The [DSpark Prefill injection path](https://github.com/BJWang-ant/sglang/blob/f274754cb12fdefba511c05137257410df00dea5/python/sglang/srt/speculative/dspark_components/dspark_worker_v2.py#L887) consumes both hidden states and their token indices.
 
-![Model execution stages and the locations of the six optimizations](../public/images/blog/deepseek-v41-h200-pd/model-execution.svg)
+![Model execution stages and the locations of the six optimizations](/images/blog/deepseek-v41-h200-pd/model-execution.svg)
 
 *Figure 4. Model execution, separate from GPU allocation in Figure 1. Section numbers identify the six changes. The Indexer branches represent alternative scoring implementations; the detailed compatibility of alignment, candidate scoring, and epilogue fusion is explained after Section 3. MoE follows attention within each model layer. The late-layer tail is an opt-in Prefill approximation, and the Decode metadata change belongs to Section 4.*
 
@@ -82,7 +82,7 @@ The scoring operation takes query rows across heads and compares them with the r
 
 For CUDA BF16 keys with at least 1,024 visible positions, the patch pads the dequantized key tensor to `ceil(visible_keys / 64) × 64`. It does this once per request and reuses that tensor across query chunks. Scores are sliced back to the logical extent before causal masking and top-k selection. The chunk-size calculation uses the padded width, keeping the existing intermediate-memory budget intact.
 
-![Score-width alignment before and after, retaining the logical selection range](../public/images/blog/deepseek-v41-h200-pd/score-alignment.svg)
+![Score-width alignment before and after, retaining the logical selection range](/images/blog/deepseek-v41-h200-pd/score-alignment.svg)
 
 *Figure 5. Physical padding improves the GEMM shape while selection still operates on the original logical positions. Padded columns never become eligible candidates.*
 
@@ -102,17 +102,17 @@ The PR's scoring microbenchmark includes the epilogue and the padding cost:
 
 The patch also reconstructs rank-local request-row mappings when CP supplies no explicit `req_rows`. Both the baseline and optimized runs include that mapping fix, isolating the score-width change in this experiment.
 
-![Original serving benchmark table from PR 45794](../public/images/blog/deepseek-v41-h200-pd/pr-45794-source.png)
+![Original serving benchmark table from PR 45794](/images/blog/deepseek-v41-h200-pd/pr-45794-source.png)
 
 *Figure 6. Serving benchmark for [PR #45794](https://github.com/sgl-project/sglang/pull/45794). Optimized values appear before their baseline columns. TTFT and TPOT are shown as three-run mean/SD; E2E and baseline columns show means only. TTFT and E2E are in milliseconds, and TPOT is in milliseconds per token.*
 
 Across the eight displayed cases, TTFT falls by **12.3%–18.2%** and E2E latency by **4.4%–14.8%**. At the 50% cache-hit label and concurrency 4, TTFT changes from **6,245 to 5,108 ms**, while E2E changes from **7,402 to 6,327 ms**. The smaller E2E gain in the 90%/concurrency-8 case illustrates why a scoring-kernel improvement should be checked against the entire request path.
 
-![CP rank 0 scoring trace with width alignment](../public/images/blog/deepseek-v41-h200-pd/pr-45794-source-cp-rank0-after.png)
+![CP rank 0 scoring trace with width alignment](/images/blog/deepseek-v41-h200-pd/pr-45794-source-cp-rank0-after.png)
 
 *Figure 7. [PR #45794 trace](https://github.com/sgl-project/sglang/pull/45794), with score-width alignment.*
 
-![CP rank 0 scoring trace before width alignment](../public/images/blog/deepseek-v41-h200-pd/pr-45794-source-cp-rank0-before.png)
+![CP rank 0 scoring trace before width alignment](/images/blog/deepseek-v41-h200-pd/pr-45794-source-cp-rank0-before.png)
 
 *Figure 8. [PR #45794 trace](https://github.com/sgl-project/sglang/pull/45794), before score-width alignment.*
 
@@ -120,7 +120,7 @@ The CP rank 0 screenshots compare the scoring kernel at the same logical shape: 
 
 The supplied GSM8K evaluation for score-width alignment scores **96.74%** on **1,319 single-shot examples**, with no request errors or truncated outputs.
 
-![GSM8K accuracy with score-width alignment from PR 45794](../public/images/blog/deepseek-v41-h200-pd/pr-45794-acc.png)
+![GSM8K accuracy with score-width alignment from PR 45794](/images/blog/deepseek-v41-h200-pd/pr-45794-acc.png)
 
 *Figure 9. GSM8K evaluation with Section 1's score-width alignment: 96.74% accuracy on 1,319 single-shot examples, with 0.00% error and truncated rates.*
 
@@ -151,7 +151,7 @@ The consumer is already restricted to `[4…7, 12…15]`. The old implementation
 
 The patch moves the restriction before scoring. A Triton kernel uses the block IDs to load the corresponding keys directly, producing a compact per-head score tensor of width `C` rather than the full visible width `L`. ReLU, head weighting, and head reduction retain the reference operations. Causal and invalid-candidate masking operate on compact scores before top-k.
 
-![Candidate-aware key loading and compact score selection](../public/images/blog/deepseek-v41-h200-pd/candidate-scoring.svg)
+![Candidate-aware key loading and compact score selection](/images/blog/deepseek-v41-h200-pd/candidate-scoring.svg)
 
 *Figure 10. Candidate filtering moves ahead of the dot product. The publisher, candidate budget, and consumer selection domain remain unchanged.*
 
@@ -159,17 +159,17 @@ Selected compact columns must then be translated back correctly. Each pick ident
 
 The optimized path requires CUDA BF16 operands, a head dimension of 128, at most 64 heads, and **a candidate width no greater than half the visible key length**. Wider candidate sets use the original path. This avoids paying the indirect-load cost when candidate restriction removes too little scoring work.
 
-![Original serving benchmark table from PR 46003](../public/images/blog/deepseek-v41-h200-pd/pr-46003-source.png)
+![Original serving benchmark table from PR 46003](/images/blog/deepseek-v41-h200-pd/pr-46003-source.png)
 
 *Figure 11. Serving benchmark for [PR #46003](https://github.com/sgl-project/sglang/pull/46003). This independent experiment uses the same starting development revision as Sections 1 and 3.*
 
 The displayed TTFT reductions are **22.9%–32.5%**, with **8.3%–22.1% lower E2E latency**. At the 70% label and concurrency 8, TTFT changes from **8,061 to 5,944 ms** and E2E from **9,228 to 7,191 ms**. At the 90% label and concurrency 16, TTFT changes from **2,846 to 1,922 ms**, a **32.5%** reduction.
 
-![CP rank 0 trace with candidate-only scoring](../public/images/blog/deepseek-v41-h200-pd/pr-46003-source-rank0-after.png)
+![CP rank 0 trace with candidate-only scoring](/images/blog/deepseek-v41-h200-pd/pr-46003-source-rank0-after.png)
 
 *Figure 12. [PR #46003 trace](https://github.com/sgl-project/sglang/pull/46003), with candidate-only scoring.*
 
-![CP rank 0 trace before candidate-only scoring](../public/images/blog/deepseek-v41-h200-pd/pr-46003-source-rank0-before.png)
+![CP rank 0 trace before candidate-only scoring](/images/blog/deepseek-v41-h200-pd/pr-46003-source-rank0-before.png)
 
 *Figure 13. [PR #46003 trace](https://github.com/sgl-project/sglang/pull/46003), before candidate-only scoring.*
 
@@ -177,7 +177,7 @@ At the same logical problem shape, the displayed CP rank 0 scoring-kernel durati
 
 The local validation reported exact score/top-k agreement for tested model-style FP4 inputs and matching Indexer/KV-slot writeback in the integration cases. The attached 1,319-question GSM8K result is **96.74%**, with zero request errors.
 
-![GSM8K accuracy with candidate-only scoring from PR 46003](../public/images/blog/deepseek-v41-h200-pd/pr-46003-acc.png)
+![GSM8K accuracy with candidate-only scoring from PR 46003](/images/blog/deepseek-v41-h200-pd/pr-46003-acc.png)
 
 *Figure 14. GSM8K evaluation with Section 2's candidate-only scoring: 96.74% accuracy on 1,319 single-shot examples, with 0.00% error and truncated rates.*
 
@@ -193,7 +193,7 @@ The original sequence materializes the large BF16 per-head scores, applies ReLU,
 
 The patch replaces that epilogue with one Triton kernel for the supported 32-head CUDA BF16 path. The GEMM's per-head output still exists; the later full-sized intermediates disappear.
 
-![Separate score postprocessing operations compared with one fused Triton epilogue](../public/images/blog/deepseek-v41-h200-pd/epilogue-fusion.svg)
+![Separate score postprocessing operations compared with one fused Triton epilogue](/images/blog/deepseek-v41-h200-pd/epilogue-fusion.svg)
 
 *Figure 15. Fusion removes intermediate memory traffic and launches after GEMM. It preserves the numerical effects of the reference operations.*
 
@@ -201,17 +201,17 @@ Numerical behavior matters because top-k consumes these scores. Two nearly tied 
 
 Context-dependent row and head strides remain runtime arguments, avoiding a separate kernel specialization for each context-dependent stride. The implementation uses the Torch fallback for unsupported devices, dtypes, head counts, widths, and layouts. In particular, width-one and head-contiguous reduction layouts require their own fallback because the reference reduction order differs.
 
-![Original serving benchmark table from PR 45807](../public/images/blog/deepseek-v41-h200-pd/pr-45807-source.png)
+![Original serving benchmark table from PR 45807](/images/blog/deepseek-v41-h200-pd/pr-45807-source.png)
 
 *Figure 16. Serving benchmark for [PR #45807](https://github.com/sgl-project/sglang/pull/45807). The fused epilogue comparison retains the existing GEMM.*
 
 Across the displayed cases, TTFT falls by **19.8%–25.8%** and E2E by **4.3%–18.2%**. At the 50% label and concurrency 4, TTFT changes from **6,245 to 4,850 ms** and E2E from **7,402 to 6,099 ms**. At the 90% label and concurrency 16, TPOT remains **3.17 ms/token**; it increases in the other seven displayed cases.
 
-![CP rank 0 GEMM and fused epilogue trace](../public/images/blog/deepseek-v41-h200-pd/pr-45807-source-rank0-after.png)
+![CP rank 0 GEMM and fused epilogue trace](/images/blog/deepseek-v41-h200-pd/pr-45807-source-rank0-after.png)
 
 *Figure 17. [PR #45807 trace](https://github.com/sgl-project/sglang/pull/45807), showing GEMM followed by the fused epilogue.*
 
-![CP rank 0 GEMM and separate score postprocessing trace](../public/images/blog/deepseek-v41-h200-pd/pr-45807-source-rank0-before.png)
+![CP rank 0 GEMM and separate score postprocessing trace](/images/blog/deepseek-v41-h200-pd/pr-45807-source-rank0-before.png)
 
 *Figure 18. [PR #45807 trace](https://github.com/sgl-project/sglang/pull/45807), showing GEMM and separate score postprocessing.*
 
@@ -219,7 +219,7 @@ The selected CP rank 0 trace interval, covering GEMM and score postprocessing, f
 
 The PR reports exact agreement in its local scoring, rounding-boundary, and integration checks, and GSM8K at **96.59%**, compared with baseline runs at **96.74% and 96.36%**.
 
-![GSM8K accuracy with fused score epilogue from PR 45807](../public/images/blog/deepseek-v41-h200-pd/pr-45807-acc.png)
+![GSM8K accuracy with fused score epilogue from PR 45807](/images/blog/deepseek-v41-h200-pd/pr-45807-acc.png)
 
 *Figure 19. GSM8K evaluation with Section 3's fused score epilogue: 96.59% accuracy on 1,319 single-shot examples, with 0.00% error and truncated rates.*
 
@@ -244,7 +244,7 @@ This distinction follows the inspected [dense scoring code](https://github.com/B
 
 We cherry-picked the optimizations from Sections 1–3 onto commit `d0a75654368a470d8484e3ea45b06e500fee57af` and benchmarked the combined configuration with 8K Prefill chunks. Against the common early baseline, TTFT is **29.7%–46.3% lower** and E2E **9.5%–34.5% lower**, while TPOT is **8.1%–20.6% higher** across the eight cases. This combined configuration supplies the baseline for Section 4.
 
-![Sections 1–3 combined serving benchmark results](../public/images/blog/deepseek-v41-h200-pd/Chapter-123-Aggregation-result.png)
+![Sections 1–3 combined serving benchmark results](/images/blog/deepseek-v41-h200-pd/Chapter-123-Aggregation-result.png)
 
 *Figure 20. Sections 1–3 combined, with 8K Prefill chunks. The original baseline is shown in the baseline columns; the combined results become Section 4's 8K baseline.*
 
@@ -258,7 +258,7 @@ The same investigation exposed a Decode-side CUDA graph metadata problem: readin
 
 The merged PR prevents the draft metadata glue graph from running when a backend requires host sequence lengths and removes an unused `seq_lens.sum().item()` read during Decode graph capture. Its description notes that the original host-read fixes landed separately in #46891 and #46897. Under the current DSpark configuration, the host-length guard is defensive because `needs_cpu_seq_lens` is already false. The table below reports the notebook's chunk-size experiment; it does not isolate the performance impact of the guard.
 
-![Larger Prefill chunks reduce scheduling rounds, while Decode graph metadata avoids unnecessary host reads](../public/images/blog/deepseek-v41-h200-pd/chunk-prefill-graph.svg)
+![Larger Prefill chunks reduce scheduling rounds, while Decode graph metadata avoids unnecessary host reads](/images/blog/deepseek-v41-h200-pd/chunk-prefill-graph.svg)
 
 *Figure 21. An illustrative 16,384-token uncached suffix requires two 8,192-token chunks or one 16,384-token chunk. The Decode metadata work tracked in [PR #46777](https://github.com/sgl-project/sglang/pull/46777) addresses graph-capture constraints separately from the choice of Prefill chunk size.*
 
@@ -266,7 +266,7 @@ The merged PR prevents the draft metadata glue graph from running when a backend
 
 The optimized columns use 16,384-token chunks; the baseline columns use 8,192-token chunks. TTFT and E2E are in milliseconds; TPOT is in milliseconds per output token. The E2E percentage is `(16K result / baseline − 1) × 100%`, so a negative value means lower latency.
 
-![Serving benchmark comparing 8,192-token and 16,384-token Prefill chunks](../public/images/blog/deepseek-v41-h200-pd/Chapter-4-source.png)
+![Serving benchmark comparing 8,192-token and 16,384-token Prefill chunks](/images/blog/deepseek-v41-h200-pd/Chapter-4-source.png)
 
 *Figure 22. Section 4's chunk-size comparison. The baseline is the 8K configuration with the three Indexer changes from Sections 1–3; the optimized columns use 16K chunks. Optimized TTFT and TPOT are three-run mean/SD; E2E and baseline columns show three-run means only.*
 
@@ -278,7 +278,7 @@ For the cases in this chunk-size comparison where TTFT decreased but TPOT increa
 
 The supplied GSM8K evaluation for the Section 4 configuration scores **96.59%** on **1,319 single-shot examples**, with a **0.15% truncated-output rate** and **0.00% request errors**.
 
-![GSM8K accuracy for the Section 4 larger-chunk configuration](../public/images/blog/deepseek-v41-h200-pd/Chapter-4-acc.jpg)
+![GSM8K accuracy for the Section 4 larger-chunk configuration](/images/blog/deepseek-v41-h200-pd/Chapter-4-acc.jpg)
 
 *Figure 23. GSM8K evaluation for Section 4: 96.59% accuracy on 1,319 single-shot examples, with a 0.15% truncated rate and 0.00% error rate.*
 
@@ -300,7 +300,7 @@ For four ranks, let `Y_r` be rank `r`'s partial full-row output and let their su
 
 Reduce-scatter expresses that requirement directly: reduce the full input contributions and return only the rows owned by the receiving rank. The optimization removes full-result replication and the subsequent local output slicing/copying step.
 
-![All-reduce followed by slicing compared with direct reduce-scatter](../public/images/blog/deepseek-v41-h200-pd/moe-reduce-scatter.svg)
+![All-reduce followed by slicing compared with direct reduce-scatter](/images/blog/deepseek-v41-h200-pd/moe-reduce-scatter.svg)
 
 *Figure 24. The change targets DeepSeek-V4.1's `cp_return_contiguous` MoE branch with no MoE all-to-all backend. Each shard is contiguous within the packed, rank-major buffer; its original prompt positions can remain interleaved. The separate `cp_return_contiguous=False` branch already uses a reduce-scatter helper. That branch selection is distinct from the CLI option `--cp-strategy interleave`.*
 
@@ -325,7 +325,7 @@ Across a separate set of nearby sampled steps—six baseline and seven optimized
 
 The denominator already explains much of the apparent gap: as a simple illustration, cutting 20% from a stage that occupies one tenth of a forward reduces total time by only about 2%, even without overlap. This is scale intuition, rather than a measured decomposition of the forward's critical path.
 
-![Original serving benchmark table from PR 47247](../public/images/blog/deepseek-v41-h200-pd/pr-47247-source.png)
+![Original serving benchmark table from PR 47247](/images/blog/deepseek-v41-h200-pd/pr-47247-source.png)
 
 *Figure 25. Serving benchmark for [PR #47247](https://github.com/sgl-project/sglang/pull/47247), with the optimizations from Sections 1–4 already included in the baseline. Percentages discussed here are recalculated from the displayed absolute values.*
 
@@ -335,7 +335,7 @@ The serving table shows **0.8%–3.4% lower E2E latency**. At the 90% label and 
 
 The supplied full GSM8K evaluation for MoE reduce-scatter scores **95.83%** on **1,319 single-shot examples**, with no request errors or truncated outputs.
 
-![GSM8K accuracy with MoE reduce-scatter from PR 47247](../public/images/blog/deepseek-v41-h200-pd/pr-47247-acc.png)
+![GSM8K accuracy with MoE reduce-scatter from PR 47247](/images/blog/deepseek-v41-h200-pd/pr-47247-acc.png)
 
 *Figure 26. GSM8K evaluation with Section 5's MoE reduce-scatter: 95.83% accuracy on 1,319 single-shot examples, with 0.00% error and truncated rates.*
 
@@ -365,7 +365,7 @@ For a single request with no cached prefix and zero-based prompt positions `0…
 
 Thus compact rows `0…127` correspond to original positions `16256…16383`. Both final hidden states and DSpark auxiliary hidden states must preserve this mapping: compact row 0 cannot be interpreted as prompt position 0. Before gathering, the 32 local rows on each CP rank follow that rank's tail layout; their local row numbers are not global prompt positions. Cached-prefix offsets, multiple requests, and padding require explicit per-request/token mappings rather than a single batch-wide offset.
 
-![Tail-aware CP gathering for bounded replay and DSpark](../public/images/blog/deepseek-v41-h200-pd/bounded-replay.svg)
+![Tail-aware CP gathering for bounded replay and DSpark](/images/blog/deepseek-v41-h200-pd/bounded-replay.svg)
 
 *Figure 27. The compatibility fix preserves compact hidden states, DSpark auxiliary states, and their original global token indices. The illustrated 32-row local tail is a single-request example; mixed requests require their own tail metadata.*
 
@@ -373,7 +373,7 @@ The patch adds a model-specific `postprocess_cp_output` hook. DeepSeek's hook ga
 
 This allows bounded replay to be explicitly enabled for eager CP Prefill. The default CP policy is unchanged, and the combination of CP, bounded replay, and Prefill CUDA graphs remains unsupported.
 
-![Original serving benchmark table from PR 47406](../public/images/blog/deepseek-v41-h200-pd/pr-47406-source.png)
+![Original serving benchmark table from PR 47406](/images/blog/deepseek-v41-h200-pd/pr-47406-source.png)
 
 *Figure 28. Serving benchmark for [PR #47406](https://github.com/sgl-project/sglang/pull/47406). Its baseline is the resulting configuration from Section 4.*
 
@@ -383,7 +383,7 @@ The table also records TPOT increasing from **2.07 to 2.53 ms/token** in the 70%
 
 The PR reports four-rank validation of token mappings and metadata restoration, nine full-model functional requests, and a 32-question GSM8K smoke test. The supplied **full 1,319-question single-shot evaluation** shown below scores **95.38%**, with a **0.08% truncated-output rate** and **0.00% request errors**. The full GSM8K run extends the evidence beyond the original smoke test, but does not establish broad long-context accuracy parity for the boundary approximation described above.
 
-![Full GSM8K accuracy with bounded replay and the CP DSpark fix from PR 47406](../public/images/blog/deepseek-v41-h200-pd/pr-47406-acc.png)
+![Full GSM8K accuracy with bounded replay and the CP DSpark fix from PR 47406](/images/blog/deepseek-v41-h200-pd/pr-47406-acc.png)
 
 *Figure 29. Full GSM8K evaluation for Section 6's bounded-replay configuration: 95.38% accuracy on 1,319 single-shot examples, with a 0.08% truncated rate and 0.00% error rate.*
 
@@ -393,7 +393,7 @@ The PR reports four-rank validation of token mappings and metadata restoration, 
 
 The five PR comparisons in Sections 1–3, 5, and 6 act at different levels: tensor shape, candidate scoring domain, memory traffic, collective output ownership, and late-layer token extent. Sections 1–3 evaluate individual changes independently from the common starting revision. Section 4 combines the three Indexer changes before evaluating larger Prefill chunks. Sections 5 and 6 each evaluate an additional optimization on top of the changes from Sections 1–4; Section 5 reports separate baseline measurements, while Section 6 uses Section 4's reported results. The chunk-size experiment is reported separately in Section 4 because it also involves configuration and graph-metadata work. The reported percentages use these distinct baselines and cannot be added to obtain a cumulative gain.
 
-![Per-PR E2E reductions across the eight reported cache-hit and concurrency cases](../public/images/blog/deepseek-v41-h200-pd/pr-e2e-comparison.png)
+![Per-PR E2E reductions across the eight reported cache-hit and concurrency cases](/images/blog/deepseek-v41-h200-pd/pr-e2e-comparison.png)
 
 *Figure 30. Redrawn from the five per-PR serving benchmark screenshots. Rows retain the order #45794, #47406, #47247, #46003, and #45807, corresponding to Sections 1, 6, 5, 2, and 3. Each cell shows the reduction and baseline → optimized three-run mean E2E latency in milliseconds. Sections 1–3 use independent comparisons from the common starting revision. The baselines for Sections 5 and 6 include the optimizations from Sections 1–4; Section 5 uses separately recorded measurements, while Section 6 uses Section 4's reported results. The row percentages cannot be added or multiplied to infer a combined result.*
 
@@ -424,7 +424,7 @@ TPOT is **2.6%–51.9% higher in all eight cases**. At 90%/concurrency 32, it ri
 
 The supplied **final combined configuration** scores **95.38%** on **1,319 single-shot GSM8K examples**, compared with **96.74%** in the baseline screenshot—an observed difference of **1.36 percentage points**. The final run has **0.00% request errors** and a **0.08% truncated-output rate**. These screenshots report GSM8K outcomes; they do not by themselves establish long-context quality parity or numerical equivalence.
 
-![GSM8K accuracy with all optimizations combined](../public/images/blog/deepseek-v41-h200-pd/Final-optimization-integration-acc.png)
+![GSM8K accuracy with all optimizations combined](/images/blog/deepseek-v41-h200-pd/Final-optimization-integration-acc.png)
 
 *Figure 31. GSM8K evaluation with all optimizations combined: 95.38% accuracy on 1,319 single-shot examples. The baseline result is shown in Figure 3.*
 
