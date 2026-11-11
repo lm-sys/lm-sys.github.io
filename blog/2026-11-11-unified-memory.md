@@ -1,7 +1,7 @@
 ---
 title: "Unified Memory in SGLang: One Arena for Every Token Lifetime"
 author: "Cheng Wan, Caihua Li, Yonghao Zhuang, Seokwoo Song, Shuwen Wang, Lianmin Zheng"
-date: "November 10, 2026"
+date: "November 11, 2026"
 previewImg: /images/blog/unified-memory/fig2-one-arena.svg
 type: blog
 ---
