@@ -2,7 +2,7 @@
 title: "Optimizing DeepSeek-V4.1 on H200 with SGLang PD Disaggregation"
 author: "Bingjia Wang, Siyuan Chen — Ant International AI Infra Team"
 date: "November 10, 2026"
-previewImg: /images/blog/deepseek-v41-h200-pd/combined-performance.png
+previewImg: /images/blog/deepseek-v41-h200-pd/cover.png
 type: blog
 ---
 
