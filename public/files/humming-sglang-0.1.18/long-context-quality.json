@@ -1,0 +1,59 @@
+{
+  "source_commit": "f644444260a6caf2cc4a4d5357dc17edaa6c8e64",
+  "ruler_commit": "db43f92ff634bbce1c33d1fb15858aec4bba509a",
+  "task": "niah_multikey_2",
+  "ep": 1,
+  "seed": 42,
+  "samples_per_length": 200,
+  "completed": {
+    "marlin_a16": {
+      "status": "complete",
+      "cells": [
+        {
+          "length": 32768,
+          "samples": 200,
+          "score_percent": 100.0,
+          "empty_responses": 0,
+          "length_limited_responses": 0,
+          "actual_prompt_tokens_min": 32029,
+          "actual_prompt_tokens_max": 32630
+        },
+        {
+          "length": 131072,
+          "samples": 200,
+          "score_percent": 100.0,
+          "empty_responses": 0,
+          "length_limited_responses": 0,
+          "actual_prompt_tokens_min": 130285,
+          "actual_prompt_tokens_max": 130932
+        }
+      ]
+    },
+    "humming_a8": {
+      "status": "complete",
+      "cells": [
+        {
+          "length": 32768,
+          "samples": 200,
+          "score_percent": 100.0,
+          "empty_responses": 0,
+          "length_limited_responses": 0,
+          "actual_prompt_tokens_min": 32029,
+          "actual_prompt_tokens_max": 32630
+        },
+        {
+          "length": 131072,
+          "samples": 200,
+          "score_percent": 100.0,
+          "empty_responses": 0,
+          "length_limited_responses": 0,
+          "actual_prompt_tokens_min": 130285,
+          "actual_prompt_tokens_max": 130932
+        }
+      ]
+    }
+  },
+  "incomplete": {
+    "humming_a16": "rank0 SIGKILL after 168 responses in first cell; no completed cell; cause unresolved"
+  }
+}

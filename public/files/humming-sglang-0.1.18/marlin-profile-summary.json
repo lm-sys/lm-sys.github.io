@@ -1,0 +1,626 @@
+{
+  "source_commit": "f644444260a6caf2cc4a4d5357dc17edaa6c8e64",
+  "model": "DeepSeek-V4.1-Flash-1017",
+  "backend": "Marlin A16",
+  "tp": 8,
+  "ep": 1,
+  "definition": "Routed-expert GEMM kernel durations, excluding routing/activation/quantization/shared-expert work. Shares use sum of GPU kernel durations, not client TTFT or additive wall-time contributions. Union and span are separate. All eight ranks retained; one profiled request per case, not timing repetitions.",
+  "cases": {
+    "prefill-4096": {
+      "rank_summary": {
+        "kernel_sum_ms": {
+          "mean": 354.2119051249996,
+          "min": 312.08379199999933,
+          "max": 404.3357959999988
+        },
+        "moe_gemm_sum_ms": {
+          "mean": 197.54335275,
+          "min": 195.90216399999994,
+          "max": 199.03878900000004
+        },
+        "moe_kernel_duration_share_pct": {
+          "mean": 56.277220399720264,
+          "min": 48.826639133380255,
+          "max": 63.35444969215206
+        },
+        "kernel_union_ms": {
+          "mean": 354.0806081542969,
+          "min": 311.953173828125,
+          "max": 404.2014765625
+        },
+        "moe_gemm_union_ms": {
+          "mean": 197.5433529663086,
+          "min": 195.9021640625,
+          "max": 199.0387880859375
+        },
+        "kernel_span_ms": {
+          "mean": 379.4752470092773,
+          "min": 341.2907021484375,
+          "max": 428.60109326171874
+        }
+      },
+      "ranks": [
+        {
+          "rank": 0,
+          "kernel_count": 3224,
+          "moe_gemm_count": 80,
+          "kernel_sum_ms": 328.37831300000033,
+          "moe_gemm_sum_ms": 197.73620599999998,
+          "moe_kernel_duration_share_pct": 60.2159759557568,
+          "kernel_union_ms": 328.2475424804687,
+          "moe_gemm_union_ms": 197.73620654296874,
+          "kernel_span_ms": 352.7793549804687,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 1,
+          "kernel_count": 3224,
+          "moe_gemm_count": 80,
+          "kernel_sum_ms": 370.71680700000036,
+          "moe_gemm_sum_ms": 197.488814,
+          "moe_kernel_duration_share_pct": 53.2721501348062,
+          "kernel_union_ms": 370.5862421875,
+          "moe_gemm_union_ms": 197.48881494140625,
+          "kernel_span_ms": 394.10805078125,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 2,
+          "kernel_count": 3224,
+          "moe_gemm_count": 80,
+          "kernel_sum_ms": 320.93117699999937,
+          "moe_gemm_sum_ms": 197.41824799999998,
+          "moe_kernel_duration_share_pct": 61.51420059759427,
+          "kernel_union_ms": 320.79925341796877,
+          "moe_gemm_union_ms": 197.41824853515624,
+          "kernel_span_ms": 344.03794482421876,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 3,
+          "kernel_count": 3224,
+          "moe_gemm_count": 80,
+          "kernel_sum_ms": 312.08379199999933,
+          "moe_gemm_sum_ms": 197.71896900000004,
+          "moe_kernel_duration_share_pct": 63.35444969215206,
+          "kernel_union_ms": 311.953173828125,
+          "moe_gemm_union_ms": 197.71897119140624,
+          "kernel_span_ms": 341.2907021484375,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 4,
+          "kernel_count": 3224,
+          "moe_gemm_count": 80,
+          "kernel_sum_ms": 404.0800729999994,
+          "moe_gemm_sum_ms": 199.03878900000004,
+          "moe_kernel_duration_share_pct": 49.257264166055606,
+          "kernel_union_ms": 403.946927734375,
+          "moe_gemm_union_ms": 199.0387880859375,
+          "kernel_span_ms": 428.60109326171874,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 5,
+          "kernel_count": 3224,
+          "moe_gemm_count": 80,
+          "kernel_sum_ms": 404.3357959999988,
+          "moe_gemm_sum_ms": 197.42358,
+          "moe_kernel_duration_share_pct": 48.826639133380255,
+          "kernel_union_ms": 404.2014765625,
+          "moe_gemm_union_ms": 197.4235791015625,
+          "kernel_span_ms": 428.5709970703125,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 6,
+          "kernel_count": 3224,
+          "moe_gemm_count": 80,
+          "kernel_sum_ms": 363.08193999999935,
+          "moe_gemm_sum_ms": 197.62005200000002,
+          "moe_kernel_duration_share_pct": 54.42849952823332,
+          "kernel_union_ms": 362.9517236328125,
+          "moe_gemm_union_ms": 197.62005126953125,
+          "kernel_span_ms": 393.6440732421875,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 7,
+          "kernel_count": 3198,
+          "moe_gemm_count": 80,
+          "kernel_sum_ms": 330.0873429999996,
+          "moe_gemm_sum_ms": 195.90216399999994,
+          "moe_kernel_duration_share_pct": 59.348583989783634,
+          "kernel_union_ms": 329.958525390625,
+          "moe_gemm_union_ms": 195.9021640625,
+          "kernel_span_ms": 352.769759765625,
+          "decode_phase_metrics": {}
+        }
+      ]
+    },
+    "prefill-131072": {
+      "rank_summary": {
+        "kernel_sum_ms": {
+          "mean": 9926.298439999617,
+          "min": 9919.383916999659,
+          "max": 9931.27843099948
+        },
+        "moe_gemm_sum_ms": {
+          "mean": 4717.0673853749995,
+          "min": 4700.255781,
+          "max": 4739.870083000001
+        },
+        "moe_kernel_duration_share_pct": {
+          "mean": 47.520892132390244,
+          "min": 47.38455351994983,
+          "max": 47.72705314294237
+        },
+        "kernel_union_ms": {
+          "mean": 9925.117435424805,
+          "min": 9918.20486767578,
+          "max": 9930.115984375
+        },
+        "moe_gemm_union_ms": {
+          "mean": 4717.067386169434,
+          "min": 4700.255776855469,
+          "max": 4739.870087402343
+        },
+        "kernel_span_ms": {
+          "mean": 10086.293442626953,
+          "min": 10085.345421386719,
+          "max": 10086.770590820313
+        }
+      },
+      "ranks": [
+        {
+          "rank": 0,
+          "kernel_count": 53261,
+          "moe_gemm_count": 640,
+          "kernel_sum_ms": 9926.851089999629,
+          "moe_gemm_sum_ms": 4716.918765999999,
+          "moe_kernel_duration_share_pct": 47.51676763593091,
+          "kernel_union_ms": 9925.650820800782,
+          "moe_gemm_union_ms": 4716.918768554688,
+          "kernel_span_ms": 10086.596551269531,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 1,
+          "kernel_count": 53261,
+          "moe_gemm_count": 640,
+          "kernel_sum_ms": 9931.202055999782,
+          "moe_gemm_sum_ms": 4739.870083000001,
+          "moe_kernel_duration_share_pct": 47.72705314294237,
+          "kernel_union_ms": 9930.012229003907,
+          "moe_gemm_union_ms": 4739.870087402343,
+          "kernel_span_ms": 10086.463018066406,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 2,
+          "kernel_count": 53261,
+          "moe_gemm_count": 640,
+          "kernel_sum_ms": 9922.84730899957,
+          "moe_gemm_sum_ms": 4715.468613999995,
+          "moe_kernel_duration_share_pct": 47.52132595775488,
+          "kernel_union_ms": 9921.667755371094,
+          "moe_gemm_union_ms": 4715.468613769532,
+          "kernel_span_ms": 10085.345421386719,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 3,
+          "kernel_count": 53261,
+          "moe_gemm_count": 640,
+          "kernel_sum_ms": 9925.911516999617,
+          "moe_gemm_sum_ms": 4713.657332999999,
+          "moe_kernel_duration_share_pct": 47.48840773894823,
+          "kernel_union_ms": 9924.735129394532,
+          "moe_gemm_union_ms": 4713.657329589843,
+          "kernel_span_ms": 10086.221440917969,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 4,
+          "kernel_count": 53261,
+          "moe_gemm_count": 640,
+          "kernel_sum_ms": 9925.10197099967,
+          "moe_gemm_sum_ms": 4721.063871000003,
+          "moe_kernel_duration_share_pct": 47.56690545643321,
+          "kernel_union_ms": 9923.915255371094,
+          "moe_gemm_union_ms": 4721.06387890625,
+          "kernel_span_ms": 10086.770590820313,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 5,
+          "kernel_count": 53261,
+          "moe_gemm_count": 640,
+          "kernel_sum_ms": 9931.27843099948,
+          "moe_gemm_sum_ms": 4709.747485000002,
+          "moe_kernel_duration_share_pct": 47.423375728738016,
+          "kernel_union_ms": 9930.115984375,
+          "moe_gemm_union_ms": 4709.747483398438,
+          "kernel_span_ms": 10086.510635742188,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 6,
+          "kernel_count": 53261,
+          "moe_gemm_count": 640,
+          "kernel_sum_ms": 9927.811228999526,
+          "moe_gemm_sum_ms": 4719.557149999999,
+          "moe_kernel_duration_share_pct": 47.53874787842447,
+          "kernel_union_ms": 9926.63744140625,
+          "moe_gemm_union_ms": 4719.557150878906,
+          "kernel_span_ms": 10086.160057617188,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 7,
+          "kernel_count": 51937,
+          "moe_gemm_count": 640,
+          "kernel_sum_ms": 9919.383916999659,
+          "moe_gemm_sum_ms": 4700.255781,
+          "moe_kernel_duration_share_pct": 47.38455351994983,
+          "kernel_union_ms": 9918.20486767578,
+          "moe_gemm_union_ms": 4700.255776855469,
+          "kernel_span_ms": 10086.279825195312,
+          "decode_phase_metrics": {}
+        }
+      ]
+    },
+    "prefill-1040384": {
+      "rank_summary": {
+        "kernel_sum_ms": {
+          "mean": 188286.4469875473,
+          "min": 187667.52847000683,
+          "max": 188497.6528700819
+        },
+        "moe_gemm_sum_ms": {
+          "mean": 37379.367993250016,
+          "min": 37324.278113999964,
+          "max": 37593.124087000135
+        },
+        "moe_kernel_duration_share_pct": {
+          "mean": 19.852402700281022,
+          "min": 19.818423921084214,
+          "max": 19.943550232378975
+        },
+        "kernel_union_ms": {
+          "mean": 188276.7508602905,
+          "min": 187657.7042368164,
+          "max": 188487.96179052733
+        },
+        "moe_gemm_union_ms": {
+          "mean": 37379.36798876953,
+          "min": 37324.2781171875,
+          "max": 37593.12407714844
+        },
+        "kernel_span_ms": {
+          "mean": 191779.30893829346,
+          "min": 191776.4023857422,
+          "max": 191784.19582617187
+        }
+      },
+      "ranks": [
+        {
+          "rank": 0,
+          "kernel_count": 1754589,
+          "moe_gemm_count": 5120,
+          "kernel_sum_ms": 188268.84068016757,
+          "moe_gemm_sum_ms": 37344.47730700008,
+          "moe_kernel_duration_share_pct": 19.83571852468202,
+          "kernel_union_ms": 188259.14522900392,
+          "moe_gemm_union_ms": 37344.47730664063,
+          "kernel_span_ms": 191784.19582617187,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 1,
+          "kernel_count": 1754589,
+          "moe_gemm_count": 5120,
+          "kernel_sum_ms": 188497.6528700819,
+          "moe_gemm_sum_ms": 37593.124087000135,
+          "moe_kernel_duration_share_pct": 19.943550232378975,
+          "kernel_union_ms": 188487.96179052733,
+          "moe_gemm_union_ms": 37593.12407714844,
+          "kernel_span_ms": 191778.16780664062,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 2,
+          "kernel_count": 1754589,
+          "moe_gemm_count": 5120,
+          "kernel_sum_ms": 188477.36108478607,
+          "moe_gemm_sum_ms": 37395.01066299998,
+          "moe_kernel_duration_share_pct": 19.840584804335165,
+          "kernel_union_ms": 188467.67442529296,
+          "moe_gemm_union_ms": 37395.01066308594,
+          "kernel_span_ms": 191780.18966845702,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 3,
+          "kernel_count": 1754589,
+          "moe_gemm_count": 5120,
+          "kernel_sum_ms": 188293.171765168,
+          "moe_gemm_sum_ms": 37324.29951499989,
+          "moe_kernel_duration_share_pct": 19.822439212798074,
+          "kernel_union_ms": 188283.40677978515,
+          "moe_gemm_union_ms": 37324.29951269531,
+          "kernel_span_ms": 191777.017921875,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 4,
+          "kernel_count": 1754589,
+          "moe_gemm_count": 5120,
+          "kernel_sum_ms": 188279.60431281335,
+          "moe_gemm_sum_ms": 37341.79940600002,
+          "moe_kernel_duration_share_pct": 19.833162249459182,
+          "kernel_union_ms": 188269.99704296875,
+          "moe_gemm_union_ms": 37341.79938427734,
+          "kernel_span_ms": 191782.9535810547,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 5,
+          "kernel_count": 1754589,
+          "moe_gemm_count": 5120,
+          "kernel_sum_ms": 188491.39251814125,
+          "moe_gemm_sum_ms": 37356.02322400005,
+          "moe_kernel_duration_share_pct": 19.818423921084214,
+          "kernel_union_ms": 188481.68621679686,
+          "moe_gemm_union_ms": 37356.02321826172,
+          "kernel_span_ms": 191777.5231533203,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 6,
+          "kernel_count": 1754589,
+          "moe_gemm_count": 5120,
+          "kernel_sum_ms": 188316.0241992134,
+          "moe_gemm_sum_ms": 37355.93163000003,
+          "moe_kernel_duration_share_pct": 19.836831086919297,
+          "kernel_union_ms": 188306.43116113282,
+          "moe_gemm_union_ms": 37355.93163085938,
+          "kernel_span_ms": 191778.02116308594,
+          "decode_phase_metrics": {}
+        },
+        {
+          "rank": 7,
+          "kernel_count": 1684530,
+          "moe_gemm_count": 5120,
+          "kernel_sum_ms": 187667.52847000683,
+          "moe_gemm_sum_ms": 37324.278113999964,
+          "moe_kernel_duration_share_pct": 19.888511570591263,
+          "kernel_union_ms": 187657.7042368164,
+          "moe_gemm_union_ms": 37324.2781171875,
+          "kernel_span_ms": 191776.4023857422,
+          "decode_phase_metrics": {}
+        }
+      ]
+    },
+    "decode-4096": {
+      "rank_summary": {
+        "kernel_sum_ms": {
+          "mean": 165.25290187499996,
+          "min": 163.2475010000007,
+          "max": 167.11519099999808
+        },
+        "moe_gemm_sum_ms": {
+          "mean": 43.934447125000005,
+          "min": 43.79560499999995,
+          "max": 44.153527999999994
+        },
+        "moe_kernel_duration_share_pct": {
+          "mean": 26.587675619104406,
+          "min": 26.216104435413378,
+          "max": 26.901868466662304
+        },
+        "kernel_union_ms": {
+          "mean": 144.14387475585937,
+          "min": 142.3458671875,
+          "max": 146.03021728515625
+        },
+        "moe_gemm_union_ms": {
+          "mean": 43.93444818115235,
+          "min": 43.7956015625,
+          "max": 44.153529296875
+        },
+        "kernel_span_ms": {
+          "mean": 154.95300524902345,
+          "min": 154.00144091796875,
+          "max": 156.0598837890625
+        }
+      },
+      "ranks": [
+        {
+          "rank": 0,
+          "kernel_count": 25615,
+          "moe_gemm_count": 860,
+          "kernel_sum_ms": 165.292272,
+          "moe_gemm_sum_ms": 43.980852999999975,
+          "moe_kernel_duration_share_pct": 26.60793058734166,
+          "kernel_union_ms": 144.001076171875,
+          "moe_gemm_union_ms": 43.980853515625,
+          "kernel_span_ms": 154.83109912109376,
+          "decode_phase_metrics": {
+            "VERIFY": {
+              "forwards": 10,
+              "gemm_count": 800,
+              "mean_gemm_ms_per_forward": 4.2179668999999995
+            },
+            "DRAFT": {
+              "forwards": 10,
+              "gemm_count": 60,
+              "mean_gemm_ms_per_forward": 0.18011839999999998
+            }
+          }
+        },
+        {
+          "rank": 1,
+          "kernel_count": 25615,
+          "moe_gemm_count": 860,
+          "kernel_sum_ms": 165.4534900000001,
+          "moe_gemm_sum_ms": 43.799272999999936,
+          "moe_kernel_duration_share_pct": 26.472256946650024,
+          "kernel_union_ms": 144.88838427734376,
+          "moe_gemm_union_ms": 43.7992734375,
+          "kernel_span_ms": 155.4099599609375,
+          "decode_phase_metrics": {
+            "VERIFY": {
+              "forwards": 10,
+              "gemm_count": 800,
+              "mean_gemm_ms_per_forward": 4.199414699999993
+            },
+            "DRAFT": {
+              "forwards": 10,
+              "gemm_count": 60,
+              "mean_gemm_ms_per_forward": 0.1805126
+            }
+          }
+        },
+        {
+          "rank": 2,
+          "kernel_count": 25615,
+          "moe_gemm_count": 860,
+          "kernel_sum_ms": 166.3160040000014,
+          "moe_gemm_sum_ms": 43.79560499999995,
+          "moe_kernel_duration_share_pct": 26.332766508747756,
+          "kernel_union_ms": 144.92560205078124,
+          "moe_gemm_union_ms": 43.7956015625,
+          "kernel_span_ms": 155.2636611328125,
+          "decode_phase_metrics": {
+            "VERIFY": {
+              "forwards": 10,
+              "gemm_count": 800,
+              "mean_gemm_ms_per_forward": 4.200253999999996
+            },
+            "DRAFT": {
+              "forwards": 10,
+              "gemm_count": 60,
+              "mean_gemm_ms_per_forward": 0.17930650000000004
+            }
+          }
+        },
+        {
+          "rank": 3,
+          "kernel_count": 25615,
+          "moe_gemm_count": 860,
+          "kernel_sum_ms": 164.12810899999948,
+          "moe_gemm_sum_ms": 44.153527999999994,
+          "moe_kernel_duration_share_pct": 26.901868466662304,
+          "kernel_union_ms": 142.943685546875,
+          "moe_gemm_union_ms": 44.153529296875,
+          "kernel_span_ms": 154.2868837890625,
+          "decode_phase_metrics": {
+            "VERIFY": {
+              "forwards": 10,
+              "gemm_count": 800,
+              "mean_gemm_ms_per_forward": 4.2336944999999995
+            },
+            "DRAFT": {
+              "forwards": 10,
+              "gemm_count": 60,
+              "mean_gemm_ms_per_forward": 0.18165829999999997
+            }
+          }
+        },
+        {
+          "rank": 4,
+          "kernel_count": 25615,
+          "moe_gemm_count": 860,
+          "kernel_sum_ms": 165.20031899999955,
+          "moe_gemm_sum_ms": 43.947750000000056,
+          "moe_kernel_duration_share_pct": 26.60270286766225,
+          "kernel_union_ms": 143.4051708984375,
+          "moe_gemm_union_ms": 43.94774853515625,
+          "kernel_span_ms": 154.6248828125,
+          "decode_phase_metrics": {
+            "VERIFY": {
+              "forwards": 10,
+              "gemm_count": 800,
+              "mean_gemm_ms_per_forward": 4.214387400000004
+            },
+            "DRAFT": {
+              "forwards": 10,
+              "gemm_count": 60,
+              "mean_gemm_ms_per_forward": 0.18038759999999998
+            }
+          }
+        },
+        {
+          "rank": 5,
+          "kernel_count": 25615,
+          "moe_gemm_count": 860,
+          "kernel_sum_ms": 165.27032900000034,
+          "moe_gemm_sum_ms": 44.072083000000056,
+          "moe_kernel_duration_share_pct": 26.666663802672026,
+          "kernel_union_ms": 144.61099462890624,
+          "moe_gemm_union_ms": 44.072087890625,
+          "kernel_span_ms": 155.14623046875,
+          "decode_phase_metrics": {
+            "VERIFY": {
+              "forwards": 10,
+              "gemm_count": 800,
+              "mean_gemm_ms_per_forward": 4.225959400000002
+            },
+            "DRAFT": {
+              "forwards": 10,
+              "gemm_count": 60,
+              "mean_gemm_ms_per_forward": 0.1812489
+            }
+          }
+        },
+        {
+          "rank": 6,
+          "kernel_count": 25615,
+          "moe_gemm_count": 860,
+          "kernel_sum_ms": 163.2475010000007,
+          "moe_gemm_sum_ms": 43.91539200000002,
+          "moe_kernel_duration_share_pct": 26.901111337685858,
+          "kernel_union_ms": 142.3458671875,
+          "moe_gemm_union_ms": 43.91539453125,
+          "kernel_span_ms": 154.00144091796875,
+          "decode_phase_metrics": {
+            "VERIFY": {
+              "forwards": 10,
+              "gemm_count": 800,
+              "mean_gemm_ms_per_forward": 4.210761200000002
+            },
+            "DRAFT": {
+              "forwards": 10,
+              "gemm_count": 60,
+              "mean_gemm_ms_per_forward": 0.18077799999999997
+            }
+          }
+        },
+        {
+          "rank": 7,
+          "kernel_count": 25615,
+          "moe_gemm_count": 860,
+          "kernel_sum_ms": 167.11519099999808,
+          "moe_gemm_sum_ms": 43.81109300000003,
+          "moe_kernel_duration_share_pct": 26.216104435413378,
+          "kernel_union_ms": 146.03021728515625,
+          "moe_gemm_union_ms": 43.8110966796875,
+          "kernel_span_ms": 156.0598837890625,
+          "decode_phase_metrics": {
+            "VERIFY": {
+              "forwards": 10,
+              "gemm_count": 800,
+              "mean_gemm_ms_per_forward": 4.201083200000004
+            },
+            "DRAFT": {
+              "forwards": 10,
+              "gemm_count": 60,
+              "mean_gemm_ms_per_forward": 0.18002610000000005
+            }
+          }
+        }
+      ]
+    }
+  }
+}
