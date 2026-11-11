@@ -38,7 +38,7 @@ The goal is to keep every part of the GPU busy. Even with speculative decoding, 
 
 ## First, what is a megakernel?
 
-**A normal GPU kernel does one thing.** It runs one operation, a matrix multiplication or an attention pass, as a grid of identical thread blocks running on different cores (SMs). A serving engine runs a model as a chain of such kernels: SGLang launches about 1,450 of them for each decoding step of Muse Spark Open. If not optimized correctly, GPU drains and refills between two consecutive kernels. In this time, many SMs can stay idle. And when we look inside an SM, many threads/warps may be idle as well. In order to achieve full memory bandwidth, we will have to *fully* utilize all parts of our GPU as well. This demands that we design our hardware-native algorithms for finer-grained overlap than traditional ML frameworks typically allow.
+**A normal GPU kernel does one thing.** It runs one operation, a matrix multiplication or an attention pass, as a grid of identical thread blocks running on different cores (SMs). A serving engine runs a model as a chain of such kernels: SGLang launches about 1,450 of them for each decoding step of Muse Spark Open. If not optimized correctly, the GPU drains and refills between two consecutive kernels. In this time, many SMs can stay idle. And when we look inside an SM, many threads/warps may be idle as well. In order to achieve full memory bandwidth, we will have to *fully* utilize all parts of our GPU as well. This demands that we design our hardware-native algorithms for finer-grained overlap than traditional ML frameworks typically allow.
 
 **CPUs had this problem in the 1960s.** Early machines ran *batch jobs*: one job owned the machine, and while it waited for a tape or a disk, the processor sat idle. *Multiprogramming* fixed that by keeping several jobs in memory at once and running another one whenever the current one waited for I/O. Operating systems grew from there to natively support multiprogramming - making it faster and more accessible.
 
@@ -50,28 +50,28 @@ The goal is to keep every part of the GPU busy. Even with speculative decoding, 
 
 | operating system | megakernel |
 |:---|:---|
-| a process | one kernel, holding all GPU resources till its done |
+| a process | one kernel, holding all GPU resources until it's done |
 | threads | warps, each handed a job for each phase; no preemption |
-| waiting for I/O | Busy waiting for data to be written |
+| waiting for I/O | busy-waiting for data to be written |
 | DMA | TMA bulk copies, tracked by mbarrier |
 | messages between processes | plain stores into another GPU's memory over NVLink |
 | a profiler | the kernel records its own timestamps |
 
 ## The model
 
-Muse Spark Open is a traditional MoE model where every tokens is routed to 8 of 256 experts. Experts are stored in 4-bit NVFP4(some layers are bf16). It has 62 decoder layers: 46 use sliding-window attention over the last 2,048 tokens and 16 use global attention. Additionally, we have pooler and unpooler blocks. *Pooler* is a projection that shrinks each token's vector before the experts, and the *unpooler* restores it afterwards. We split the model over eight GPUs with tensor parallelism (TP8), so each GPU holds a slice of every layer.
+Muse Spark Open is a traditional MoE model where every token is routed to 8 of 256 experts. Experts are stored in 4-bit NVFP4 (some layers are bf16). It has 62 decoder layers: 46 use sliding-window attention over the last 2,048 tokens and 16 use global attention. Additionally, we have pooler and unpooler blocks. *Pooler* is a projection that shrinks each token's vector before the experts, and the *unpooler* restores it afterwards. We split the model over eight GPUs with tensor parallelism (TP8), so each GPU holds a slice of every layer.
 
 ![One decoder layer in six steps, with five numbered stops where it waits for the other GPUs; the expert steps are marked as known only after the router runs](/images/blog/muse-spark-open-ultrafast/fig_layer_stops.png)
 
 *Figure 2. One decoder layer on eight GPUs, and what one launch of our kernel covers: from this layer's attention to the next layer's qkv projection and KV write. At each numbered stop, every GPU waits for data from all the others.*
 
-Each stop lasts until the slowest GPU arrives. Even when we perfectly distribute work, GPUs can lag from each other by upto 4us.
+Each stop lasts until the slowest GPU arrives. Even when we perfectly distribute work, GPUs can lag from each other by up to 4 µs.
 
 ### A new tensor parallelism
 
 ![The expert GEMMs across eight GPUs: vanilla TP splits GEMM 1 on N and GEMM 2 on K and ends with one bf16 all-reduce; ours splits both on N, with an fp4 all-gather after GEMM 1 and a bf16 all-gather after GEMM 2](/images/blog/muse-spark-open-ultrafast/fig_tp.png)
 
-There is an extra communication step here in between of MoE step, that's not found in vanilla TP implementations. EP is a standard way of running inference, but number of experts activated on GPUs can differ vastly due to imbalance. Both GEMM Weights are sharded N-dimension for both MoE GEMMs, leading to an allgather after each GEMM. This is an extra step of communication, compared to vanilla TP which shards both GEMMs on intermediate-dim, leading to one all-reduce
+There is an extra communication step here between the MoE GEMMs, that's not found in vanilla TP implementations. EP is a standard way of running inference, but number of experts activated on GPUs can differ vastly due to imbalance. The weights of both MoE GEMMs are sharded on the N dimension, leading to an all-gather after each GEMM. This is an extra step of communication, compared to vanilla TP which shards both GEMMs on intermediate-dim, leading to one all-reduce
 
 Despite an extra communication step, this design has less communication volume than vanilla TP, and scales better to larger batch sizes. It can also be implemented bitwise same as EP to match training numerics.
 
@@ -133,7 +133,7 @@ Another option is to load those weights in L2 cache instead. The two differ a lo
 
 #### Speculative expert prefetching
 
-Not all experts are loaded, so it is not possible to prefetch them before router is run. Experts are most of the bytes we load, so loading more experts can be costly. But consecutive steps tend to route alike, as work on expert offloading has observed. So while attention runs, warp 3 looks up which experts this layer used on the previous step and pulls this GPU's slices of the 14 most-used ones into L2, about 50 MB per GPU. The moment the router's tables land, each block also prefetches its first expert tile into L2 beside reading the table, and the experts already in L2 go first in the expert GEMM's list of tiles, so the blocks that get a second tile reach it sooner. A wrong guess costs some bandwidth, but GPU is idle anyway and this saves around 0.2 ms out of 5.3 ms of step time.
+Not all experts are loaded, so it is not possible to prefetch them before the router runs. Experts are most of the bytes we load, so loading more experts can be costly. But consecutive steps tend to route alike, as work on expert offloading has observed. So while attention runs, warp 3 looks up which experts this layer used on the previous step and pulls this GPU's slices of the 14 most-used ones into L2, about 50 MB per GPU. The moment the router's tables land, each block also prefetches its first expert tile into L2 beside reading the table, and the experts already in L2 go first in the expert GEMM's list of tiles, so the blocks that get a second tile reach it sooner. A wrong guess costs some bandwidth, but the GPU is idle anyway and this saves around 0.2 ms out of 5.3 ms of step time.
 
 ### 2. Instruction cache - The curse of big kernels!
 
@@ -189,7 +189,7 @@ In a handful of cases, this saves us 0.5-1 µs per such operation.
 
 ### 3. Many ways to synchronize threads
 
-A megakernel spends much of its life waiting for data that another thread, in same or another GPU is still producing. Let's look at different ways of synchronizing data dependencies across threads:
+A megakernel spends much of its life waiting for data that another thread, on the same or another GPU, is still producing. Let's look at different ways of synchronizing data dependencies across threads:
 
 ![Where threads meet to synchronize: two warps in the same SM wait on an mbarrier in shared memory; warps on two SMs of one GPU meet at a flag in HBM, polled; a warp on another GPU stores over NVLink straight into this GPU's HBM, where the reader polls for the data](/images/blog/muse-spark-open-ultrafast/fig_sync.png)
 
@@ -264,4 +264,4 @@ Today, megakernel supports only batch size one with speculative decoding. We wil
 
 Our megakernel is still a crude operating system: like IBM's OS/360 MFT, "multiprogramming with a fixed number of tasks", it hands every warp a fixed job for each phase, chosen at compile time. The general form is a virtual machine on the GPU: code for each op written per warp, every handoff tracked by counters, and a scheduler that gives any ready piece of work to whichever warp is free. [Flapping Airplanes](https://alphasignal.ai/news/flapping-airplanes-raises-1b-to-collapse-entire-ai-training-into-one-gpu-kernel) describes such a machine: a virtual machine "that takes control of the GPU and schedules different workloads across it", with whole training runs inside one kernel. Much of what that needs is already in our kernel: per-warp code for every op, counters for the handoffs inside a GPU, and data that is its own flag across GPUs. The step left is to decide at run time, not compile time, which warp runs what.
 
-However, at extreme low latency settings(one request), no single overlap strategy works everywhere. Whether a weight goes into shared memory, into L2 or both, how far ahead it goes and with which cache hint: we decided each op on its own, by trying several versions and keeping what measured fastest. A general scheduler has to leave room for those per-op choices, and coding agents already excel at exploring this search space.
+However, at extreme low-latency settings (one request), no single overlap strategy works everywhere. Whether a weight goes into shared memory, into L2 or both, how far ahead it goes and with which cache hint: we decided each op on its own, by trying several versions and keeping what measured fastest. A general scheduler has to leave room for those per-op choices, and coding agents already excel at exploring this search space.
