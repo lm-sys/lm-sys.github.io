@@ -8,11 +8,11 @@ type: blog
 
 **TL;DR.**
 
-- **One less knob.** Hybrid models make you decide at startup how much memory each kind of state gets (full-attention KV, sliding-window KV, recurrent state), before you know the traffic. With `--enable-unified-memory` they share one arena and capacity follows demand, so there is no split to tune.
-- **Any page size, zero fragmentation.** Memory is handed out in whole pages, so a page freed by one request can be reused in full by the next, and nothing is lost to fragmentation. Each kind of state keeps its own page or slot size, and you can choose any `--page-size`. If free bytes end up where the wrong kind of state cannot use them, compaction moves them over.
-- **A new KV layout: one entry per token.** Each token's rows for every layer sit together in one entry, so allocation, free and whole-page moves act on all layers at once. Rows of different shapes and dtypes can share an entry, so a speculative draft's KV, even in a different dtype from the target's, is fused into the target's entry and allocated, freed and moved with it.
-- **One memory system, end to end.** We built the whole stack around the arena: one allocator for every kind of state, one demand model that answers every capacity question, from request admission to decode-node preallocation in prefill–decode disaggregation, and a page lifecycle that keeps old bytes safe while pages move under the overlap scheduler.
-- **It works with the main serving features:** the overlap scheduler, Radix cache, HiCache, prefill–decode (PD) disaggregation, speculative decoding, pipeline parallelism, decode context parallelism and data-parallel attention.
+- **One arena, no partitioning knob.** Hybrid models combine full-attention KV, sliding-window KV, and recurrent state. Traditionally, you must partition GPU memory among them at startup, before knowing the workload. With `--enable-unified-memory`, all state types share one arena, a single region of GPU memory, and capacity dynamically follows demand. No fixed split to configure or tune.
+- **Any page size, zero fragmentation.** Each state type keeps its own page or slot size, and you can choose any `--page-size`. A state slot can be many times larger than a KV page, so naively sharing memory can strand free capacity in unusable gaps. Unified memory fully reclaims freed pages, using compaction to relocate live allocations and make capacity available wherever it is needed.
+- **A new KV layout: one entry per token.** Each token's KV rows across all layers are packed into a single entry, allowing them to be allocated, freed, and moved together. Rows of different shapes and dtypes can share an entry, so speculative draft KV can use the same allocation and lifecycle as target KV even when their dtypes differ. Kimi K3.1's DSA layers need this too: their indexer keys are packed alongside the MLA KV.
+- **One memory system, end to end.** A unified allocator manages all state types, while a shared demand model drives capacity decisions across the serving stack, from request admission to decode-side preallocation in prefill–decode disaggregation. A scheduler-aware page lifecycle safely reclaims and relocates memory while GPU operations are still in flight.
+- **Works with the main serving features.** Unified memory works with overlap scheduling, Radix cache, HiCache, prefill–decode (PD) disaggregation, speculative decoding, pipeline parallelism, decode context parallelism, and data-parallel attention.
 
 ## Hybrid models and the memory split
 
@@ -24,7 +24,7 @@ Attention layers need their past to compute the next token, but not every layer 
 | Sliding-window KV | A bounded suffix of the context | Sequence length up to the window, across the window layers |
 | Recurrent state | A fixed-size state per running request | Concurrency, not context length |
 
-GPT-OSS and Muse Spark interleave full and sliding-window attention. Qwen3.5 interleaves full attention with linear-attention layers. Kimi K3 pairs linear attention with MLA.
+GPT-OSS and Muse Spark interleave full and sliding-window attention. Qwen3.5 interleaves full attention with linear-attention layers. Kimi K3 pairs KDA linear attention with MLA, and K3.1 replaces the MLA layers with DeepSeek Sparse Attention (DSA).
 
 Their demands do not scale together. A long-context workload grows full-attention KV; many short concurrent requests need more window KV and state slots even though each request's history is small. The pressure can shift within one request, too: its state slots are taken when it starts, while its full-attention KV keeps growing.
 
@@ -48,7 +48,7 @@ Separate pools keep one buffer per layer. Unified memory instead packs every lay
 
 Because the arena is a byte region, entry size is each sub-pool's own: a state slot holds every state layer's conv and temporal state, a KV entry holds every layer's K and V. Token sub-pools allocate in pages of whatever `--page-size` you choose and the state sub-pool in single slots, so no kind of state is forced onto another's page size.
 
-Every group of rows in an entry carries its own shape and dtype: a state entry keeps conv and temporal state in their own dtypes, and a fused draft's rows keep theirs next to the target's K and V. This is what lets a compatible speculative-decoding draft place its KV in additional lanes inside the target's entries. The draft's rows can differ from the target's in size and in dtype, which is why rows are packed per token instead of one same-sized pool per layer. Target and draft share a token id, and one allocation, free or whole-page move carries both.
+Every group of rows in an entry carries its own shape and dtype: a state entry keeps conv and temporal state in their own dtypes, and a fused draft's rows keep theirs next to the target's K and V. This is what lets a compatible speculative-decoding draft place its KV in additional lanes inside the target's entries. The draft's rows can differ from the target's in size and in dtype, which is why rows are packed per token instead of one same-sized pool per layer. Target and draft share a token id, and one allocation, free or whole-page move carries both. K3.1 needs this: each token of a DSA layer has a top-k index beside its MLA KV, and the design fuses the two in one buffer, so the index is allocated, freed and moved together with the KV it points to.
 
 ![Per-token entries whose target-layer rows and draft lanes differ in size, with strided per-layer views](/images/blog/unified-memory/fig3-token-entries.svg)
 
@@ -124,6 +124,20 @@ That is four states plus two protections. A move leaves its destination live thr
 *Figure 5. A logical free counts toward capacity immediately; physical reuse waits for unfinished work. Moving a page creates a live destination and protects the old source bytes.*
 
 The memory system orders movement and reuse against unfinished work, using logical progress to keep distributed ranks consistent. Focused tests and a seeded stress harness exercise these rules with modeled and real CUDA work.
+
+## One memory system, three interfaces
+
+Everything above sits behind three interfaces: how a model declares its state, how any component asks whether memory fits, and how any component that touches a page is recorded. A new model or feature meets the memory system through them (Figure 6).
+
+![One arena at the centre: a storage plan builds it, one allocator hands out and moves its pages, and a ledger records who still touches each page](/images/blog/unified-memory/fig6-architecture.svg)
+
+*Figure 6. The arena is the shared object. (1) A storage plan built from the models' declarations creates its bands. (2) Every capacity question goes to one allocator, which hands out and moves the arena's pages. (3) A ledger over the same bytes records who still touches each page, so the next writer of a page waits only for what its kind needs.*
+
+**1. Models declare state; one plan builds the arena.** A model does not ask for a pool. Each layer declares its parts, and each part says what it stores (a shape and dtype, such as K and V rows or recurrent state) and how long it lives (the whole context, a bounded window, or a request's recurrent state). One storage plan turns the declarations of every layer, and of a fused draft, into sub-pools, sizes and bands. The plan also budgets storage that stays outside the movable arena, such as per-request rows and captured workspace. Supporting a new combination of state means writing a new declaration, not a new allocator.
+
+**2. Every capacity question is asked the same way.** Prefill admission, decode headroom, HiCache load-back, PD preallocation and prefix-cache eviction all ask the allocator whether a whole demand fits: full-attention tokens, tokens for each window, and state slots, together. If the current layout cannot supply it, the allocator searches for one that can (Figure 4). A free-byte count for a single sub-pool exists only for logs and metrics, and a check mode flags any decision that reads it. Eviction uses the same test. The cache chooses victims in its own order, and the allocator says when the demand fits. Nothing is evicted if the demand already fits, or cannot fit even with every cached entry gone, and the walk stops at the first victim after which it fits, counting what that victim releases in the other sub-pools.
+
+**3. Every page user is recorded.** Each band keeps a page-use ledger. Forwards, HiCache copies, network transfers and page moves each record in it which pages they read or write, and until when. When a page is next needed, the kind of its next writer decides what it waits for. A forward needs nothing from earlier forwards, which run in order on one stream. A HiCache load or a copy on the schedule stream waits on events, and a network write, which no local stream orders, waits for the host to see earlier network transfers finish. A page's id also reaches a network peer only after any forward that may still read its old bytes has retired, because publishing the id lets the sender start writing; the decode node delays publishing until then. A new feature joins by saying which pages it touches and when it is done, not by adding its own synchronization.
 
 ## What it works with today
 
