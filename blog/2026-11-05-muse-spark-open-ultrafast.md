@@ -115,7 +115,7 @@ Xiaomi [crossed 1,000 tokens per second](https://mimo.mi.com/docs/en-US/news/lat
 
 ## Megakernel internals
 
-Our code spans 8000 lines of CUDA + PTX for the big model. We go over some critical ideas we found during developemnt.
+Our code spans 8000 lines of CUDA + PTX for the big model. We go over some critical ideas we found during development.
 
 ### 1. Prefetch weights in all caches
 
@@ -167,7 +167,7 @@ for (unsigned line = lane; line < code.bytes / 128; line += 32)
     sink ^= load_evict_last(code.base + line * 128);   // one word per 128-byte line
 ```
 
-The readers are one warp scattered in a handful of SMs. Each reads all of the code; splitting it among them is slower because [GB300's two dies](https://cudaforfun.substack.com/i/210641900/the-l2-is-actually-two-caches) keeps its own copy in L2. We warm every launch, not once per step, because the code does not survive even one step in L2.
+The readers are one warp scattered in a handful of SMs. Each reads all of the code; splitting it among them is slower because [GB300's two dies](https://cudaforfun.substack.com/i/210641900/the-l2-is-actually-two-caches) each keep their own copy in L2. We warm every launch, not once per step, because the code does not survive even one step in L2.
 
 #### Dry-run the code that has to be fast
 
@@ -185,7 +185,7 @@ for (int pass = 0; pass < 2; ++pass) {  //   the real pass never runs
 }
 ```
 
-In a handful of cases, this save us 0.5-1 us per such operation.
+In a handful of cases, this saves us 0.5-1 µs per such operation.
 
 ### 3. Many ways to synchronize threads
 
