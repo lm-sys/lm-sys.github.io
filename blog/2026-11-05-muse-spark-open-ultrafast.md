@@ -1,7 +1,7 @@
 ---
 title: "Muse Spark Open Ultrafast: Pushing beyond 1,000 Tokens per second"
 author: "Pranjal Shankhdhar"
-date: "November 5, 2026"
+date: "November 11, 2026"
 previewImg: /images/blog/muse-spark-open-ultrafast/fig_tps.png
 type: blog
 ---
@@ -81,7 +81,7 @@ Despite an extra communication step, this design has less communication volume t
 
 The code is at [facebookresearch/sgl-muse-mega](https://github.com/facebookresearch/sgl-muse-mega). Each launch of our kernel runs from one layer's attention through the next layer's qkv projection and KV write, the bracket in Figure 2. It is also the best place to start: most of what attention reads, the KV history, was written in earlier steps and depends on nothing, so a new launch can start loading it the moment it lands, before the previous layer's output is ready.
 
-Naturally, the first and last layers have slightly different ops. One kernel puts one thread block of twelve warps on each of 144 SMs (they launch in clusters of four, and utilize distributed shared memory for lower latency reduction where applicable). Inside a kernel, each warp does its own synchronization for the data its waiting on, and keeps working. Later, we also explain why we stopped at one kernel per layer and didn't go for the full model megakernel.
+Naturally, the first and last layers have slightly different ops. One kernel puts one thread block of twelve warps on each of 144 SMs (they launch in clusters of four, and utilize distributed shared memory for lower latency reduction where applicable). Inside a kernel, each warp does its own synchronization for the data it's waiting on, and keeps working. Later, we also explain why we stopped at one kernel per layer and didn't go for the full model megakernel.
 
 ### Twelve warps, different roles
 
