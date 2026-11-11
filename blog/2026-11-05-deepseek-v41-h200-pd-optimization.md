@@ -16,7 +16,7 @@ We optimized DeepSeek-V4.1-Flash on an eight-GPU H200 SGLang deployment with a 1
 - **Investigate larger Prefill chunks:** the recorded 8,192 → 16,384-token comparison shows up to **31.3% lower TTFT**. Its E2E and TPOT changes are configuration-level observations; the table does not isolate their causes. The associated Decode graph-metadata work is tracked in PR #46777.
 - **Return MoE outputs with reduce-scatter:** remove full-output replication on the eligible DeepSeek-V4.1 CP return path. Mean profiled MoE output communication time fell by 19.4%–21.7% per rank.
 - **Enable bounded replay with CP and DSpark:** repair compact-output gathering so eager CP Prefill can use late-layer tail computation. The reported TTFT reduction reaches 46.7%.
-- **Combined serving configuration:** across the eight recorded cases, E2E is approximately **15%–64% lower** and TTFT **41%–79% lower**, while TPOT is **3%–52% higher**. This comparison includes the runtime changes, **8K → 16K Prefill chunks**, and **bounded replay**, rather than isolating the contribution of any one optimization.
+- **Combined serving configuration:** across the eight recorded cases, E2E is approximately **15%–64% lower** and TTFT **41%–79% lower**, while TPOT is **3%–52% higher** and GSM8K accuracy falls from **96.74% to 95.38% (−1.36 percentage points)**. This comparison includes the runtime changes, **8K → 16K Prefill chunks**, and **bounded replay**, rather than isolating the contribution of any one optimization.
 
 ## Background: Find the Bottleneck in the PD Pipeline
 
@@ -339,11 +339,11 @@ These serving measurements were recorded separately from Section 4's chunk-size 
 
 The serving table shows **0.8%–3.4% lower E2E latency**. At the 90% label and concurrency 24, TPOT improves from **5.18 to 4.79 ms/token**, but TTFT increases from **1,829 to 1,993 ms**. E2E therefore improves by only **0.8%**, from **4,476 to 4,441 ms**.
 
-The supplied full GSM8K evaluation for MoE reduce-scatter scores **95.83%** on **1,319 single-shot examples**, with no request errors or truncated outputs.
+The supplied full GSM8K evaluation for MoE reduce-scatter scores **96.59%** on **1,319 single-shot examples**, with no request errors or truncated outputs.
 
 ![GSM8K accuracy with MoE reduce-scatter from PR 47247](/images/blog/deepseek-v41-h200-pd/pr-47247-acc.png)
 
-*Figure 27. GSM8K evaluation with Section 5's MoE reduce-scatter: 95.83% accuracy on 1,319 single-shot examples, with 0.00% error and truncated rates.*
+*Figure 27. GSM8K evaluation with Section 5's MoE reduce-scatter: 96.59% accuracy on 1,319 single-shot examples, with 0.00% error and truncated rates.*
 
 *Launch settings: use the [shared commands and configuration table](#prefill-and-decode-launch-commands) for Section 5.*
 
@@ -389,6 +389,8 @@ The table also records TPOT increasing from **2.07 to 2.53 ms/token** in the 70%
 
 The PR reports four-rank validation of token mappings and metadata restoration, nine full-model functional requests, and a 32-question GSM8K smoke test. The supplied **full 1,319-question single-shot evaluation** shown below scores **95.38%**, with a **0.08% truncated-output rate** and **0.00% request errors**. The full GSM8K run extends the evidence beyond the original smoke test, but does not establish broad long-context accuracy parity for the boundary approximation described above.
 
+**SWA bounded replay is an approximate algorithm.** We suspect that differences in numerical computation along this execution path contribute to the lower GSM8K score. This has not been confirmed by an otherwise matched replay-on/off accuracy comparison. The screenshot reports **86 input tokens on average**, below the 128-token tail.
+
 ![Full GSM8K accuracy with bounded replay and the CP DSpark fix from PR 47406](/images/blog/deepseek-v41-h200-pd/pr-47406-acc.png)
 
 *Figure 30. Full GSM8K evaluation for Section 6's bounded-replay configuration: 95.38% accuracy on 1,319 single-shot examples, with a 0.08% truncated rate and 0.00% error rate.*
@@ -428,7 +430,7 @@ TPOT is **2.6%–51.9% higher in all eight cases**. At 90%/concurrency 32, it ri
 
 ### GSM8K Accuracy of the Combined Configuration
 
-The supplied **final combined configuration** scores **95.38%** on **1,319 single-shot GSM8K examples**, compared with **96.74%** in the baseline screenshot—an observed difference of **1.36 percentage points**. The final run has **0.00% request errors** and a **0.08% truncated-output rate**. These screenshots report GSM8K outcomes; they do not by themselves establish long-context quality parity or numerical equivalence.
+The supplied **final combined configuration** scores **95.38%** on **1,319 single-shot GSM8K examples**, compared with **96.74%** in the baseline screenshot—an observed difference of **1.36 percentage points**. The final run has **0.00% request errors** and a **0.08% truncated-output rate**. The cause of the lower score remains unconfirmed; Section 6 discusses our bounded-replay hypothesis and its limitations. These screenshots report GSM8K outcomes; they do not by themselves establish long-context quality parity or numerical equivalence.
 
 ![GSM8K accuracy with all optimizations combined](/images/blog/deepseek-v41-h200-pd/Final-optimization-integration-acc.png)
 
