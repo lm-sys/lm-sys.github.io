@@ -1,6 +1,6 @@
 ---
 title: "SGLang and NVIDIA NIM: Advancing Enterprise Inference Together"
-author: "SGLang Team and NVIDIA NIM Team"
+author: "NVIDIA NIM Team and SGLang Team"
 date: "November 13, 2026"
 previewImg: /images/blog/sglang-nvidia-nim/nim-on-sglang.png
 type: news
