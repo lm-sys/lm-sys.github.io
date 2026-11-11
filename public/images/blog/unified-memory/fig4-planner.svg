@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="626" viewBox="0 0 900 626" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="Three arena layouts on one byte scale; each sub-pool has its own unit width: state slots are widest, window pages are narrower, and full-attention pages are narrowest. The request needs four full-attention pages. With no move, the full-attention band has three one-page holes, which is one page short, and the window band has an interior hole that it cannot give to full attention. Compacting only the two ends turns the three holes into three free pages beside the window band and still falls one short. Relocating copies the rightmost window page into the window's interior hole; the page it vacates joins the gap, so there is room for five full-attention pages beside the full band. Allocating the request then uses four of them and leaves one free.">
+<title>Planner layouts: no move, compact the ends, relocate the floating window</title>
+<rect width="900" height="626" fill="#FFFFFF"/>
+<text x="450.0" y="30" font-size="20" fill="#0B0B0B" text-anchor="middle" font-weight="700">Four more full-attention pages must fit</text>
+<rect x="45" y="46" width="87" height="22" rx="3" fill="#EB6834" /><text x="88.5" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text><text x="139" y="62" font-size="15" fill="#0B0B0B" text-anchor="start">state slot</text>
+<rect x="220" y="46" width="57" height="22" rx="3" fill="#1BAF7A" /><text x="248.5" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text><text x="284" y="62" font-size="15" fill="#0B0B0B" text-anchor="start">window page</text>
+<rect x="405" y="46" width="27" height="22" rx="3" fill="#256ABF" /><text x="418.5" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text><text x="439" y="62" font-size="15" fill="#0B0B0B" text-anchor="start">full page</text>
+<rect x="535" y="46" width="27" height="22" rx="3" fill="#256ABF" stroke="#0B0B0B" stroke-width="2"/><text x="548.5" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">+</text><text x="569" y="62" font-size="15" fill="#0B0B0B" text-anchor="start">new page</text>
+<rect x="670" y="46" width="27" height="22" rx="3" fill="#FFFFFF" stroke="#7A7974"/><text x="704" y="62" font-size="15" fill="#0B0B0B" text-anchor="start">hole / free</text>
+<text x="45" y="88" font-size="13" fill="#52514E" text-anchor="start">Cell width = the sub-pool’s own unit size (schematic).</text>
+<text x="855" y="88" font-size="13" fill="#52514E" text-anchor="end">low bytes → high bytes</text>
+<text x="45" y="116" font-size="16" fill="#0B0B0B" text-anchor="start" font-weight="700">1. No move</text>
+<text x="855" y="116" font-size="15" fill="#52514E" text-anchor="end" font-weight="600">✕ Does not fit</text>
+<rect x="46.5" y="126" width="87" height="40" rx="3" fill="#EB6834" /><text x="90.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text>
+<rect x="136.5" y="126" width="87" height="40" rx="3" fill="#EB6834" /><text x="180.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text>
+<rect x="226.5" y="126" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="255.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="286.5" y="126" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="315.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="346.5" y="126" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="375.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="407.0" y="126.5" width="56" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974"/><text x="435.0" y="151" text-anchor="middle" font-size="12" fill="#52514E">hole</text>
+<rect x="466.5" y="126" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="495.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="526.5" y="126" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="555.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="586.5" y="126" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="615.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="646.5" y="126" width="27" height="40" rx="3" fill="#256ABF" /><text x="660.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="677.0" y="126.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974"/>
+<rect x="706.5" y="126" width="27" height="40" rx="3" fill="#256ABF" /><text x="720.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="737.0" y="126.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974"/>
+<rect x="766.5" y="126" width="27" height="40" rx="3" fill="#256ABF" /><text x="780.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="797.0" y="126.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974"/>
+<rect x="826.5" y="126" width="27" height="40" rx="3" fill="#256ABF" /><text x="840.0" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<text x="735" y="190" font-size="15" fill="#52514E" text-anchor="middle">full-KV holes: 3 pages free, need 4</text>
+<text x="45" y="228" font-size="16" fill="#0B0B0B" text-anchor="start" font-weight="700">2. Compact only the two ends</text>
+<text x="855" y="228" font-size="15" fill="#52514E" text-anchor="end" font-weight="600">✕ Still does not fit</text>
+<rect x="46.5" y="238" width="87" height="40" rx="3" fill="#EB6834" /><text x="90.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text>
+<rect x="136.5" y="238" width="87" height="40" rx="3" fill="#EB6834" /><text x="180.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text>
+<rect x="226.5" y="238" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="255.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="286.5" y="238" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="315.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="346.5" y="238" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="375.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="407.0" y="238.5" width="56" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974"/><text x="435.0" y="263" text-anchor="middle" font-size="12" fill="#52514E">hole</text>
+<rect x="466.5" y="238" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="495.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="526.5" y="238" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="555.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="586.5" y="238" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="615.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="647.0" y="238.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974" stroke-dasharray="4 3"/>
+<rect x="677.0" y="238.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974" stroke-dasharray="4 3"/>
+<rect x="707.0" y="238.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974" stroke-dasharray="4 3"/>
+<rect x="736.5" y="238" width="27" height="40" rx="3" fill="#256ABF" /><text x="750.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="766.5" y="238" width="27" height="40" rx="3" fill="#256ABF" /><text x="780.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="796.5" y="238" width="27" height="40" rx="3" fill="#256ABF" /><text x="810.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="826.5" y="238" width="27" height="40" rx="3" fill="#256ABF" /><text x="840.0" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<path d="M647 284v7h86v-7" fill="none" stroke="#52514E" stroke-width="1.2"/>
+<text x="690.0" y="308" font-size="15" fill="#52514E" text-anchor="middle">room for 3 full-KV pages, need 4</text>
+<text x="495" y="308" font-size="15" fill="#52514E" text-anchor="middle">window hole stays</text>
+<text x="45" y="356" font-size="16" fill="#0B0B0B" text-anchor="start" font-weight="700">3. Relocate the floating window</text>
+<text x="855" y="356" font-size="15" fill="#0B0B0B" text-anchor="end" font-weight="700">✓ Fits</text>
+<rect x="46.5" y="380" width="87" height="40" rx="3" fill="#EB6834" /><text x="90.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text>
+<rect x="136.5" y="380" width="87" height="40" rx="3" fill="#EB6834" /><text x="180.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text>
+<rect x="226.5" y="380" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="255.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="286.5" y="380" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="315.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="346.5" y="380" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="375.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="406.5" y="380" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="435.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="466.5" y="380" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="495.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="526.5" y="380" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="555.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="587.0" y="380.5" width="56" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974" stroke-dasharray="4 3"/><text x="615.0" y="405" text-anchor="middle" font-size="12" fill="#52514E">vacated</text>
+<rect x="647.0" y="380.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974" stroke-dasharray="4 3"/>
+<rect x="677.0" y="380.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974" stroke-dasharray="4 3"/>
+<rect x="707.0" y="380.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974" stroke-dasharray="4 3"/>
+<rect x="736.5" y="380" width="27" height="40" rx="3" fill="#256ABF" /><text x="750.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="766.5" y="380" width="27" height="40" rx="3" fill="#256ABF" /><text x="780.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="796.5" y="380" width="27" height="40" rx="3" fill="#256ABF" /><text x="810.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="826.5" y="380" width="27" height="40" rx="3" fill="#256ABF" /><text x="840.0" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<defs><marker id="mv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0B0B0B"/></marker></defs>
+<path d="M615 374 Q525.0 332 439 372" fill="none" stroke="#0B0B0B" stroke-width="1.8" marker-end="url(#mv)"/>
+<text x="525.0" y="340" font-size="15" fill="#0B0B0B" text-anchor="middle">copy the rightmost window page into its hole</text>
+<path d="M587 426v7h146v-7" fill="none" stroke="#52514E" stroke-width="1.2"/>
+<text x="660.0" y="450" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="700">room for 5 full-KV pages</text>
+<text x="45" y="496" font-size="16" fill="#0B0B0B" text-anchor="start" font-weight="700">4. Allocate the request</text>
+<rect x="46.5" y="520" width="87" height="40" rx="3" fill="#EB6834" /><text x="90.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text>
+<rect x="136.5" y="520" width="87" height="40" rx="3" fill="#EB6834" /><text x="180.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">S</text>
+<rect x="226.5" y="520" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="255.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="286.5" y="520" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="315.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="346.5" y="520" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="375.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="406.5" y="520" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="435.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="466.5" y="520" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="495.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="526.5" y="520" width="57" height="40" rx="3" fill="#1BAF7A" /><text x="555.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#0B0B0B">W</text>
+<rect x="587.0" y="520.5" width="26" height="39" rx="3" fill="#FFFFFF" stroke="#7A7974" stroke-dasharray="4 3"/>
+<rect x="616.5" y="520" width="27" height="40" rx="3" fill="#256ABF" stroke="#0B0B0B" stroke-width="2"/><text x="630.0" y="546" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">+</text>
+<rect x="646.5" y="520" width="27" height="40" rx="3" fill="#256ABF" stroke="#0B0B0B" stroke-width="2"/><text x="660.0" y="546" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">+</text>
+<rect x="676.5" y="520" width="27" height="40" rx="3" fill="#256ABF" stroke="#0B0B0B" stroke-width="2"/><text x="690.0" y="546" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">+</text>
+<rect x="706.5" y="520" width="27" height="40" rx="3" fill="#256ABF" stroke="#0B0B0B" stroke-width="2"/><text x="720.0" y="546" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">+</text>
+<rect x="736.5" y="520" width="27" height="40" rx="3" fill="#256ABF" /><text x="750.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="766.5" y="520" width="27" height="40" rx="3" fill="#256ABF" /><text x="780.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="796.5" y="520" width="27" height="40" rx="3" fill="#256ABF" /><text x="810.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<rect x="826.5" y="520" width="27" height="40" rx="3" fill="#256ABF" /><text x="840.0" y="545" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">F</text>
+<path d="M587 566v7h146v-7" fill="none" stroke="#52514E" stroke-width="1.2"/>
+<text x="660.0" y="590" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="700">4 new + 1 left free</text>
+<text x="450.0" y="610" font-size="13" fill="#52514E" text-anchor="middle">Schematic page counts, not a measurement.</text>
+</svg>

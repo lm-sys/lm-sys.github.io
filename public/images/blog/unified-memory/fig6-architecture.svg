@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="One arena at the centre of three interfaces. First, models declare their state parts, each saying what it stores and how long it lives, and one storage plan builds the arena from them. Second, prefill admission, decode headroom, HiCache load-back, PD preallocation and prefix-cache eviction all ask one allocator whether a whole demand fits; the allocator searches for a layout if needed, then hands out and moves the arena's pages. Third, a page-use ledger under the arena records who still touches each page. Forwards, host copies, network transfers and page moves use pages through it.">
+<title>One arena, three interfaces</title>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0B0B0B"/></marker></defs>
+<rect width="900" height="500" fill="#FFFFFF"/>
+<text x="450.0" y="32" font-size="19" fill="#0B0B0B" text-anchor="middle" font-weight="700">One arena, three interfaces</text>
+<text x="24" y="62" font-size="14" fill="#0B0B0B" text-anchor="start" font-weight="700">Models declare their state</text>
+<rect x="24" y="74" width="190" height="38" rx="6" fill="#FFFFFF" stroke="#7A7974" stroke-width="1.2"/><rect x="24" y="74" width="8" height="38" rx="3" fill="#256ABF"/>
+<text x="42" y="90" font-size="13" fill="#0B0B0B" text-anchor="start" font-weight="700">Full-attention KV</text><text x="42" y="105" font-size="12" fill="#52514E" text-anchor="start">K, V rows · whole context</text>
+<path d="M214 93 L252 123" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="24" y="118" width="190" height="38" rx="6" fill="#FFFFFF" stroke="#7A7974" stroke-width="1.2"/><rect x="24" y="118" width="8" height="38" rx="3" fill="#1BAF7A"/>
+<text x="42" y="134" font-size="13" fill="#0B0B0B" text-anchor="start" font-weight="700">Window KV</text><text x="42" y="149" font-size="12" fill="#52514E" text-anchor="start">K, V rows · bounded suffix</text>
+<path d="M214 137 L252 131" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="24" y="162" width="190" height="38" rx="6" fill="#FFFFFF" stroke="#7A7974" stroke-width="1.2"/><rect x="24" y="162" width="8" height="38" rx="3" fill="#EB6834"/>
+<text x="42" y="178" font-size="13" fill="#0B0B0B" text-anchor="start" font-weight="700">Recurrent state</text><text x="42" y="193" font-size="12" fill="#52514E" text-anchor="start">conv + state · per request</text>
+<path d="M214 181 L252 139" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="254" y="96" width="130" height="70" rx="6" fill="#F4F3EF" stroke="#0B0B0B" stroke-width="1.8"/><text x="319" y="122" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="700">Storage plan</text><text x="319" y="141" font-size="12" fill="#52514E" text-anchor="middle">what + how long</text><text x="319" y="156" font-size="12" fill="#52514E" text-anchor="middle">→ sub-pools, sizes</text>
+<text x="440" y="62" font-size="14" fill="#0B0B0B" text-anchor="start" font-weight="700">Everything that needs memory asks</text>
+<rect x="440" y="74" width="165" height="26" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="522.5" y="92.0" font-size="13" fill="#0B0B0B" text-anchor="middle">Prefill admission</text>
+<path d="M605 87 L692 128" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="440" y="103" width="165" height="26" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="522.5" y="121.0" font-size="13" fill="#0B0B0B" text-anchor="middle">Decode headroom</text>
+<path d="M605 116 L692 134" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="440" y="132" width="165" height="26" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="522.5" y="150.0" font-size="13" fill="#0B0B0B" text-anchor="middle">HiCache load-back</text>
+<path d="M605 145 L692 140" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="440" y="161" width="165" height="26" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="522.5" y="179.0" font-size="13" fill="#0B0B0B" text-anchor="middle">PD preallocation</text>
+<path d="M605 174 L692 146" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="440" y="190" width="165" height="26" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="522.5" y="208.0" font-size="13" fill="#0B0B0B" text-anchor="middle">Prefix-cache eviction</text>
+<path d="M605 203 L692 152" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="694" y="100" width="186" height="82" rx="6" fill="#FFFFFF" stroke="#0B0B0B" stroke-width="1.8"/><text x="787" y="124" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="700">Allocator</text><text x="787" y="144" font-size="12" fill="#52514E" text-anchor="middle">whole demand fits now?</text><text x="787" y="160" font-size="12" fill="#52514E" text-anchor="middle">else search a layout</text><text x="787" y="174" font-size="12" fill="#52514E" text-anchor="middle">(Figure 4)</text>
+<rect x="24" y="274" width="852" height="48" rx="6" fill="#FFFFFF" stroke="#0B0B0B" stroke-width="1.8"/>
+<rect x="28" y="278" width="120" height="40" rx="3" fill="#EB6834"/><text x="88" y="304" font-size="13" fill="#0B0B0B" text-anchor="middle" font-weight="700">state</text>
+<rect x="354" y="278" width="110" height="40" rx="3" fill="#1BAF7A"/><text x="409" y="304" font-size="13" fill="#0B0B0B" text-anchor="middle" font-weight="700">window</text>
+<rect x="682" y="278" width="190" height="40" rx="3" fill="#256ABF"/><text x="777" y="304" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="700">full KV</text>
+<text x="239" y="304" font-size="12" fill="#52514E" text-anchor="middle">free bytes</text><text x="584" y="304" font-size="12" fill="#52514E" text-anchor="middle">free bytes</text>
+<text x="872" y="266" font-size="13" fill="#0B0B0B" text-anchor="end" font-weight="700">the arena</text>
+<rect x="24" y="326" width="852" height="36" rx="6" fill="#F4F3EF" stroke="#0B0B0B" stroke-width="1.4"/>
+<circle cx="48" cy="344" r="12" fill="#0B0B0B"/><text x="48" y="349" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">3</text><text x="70" y="349" font-size="14" fill="#0B0B0B" text-anchor="start" font-weight="700">Page-use ledger: who still touches each page</text>
+<path d="M319 166 L319 272" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<circle cx="319" cy="222" r="12" fill="#0B0B0B"/><text x="319" y="227" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">1</text><text x="337" y="227" font-size="13" fill="#0B0B0B" text-anchor="start">builds the bands</text>
+<path d="M787 182 L787 272" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<circle cx="787" cy="228" r="12" fill="#0B0B0B"/><text x="787" y="233" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">2</text><text x="769" y="233" font-size="13" fill="#0B0B0B" text-anchor="end">hands out and moves pages</text>
+<rect x="24" y="420" width="190" height="30" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="119.0" y="440.0" font-size="13" fill="#0B0B0B" text-anchor="middle">Forward</text>
+<path d="M119 420 L119 364" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="239" y="420" width="190" height="30" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="334.0" y="440.0" font-size="13" fill="#0B0B0B" text-anchor="middle">Host copy (HiCache)</text>
+<path d="M334 420 L334 364" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="454" y="420" width="190" height="30" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="549.0" y="440.0" font-size="13" fill="#0B0B0B" text-anchor="middle">Network transfer (PD)</text>
+<path d="M549 420 L549 364" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<rect x="669" y="420" width="190" height="30" rx="6" fill="#F4F3EF" stroke="#7A7974" stroke-width="1.2"/><text x="764.0" y="440.0" font-size="13" fill="#0B0B0B" text-anchor="middle">Page move</text>
+<path d="M764 420 L764 364" stroke="#0B0B0B" stroke-width="1.6" fill="none" marker-end="url(#ah)"/>
+<text x="24" y="478" font-size="13" fill="#52514E" text-anchor="start">Each one declares which pages it reads or writes, and until when.</text>
+</svg>

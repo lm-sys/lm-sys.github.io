@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="436" viewBox="0 0 880 436" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="Schematic of one arena on the same byte scale as Figure 1. Live bounded-state units, which are large, are compacted toward the low end and live full-attention KV units, which are smaller, toward the high end; the free space between them is one undivided region of bytes with no page grid. Under a long-context workload full KV can grow down into it; under many short requests bounded state can grow up into it, each in its own unit size.">
+<title>One arena compacts live units toward the two ends and shares the free bytes between them</title>
+<rect width="880" height="436" fill="#FFFFFF"/>
+
+<text x="440.0" y="28" font-size="17" fill="#0B0B0B" text-anchor="middle">One arena: free bytes sit between the two ends and serve either side</text>
+<text x="20.0" y="70" font-size="18" fill="#0B0B0B" text-anchor="start" font-weight="600">Long context</text>
+<text x="20.0" y="98" font-size="15" fill="#52514E" text-anchor="start">low bytes</text>
+<text x="858.0" y="98" font-size="15" fill="#52514E" text-anchor="end">high bytes</text>
+<rect x="21.0" y="106" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="75.0" y="106" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="357.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="378.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="399.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="420.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="441.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="462.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="483.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="504.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="525.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="546.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="567.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="588.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="609.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="630.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="651.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="672.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="693.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="714.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="735.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="756.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="777.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="798.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="819.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="840.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="129.0" y="104" width="226.0" height="48" rx="4" fill="#F4F3EF" stroke="#52514E" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="242.0" y="133.0" font-size="16" fill="#0B0B0B" text-anchor="middle">shared free bytes</text>
+<line x1="350.0" y1="172" x2="147.0" y2="172" stroke="#256ABF" stroke-width="3"/><polygon points="138.0,172 150.0,166 150.0,178" fill="#256ABF"/>
+<text x="242.0" y="194" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">full KV can grow here</text>
+<text x="74.0" y="194" font-size="15" fill="#52514E" text-anchor="middle">bounded state</text>
+<text x="608.0" y="194" font-size="15" fill="#52514E" text-anchor="middle">full-attention KV</text>
+<text x="20.0" y="240" font-size="18" fill="#0B0B0B" text-anchor="start" font-weight="600">Many short requests</text>
+<text x="20.0" y="268" font-size="15" fill="#52514E" text-anchor="start">low bytes</text>
+<text x="858.0" y="268" font-size="15" fill="#52514E" text-anchor="end">high bytes</text>
+<rect x="21.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="75.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="129.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="183.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="237.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="291.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="714.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="735.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="756.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="777.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="798.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="819.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="840.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="345.0" y="274" width="367.0" height="48" rx="4" fill="#F4F3EF" stroke="#52514E" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="528.5" y="303.0" font-size="16" fill="#0B0B0B" text-anchor="middle">shared free bytes</text>
+<line x1="350.0" y1="342" x2="694.0" y2="342" stroke="#EB6834" stroke-width="3"/><polygon points="703.0,342 691.0,336 691.0,348" fill="#EB6834"/>
+<text x="528.5" y="364" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">bounded state can grow here</text>
+<text x="182.0" y="364" font-size="15" fill="#52514E" text-anchor="middle">bounded state</text>
+<text x="786.5" y="364" font-size="15" fill="#52514E" text-anchor="middle">full-attention KV</text>
+<text x="440.0" y="402" font-size="15" fill="#52514E" text-anchor="middle">Colored units are live. Each side grows in its own unit size.</text>
+<text x="440.0" y="422" font-size="15" fill="#52514E" text-anchor="middle">Same bytes and demand as Figure 1. Free bytes belong to neither band until needed.</text>
+</svg>

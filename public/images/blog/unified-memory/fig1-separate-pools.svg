@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="436" viewBox="0 0 880 436" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="Schematic of two fixed pools on one byte scale, bounded state on the low bytes with large units and full-attention KV on the high bytes with smaller units, separated by a fixed wall. Live units are scattered through each pool. Under a long-context workload the full-attention pool has no free unit while four of six bounded-state units are free and stranded. Under many short requests the bounded pool has no free unit while seventeen of twenty-four full-attention units are free and stranded. Free units on one side cannot serve the other side.">
+<title>Fixed pools strand free units on the wrong side of the wall</title>
+<rect width="880" height="436" fill="#FFFFFF"/>
+
+<text x="440.0" y="28" font-size="17" fill="#0B0B0B" text-anchor="middle">Fixed pools: free units on one side of the wall cannot serve the other</text>
+<text x="20.0" y="70" font-size="18" fill="#0B0B0B" text-anchor="start" font-weight="600">Long context</text>
+<text x="20.0" y="98" font-size="15" fill="#52514E" text-anchor="start">low bytes</text>
+<text x="858.0" y="98" font-size="15" fill="#52514E" text-anchor="end">high bytes</text>
+<text x="182.0" y="98" font-size="15" fill="#0B0B0B" text-anchor="middle">Bounded-state pool</text>
+<text x="608.0" y="98" font-size="15" fill="#0B0B0B" text-anchor="middle">Full-attention KV pool</text>
+<rect x="21.5" y="106.5" width="51.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="75.0" y="106" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="129.5" y="106.5" width="51.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="183.5" y="106.5" width="51.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="237.0" y="106" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="291.5" y="106.5" width="51.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="357.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="378.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="399.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="420.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="441.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="462.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="483.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="504.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="525.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="546.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="567.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="588.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="609.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="630.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="651.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="672.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="693.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="714.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="735.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="756.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="777.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="798.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="819.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="840.0" y="106" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<line x1="350.0" y1="100" x2="350.0" y2="158" stroke="#0B0B0B" stroke-width="3"/>
+<text x="350.0" y="176" font-size="15" fill="#0B0B0B" text-anchor="middle">fixed wall (ratio flag)</text>
+<text x="132.0" y="176" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">4 free units stranded</text>
+<text x="608.0" y="176" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">pool exhausted: no free unit</text>
+<text x="20.0" y="240" font-size="18" fill="#0B0B0B" text-anchor="start" font-weight="600">Many short requests</text>
+<text x="20.0" y="268" font-size="15" fill="#52514E" text-anchor="start">low bytes</text>
+<text x="858.0" y="268" font-size="15" fill="#52514E" text-anchor="end">high bytes</text>
+<text x="182.0" y="268" font-size="15" fill="#0B0B0B" text-anchor="middle">Bounded-state pool</text>
+<text x="608.0" y="268" font-size="15" fill="#0B0B0B" text-anchor="middle">Full-attention KV pool</text>
+<rect x="21.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="75.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="129.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="183.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="237.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="291.0" y="276" width="52.0" height="44" rx="3" fill="#EB6834"/>
+<rect x="357.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="378.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="399.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="420.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="441.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="462.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="483.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="504.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="525.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="546.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="567.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="588.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="609.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="630.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="651.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="672.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="693.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="714.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="735.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="756.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="777.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="798.0" y="276" width="19.0" height="44" rx="3" fill="#256ABF"/>
+<rect x="819.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<rect x="840.5" y="276.5" width="18.0" height="43" rx="3" fill="#F4F3EF" stroke="#8F8E88"/>
+<line x1="350.0" y1="270" x2="350.0" y2="328" stroke="#0B0B0B" stroke-width="3"/>
+<text x="350.0" y="346" font-size="15" fill="#0B0B0B" text-anchor="middle">fixed wall (ratio flag)</text>
+<text x="132.0" y="346" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">pool exhausted: no free unit</text>
+<text x="608.0" y="346" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">17 free units stranded</text>
+<text x="440.0" y="402" font-size="15" fill="#52514E" text-anchor="middle">Colored units are live, outlined units are free. Unit sizes are schematic.</text>
+<text x="440.0" y="422" font-size="15" fill="#52514E" text-anchor="middle">Bounded state = sliding-window KV or recurrent state. Same bytes and demand as Figure 2.</text>
+</svg>
