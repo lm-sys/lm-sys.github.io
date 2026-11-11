@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="316" viewBox="0 0 900 316" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="Token-major entries and strided per-lane views. Bottom: one physical page of consecutive token entries, all the same size. Each entry holds two target layers, L0 and L1, and two speculative-draft lanes, draft 0 and draft 1, in the same order; the draft rows are drawn narrower than the target rows to show that the two can differ in size. Top: the target layer 0 view and the draft lane 0 view, each a token-by-payload tensor; every cell is joined by a vertical line to its lane in the entry for the same token, so consecutive cells of a view are one whole entry apart in memory (stride). Because rows of different sizes share one entry, target and draft use the same token id, and one allocation, free or whole-page move carries both.">
+<title>Per-layer views are strided windows onto token-major entries that hold target rows and differently sized draft lanes</title>
+<rect width="900" height="316" fill="#FFFFFF"/>
+<text x="24" y="26" font-size="17" fill="#0B0B0B" text-anchor="start" font-weight="600">Target and draft rows packed in one entry per token</text>
+<text x="24" y="77" font-size="15" fill="#0B0B0B" text-anchor="start">target layer 0</text>
+<text x="24" y="133" font-size="15" fill="#0B0B0B" text-anchor="start">draft lane 0</text>
+<text x="24" y="192" font-size="15" fill="#0B0B0B" text-anchor="start" font-weight="600">Physical page</text>
+<text x="24" y="209" font-size="13" fill="#52514E" text-anchor="start">entry per token</text>
+<rect x="140" y="160" width="742" height="98" rx="6" fill="#F4F3EF" stroke="#8A8984"/>
+<line x1="186.0" y1="84" x2="186.0" y2="177" stroke="#52514E" stroke-width="1.5"/>
+<rect x="155" y="60" width="62" height="24" rx="3" fill="#256ABF"/>
+<text x="186.0" y="77" font-size="15" fill="#FFFFFF" text-anchor="middle">t</text>
+<line x1="309.0" y1="140" x2="309.0" y2="177" stroke="#52514E" stroke-width="1.5"/>
+<rect x="287" y="116" width="44" height="24" rx="3" fill="#6F4DA0"/>
+<text x="309.0" y="133" font-size="15" fill="#FFFFFF" text-anchor="middle">t</text>
+<rect x="150" y="168" width="234" height="50" rx="4" fill="#FFFFFF" stroke="#52514E"/>
+<rect x="155" y="177" width="62" height="32" rx="3" fill="#256ABF"/>
+<text x="186.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">L0</text>
+<rect x="221" y="177" width="62" height="32" rx="3" fill="#256ABF"/>
+<text x="252.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">L1</text>
+<rect x="287" y="177" width="44" height="32" rx="3" fill="#6F4DA0"/>
+<text x="309.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">d0</text>
+<rect x="335" y="177" width="44" height="32" rx="3" fill="#6F4DA0"/>
+<text x="357.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">d1</text>
+<text x="267.0" y="238" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">token t</text>
+<line x1="430.0" y1="84" x2="430.0" y2="177" stroke="#52514E" stroke-width="1.5"/>
+<rect x="399" y="60" width="62" height="24" rx="3" fill="#256ABF"/>
+<text x="430.0" y="77" font-size="15" fill="#FFFFFF" text-anchor="middle">t + 1</text>
+<line x1="553.0" y1="140" x2="553.0" y2="177" stroke="#52514E" stroke-width="1.5"/>
+<rect x="531" y="116" width="44" height="24" rx="3" fill="#6F4DA0"/>
+<text x="553.0" y="133" font-size="15" fill="#FFFFFF" text-anchor="middle">t + 1</text>
+<rect x="394" y="168" width="234" height="50" rx="4" fill="#FFFFFF" stroke="#52514E"/>
+<rect x="399" y="177" width="62" height="32" rx="3" fill="#256ABF"/>
+<text x="430.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">L0</text>
+<rect x="465" y="177" width="62" height="32" rx="3" fill="#256ABF"/>
+<text x="496.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">L1</text>
+<rect x="531" y="177" width="44" height="32" rx="3" fill="#6F4DA0"/>
+<text x="553.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">d0</text>
+<rect x="579" y="177" width="44" height="32" rx="3" fill="#6F4DA0"/>
+<text x="601.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">d1</text>
+<text x="511.0" y="238" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">token t + 1</text>
+<line x1="674.0" y1="84" x2="674.0" y2="177" stroke="#52514E" stroke-width="1.5"/>
+<rect x="643" y="60" width="62" height="24" rx="3" fill="#256ABF"/>
+<text x="674.0" y="77" font-size="15" fill="#FFFFFF" text-anchor="middle">t + 2</text>
+<line x1="797.0" y1="140" x2="797.0" y2="177" stroke="#52514E" stroke-width="1.5"/>
+<rect x="775" y="116" width="44" height="24" rx="3" fill="#6F4DA0"/>
+<text x="797.0" y="133" font-size="15" fill="#FFFFFF" text-anchor="middle">t + 2</text>
+<rect x="638" y="168" width="234" height="50" rx="4" fill="#FFFFFF" stroke="#52514E"/>
+<rect x="643" y="177" width="62" height="32" rx="3" fill="#256ABF"/>
+<text x="674.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">L0</text>
+<rect x="709" y="177" width="62" height="32" rx="3" fill="#256ABF"/>
+<text x="740.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">L1</text>
+<rect x="775" y="177" width="44" height="32" rx="3" fill="#6F4DA0"/>
+<text x="797.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">d0</text>
+<rect x="823" y="177" width="44" height="32" rx="3" fill="#6F4DA0"/>
+<text x="845.0" y="198" font-size="15" fill="#FFFFFF" text-anchor="middle">d1</text>
+<text x="755.0" y="238" font-size="15" fill="#0B0B0B" text-anchor="middle" font-weight="600">token t + 2</text>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514E"/></marker></defs>
+<line x1="221" y1="72" x2="240.0" y2="72" stroke="#52514E" stroke-width="1.5" marker-start="url(#ah)"/>
+<text x="308.0" y="77" font-size="15" fill="#52514E" text-anchor="middle">stride = 1 entry</text>
+<line x1="376.0" y1="72" x2="395" y2="72" stroke="#52514E" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="24" y="288" font-size="15" fill="#52514E" text-anchor="start">L0, L1: target layers · d0, d1: draft lanes, which can be a different size</text>
+<text x="24" y="310" font-size="16" fill="#0B0B0B" text-anchor="start" font-weight="600">Same token id, one allocation, one move.</text>
+</svg>
