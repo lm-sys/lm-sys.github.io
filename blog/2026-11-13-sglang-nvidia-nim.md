@@ -3,7 +3,7 @@ title: "SGLang and NVIDIA NIM: Advancing Enterprise Inference Together"
 author: "SGLang Team and NVIDIA NIM Team"
 date: "November 13, 2026"
 previewImg: /images/blog/sglang-nvidia-nim/nim-on-sglang.png
-type: blog
+type: news
 ---
 
 SGLang now powers [NVIDIA NIM Certified](https://docs.nvidia.com/nim/large-language-models/latest/about-nim-llm/nim-offerings.html#nim-certified) microservices. The open-source inference engine brings together high performance, broad model support, and a developer community that continues to push inference forward. It is already proven in large-scale production deployments.
