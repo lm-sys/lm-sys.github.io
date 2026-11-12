@@ -8,7 +8,7 @@ type: blog
 
 ## TL;DR
 
-* [SGLang-Neuron](https://github.com/sgl-project-dev/sglang-trainium) v0.1 is now open source and available in public preview. It is a PyTorch-native plugin, co-developed by the SGLang team at RadixArk and Amazon Annapurna Labs, that serves LLMs and diffusion models on AWS Trainium. During the preview, SGLang-Neuron is supported through the AWS Deep Learning Container for SGLang-Neuron.
+* [SGLang-Neuron](https://github.com/sgl-project/sglang-neuron) v0.1 is now open source and available in public preview. It is a PyTorch-native plugin, co-developed by the SGLang team at RadixArk and Amazon Annapurna Labs, that serves LLMs and diffusion models on AWS Trainium. During the preview, SGLang-Neuron is supported through the AWS Deep Learning Container for SGLang-Neuron.
 * Every supported LLM shares one fully asynchronous runtime. Trainium chips run decode steps back to back, with no idle time between them.
 * Megakernels run every decoder layer of a step in a single NKI kernel call. GPT-OSS-120B, GLM-5.2 and Kimi-K3 serve on this path.
 * Kimi-K3 runs prefill-decode disaggregated across three Trainium3 nodes, with KV moving over NIXL on EFA.
@@ -212,7 +212,7 @@ curl http://127.0.0.1:30000/v1/chat/completions \
   -d '{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "Hello"}]}'
 ```
 
-The [repository](https://github.com/sgl-project-dev/sglang-trainium) has the full setup guide, per-model recipes and validated configurations. The [v0.1 release notes](https://docs.google.com/document/d/1Fnz6NZUwzySiCsGmCAcNFlRvDLrRh0-8lKDrlvbc6cQ) have the full change list.
+The [repository](https://github.com/sgl-project/sglang-neuron) has the full setup guide, per-model recipes and validated configurations. The [v0.1 release notes](https://docs.google.com/document/d/1Fnz6NZUwzySiCsGmCAcNFlRvDLrRh0-8lKDrlvbc6cQ) have the full change list.
 
 ## What's next
 
@@ -223,7 +223,7 @@ The [repository](https://github.com/sgl-project-dev/sglang-trainium) has the ful
 
 ## Community
 
-For questions, join the [SGLang Slack](https://slack.sglang.io). To request a model or propose a feature, open an issue on the [repository](https://github.com/sgl-project-dev/sglang-trainium).
+For questions, join the [SGLang Slack](https://slack.sglang.io). To request a model or propose a feature, open an issue on the [repository](https://github.com/sgl-project/sglang-neuron).
 
 ## Acknowledgments
 
