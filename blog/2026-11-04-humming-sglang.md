@@ -52,7 +52,7 @@ For example, take four group scales `[1, 2, 4, 8]`, whose base scale `s_base=1` 
 
 For E4M3, this path supports an exponent span of **11** without scale-range adjustment. Larger spans raise the minimum scale to `max_scale / 2^11`; weights in affected groups are divided by the corresponding power of two and rounded back to FP4, which can introduce rounding error or underflow.
 
-For this checkpoint at TP8/EP1, a load-only audit found no adjusted groups in the target and **11.27% in the draft**, mainly because padding participates in scale-range selection. The [measurement notes below](#benchmark-details) give the exact group counts and their scope.
+A load-time check at TP8/EP1 found scale-range adjustment in **0% of valid target groups and 11.27% of valid draft groups** (47.9 million draft groups), mainly because padded scales affect the draft's range selection.
 
 The [fused E8M0 configuration](https://github.com/vllm-project/humming/blob/v0.1.18/docs/config.md#use_fused_e8m0_scale) connects preparation with execution. Other scale layouts use their corresponding kernels and preparation rules. Humming 0.1.18 also improves the FP8_BLOCK [grouped-contiguous](https://github.com/vllm-project/humming/pull/95) and [indexed](https://github.com/vllm-project/humming/pull/115) MoE paths. Those use block-scaled activations; the AFP8 results below use **dynamic per-token E4M3 scales (`group_size=0`)**, so they do not measure these block-scale paths.
 
@@ -125,7 +125,7 @@ The results below use an existing native FP8-dense/MXFP4-expert checkpoint, with
 
 We evaluate **DeepSeek-V4.1-Flash-1017 on eight H20-3e GPUs**, with TP8, prefill CP8 interleave, 16K-token prefill chunks, and DSpark block size 5. Target and draft use the same MoE backend. Dense layers retain their native FP8 path and expert weights use MXFP4. **A16 means BF16 expert activations; AFP8 means FP8 E4M3 expert activations.**
 
-The EP1 columns compare Marlin and Humming at A16, and Humming's AFP8 deployment option. The EP8 columns compare Humming and FlashInfer 0.7.2 at the same expert partitioning. Humming EP8 includes the tuning fix from [PR #49873](https://github.com/sgl-project/sglang/pull/49873), applied to the original benchmark source. Results were collected on separate H20-3e hosts; [source revisions and reproduction commands](#benchmark-details) are included on this page.
+The EP1 columns compare Marlin and Humming at A16, and also report Humming's AFP8 option. The EP8 columns compare Humming and FlashInfer 0.7.2 with FP8 expert activations for both target and draft. Humming EP8 includes the tuning fix from [PR #49873](https://github.com/sgl-project/sglang/pull/49873). [Benchmark Details](#benchmark-details) lists the source revisions and reproduction commands.
 
 ### Prefill
 
@@ -166,7 +166,7 @@ Decode uses ShareGPT first-turn content repeated or truncated to **4K input toke
 
 At EP1 and A16 precision, Humming's mean throughput ranges from **2.89% lower at C1** to **7.65% higher at C64** than Marlin. Within Humming EP1, selecting AFP8 instead of A16 raises throughput by **16.79–34.41%**.
 
-With the EP tuning fix, Humming AFP8 at EP8 has observed mean throughput **4.25% higher at C1**, **0.34% higher at C32**, and **1.51% lower at C64** than the FlashInfer AFP8 reference. The [detailed metrics below](#benchmark-details) report TTFT, TPOT, and DSpark acceptance separately.
+With the EP tuning fix, Humming AFP8 at EP8 has observed mean throughput **4.25% higher at C1**, **0.34% higher at C32**, and **1.51% lower at C64** than the FlashInfer AFP8 reference. The [detailed metrics below](#benchmark-details) report TTFT, TPOT, DSpark acceptance, and estimated decode time per verify step.
 
 The retained full GSM8K evaluations at EP1 score **97.12% for Marlin A16, 97.04% for Humming A16, and 96.82% for Humming AFP8**. In a targeted RULER v1 retrieval check, Marlin A16 and Humming AFP8 each score 200/200 at nominal 32K and 128K. These results describe those evaluated configurations; they do not establish general accuracy equivalence or quality at the 1016K performance point.
 
@@ -181,226 +181,156 @@ At 1016K, the remaining GPU kernels take roughly **151 seconds in all three conf
 </p>
 
 <p align="center">
-  <em>Figure 2. Prefill kernel durations at TP8/EP1, averaged across all eight ranks. The A16 pair holds activation precision fixed; AFP8 is a separate precision choice. Totals are summed GPU kernel durations, not client TTFT.</em>
+  <em>Figure 2. Prefill kernel durations at TP8/EP1: one warmed capture per length, averaged across all eight ranks. The A16 pair holds activation precision fixed; AFP8 is a separate precision choice. Totals are summed GPU kernel durations, not client TTFT.</em>
 </p>
 
-At C1, a focused A16 trace gives **3.77 ms per target verify for Humming's routed GEMMs versus 4.21 ms for Marlin**, while draft GEMMs take 0.195 ms versus 0.181 ms. Both use M=8 MoE tiles. This sample does not show a target-GEMM slowdown that explains the small serving-throughput gap, and it does not establish that autotuning would recover it. The serving measurements and these short diagnostic captures remain separate evidence.
+At C1, the A16 trace gives **3.77 ms per target verify for Humming's routed GEMMs versus 4.21 ms for Marlin**, while draft GEMMs take 0.195 ms versus 0.181 ms. Both use M=8 MoE tiles. The full decode-cycle comparison is included in [Benchmark Details](#benchmark-details).
 
 ## Benchmark Details
 
-The following expandable sections contain the software pins, commands, and supplementary metrics for the results above.
-
 <details>
-<summary><strong>Environment, source revisions, and server commands</strong></summary>
+<summary><strong>Environment and server commands</strong></summary>
 
-The runtime uses Python 3.12, PyTorch 2.14.1+cu130, CUDA 13.0 (NVCC 13.0.48), driver 570.133.20, `humming-kernels[cu13]==0.1.18`, FlashInfer Python/cubin 0.7.2 with JIT cache 0.7.2+cu130, `sglang-kernel==0.4.10+cu130`, and Triton 3.8.0. CUDA compatibility libraries precede the driver directories on `LD_LIBRARY_PATH`. The benchmark client uses a separate PyArrow 25.0.1 override with NumPy 1.26.4.
+The tests use **CUDA 13.0, Humming 0.1.18, and FlashInfer 0.7.2** on eight H20-3e GPUs. The checkpoint is [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017), including its bundled DSpark draft.
 
-| Results | SGLang Python source |
-| --- | --- |
-| EP1 performance, retained quality checks, and diagnostic profiles | [`f644444`](https://github.com/guzekai01/sglang/tree/f644444260a6caf2cc4a4d5357dc17edaa6c8e64), including the implementation proposed in #48524 |
-| FlashInfer EP8 reference | The same `f644444` base |
-| Humming AFP8 EP8 | `f644444` plus only the runtime change from #49873; measured tree `04032f77a61831f0ba7cc84cdeefeb4605471f3d` |
-| Benchmark client, for every column | `f644444` |
+All columns use [SGLang `f644444`](https://github.com/guzekai01/sglang/tree/f644444260a6caf2cc4a4d5357dc17edaa6c8e64), which includes the input-processing integration proposed in #48524. Humming AFP8 EP8 additionally applies the runtime change from [PR #49873](https://github.com/sgl-project/sglang/pull/49873) at [`6a7ea3f`](https://github.com/guzekai01/sglang/commit/6a7ea3f13451b7dec944af37e7068c29b56213c7).
 
-The Humming EP8 tree can be reconstructed from public commits without updating unrelated model or attention code:
+Choose a configuration below and point `PYTHONPATH` to the corresponding source. Target and draft use the same MoE backend; these runs do not set `--quantization humming`.
 
-```bash
-git clone https://github.com/guzekai01/sglang.git sglang-humming
-git -C sglang-humming checkout --detach f644444260a6caf2cc4a4d5357dc17edaa6c8e64
-git -C sglang-humming fetch origin 6a7ea3f13451b7dec944af37e7068c29b56213c7
-git -C sglang-humming worktree add --detach ../sglang-humming-ep8 \
-  f644444260a6caf2cc4a4d5357dc17edaa6c8e64
-git -C sglang-humming diff --full-index \
-  4bf9ca2a3bf7f8dd2e1c2ea6e63d8d8059b46426 \
-  6a7ea3f13451b7dec944af37e7068c29b56213c7 \
-  -- python/sglang/srt/layers/moe/moe_runner/humming.py \
-  | git -C sglang-humming-ep8 apply --3way
-export BASE_SOURCE="$PWD/sglang-humming"
-export EP8_SOURCE="$PWD/sglang-humming-ep8"
-```
+<div style="overflow-x: auto;">
+<div style="min-width: 560px;">
 
-The patched runner's Git blob is `d33c8c056d38c4fa73738510162e6cb169b41ef4`. The local benchmark tree ID above is recorded for provenance; the public base and patch define the reproducible runtime.
+| Configuration | `BACKEND` | `EP` | Expert activation |
+| --- | --- | ---: | --- |
+| Marlin A16 | `marlin` | 1 | `bfloat16` |
+| Humming A16 | `humming` | 1 | `bfloat16` |
+| Humming AFP8 | `humming` | 1 | `float8e4m3` |
+| Humming AFP8 | `humming` | 8 | `float8e4m3` |
+| FlashInfer AFP8 | `flashinfer_mxfp4` | 8 | `float8e4m3` |
 
-The model is [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017), including its bundled DSpark draft. The original download did not record a Hugging Face revision. The config and weight index were checked across the experiment hosts and match these hashes; they are not checksums of every weight shard:
+</div>
+</div>
 
-| File | SHA256 |
-| --- | --- |
-| `config.json` | `8be45ce0476004a3f529fd896115a4a2e800a129ad2d3ec05b16050f52e21879` |
-| `model.safetensors.index.json` | `74b0686a3d2891980d5e303251b075a3bccae2c2ff650747db2620a649b98fa8` |
+Set `MODE=prefill` for the TTFT table or `MODE=decode` for the throughput table. Humming uses indexed GEMMs and dynamic per-token FP8 scales for AFP8.
 
-The EP1 study used 64 CPU / 768 GiB limits; the EP8 runs used 150 CPU / 1200 GiB limits on other H20-3e hosts. All used `OMP_NUM_THREADS=1`. Cross-EP differences therefore include more than a change in expert partitioning. The updated Humming EP8 run also used a different host from the retained FlashInfer reference.
-
-Set `MODEL_PATH` to the downloaded checkpoint. Run one server at a time. Choose `MODE=ttft` for the long-prefill table or `MODE=decode` for the ShareGPT throughput table; use the corresponding source from the table above.
+The script's `ACTIVATION` variable configures Humming. FlashInfer's FP8 activation path is selected by `--flashinfer-mxfp4-moe-precision fp8`.
 
 ```bash
 export MODEL_PATH=/path/to/DeepSeek-V4.1-Flash-1017
-MODE=decode
+export PYTHONPATH=/path/to/selected-sglang-source/python
 export LD_LIBRARY_PATH="/usr/local/cuda/compat/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export OMP_NUM_THREADS=1
 export SGLANG_OPT_FP8_WO_A_GEMM=1
 export SGLANG_JIT_DEEPGEMM_PRECOMPILE=0
+BACKEND=humming
+EP=8
+ACTIVATION=float8e4m3
+MODE=decode
+
+EXTRA_ARGS=()
 unset SGLANG_HUMMING_INPUT_QUANT_CONFIG SGLANG_HUMMING_MOE_GEMM_TYPE
-
-COMMON=(
-  --model-path "$MODEL_PATH" --served-model-name dsv41-flash-1017
-  --host 127.0.0.1 --port 31018 --trust-remote-code --language-model-only
-  --tp-size 8 --enable-prefill-cp --cp-strategy interleave
-  --enable-cp-decode-attn-tp --moe-a2a-backend none
-  --engram-config '{"placement":"cpu","replication":"none"}'
-  --no-enable-decoder-swa-bounded-replay --swa-full-tokens-ratio 0.05
-  --speculative-algorithm DSPARK --speculative-dspark-block-size 5
-  --mem-fraction-static 0.84 --max-running-requests 64
-  --cuda-graph-max-bs-decode 64 --chunked-prefill-size 16384
-  --enable-cache-report --enable-metrics
-  --reasoning-parser auto --tool-call-parser auto --random-seed 1
-)
-if [[ "$MODE" == decode ]]; then
-  COMMON+=(--disable-radix-cache --stream-interval 1)
+if [[ "$BACKEND" == humming ]]; then
+  export SGLANG_HUMMING_MOE_GEMM_TYPE=indexed
+  export SGLANG_HUMMING_INPUT_QUANT_CONFIG="{\"dtype\":\"$ACTIVATION\"}"
+elif [[ "$BACKEND" == flashinfer_mxfp4 ]]; then
+  EXTRA_ARGS+=(--flashinfer-mxfp4-moe-precision fp8)
 fi
+if [[ "$MODE" == decode ]]; then
+  EXTRA_ARGS+=(--disable-radix-cache --stream-interval 1)
+fi
+
+python -m sglang.launch_server \
+  --model-path "$MODEL_PATH" --served-model-name dsv41-flash-1017 \
+  --host 127.0.0.1 --port 31018 --trust-remote-code --language-model-only \
+  --tp-size 8 --ep-size "$EP" --enable-prefill-cp --cp-strategy interleave \
+  --enable-cp-decode-attn-tp --moe-a2a-backend none \
+  --engram-config '{"placement":"cpu","replication":"none"}' \
+  --no-enable-decoder-swa-bounded-replay --swa-full-tokens-ratio 0.05 \
+  --speculative-algorithm DSPARK --speculative-dspark-block-size 5 \
+  --mem-fraction-static 0.84 --max-running-requests 64 \
+  --cuda-graph-max-bs-decode 64 --chunked-prefill-size 16384 \
+  --enable-cache-report --enable-metrics \
+  --reasoning-parser auto --tool-call-parser auto --random-seed 1 \
+  --moe-runner-backend "$BACKEND" --speculative-moe-runner-backend "$BACKEND" \
+  "${EXTRA_ARGS[@]}"
 ```
-
-Select the backend and activation precision with one of the following launches:
-
-```bash
-# Marlin A16, EP1
-PYTHONPATH="$BASE_SOURCE/python" \
-python -m sglang.launch_server "${COMMON[@]}" --ep-size 1 \
-  --moe-runner-backend marlin --speculative-moe-runner-backend marlin
-
-# Humming A16, EP1
-PYTHONPATH="$BASE_SOURCE/python" \
-SGLANG_HUMMING_MOE_GEMM_TYPE=indexed \
-SGLANG_HUMMING_INPUT_QUANT_CONFIG='{"dtype":"bfloat16"}' \
-python -m sglang.launch_server "${COMMON[@]}" --ep-size 1 \
-  --moe-runner-backend humming --speculative-moe-runner-backend humming
-
-# Humming AFP8, EP1
-PYTHONPATH="$BASE_SOURCE/python" \
-SGLANG_HUMMING_MOE_GEMM_TYPE=indexed \
-SGLANG_HUMMING_INPUT_QUANT_CONFIG='{"dtype":"float8e4m3"}' \
-python -m sglang.launch_server "${COMMON[@]}" --ep-size 1 \
-  --moe-runner-backend humming --speculative-moe-runner-backend humming
-
-# Humming AFP8, EP8, including the runtime fix
-PYTHONPATH="$EP8_SOURCE/python" \
-SGLANG_HUMMING_MOE_GEMM_TYPE=indexed \
-SGLANG_HUMMING_INPUT_QUANT_CONFIG='{"dtype":"float8e4m3"}' \
-python -m sglang.launch_server "${COMMON[@]}" --ep-size 8 \
-  --moe-runner-backend humming --speculative-moe-runner-backend humming
-
-# FlashInfer AFP8, EP8
-PYTHONPATH="$BASE_SOURCE/python" \
-python -m sglang.launch_server "${COMMON[@]}" --ep-size 8 \
-  --moe-runner-backend flashinfer_mxfp4 \
-  --speculative-moe-runner-backend flashinfer_mxfp4 \
-  --flashinfer-mxfp4-moe-precision fp8
-```
-
-Humming's AFP8 setting produces dynamic per-token E4M3 input scales (`group_size=0`) for each local GEMM. The checkpoint's MXFP4 weight-group size is not copied to the activation configuration. Humming uses its indexed MoE path. EP8 gives both backends a local intermediate dimension of 2,304 rather than EP1's 288, meeting FlashInfer's 128-alignment requirement.
 
 </details>
 
 <details>
-<summary><strong>Benchmark commands, detailed metrics, and validation notes</strong></summary>
+<summary><strong>Benchmark commands and decode metrics</strong></summary>
 
-Run the client in a second shell using the baseline Python source. The client dependencies are separate from the server environment:
+Run the client in a second shell, with `MODEL_PATH` set as above and `PYTHONPATH` pointing to the baseline `f644444` source.
+
+**Prefill.** For each length in the table, report median TTFT over three requests after one warmup and a prefix-cache flush. This example uses 128K input and 32 output tokens at C1:
 
 ```bash
-export BASE_SOURCE=/path/to/sglang-humming
-export MODEL_PATH=/path/to/DeepSeek-V4.1-Flash-1017
-export CLIENT_DEPS=/tmp/humming-bench-client-deps
-python -m pip install --target "$CLIENT_DEPS" --no-deps pyarrow==25.0.1
-export PYTHONPATH="$CLIENT_DEPS:$BASE_SOURCE/python"
 export SGLANG_IS_IN_CI=0
 mkdir -p results
+LENGTH=131072
+python -m sglang.benchmark.serving \
+  --backend sglang --host 127.0.0.1 --port 31018 \
+  --model "$MODEL_PATH" --served-model-name dsv41-flash-1017 \
+  --dataset-name random-ids --random-input-len "$LENGTH" \
+  --random-output-len 32 --random-range-ratio 1 \
+  --num-prompts 3 --max-concurrency 1 --request-rate inf \
+  --seed 1024 --temperature 0 --warmup-requests 1 --flush-cache \
+  --cache-report --output-details --tokenize-prompt \
+  --output-file "results/ttft-${LENGTH}.jsonl"
 ```
 
-**Long-prefill TTFT.** Use the radix-enabled server. Each length uses one warmup, a prefix-cache flush, and three measured requests at C1/output32. Report their median TTFT. Compiled-kernel caches remain warm.
+**Decode.** Use [ShareGPT](https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered), with prompts normalized to 4,096 input tokens by repetition or truncation and exactly 1,024 generated tokens. For C1/C32/C64, use 10/160/320 measured requests, respectively. Run the warmup and measurement pair three times; the example below uses C32.
 
 ```bash
-for LENGTH in 4096 65536 131072 262144 524288 1040384; do
-  python -m sglang.benchmark.serving \
-    --backend sglang --host 127.0.0.1 --port 31018 \
-    --model "$MODEL_PATH" --served-model-name dsv41-flash-1017 \
-    --dataset-name random-ids --random-input-len "$LENGTH" \
-    --random-output-len 32 --random-range-ratio 1 \
-    --num-prompts 3 --max-concurrency 1 --request-rate inf \
-    --seed 1024 --temperature 0 --warmup-requests 1 --flush-cache \
-    --cache-report --output-details --tokenize-prompt \
-    --output-file "results/ttft-${LENGTH}.jsonl"
-done
-```
-
-**ShareGPT-derived decode.** The dataset is [`ShareGPT_V3_unfiltered_cleaned_split.json`](https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/192ab2185289094fc556ec8ce5ce1e8e587154ca/ShareGPT_V3_unfiltered_cleaned_split.json), revision `192ab2185289094fc556ec8ce5ce1e8e587154ca`, SHA256 `35f0e213ce091ed9b9af2a1f0755e9d39f9ccec34ab281cd4ca60d70f6479ba4`.
-
-The pinned client's `random` dataset shuffles conversations, tokenizes their first user turn without a chat template, and repeats or truncates those token IDs to exactly 4,096 tokens. This is a fixed-shape workload derived from real text. Each measured run uses seed 1 and `N=max(10,5C)` requests. Before it, a separate seed-0 warmup generates the full 1,024 output tokens for C requests. The native client's additional warmup is disabled; streaming and ignore-EOS use the pinned client's defaults.
-
-```bash
+export SGLANG_IS_IN_CI=0
+mkdir -p results
 export SHAREGPT_PATH=/path/to/ShareGPT_V3_unfiltered_cleaned_split.json
-for C in 1 32 64; do
-  N=$((5 * C))
-  if (( N < 10 )); then N=10; fi
-  for R in 1 2 3; do
-    for PHASE in warmup measured; do
-      COUNT=$N; SEED=1
-      if [[ "$PHASE" == warmup ]]; then COUNT=$C; SEED=0; fi
-      python -m sglang.benchmark.serving \
-        --backend sglang --host 127.0.0.1 --port 31018 \
-        --model "$MODEL_PATH" --served-model-name dsv41-flash-1017 \
-        --dataset-name random --dataset-path "$SHAREGPT_PATH" \
-        --random-input-len 4096 --random-output-len 1024 --random-range-ratio 1 \
-        --num-prompts "$COUNT" --max-concurrency "$C" --request-rate inf \
-        --seed "$SEED" --temperature 0 --warmup-requests 0 \
-        --cache-report --output-details --tokenize-prompt \
-        --output-file "results/decode-c${C}-r${R}-${PHASE}.jsonl"
-    done
-  done
-done
+C=32
+N=160
+DECODE_ARGS=(
+  --backend sglang --host 127.0.0.1 --port 31018
+  --model "$MODEL_PATH" --served-model-name dsv41-flash-1017
+  --dataset-name random --dataset-path "$SHAREGPT_PATH"
+  --random-input-len 4096 --random-output-len 1024 --random-range-ratio 1
+  --max-concurrency "$C" --request-rate inf --temperature 0 --warmup-requests 0
+  --cache-report --output-details --tokenize-prompt
+)
+python -m sglang.benchmark.serving "${DECODE_ARGS[@]}" \
+  --num-prompts "$C" --seed 0 --output-file results/warmup.jsonl
+python -m sglang.benchmark.serving "${DECODE_ARGS[@]}" \
+  --num-prompts "$N" --seed 1 --output-file "results/decode-c${C}.jsonl"
 ```
 
-EP1 and the updated Humming EP8 measurements used one server launch per backend for the three repetitions. The retained FlashInfer EP8 reference used three independently restarted servers, one repetition per launch. TTFT uses a separate radix-enabled launch. Reported SD is calculated from run-level metrics (`ddof=1`), not from individual requests. Input-token hashes, output lengths, and zero measured prefix-cache hits were checked.
+**Decode latency and acceptance.** Values are means ± sample SD across three runs. TTFT includes queueing; TPOT measures time per output token after the first. Acceptance is mean output tokens per verify step, averaged over requests.
 
-**Decode latency and acceptance.** TTFT includes server queueing; TPOT is the client's mean time per output token after the first. Acceptance is the per-request value from server metadata, averaged within each run and then across runs.
+Estimated decode ms/step is `1,000 × Σ(E2E − TTFT) / Σ(verify steps)` within each run. Verify counts are recovered per request from output length divided by acceptance. This separates cycle cost from tokens produced per cycle, while including draft, verification, scheduling, and transport; it is not GPU kernel time.
 
 <div style="overflow-x: auto;">
-<div style="min-width: 760px;">
+<div style="min-width: 980px;">
 
-| Configuration | C | TTFT (ms) | TPOT (ms) | Acceptance |
-| --- | ---: | ---: | ---: | ---: |
-| Marlin A16 (EP1) | 1 | 321.238 ± 0.687 | 2.776 ± 0.036 | 5.139 ± 0.058 |
-| Marlin A16 (EP1) | 32 | 1558.744 ± 1.860 | 16.768 ± 0.079 | 5.159 ± 0.035 |
-| Marlin A16 (EP1) | 64 | 3435.942 ± 29.612 | 26.989 ± 0.050 | 5.205 ± 0.004 |
-| Humming A16 (EP1) | 1 | 263.333 ± 1.423 | 2.924 ± 0.031 | 5.115 ± 0.047 |
-| Humming A16 (EP1) | 32 | 1294.003 ± 37.182 | 16.335 ± 0.061 | 5.153 ± 0.022 |
-| Humming A16 (EP1) | 64 | 2900.157 ± 45.025 | 25.159 ± 0.036 | 5.211 ± 0.001 |
-| Humming AFP8 (EP1) | 1 | 207.182 ± 1.233 | 2.522 ± 0.039 | 5.142 ± 0.051 |
-| Humming AFP8 (EP1) | 32 | 1001.886 ± 4.787 | 12.234 ± 0.093 | 5.191 ± 0.029 |
-| Humming AFP8 (EP1) | 64 | 2231.068 ± 25.516 | 19.354 ± 0.021 | 5.201 ± 0.004 |
-| Humming AFP8 (EP8) | 1 | 221.653 ± 0.589 | 2.830 ± 0.157 | 5.106 ± 0.170 |
-| Humming AFP8 (EP8) | 32 | 1057.362 ± 27.748 | 12.320 ± 0.109 | 5.172 ± 0.030 |
-| Humming AFP8 (EP8) | 64 | 2334.429 ± 5.345 | 19.505 ± 0.073 | 5.220 ± 0.019 |
-| FlashInfer AFP8 (EP8) | 1 | 208.612 ± 2.625 | 2.968 ± 0.065 | 5.089 ± 0.091 |
-| FlashInfer AFP8 (EP8) | 32 | 1019.455 ± 10.509 | 12.469 ± 0.130 | 5.179 ± 0.033 |
-| FlashInfer AFP8 (EP8) | 64 | 2279.674 ± 16.318 | 18.990 ± 0.030 | 5.221 ± 0.013 |
+| Configuration | C | TTFT (ms) | TPOT (ms) | Acceptance | Decode ms/step (est.) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Marlin A16 (EP1) | 1 | 321.238 ± 0.687 | 2.776 ± 0.036 | 5.139 ± 0.058 | 13.947 ± 0.007 |
+| Marlin A16 (EP1) | 32 | 1558.744 ± 1.860 | 16.768 ± 0.079 | 5.159 ± 0.035 | 84.089 ± 0.614 |
+| Marlin A16 (EP1) | 64 | 3435.942 ± 29.612 | 26.989 ± 0.050 | 5.205 ± 0.004 | 136.640 ± 0.327 |
+| Humming A16 (EP1) | 1 | 263.333 ± 1.423 | 2.924 ± 0.031 | 5.115 ± 0.047 | 14.578 ± 0.013 |
+| Humming A16 (EP1) | 32 | 1294.003 ± 37.182 | 16.335 ± 0.061 | 5.153 ± 0.022 | 81.480 ± 0.501 |
+| Humming A16 (EP1) | 64 | 2900.157 ± 45.025 | 25.159 ± 0.036 | 5.211 ± 0.001 | 127.437 ± 0.117 |
+| Humming AFP8 (EP1) | 1 | 207.182 ± 1.233 | 2.522 ± 0.039 | 5.142 ± 0.051 | 12.612 ± 0.001 |
+| Humming AFP8 (EP1) | 32 | 1001.886 ± 4.787 | 12.234 ± 0.093 | 5.191 ± 0.029 | 61.830 ± 0.273 |
+| Humming AFP8 (EP1) | 64 | 2231.068 ± 25.516 | 19.354 ± 0.021 | 5.201 ± 0.004 | 97.812 ± 0.039 |
+| Humming AFP8 (EP8) | 1 | 221.653 ± 0.589 | 2.830 ± 0.157 | 5.106 ± 0.170 | 13.966 ± 0.010 |
+| Humming AFP8 (EP8) | 32 | 1057.362 ± 27.748 | 12.320 ± 0.109 | 5.172 ± 0.030 | 61.958 ± 0.532 |
+| Humming AFP8 (EP8) | 64 | 2334.429 ± 5.345 | 19.505 ± 0.073 | 5.220 ± 0.019 | 99.194 ± 0.267 |
+| FlashInfer AFP8 (EP8) | 1 | 208.612 ± 2.625 | 2.968 ± 0.065 | 5.089 ± 0.091 | 14.696 ± 0.014 |
+| FlashInfer AFP8 (EP8) | 32 | 1019.455 ± 10.509 | 12.469 ± 0.130 | 5.179 ± 0.033 | 62.803 ± 0.133 |
+| FlashInfer AFP8 (EP8) | 64 | 2279.674 ± 16.318 | 18.990 ± 0.030 | 5.221 ± 0.013 | 96.522 ± 0.410 |
 
 </div>
 </div>
 
-**Quality.** The retained EP1 GSM8K comparison evaluates all 1,319 official test questions with the first eight train examples as demonstrations, the pinned SGLang scorer, chat API, `thinking=false`, temperature 0, maximum 1,024 generated tokens, and concurrency 8. Correct counts are **1,281 / 1,280 / 1,277** for Marlin A16 / Humming A16 / Humming AFP8, respectively, with no empty responses. These are single full evaluations. Separate validation of the EP tuning fix is reported in [PR #49873](https://github.com/sgl-project/sglang/pull/49873); it is not a quality re-evaluation of the combined EP8 benchmark tree above.
-
-The long-context check uses [RULER v1 `niah_multikey_2`](https://github.com/NVIDIA/RULER/tree/db43f92ff634bbce1c33d1fb15858aec4bba509a), seed 42, and 200 fixed examples per nominal 32K/128K length. Marlin A16 and Humming AFP8 at EP1 each score 100% at both lengths, with no empty or length-limited responses. The check uses `thinking=false`, temperature 0, output limit 128, concurrency 8, and the official `string_match_all` metric. It covers this retrieval task and these two configurations, not the full RULER suite.
-
-**Scale-range adjustment.** A separate load-only audit at TP8/EP1 counts valid scale groups with positive exponent shifts before the original Humming 0.1.18 transformation. Padded groups are excluded from the denominator. No audit instrumentation was present in the serving timings.
-
-| Component | Valid groups | Groups with positive shift | Fraction |
-| --- | ---: | ---: | ---: |
-| Target | 16,986,931,200 | 0 | 0% |
-| DSpark draft | 424,673,280 | 47,868,431 | 11.27% |
-
-The affected groups are in the draft's gate/up projection. At EP1 its N dimension is padded from 576 to 768, and the padding scales participate in range selection. A valid-scales-only calculation would adjust 5,308 groups; padding adds 47,863,123 affected groups. These count positive scale shifts, not individual FP4 elements whose values change after rounding. They do not establish the cause of an accuracy or acceptance difference and are not EP8 counts.
-
-**Profiles.** The diagnostic traces use the original `f644444` source and all eight ranks, with a warmup request and prefix caching disabled. Each prefill length has one warmed capture for Marlin A16, Humming A16, and Humming AFP8, using the same first measured token-ID input at 4K/128K/1016K and requesting 32 output tokens. Only complete prefill-stage traces are included. C1 captures use the first measured ShareGPT-derived 4K prompt, 128 output tokens, and ten target verify and ten draft forwards. The three arms were captured on separate H20-3e hosts. Figures report rank-mean kernel-duration sums, not run-to-run variation; communication, dependency waits, and overlap are not additive client latency. The C1 samples do not establish the cause of the original 2.89% end-to-end A16 gap.
+**Quality checks.** The reported GSM8K scores use all 1,319 test questions with eight-shot prompting. The RULER check uses `niah_multikey_2`, with 200 examples each at 32K and 128K for Marlin A16 and Humming AFP8. Both use temperature 0 and `thinking=false`. These retained quality results cover the stated EP1 configurations.
 
 </details>
 
