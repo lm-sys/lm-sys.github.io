@@ -58,7 +58,9 @@ The effect is the Trainium version of an idea SGLang users already know from GPU
 
 ## Megakernels: one kernel per step
 
-A megakernel runs every decoder layer of a step in a single NKI kernel call. The weights are stacked on a leading layer axis, and the KV pools are written in place. A step stops being a graph of many small kernels with compiler-chosen boundaries between them. It becomes one kernel whose memory movement we control end to end.
+By default, the compiler lowers each decode step into a graph of many small kernels. It chooses where each kernel starts and ends, and intermediate results go back to HBM between them.
+
+A megakernel takes a different approach, it runs every decoder layer of a step in a single NKI kernel call. The weights are packed via the plugin on a leading layer axis, and the KV pools are written in place. A step stops being a graph of many small kernels with compiler-chosen boundaries between them. It becomes one kernel whose memory movement we control end to end.
 
 The platform still executes it the same way. Each phase is a torch.compile graph on the Neuron backend that calls the kernel once, and the decode family submits straight to the bound executor.
 
@@ -74,7 +76,7 @@ The split suits Trainium for three reasons:
 
 * **One phase per server.** Each server compiles and warms only its own phase's graphs. An aggregated server pays a program-switch fence every time it moves between prefill and decode. A disaggregated server never does.
 * **Steady TPOT.** No prefill forward runs between two decode steps, so time per output token stays at its median.
-* **A layout per phase.** Prefill and decode want different parallelism. Each role takes its own TP, EP and DP layout, and the prefill is tuned to keep its decode servers busy.
+* **A layout per phase.** Prefill and decode want different topologies. Each role takes its own TP, EP and DP layout, and the prefill and decode servers scale up independently.
 
 Each role also runs its own serving profile:
 
