@@ -154,28 +154,28 @@ These are the SGLang serving features available on Trainium2 and Trainium3 in v0
 | Precision | BF16, FP8 and MXFP4 checkpoints; FP8 KV cache |
 | Diffusion | SGLang Diffusion with a Neuron platform for image, video and world models (Trainium2, trn2.48xlarge)  |
 
-And these are the models:
+And these are the LLMs:
 
-| Model | Type | How it is served |
-| :---- | :---- | :---- |
-| Kimi-K3.1 | LLM | DSA latent pools plus KDA state; each PD role of a pipeline stage runs its stage megakernel |
-| Kimi-K3 | LLM | MLA in FP8, MXFP4 experts; pipelined prefill, two-node decode, speculative decoding |
-| GLM-5.3, GLM-5.3-Flash | LLM | Flash: KDA state with MLA and DSA pools |
-| GLM-5.2 (MXFP4) | LLM | MoE with DSA; megakernel prefill and decode; 128K and 1M decode points; MTP |
-| Qwen3.5 | LLM | MoE with gated delta net state |
-| Qwen3-0.6B, Qwen3-8B, Qwen3-30B-A3B | LLM | Dense and MoE; aggregated and PD serving |
-| GPT-OSS-120B | LLM | MoE, MXFP4; megakernel decode; pipeline and decode context parallelism; DP-attention decode |
-| GLM-4-9B | LLM | Dense; aggregated and PD serving |
-| DeepSeek-V2-Lite | LLM | MLA attention; PD serving |
+| Model | How it is served |
+| :---- | :---- |
+| Kimi-K3.1 | DSA latent pools plus KDA state; each PD role of a pipeline stage runs its stage megakernel |
+| Kimi-K3 | MLA in FP8, MXFP4 experts; pipelined prefill, two-node decode, speculative decoding |
+| GLM-5.3, GLM-5.3-Flash | Flash: KDA state with MLA and DSA pools |
+| GLM-5.2 (MXFP4) | MoE with DSA; megakernel prefill and decode; 128K and 1M decode points; MTP |
+| Qwen3.5 | MoE with gated delta net state |
+| Qwen3-0.6B, Qwen3-8B, Qwen3-30B-A3B | Dense and MoE; aggregated and PD serving |
+| GPT-OSS-120B | MoE, MXFP4; megakernel decode; pipeline and decode context parallelism; DP-attention decode |
+| GLM-4-9B | Dense; aggregated and PD serving |
+| DeepSeek-V2-Lite | MLA attention; PD serving |
 
 And diffusion models, validated on trn2.48xlarge:
 
-| Model | Type | How it is served |
-| :---- | :---- | :---- |
-| FLUX.1-dev | Diffusion | Image generation on the Neuron diffusion platform |
-| FLUX.3-Action | Diffusion | Robot action policy model |
-| MiniMax-H3, Wan2.2 A14B | Diffusion | Video generation |
-| LingBot-World-V2 | Diffusion | Real-time world model |
+| Model | How it is served |
+| :---- | :---- |
+| FLUX.1-dev | Image generation on the Neuron diffusion platform |
+| FLUX.3-Action | Robot action policy model |
+| MiniMax-H3, Wan2.2 A14B | Video generation |
+| LingBot-World-V2 | Real-time world model |
 
 ## RL rollouts with Miles
 
