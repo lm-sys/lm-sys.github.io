@@ -220,7 +220,7 @@ curl http://127.0.0.1:30000/v1/chat/completions -H "Content-Type: application/js
   -d '{"model": "/models/gpt-oss-120b", "temperature": 0, "messages": [{"role": "user", "content": "Hello"}]}'
 ```
 
-The [repository](https://github.com/sgl-project/sglang-neuron) has the full setup guide, per-model recipes and validated configurations. The [v0.1.0 release notes](https://docs.google.com/document/d/1Fnz6NZUwzySiCsGmCAcNFlRvDLrRh0-8lKDrlvbc6cQ) have the full change list.
+The [repository](https://github.com/sgl-project/sglang-neuron) has the full setup guide, per-model recipes and validated configurations. The [v0.1.0 release notes](https://github.com/sgl-project/sglang-neuron/releases/tag/v0.1.0) have the full change list.
 
 ## What's next
 
