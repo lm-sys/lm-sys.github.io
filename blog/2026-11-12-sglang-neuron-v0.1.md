@@ -2,7 +2,7 @@
 title: "SGLang-Neuron v0.1: SGLang's Serving Stack on AWS Trainium"
 author: "SGLang Team and AWS Annapurna Labs"
 date: "November 12, 2026"
-previewImg: /images/blog/sglang-neuron-v0.1/architecture.png
+previewImg: /images/blog/sglang-neuron-v0.1/cover.webp
 type: blog
 ---
 
