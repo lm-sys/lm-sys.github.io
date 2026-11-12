@@ -231,8 +231,7 @@ For questions, join the [SGLang Slack](https://slack.sglang.io). To request a mo
 
 SGLang-Neuron is built and maintained by people across RadixArk, Amazon Annapurna Labs and Yotta Labs.
 
-**RadixArk:** Alex Nails, Yihao Wang, Lingyan Hao
+* **RadixArk:** Alex Nails, Yihao Wang, Lingyan Hao
+* **Amazon:** the Annapurna Labs team
 
-**Amazon:** TODO full list
-
-And we thank **Yotta Labs** for their contributions to SGLang on Trainium, including the earlier Mini-SGLang-Neuron work.
+We also thank Yotta Labs for their contributions to SGLang on Trainium, including the earlier Mini-SGLang-Neuron work.
