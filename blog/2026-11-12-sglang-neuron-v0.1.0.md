@@ -203,31 +203,21 @@ On Trainium, Miles trains through its TorchTitan backend on TorchNeuron, the sam
 
 ## Get started
 
-On a Trainium2 or Trainium3 instance, start the container, launch a model and send a request:
+On a Trainium2 or Trainium3 instance, start the container with a model and send a request:
 
 ```bash
-# Start the container
-
-docker run --rm -it --privileged \
-  -v /path/to/work:/work \
-  public.ecr.aws/neuron/TODO-repo:TODO-tag /bin/bash
-
-# Inside the container, launch GPT-OSS-120B
-
-SGLANG_PLATFORM=neuron python -m sglang.launch_server \
-  --model-path openai/gpt-oss-120b \
-  --tp-size 8 --ep-size 8 \
-  --kv-cache-dtype fp8_e4m3 \
-  --context-length 10240 \
-  --chunked-prefill-size 8192 \
-  --max-running-requests 64 \
-  --host 127.0.0.1 --port 30000
+# Start the container and launch GPT-OSS-120B
+docker run -it --rm --ipc=host $(for d in /dev/neuron*; do printf -- '--device %s ' "$d"; done) \
+  -v <models dir>:/models -p 127.0.0.1:30000:30000 \
+  public.ecr.aws/neuron/pytorch-inference-sglang-neuron:<tag> \
+  python3 -m sglang.launch_server --model-path /models/gpt-oss-120b \
+  --tp-size 8 --ep-size 8 --kv-cache-dtype fp8_e4m3 --context-length 10240 --chunked-prefill-size 8192 \
+  --max-running-requests 64 --max-total-tokens 655360 --mem-fraction-static 0.8 \
+  --reasoning-parser gpt-oss --tool-call-parser gpt-oss --host 0.0.0.0 --port 30000
 
 # From another terminal, send a request
-
-curl http://127.0.0.1:30000/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "Hello"}]}'
+curl http://127.0.0.1:30000/v1/chat/completions -H "Content-Type: application/json" \
+  -d '{"model": "/models/gpt-oss-120b", "temperature": 0, "messages": [{"role": "user", "content": "Hello"}]}'
 ```
 
 The [repository](https://github.com/sgl-project/sglang-neuron) has the full setup guide, per-model recipes and validated configurations. The [v0.1.0 release notes](https://docs.google.com/document/d/1Fnz6NZUwzySiCsGmCAcNFlRvDLrRh0-8lKDrlvbc6cQ) have the full change list.
