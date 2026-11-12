@@ -52,7 +52,7 @@ For example, take four group scales `[1, 2, 4, 8]`, whose base scale `s_base=1` 
 
 For E4M3, this path supports an exponent span of **11** without scale-range adjustment. Larger spans raise the minimum scale to `max_scale / 2^11`; weights in affected groups are divided by the corresponding power of two and rounded back to FP4, which can introduce rounding error or underflow.
 
-A load-time check at TP8/EP1 found scale-range adjustment in **0% of valid target groups and 11.27% of valid draft groups** (47.9 million draft groups), mainly because padded scales affect the draft's range selection.
+A load-time check with Humming 0.1.18 at TP8/EP1 found scale-range adjustment in **0% of valid target groups and 11.27% of valid draft groups**, mainly because padded scales affect the draft's range selection. This padding-induced issue has been fixed upstream in [Humming PR #193](https://github.com/vllm-project/humming/pull/193).
 
 The [fused E8M0 configuration](https://github.com/vllm-project/humming/blob/v0.1.18/docs/config.md#use_fused_e8m0_scale) connects preparation with execution. Other scale layouts use their corresponding kernels and preparation rules. Humming 0.1.18 also improves the FP8_BLOCK [grouped-contiguous](https://github.com/vllm-project/humming/pull/95) and [indexed](https://github.com/vllm-project/humming/pull/115) MoE paths. Those use block-scaled activations; the AFP8 results below use **dynamic per-token E4M3 scales (`group_size=0`)**, so they do not measure these block-scale paths.
 
@@ -344,6 +344,7 @@ Estimated decode ms/step is `1,000 × Σ(E2E − TTFT) / Σ(verify steps)` withi
 ### SGLang Integration
 
 - **Simpler model integration.** Build on unified input processing to support more native quantized checkpoints and custom activations, while reducing padding, repacking, and peak memory during weight loading.
+- **Draft backend selection.** Enable independent MoE backend selection for DSpark drafts in a follow-up SGLang PR.
 - **Better parallel execution.** Improve EP-aware tuning, quantized DeepEP dispatch, and dynamic expert migration. Extend end-to-end coverage to these paths and **B300 deployments**.
 
 Follow the [SGLang Humming tracking issue #46579](https://github.com/sgl-project/sglang/issues/46579) for integration progress.
