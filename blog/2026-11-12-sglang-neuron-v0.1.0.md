@@ -1,14 +1,14 @@
 ---
-title: "SGLang-Neuron v0.1: SGLang's Serving Stack on AWS Trainium"
+title: "SGLang-Neuron v0.1.0: SGLang's Serving Stack on AWS Trainium"
 author: "SGLang Team and AWS Annapurna Labs"
 date: "November 12, 2026"
-previewImg: /images/blog/sglang-neuron-v0.1/cover.webp
+previewImg: /images/blog/sglang-neuron-v0.1.0/cover.webp
 type: blog
 ---
 
 ## TL;DR
 
-* [SGLang-Neuron](https://github.com/sgl-project/sglang-neuron) v0.1 is now open source and available in public preview. It is a PyTorch-native plugin, co-developed by the SGLang team at RadixArk and Amazon Annapurna Labs, that serves LLMs and diffusion models on AWS Trainium. During the preview, SGLang-Neuron is supported through the AWS Deep Learning Container for SGLang-Neuron.
+* [SGLang-Neuron](https://github.com/sgl-project/sglang-neuron) v0.1.0 is now open source and available in public preview. It is a PyTorch-native plugin, co-developed by the SGLang team at RadixArk and Amazon Annapurna Labs, that serves LLMs and diffusion models on AWS Trainium. During the preview, SGLang-Neuron is supported through the AWS Deep Learning Container for SGLang-Neuron.
 * Every supported LLM shares one fully asynchronous runtime. Trainium chips run decode steps back to back, with no idle time between them.
 * Megakernels run every decoder layer of a step in a single NKI kernel call. GPT-OSS-120B, GLM-5.2 and Kimi-K3 serve on this path.
 * Kimi-K3 runs prefill-decode disaggregated across three Trainium3 nodes, with KV moving over NIXL on EFA.
@@ -18,17 +18,17 @@ type: blog
 
 ## Introduction
 
-Today we are releasing SGLang-Neuron v0.1, the first public release of SGLang's backend for [AWS Trainium](https://aws.amazon.com/ai/machine-learning/trainium/). Trainium is a portfolio of AWS AI chips that delivers the best economics for AI training and inference at scale. It follows the [closed beta](https://lmsys.org/blog/2026-10-22-sglang-trainium-beta/) the SGLang team announced in October. The beta showed that SGLang's model components carry over to Trainium through [TorchNeuron](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/). This release is about what it takes to make them fast.
+Today we are releasing SGLang-Neuron v0.1.0, the first public release of SGLang's backend for [AWS Trainium](https://aws.amazon.com/ai/machine-learning/trainium/). Trainium is a portfolio of AWS AI chips that delivers the best economics for AI training and inference at scale. It follows the [closed beta](https://lmsys.org/blog/2026-10-22-sglang-trainium-beta/) the SGLang team announced in October. The beta showed that SGLang's model components carry over to Trainium through [TorchNeuron](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/). This release is about what it takes to make them fast.
 
-Neuron compiles models into programs that run on Trainium's [NeuronCores](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/neuron-core-v3.html), work reaches those cores through launch queues, and the fastest code paths are hand-written NKI kernels. Most of the engineering in v0.1 went into three places where that matters: how steps are launched, how much of a step lives in one kernel, and where the KV cache sits when it is not on the device.
+Neuron compiles models into programs that run on Trainium's [NeuronCores](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/neuron-core-v3.html), work reaches those cores through launch queues, and the fastest code paths are hand-written NKI kernels. Most of the engineering in v0.1.0 went into three places where that matters: how steps are launched, how much of a step lives in one kernel, and where the KV cache sits when it is not on the device.
 
-This blog covers what ships in v0.1 and where it goes next. We start with how the backend is built: the plugin architecture, the asynchronous runtime, megakernels, prefill-decode disaggregation over EFA, HiCache, and SGLang Diffusion on Neuron. We then cover the supported features and models, RL rollouts with Miles, how to get started, and the roadmap.
+This blog covers what ships in v0.1.0 and where it goes next. We start with how the backend is built: the plugin architecture, the asynchronous runtime, megakernels, prefill-decode disaggregation over EFA, HiCache, and SGLang Diffusion on Neuron. We then cover the supported features and models, RL rollouts with Miles, how to get started, and the roadmap.
 
 ## How it works
 
 SGLang-Neuron is an out-of-tree plugin. Installing it registers a neuron platform through SGLang's plugin entry point, and SGLANG_PLATFORM=neuron selects it at launch.
 
-![SGLang core (API server, radix cache, disaggregated serving protocol) on top of the SGLang-Neuron plugin (Neuron model implementations, NKI kernels, device parallelism, graph runner, speculative decoding, prefix and hierarchical caching), on TorchNeuron, the Neuron compiler and runtime, and AWS Trainium.](/images/blog/sglang-neuron-v0.1/architecture.png)
+![SGLang core (API server, radix cache, disaggregated serving protocol) on top of the SGLang-Neuron plugin (Neuron model implementations, NKI kernels, device parallelism, graph runner, speculative decoding, prefix and hierarchical caching), on TorchNeuron, the Neuron compiler and runtime, and AWS Trainium.](/images/blog/sglang-neuron-v0.1.0/architecture.png)
 
 *Figure 1: How the SGLang-Neuron plugin fits into SGLang.*
 
@@ -107,7 +107,7 @@ Kimi-K3 is the largest deployment in this release. It runs on three Trainium3 no
 | Prefill | 1 | PP8 x TP16 x DCP16 | Vendored NKI prefill kernels, chunk-keyed prefix cache, HiCache |
 | Decode | 2 | DP8 x TP32 x DCP32 | DSPark speculative decoding on the model's own speculative worker |
 
-![Kimi-K3 PD topology on three Trainium3 nodes: one prefill node (PP8 x TP16 x DCP16) writes KV over NIXL on EFA into a two-node decode server (DP8 x TP32 x DCP32)](/images/blog/sglang-neuron-v0.1/kimi-k3-pd-topology.png)
+![Kimi-K3 PD topology on three Trainium3 nodes: one prefill node (PP8 x TP16 x DCP16) writes KV over NIXL on EFA into a two-node decode server (DP8 x TP32 x DCP32)](/images/blog/sglang-neuron-v0.1.0/kimi-k3-pd-topology.png)
 
 *Figure 2: Kimi-K3 PD topology on three Trainium3 nodes*
 
@@ -135,11 +135,11 @@ With the hierarchical cache enabled, SGLang keeps evicted radix-cache pages in h
 
 On GPT-OSS-120B at TP8 and 32K context, HiCache L2 delivers 72% to 75% more output throughput.
 
-v0.1 also adds a remote DRAM tier below L2, reached over NIXL LIBFABRIC. When sessions outgrow the local host pool, pages spill to another node's memory instead of being dropped. The host budget is shared across the ranks and --dp-size replicas of a node, so replicas cannot overbook the same DRAM.
+v0.1.0 also adds a remote DRAM tier below L2, reached over NIXL LIBFABRIC. When sessions outgrow the local host pool, pages spill to another node's memory instead of being dropped. The host budget is shared across the ranks and --dp-size replicas of a node, so replicas cannot overbook the same DRAM.
 
 ## SGLang Diffusion on Trainium
 
-v0.1 also brings image, video, robot-action and world models to Trainium. SGLang Diffusion gained a Neuron platform, and it is selected automatically when torch-neuronx is installed. SGLang still runs the launcher, the scheduler, the image and video APIs and the realtime WebSocket protocol. The plugin supplies the pipelines, the compiled graphs and the NKI kernels.
+v0.1.0 also brings image, video, robot-action and world models to Trainium. SGLang Diffusion gained a Neuron platform, and it is selected automatically when torch-neuronx is installed. SGLang still runs the launcher, the scheduler, the image and video APIs and the realtime WebSocket protocol. The plugin supplies the pipelines, the compiled graphs and the NKI kernels.
 
 | Model | What landed |
 | :---- | :---- |
@@ -159,7 +159,7 @@ All five serve BF16 weights on one trn2.48xlarge, and each is gated for accuracy
 
 ## Feature and model coverage
 
-These are the SGLang serving features available on Trainium2 and Trainium3 in v0.1 unless noted:
+These are the SGLang serving features available on Trainium2 and Trainium3 in v0.1.0 unless noted:
 
 | Area | Supported features |
 | :---- | :---- |
@@ -230,7 +230,7 @@ curl http://127.0.0.1:30000/v1/chat/completions \
   -d '{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "Hello"}]}'
 ```
 
-The [repository](https://github.com/sgl-project/sglang-neuron) has the full setup guide, per-model recipes and validated configurations. The [v0.1 release notes](https://docs.google.com/document/d/1Fnz6NZUwzySiCsGmCAcNFlRvDLrRh0-8lKDrlvbc6cQ) have the full change list.
+The [repository](https://github.com/sgl-project/sglang-neuron) has the full setup guide, per-model recipes and validated configurations. The [v0.1.0 release notes](https://docs.google.com/document/d/1Fnz6NZUwzySiCsGmCAcNFlRvDLrRh0-8lKDrlvbc6cQ) have the full change list.
 
 ## What's next
 
