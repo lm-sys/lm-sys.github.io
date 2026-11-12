@@ -139,7 +139,7 @@ v0.1 also adds a remote DRAM tier below L2, reached over NIXL LIBFABRIC. When se
 
 ## SGLang Diffusion on Trainium
 
-v0.1 also brings image, video and world models to Trainium. SGLang Diffusion gained a Neuron platform, so diffusion pipelines select Trainium the same way LLM serving does. The platform came in with FLUX.1-dev as its first model, and four more models followed on the same base.
+v0.1 also brings image, video, robot-action and world models to Trainium. SGLang Diffusion gained a Neuron platform, and it is selected automatically when torch-neuronx is installed. SGLang still runs the launcher, the scheduler, the image and video APIs and the realtime WebSocket protocol. The plugin supplies the pipelines, the compiled graphs and the NKI kernels.
 
 | Model | What landed |
 | :---- | :---- |
@@ -149,7 +149,13 @@ v0.1 also brings image, video and world models to Trainium. SGLang Diffusion gai
 | FLUX.3-Action | Runs on SGLang Diffusion's own pipeline |
 | LingBot-World-V2 | Real-time serving. DiT with paged cache attention, LNC 1 launches, a streaming Wan VAE |
 
-FLUX.1-dev carried the platform work: the NKI kernels and tensor-parallel layers it introduced are the base the later models build on. LingBot-World-V2 is the first model on the plugin to serve in real time, with a DiT that attends over a paged cache and a streaming VAE.
+All five serve BF16 weights on one trn2.48xlarge, and each is gated for accuracy against a reference in its recipe. Each model's recipe in the repository has its launch command, request format, measured latencies and accuracy gates.
+
+**SGLang's groups, laid out on the chip torus.** The models use SGLang Diffusion's own tensor-parallel, sequence-parallel and CFG groups, with the sequence-parallel group acting as context parallelism (CP). The 16 chips of a trn2.48xlarge form a 4x4 torus, and a collective is routable only when its chips form a ring. SGLang builds every group from one fixed rank order, which yields strided CP groups (at TP8 x CP8) and CFG pairs (in Wan2.2) that the fabric rejects. One small hook on SGLang's rank generator renames ranks, so that every TP group lies within one row of the mesh and every CP group is a column. Ranks keep their cores, and nothing else in SGLang changes.
+
+**Whole static graphs.** Each component compiles as one static graph through a small Dynamo backend in the plugin, which also sets compiler flags per graph. Guidance scale, timesteps and sampler coefficients enter the graphs as device tensors, so changing them between requests does not recompile.
+
+**A world model served like an LLM.** LingBot-World-V2 keeps its causal history in a paged K/V cache, with an attention sink and a recent window, and a paged FlashAttention NKI kernel reads it. The DiT runs on its own cores, while a separate set of cores runs the text encoder and the streaming VAE, so one chunk decodes while the DiT works on the next. Clients connect through SGLang's realtime video WebSocket, the same protocol as on GPU.
 
 ## Feature and model coverage
 
