@@ -209,7 +209,7 @@ On a Trainium2 or Trainium3 instance, start the container with a model and send 
 # Start the container and launch GPT-OSS-120B
 docker run -it --rm --ipc=host $(for d in /dev/neuron*; do printf -- '--device %s ' "$d"; done) \
   -v <models dir>:/models -p 127.0.0.1:30000:30000 \
-  public.ecr.aws/neuron/pytorch-inference-sglang-neuron:<tag> \
+  public.ecr.aws/neuron/pytorch-inference-sglang-neuron:v0.1.0-neuron-py314-sdk-2.33.0-ubuntu26.04 \
   python3 -m sglang.launch_server --model-path /models/gpt-oss-120b \
   --tp-size 8 --ep-size 8 --kv-cache-dtype fp8_e4m3 --context-length 10240 --chunked-prefill-size 8192 \
   --max-running-requests 64 --max-total-tokens 655360 --mem-fraction-static 0.8 \
