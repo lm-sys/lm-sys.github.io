@@ -80,11 +80,21 @@ The split suits Trainium for three reasons:
 
 Each role also runs its own serving profile:
 
-|  | Prefill server | Decode server |
-| :---- | :---- | :---- |
-| Batching | One request per forward, at the sizes its graphs were compiled for | Steps run back to back; sampled tokens stay on the device |
-| Launching | Every forward launches before the previous one finishes; 32 queued executions per core cover long prefill forwards | Transfer workers and NIXL progress threads land incoming KV beside the running graphs |
-| Handoff | A pipelined prefill computes ahead of the KV transfer | A request joins the running batch once its KV has landed |
+<table>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 42%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr><th></th><th>Prefill server</th><th>Decode server</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Batching</strong></td><td>One request per forward, at the sizes its graphs were compiled for</td><td>Steps run back to back; sampled tokens stay on the device</td></tr>
+<tr><td><strong>Launching</strong></td><td>Every forward launches before the previous one finishes; 32 queued executions per core cover long prefill forwards</td><td>Transfer workers and NIXL progress threads land incoming KV beside the running graphs</td></tr>
+<tr><td><strong>Handoff</strong></td><td>A pipelined prefill computes ahead of the KV transfer</td><td>A request joins the running batch once its KV has landed</td></tr>
+</tbody>
+</table>
 
 A model can also expose named decode points, such as 128K and 1M context. Both roles launch with the same point, so the compiled shapes on each side agree.
 
