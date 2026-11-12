@@ -23,6 +23,8 @@ The consortium gives its members a standing forum to discuss emerging inference 
 
 “NVIDIA is proud to be a founding member of the SGLang Consortium and to work with the community to advance open inference software,” said Ian Buck, vice president of hyperscale and high-performance computing at NVIDIA. “Better software helps developers get more performance from NVIDIA compute. Open models enable them to build new applications and businesses. And lower inference costs make AI more accessible to organizations everywhere.”
 
+"Open source empowers developers to advance AI inference further," said Ramine Roane, corporate vice president of AI applications at AMD. "SGLang gives developers a fast, open inference engine that runs across hardware, including AMD Instinct GPUs. We're proud to help launch the SGLang Consortium and to keep pushing the frontier of inference."
+
 ## Launched at the first SGLang Summit
 
 The consortium was announced in the opening keynote of the inaugural SGLang Summit, the first conference dedicated to SGLang and its open-source community, held November 12–13 at the Fort Mason Center for Arts & Culture in San Francisco. More than 100 speakers from across AI hardware, models, infrastructure and applications are taking part. Sessions cover SGLang’s ecosystem across reinforcement learning, multimodal models and hardware platforms.
