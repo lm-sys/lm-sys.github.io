@@ -50,7 +50,7 @@ In the training comparison above, SGLang served the model on 8 NVIDIA H200 GPUs,
 
 ![The faster the inference, the more the sandbox part of an episode stands out, and the larger the CPU gap](/images/blog/miles-vera-sandboxes/fig5-faster-inference.svg)
 
-A faster CPU server can run more sandboxes at once, but adding servers would do that too. In RL, it also matters that each episode finishes sooner, and that pays off in three ways<sup><a href="#note-13">13</a></sup>:
+If longer episodes only meant fewer of them finished per hour, running more at once on more servers would make up for it. But in RL, it also matters that each episode finishes sooner, and that pays off in three ways<sup><a href="#note-13">13</a></sup>:
 
 - **Fresher samples**: in fully asynchronous training, the longer an episode runs, the further the weights have moved on by the time the episode is used for training, and the more the training has to correct for it. The chart below shows this in our training on Vera, where episode length varies from task to task: episodes that ran for more than 20 minutes started with weights more than 3 steps behind; those that finished within 5 minutes were less than 2 steps behind. Running more episodes at once also speeds training up, but makes the samples staler; shorter episodes speed it up without that cost: with episodes 11% shorter on Vera, training could run up to 12% faster at the same staleness<sup><a href="#note-14">14</a></sup>.
 - **Less GPU memory sitting idle**: while an episode waits for a command's result, its KV cache keeps holding GPU memory. In the training comparison above, with the sandboxes on Turin, this idle KV cache was nearly 50% larger than on Vera: 17.9% of all KV cache in use, against 12.1% on Vera.
@@ -64,7 +64,7 @@ So in agentic RL, a faster CPU server does more than save the seconds spent runn
 
 With Miles, we ran agentic RL training end to end with every sandbox on NVIDIA Vera, both synchronously and fully asynchronously, without needing to modify the training code. Vera matches or beats x86 with only one sandbox running, and its lead grows as the load gets heavier: within the same latency bar, one socket carries 1.3–2.1 times the load of current x86. So on the tasks we tested, with the sandbox machines kept busy, episodes ran 12% faster with the sandboxes on Vera than on a current x86 CPU. And the faster the inference, the more this matters: we project that the gap grows to 33% once inference is 8 times faster than in our runs. In RL, shorter episodes also mean fresher samples to learn from and better use of the GPUs, with less memory sitting idle and less waiting for the slowest episode in each group.
 
-Ultimately this translates to faster time to quality: **by running their sandboxes on NVIDIA Vera, teams using RadixArk Miles complete more episodes in the same time and get more on-policy data, so they can train agentic models to the same quality in less time, on the same GPUs. The gain will only grow in the future as inference with SGLang gets faster.**
+**Ultimately, faster sandboxes mean faster time to quality. By running their sandboxes on NVIDIA Vera, teams using RadixArk Miles complete more episodes in the same time and get more on-policy data, so they can train agentic models to the same quality in less time, on the same GPUs. The gain will only grow in the future as inference with SGLang gets faster.**
 
 Give it a try: [https://miles.radixark.com](https://miles.radixark.com/)
 
