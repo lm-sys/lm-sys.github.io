@@ -8,7 +8,7 @@ type: news
 
 SGLang now powers [NVIDIA NIM Certified](https://docs.nvidia.com/nim/large-language-models/latest/about-nim-llm/nim-offerings.html#nim-certified) microservices. The open-source inference engine brings together high performance, broad model support, and a developer community that continues to push inference forward. It is already proven in large-scale production deployments.
 
-With [NVIDIA NIM Certified](https://docs.nvidia.com/nim/large-language-models/latest/about-nim-llm/nim-offerings.html#nim-certified) microservices now built on SGLang, NVIDIA makes it easier for enterprises to adopt SGLang's serving innovations. NIM adds validated containers, optimized configurations for supported models and GPUs, and enterprise support through NVIDIA AI Enterprise. *Ref: [SGLang documentation](https://docs.sglang.io/), [Certified NIM catalog](https://catalog.ngc.nvidia.com/orgs/nim/nvidia/collections/certified-nim/-)*
+With [NVIDIA NIM Certified](https://docs.nvidia.com/nim/large-language-models/latest/about-nim-llm/nim-offerings.html#nim-certified) microservices now built on SGLang, NVIDIA makes it easier for enterprises to adopt SGLang's serving innovations, with validated containers, optimized configurations for supported models and GPUs, and enterprise support through NVIDIA AI Enterprise. *Ref: [SGLang documentation](https://docs.sglang.io/), [Certified NIM catalog](https://catalog.ngc.nvidia.com/orgs/nim/nvidia/collections/certified-nim/-)*
 
 ![NVIDIA NIM based on SGLang: NIM adds validated containers, curated deployment profiles, security maintenance and enterprise support on top of the SGLang inference engine](/images/blog/sglang-nvidia-nim/nim-on-sglang.png)
 
