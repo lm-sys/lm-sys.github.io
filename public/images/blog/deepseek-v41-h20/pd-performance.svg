@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="370" viewBox="0 0 1100 370" role="img" aria-labelledby="title desc">
+  <title id="title">Final H20 PD configuration versus the TP4 baseline</title>
+  <desc id="desc">With baseline normalized to one, mean E2E is 0.34, mean time to first token is 0.16, and output throughput is 2.91.</desc>
+  <rect width="1100" height="370" fill="#fff"/>
+  <g font-family="system-ui, sans-serif" fill="#162941">
+    <text x="28" y="45" font-size="29" font-weight="700">DeepSeek-V4.1-Flash on 8× H20-3e</text>
+    <rect x="30" y="68" width="22" height="13" rx="2" fill="#a0afc3"/>
+    <text x="62" y="80" font-size="18">TP4 baseline</text>
+    <rect x="205" y="68" width="22" height="13" rx="2" fill="#1764b3"/>
+    <text x="237" y="80" font-size="18">Final configuration</text>
+    <path d="M272 101v204" stroke="#dae3ed"/>
+    <text x="272" y="329" font-size="17" text-anchor="middle">0×</text>
+    <path d="M480 101v204" stroke="#dae3ed"/>
+    <text x="480" y="329" font-size="17" text-anchor="middle">1×</text>
+    <path d="M688 101v204" stroke="#dae3ed"/>
+    <text x="688" y="329" font-size="17" text-anchor="middle">2×</text>
+    <path d="M896 101v204" stroke="#dae3ed"/>
+    <text x="896" y="329" font-size="17" text-anchor="middle">3×</text>
+    <text x="30" y="127" font-size="22" font-weight="650">Mean E2E</text>
+    <text x="30" y="151" font-size="17" fill="#4f6177">lower is better</text>
+    <rect x="272" y="109" width="208" height="20" rx="2" fill="#a0afc3"/>
+    <rect x="272" y="134" width="71.68" height="22" rx="2" fill="#1764b3"/>
+    <text x="353.68" y="151" font-size="19" font-weight="700" fill="#145495">0.34× (−65.54%)</text>
+    <text x="30" y="193" font-size="22" font-weight="650">Mean TTFT</text>
+    <text x="30" y="217" font-size="17" fill="#4f6177">lower is better</text>
+    <rect x="272" y="175" width="208" height="20" rx="2" fill="#a0afc3"/>
+    <rect x="272" y="200" width="32.74" height="22" rx="2" fill="#1764b3"/>
+    <text x="314.74" y="217" font-size="19" font-weight="700" fill="#145495">0.16× (−84.26%)</text>
+    <text x="30" y="259" font-size="22" font-weight="650">Output throughput</text>
+    <text x="30" y="283" font-size="17" fill="#4f6177">higher is better</text>
+    <rect x="272" y="241" width="208" height="20" rx="2" fill="#a0afc3"/>
+    <rect x="272" y="266" width="605.48" height="22" rx="2" fill="#1764b3"/>
+    <text x="887.48" y="283" font-size="19" font-weight="700" fill="#145495">2.91× (+191.10%)</text>
+    <text x="584" y="354" font-size="17" text-anchor="middle" fill="#4f6177">Relative to baseline (1×)</text>
+  </g>
+</svg>

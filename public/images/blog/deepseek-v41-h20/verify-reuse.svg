@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="400" viewBox="0 0 1100 400" role="img" aria-labelledby="title desc">
+  <title id="title">Share one decoded K tile across the verify rows of one request</title>
+  <desc id="desc">Before, each verify query loads and dequantizes the same FP4 tile. After, a single load and BF16 dequantization supplies all three example query rows; each still uses its own causal mask.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="m0 0 10 5-10 5z" fill="#586e75"/></marker></defs>
+  <rect width="1100" height="400" fill="#fff"/>
+  <g font-family="system-ui, sans-serif" fill="#15343b">
+    <text x="34" y="44" font-size="28" font-weight="700">Reuse the same K tile across verify queries</text>
+    <rect x="34" y="70" width="494" height="256" rx="11" fill="#f6f7f8" stroke="#d9dfe3"/>
+    <rect x="549" y="70" width="517" height="256" rx="11" fill="#eef8f5" stroke="#bfd9d0"/>
+    <text x="55" y="111" font-size="20" font-weight="750">Before · one tile load per query</text>
+    <text x="571" y="111" font-size="20" font-weight="750">After · one tile load for the request</text>
+    <g fill="#e5eaee"><rect x="55" y="137" width="246" height="41" rx="6"/><rect x="55" y="194" width="246" height="41" rx="6"/><rect x="55" y="251" width="246" height="41" rx="6"/></g>
+    <rect x="571" y="188" width="232" height="53" rx="7" fill="#cfe9df"/>
+    <g font-size="17" text-anchor="middle">
+      <text x="178" y="163">Load FP4 K → BF16</text><text x="178" y="220">Load FP4 K → BF16</text><text x="178" y="277">Load FP4 K → BF16</text>
+      <text x="687" y="210" font-weight="700">Load FP4 K → BF16</text><text x="687" y="231">once per tile</text>
+    </g>
+    <g fill="#fff" stroke="#c9d7da">
+      <rect x="349" y="137" width="151" height="41" rx="20"/><rect x="349" y="194" width="151" height="41" rx="20"/><rect x="349" y="251" width="151" height="41" rx="20"/>
+      <rect x="888" y="137" width="151" height="41" rx="20"/><rect x="888" y="194" width="151" height="41" rx="20"/><rect x="888" y="251" width="151" height="41" rx="20"/>
+    </g>
+    <g font-size="18" text-anchor="middle">
+      <text x="424" y="163">Score query 1</text><text x="424" y="220">Score query 2</text><text x="424" y="277">Score query 3</text>
+      <text x="963" y="163">Score query 1</text><text x="963" y="220">Score query 2</text><text x="963" y="277">Score query 3</text>
+    </g>
+    <g fill="none" stroke="#586e75" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M309 157h33"/><path d="M309 214h33"/><path d="M309 271h33"/>
+      <path d="M810 214h31v-57h40"/><path d="M810 214h71"/><path d="M810 214h31v57h40"/>
+    </g>
+    <circle cx="841" cy="214" r="4" fill="#586e75"/>
+    <text x="34" y="365" font-size="19" fill="#46616a">Each query keeps its own causal mask. Only the key load and dequantization are shared.</text>
+  </g>
+</svg>
