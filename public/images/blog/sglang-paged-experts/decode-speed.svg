@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="584" viewBox="0 0 1200 584" role="img" aria-labelledby="title desc">
+<title id="title">Decode speed on a 16 GB consumer GPU</title>
+<desc id="desc">Horizontal bars, decode tokens per second for one request on an RTX 5070 Ti 16 GB: Qwen3-30B-A3B GPTQ-Int4 233.3; gpt-oss-20b (MXFP4) 172.5; Qwen3-30B-A3B FP8 105.0; Qwen3-Next-80B-A3B NVFP4 100.8.</desc>
+<rect width="1200" height="584" fill="#fff"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="40" y="52" font-size="32" fill="#171717" font-weight="700" text-anchor="start">Decode speed on a 16 GB consumer GPU</text>
+<text x="40" y="84" font-size="20" fill="#52514e" text-anchor="start">RTX 5070 Ti 16 GB · one request · K chosen automatically · tok/s = 1000 / median TPOT</text>
+<line x1="500.0" y1="146" x2="500.0" y2="486" stroke="#e6e5e1" stroke-width="1"/>
+<text x="500.0" y="514" font-size="18" fill="#52514e" text-anchor="middle">0</text>
+<line x1="612.0" y1="146" x2="612.0" y2="486" stroke="#e6e5e1" stroke-width="1"/>
+<text x="612.0" y="514" font-size="18" fill="#52514e" text-anchor="middle">50</text>
+<line x1="724.0" y1="146" x2="724.0" y2="486" stroke="#e6e5e1" stroke-width="1"/>
+<text x="724.0" y="514" font-size="18" fill="#52514e" text-anchor="middle">100</text>
+<line x1="836.0" y1="146" x2="836.0" y2="486" stroke="#e6e5e1" stroke-width="1"/>
+<text x="836.0" y="514" font-size="18" fill="#52514e" text-anchor="middle">150</text>
+<line x1="948.0" y1="146" x2="948.0" y2="486" stroke="#e6e5e1" stroke-width="1"/>
+<text x="948.0" y="514" font-size="18" fill="#52514e" text-anchor="middle">200</text>
+<line x1="1060.0" y1="146" x2="1060.0" y2="486" stroke="#e6e5e1" stroke-width="1"/>
+<text x="1060.0" y="514" font-size="18" fill="#52514e" text-anchor="middle">250</text>
+<text x="780.0" y="550" font-size="19" fill="#52514e" text-anchor="middle">decode tok/s, one request</text>
+<path d="M500 160 H1018.6 Q1022.6 160 1022.6 164 V194 Q1022.6 198 1018.6 198 H500 Z" fill="#2a78d6"/>
+<text x="484" y="176" font-size="21" fill="#171717" font-weight="700" text-anchor="end">Qwen3-30B-A3B GPTQ-Int4</text>
+<text x="484" y="199" font-size="17" fill="#52514e" text-anchor="end">17 GB checkpoint · 92 of 128 experts on the GPU</text>
+<text x="1032.6" y="186" font-size="20" fill="#171717" font-weight="700" text-anchor="start">233.3 tok/s</text>
+<path d="M500 246 H882.4 Q886.4 246 886.4 250 V280 Q886.4 284 882.4 284 H500 Z" fill="#2a78d6"/>
+<text x="484" y="262" font-size="21" fill="#171717" font-weight="700" text-anchor="end">gpt-oss-20b (MXFP4)</text>
+<text x="484" y="285" font-size="17" fill="#52514e" text-anchor="end">14 GB checkpoint · 28 of 32 experts on the GPU</text>
+<text x="896.4" y="272" font-size="20" fill="#171717" font-weight="700" text-anchor="start">172.5 tok/s</text>
+<path d="M500 332 H731.2 Q735.2 332 735.2 336 V366 Q735.2 370 731.2 370 H500 Z" fill="#2a78d6"/>
+<text x="484" y="348" font-size="21" fill="#171717" font-weight="700" text-anchor="end">Qwen3-30B-A3B FP8</text>
+<text x="484" y="371" font-size="17" fill="#52514e" text-anchor="end">31 GB checkpoint · 45 of 128 experts on the GPU</text>
+<text x="745.2" y="358" font-size="20" fill="#171717" font-weight="700" text-anchor="start">105.0 tok/s</text>
+<path d="M500 418 H721.8 Q725.8 418 725.8 422 V452 Q725.8 456 721.8 456 H500 Z" fill="#2a78d6"/>
+<text x="484" y="434" font-size="21" fill="#171717" font-weight="700" text-anchor="end">Qwen3-Next-80B-A3B NVFP4</text>
+<text x="484" y="457" font-size="17" fill="#52514e" text-anchor="end">48 GB checkpoint · 101 of 512 experts on the GPU</text>
+<text x="735.8" y="444" font-size="20" fill="#171717" font-weight="700" text-anchor="start">100.8 tok/s</text>
+<line x1="500" y1="146" x2="500" y2="486" stroke="#52514e" stroke-width="1"/>
+</g>
+</svg>
