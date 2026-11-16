@@ -1,17 +1,17 @@
 ---
-title: "LMSYS Org Launches SGLang Consortium with NVIDIA, AMD, Intel, Google, Meta, Cloudflare, Modal and RadixArk to Advance Open-Source AI Inference"
+title: "LMSYS Org Launches SGLang Consortium with NVIDIA, AMD, Intel, Google, Meta, Thinking Machines Lab, Cloudflare, Modal and RadixArk to Advance Open-Source AI Inference"
 author: "LMSYS Org"
 date: "November 12, 2026"
-previewImg: /images/blog/sglang-consortium/consortium.png
+previewImg: /images/blog/sglang-consortium/consortium-2026-11-16.jpg
 type: news
 excerpt: "Hardware, model and infrastructure leaders join SGLang’s maintainers to advance efficient inference for growing AI ecosystem"
 ---
 
 *Hardware, model and infrastructure leaders join SGLang’s maintainers to advance efficient inference for growing AI ecosystem*
 
-![SGLang Consortium founding members and LMSYS Org](/images/blog/sglang-consortium/consortium.png)
+![SGLang Consortium founding members, including Thinking Machines Lab, and LMSYS Org](/images/blog/sglang-consortium/consortium-2026-11-16.jpg)
 
-**SAN FRANCISCO, November 12, 2026** — [LMSYS Org](https://www.lmsys.org/), the nonprofit behind the open-source AI engine SGLang, today launched the SGLang Consortium with founding members NVIDIA, AMD, Intel, Google, Meta, Cloudflare, Modal and RadixArk, who will work with SGLang’s maintainers to help shape the project’s roadmap and advance open-source AI inference. The consortium was announced in the opening keynote of the inaugural SGLang Summit in San Francisco.
+[LMSYS Org](https://www.lmsys.org/), the nonprofit behind the open-source AI engine SGLang, launched the SGLang Consortium on November 12, 2026. The consortium’s founding members now include NVIDIA, AMD, Intel, Google, Meta, Thinking Machines Lab, Cloudflare, Modal and RadixArk, who will work with SGLang’s maintainers to help shape the project’s roadmap and advance open-source AI inference. The consortium was announced in the opening keynote of the inaugural SGLang Summit in San Francisco.
 
 ## A shared forum for open AI inference
 
@@ -30,3 +30,5 @@ The consortium gives its members a standing forum to discuss emerging inference 
 The consortium was announced in the opening keynote of the inaugural SGLang Summit, the first conference dedicated to SGLang and its open-source community, held November 12–13 at the Fort Mason Center for Arts & Culture in San Francisco. More than 100 speakers from across AI hardware, models, infrastructure and applications are taking part. Sessions cover SGLang’s ecosystem across reinforcement learning, multimodal models and hardware platforms.
 
 Summit details are in LMSYS Org’s [October 28 announcement](https://www.businesswire.com/news/home/20261028934474/en/Next-Gen-AI-Hardware-Infrastructure-Frontier-Models-and-Applications-on-Center-Stage-at-SGLang-Summit).
+
+**Updated November 16, 2026:** Added Thinking Machines Lab as a founding member and updated the consortium graphic.
