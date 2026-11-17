@@ -2,17 +2,17 @@
 title: "SGLang Summit 2026 Recap: Building Open AI Infrastructure Together"
 author: "The SGLang Team"
 date: "November 17, 2026"
-previewImg: /images/blog/sglang-summit-2026/summit-exhibition-hall.webp
+previewImg: /images/blog/sglang-summit-2026/summit-community-hero.webp
 type: news
 ---
 
 More than 2,000 developers, researchers, and industry leaders gathered at Fort Mason in San Francisco on November 12–13 for the first SGLang Summit. The event brought together the people building SGLang and Miles, the teams running them in production, and the hardware partners helping them reach new platforms. Across the main stage, technical sessions, hands-on workshops, and expo floor, the community shared what is working today and what needs to come next.
 
 <figure class="summit-figure summit-figure--hero" style="margin: 2rem 0;">
-  <a href="/images/blog/sglang-summit-2026/summit-exhibition-hall.webp" target="_blank" rel="noopener noreferrer" aria-label="Two days of talks, workshops, and conversations at Fort Mason in San Francisco. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/summit-exhibition-hall.webp" srcset="/images/blog/sglang-summit-2026/summit-exhibition-hall-800.webp 800w, /images/blog/sglang-summit-2026/summit-exhibition-hall.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="Attendees gather around tables and exhibitor booths in the bright summit hall." width="1800" height="1351" loading="eager" decoding="async" fetchpriority="high" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 16 / 9; object-fit: cover; object-position: center 60%;">
+  <a href="/images/blog/sglang-summit-2026/summit-community-hero.webp" target="_blank" rel="noopener noreferrer" aria-label="The SGLang community at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/summit-community-hero.webp" srcset="/images/blog/sglang-summit-2026/summit-community-hero-800.webp 800w, /images/blog/sglang-summit-2026/summit-community-hero.webp 1333w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="Attendees fill both levels of Fort Mason beneath the SGLang Summit 2026 sign." width="1333" height="1243" loading="eager" decoding="async" fetchpriority="high" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Two days of talks, workshops, and conversations at Fort Mason in San Francisco.</figcaption>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">The SGLang community at Fort Mason.</figcaption>
 </figure>
 
 The summit marked several milestones: the launch of the SGLang Consortium with nine founding members, the announcement of SGLang v1.0, and the release of Miles v0.2. Just as valuable were the engineering lessons and conversations around those announcements, from serving frontier models and scaling reinforcement learning to building infrastructure for increasingly capable agents. Here are the highlights from two days of building and learning together.
@@ -66,11 +66,11 @@ As an example of what deeper collaboration can deliver, the opening presentation
 
 ### SGLang v1.0 sets the next milestone for production inference
 
-The SGLang v1.0 announcement puts reliability and compatibility at the center of the project’s next release. The work focuses on strengthening existing functionality, surfacing configuration problems clearly, and establishing compatibility expectations for the 1.x series.
+The SGLang v1.0 announcement puts efficiency and production scalability at the center of the project’s next release. The work focuses on strengthening existing functionality, surfacing configuration problems clearly, and establishing compatibility expectations for what’s next for SGLang.
 
-SGLang’s existing serving capabilities include speculative decoding, Rust implementations of performance-sensitive components, hierarchical caching, and flexible parallelism. The v1.0 effort aims to make these capabilities more dependable as teams deploy and upgrade their inference systems.
+The opening presentation connected that work to the demands of newer models and agents. Hybrid model architectures require different types of state to be managed together, while long-running agents accumulate histories that can exceed GPU memory. Unified memory management and hierarchical caching help address those constraints by supporting reuse across different types of state and storage.
 
-The opening keynote connected that work to the demands of newer models and agents. Hybrid model architectures require different types of state to be managed together, while long-running agents accumulate histories that can exceed GPU memory. Unified memory management and hierarchical caching help address those constraints by supporting reuse across different types of state and storage.
+1.0 also signals SGLang’s shift to AI-driven development, with agents now producing most of the project’s merged PRs. Next, the SGLang team will work on AI tools that write code, review PRs, build tests, manage compatibility and even propose roadmaps. The community is building toward an ecosystem that keeps improving itself.
 
 <figure class="summit-figure" style="margin: 2rem 0;">
   <a href="/images/blog/sglang-summit-2026/sglang-v1-release.webp" target="_blank" rel="noopener noreferrer" aria-label="Ying Sheng announces SGLang v1.0. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
@@ -83,11 +83,9 @@ Release progress and migration guidance are documented in the [SGLang 1.0 releas
 
 ### Miles v0.2 expands reinforcement learning across hardware and workloads
 
-RadixArk released Miles v0.2, expanding the framework’s support for reinforcement learning across NVIDIA and AMD GPUs and Google TPUs, with Trainium support forthcoming.
+Miles v0.2 takes production RL post-training with SGLang to more hardware and more workloads. It runs on NVIDIA GPUs, AMD GPUs and Google TPUs, with AWS Trainium landing soon, and trains with Megatron-LM, FSDP or TorchTitan.
 
-Beyond support for multiple hardware platforms, the release broadens the workloads developers can train. For multimodal RL, a shared media processor handles images, video, and audio so rollout generation and training use the same token representations. Expanded multi-LoRA support lets multiple adapters share a base model, while Miles-Diffusion adds asynchronous training and support for additional diffusion models.
-
-Miles v0.2 also addresses training drift caused by stale samples. Experimental fault tolerance is designed to let a training run continue if part of the system fails.
+Beyond text, Miles now handles RL for image, video and audio, and Miles-Diffusion extends it to diffusion models. With Multi-LoRA, it’s practical to customize one base model for many tasks at once.
 
 The code and implementation details are available in the [Miles v0.2 release notes](https://github.com/radixark/miles/releases/tag/v0.2.0).
 
@@ -128,6 +126,17 @@ The preview includes an asynchronous runtime, optimized kernels, and caching cap
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">SGLang-Neuron v0.1.0 brings SGLang’s serving stack to AWS Trainium.</figcaption>
 </figure>
 </div>
+
+### A call for security partners
+
+As AI accelerates software development, security review needs to keep pace. The keynote highlighted vulnerabilities reported by Cloudflare and NEAR AI, the fixes they prompted, and ongoing work to strengthen isolation between requests and protect administrative access.
+
+<figure class="summit-figure" style="margin: 2rem 0;">
+  <a href="/images/blog/sglang-summit-2026/security-partners-keynote.webp" target="_blank" rel="noopener noreferrer" aria-label="Ying Sheng calls for security partners. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/security-partners-keynote.webp" srcset="/images/blog/sglang-summit-2026/security-partners-keynote-800.webp 800w, /images/blog/sglang-summit-2026/security-partners-keynote.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="Ying Sheng presents a keynote slide calling for security partners." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+  </a>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Ying Sheng calls for security partners.</figcaption>
+</figure>
 
 ## Themes from the talks
 
@@ -285,9 +294,9 @@ Aravind Srinivas outlined a vision of agents carrying out sustained work across 
 
 ## Breakout sessions: building the engine for the agentic era
 
-AI is moving from answering questions to getting things done, and SGLang is becoming the engine behind that shift. Across six breakout rooms and more than 90 technical talks, we saw SGLang evolving on every front for AI agents. Sessions on HiCache and Mooncake showed how SGLang can remember and reuse an agent’s ever-growing context across GPU memory, CPU memory, and shared storage, reporting a 60% reduction in the median wait for the first response. It has also become the rollout engine for reinforcement learning, powering frameworks like Miles. Speakers also presented weight-sync techniques that keep rollout fleets up to date while sending only about 1% of the model per update.
+AI is moving from answering questions to getting things done, and SGLang is becoming the engine behind that shift. Across six breakout rooms and more than 90 technical talks, the results spoke for themselves. On speed, an optimized SGLang deployment served a leading open model at about 1,800 tokens per second to a single user, 1.8× faster than the stock recipe with reasoning accuracy unchanged. On reliability, one production team reported running SGLang for 500 days through eight major upgrades with no performance regressions observed. For agents, which must re-read a growing history at every step, SGLang’s HiCache reuses stored context instead of recomputing it, cutting median time-to-first-token by 60% in a multi-turn benchmark. And for reinforcement learning, the SGLang-powered Miles framework cut the weight-update pause for a trillion-parameter model across 32 nodes from 53 seconds to about 7.
 
-Other sessions explored how AI agents can improve the infrastructure they run on. Speakers reported up to 1.4× faster decoding with GPU megakernels written by AI agents, with output bitwise-identical to the original. Agents also helped bring SGLang to a new chip in just one week. These talks offered a look at how agent-assisted development could help improve performance and extend hardware support.
+Even more exciting, AI is starting to help improve SGLang itself. GPU megakernels written by AI agents made decoding up to 2× faster, with outputs verified against the original kernels. Two engineers working with AI agents ported SGLang to another AI accelerator in under a week, reaching within 1% of production performance. When AI starts helping build the engine that runs AI, progress only speeds up. A faster, more open SGLang that runs everywhere is on its way, and this is only the beginning.
 
 <div class="summit-gallery" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, max(280px, calc(50% - 8px))), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
 <figure class="summit-figure" style="min-width: 0; margin: 0;">
@@ -511,6 +520,12 @@ The summit also made room for people to relax, meet someone new, and enjoy the d
     <img src="/images/blog/sglang-summit-2026/breakout-session-overview.webp" srcset="/images/blog/sglang-summit-2026/breakout-session-overview-800.webp 800w, /images/blog/sglang-summit-2026/breakout-session-overview.webp 1440w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="An overhead view of attendees filling a breakout session." width="1440" height="1080" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Attendees gather for a session at Fort Mason.</figcaption>
+</figure>
+<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+  <a href="/images/blog/sglang-summit-2026/summit-exhibition-hall.webp" target="_blank" rel="noopener noreferrer" aria-label="A full house at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/summit-exhibition-hall.webp" srcset="/images/blog/sglang-summit-2026/summit-exhibition-hall-800.webp 800w, /images/blog/sglang-summit-2026/summit-exhibition-hall.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees gather around tables and exhibitor booths in the bright summit hall." width="1800" height="1351" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+  </a>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">A full house at Fort Mason.</figcaption>
 </figure>
 </div>
 
