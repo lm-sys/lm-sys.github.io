@@ -60,7 +60,7 @@ The SGLang v1.0 announcement puts efficiency and production scalability at the c
 
 The opening presentation connected that work to the demands of newer models and agents. Hybrid model architectures require different types of state to be managed together, while long-running agents accumulate histories that can exceed GPU memory. Unified memory management and hierarchical caching help address those constraints by supporting reuse across different types of state and storage.
 
-1.0 also signals SGLang’s shift to AI-driven development, with agents now producing most of the project’s merged PRs. Next, the SGLang team will work on AI tools that write code, review PRs, build tests, manage compatibility and even propose roadmaps. The community is building toward an ecosystem that keeps improving itself.
+SGLang v1.0 also signals the project’s shift to AI-driven development, with agents now producing most of the project’s merged PRs. Next, the SGLang team will work on AI tools that write code, review PRs, build tests, manage compatibility, and even propose roadmaps. The community is building toward an ecosystem that keeps improving itself.
 
 <figure class="summit-figure" style="margin: 2rem 0;">
   <a href="/images/blog/sglang-summit-2026/sglang-v1-release.webp" target="_blank" rel="noopener noreferrer" aria-label="Ying Sheng announces SGLang v1.0. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
@@ -73,9 +73,9 @@ Release progress and migration guidance are documented in the [SGLang 1.0 releas
 
 ### Miles v0.2 expands reinforcement learning across hardware and workloads
 
-Miles v0.2 takes production RL post-training with SGLang to more hardware and more workloads. It runs on NVIDIA GPUs, AMD GPUs and Google TPUs, with AWS Trainium landing soon, and trains with Megatron-LM, FSDP or TorchTitan.
+Miles v0.2 takes production RL post-training with SGLang to more hardware and more workloads. It runs on NVIDIA GPUs, AMD GPUs, and Google TPUs, with AWS Trainium landing soon, and trains with Megatron-LM, FSDP, or TorchTitan.
 
-Beyond text, Miles now handles RL for image, video and audio, and Miles-Diffusion extends it to diffusion models. With Multi-LoRA, it’s practical to customize one base model for many tasks at once.
+Beyond text, Miles now handles RL for images, video, and audio, and Miles-Diffusion extends it to diffusion models. With Multi-LoRA, it’s practical to customize one base model for many tasks at once.
 
 The code and implementation details are available in the [Miles v0.2 release notes](https://github.com/radixark/miles/releases/tag/v0.2.0).
 
@@ -144,10 +144,10 @@ Ujval Kapasi, NVIDIA’s VP of AI & HPC Frameworks and Libraries, highlighted wo
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">NVIDIA’s Ujval Kapasi on Vera Rubin and inference infrastructure.</figcaption>
 </figure>
 <figure class="summit-figure summit-figure--result" style="min-width: 0; margin: 0; flex: 1 1 320px;">
-  <a href="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" target="_blank" rel="noopener noreferrer" aria-label="Kimi K3.1 Pro on Vera Rubin with NVIDIA Dynamo and SGLang: up to 6× total token throughput per GPU versus GB300 NVL72 on AgentX, at matched interactivity. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+  <a href="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" target="_blank" rel="noopener noreferrer" aria-label="Kimi K3.1 Pro on Vera Rubin with NVIDIA Dynamo and SGLang: up to 6× total token throughput per GPU, including cached input tokens, versus GB300 NVL72 on AgentX, at matched interactivity. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" alt="SGLang chart titled Kimi K3.1 Pro on Vera Rubin, with performance figures and comparison curves." width="1800" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Kimi K3.1 Pro on Vera Rubin with NVIDIA Dynamo and SGLang: up to 6× total token throughput per GPU versus GB300 NVL72 on AgentX, at matched interactivity.</figcaption>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Kimi K3.1 Pro on Vera Rubin with NVIDIA Dynamo and SGLang: up to 6× total token throughput per GPU, including cached input tokens, versus GB300 NVL72 on AgentX, at matched interactivity.</figcaption>
 </figure>
 </div>
 
@@ -160,7 +160,7 @@ Luis Ceze, NVIDIA’s VP of AI Systems Software and Compilers, explored how agen
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">NVIDIA’s Luis Ceze on agents, compilers, and kernel optimization.</figcaption>
 </figure>
 
-Colin Brace, VP of Technology at AWS’s Annapurna Labs, presented native SGLang on Trainium, developed with RadixArk using PyTorch and optimized Neuron kernels, including day-zero support for Kimi K3.1 Pro. Nancy Zheng, Cerebras’ VP of Engineering for Inference, showed how pairing GPU prefill with wafer-scale decode addresses the different compute and memory demands of inference, combining efficient input processing with fast token generation.
+Colin Brace, VP of Technology and Software at AWS’s Annapurna Labs, presented native SGLang on Trainium, developed with RadixArk using PyTorch and optimized Neuron kernels, including day-zero support for Kimi K3.1 Pro. Nancy Zheng, Cerebras’ VP of Engineering for Inference, showed how pairing GPU prefill with wafer-scale decode addresses the different compute and memory demands of inference, combining efficient input processing with fast token generation.
 
 <div class="summit-gallery summit-gallery--hardware-speakers" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, max(280px, calc(50% - 8px))), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
 <figure class="summit-figure" style="min-width: 0; margin: 0;">
@@ -303,7 +303,7 @@ Aravind Srinivas outlined a vision of agents carrying out sustained work across 
 
 ## Breakout sessions: building the engine for the agentic era
 
-AI is moving from answering questions to getting things done, and SGLang is becoming the engine behind that shift. Across six breakout rooms and more than 90 technical talks, the results spoke for themselves. On speed, an optimized SGLang deployment served a leading open model at about 1,800 tokens per second to a single user, 1.8× faster than the stock recipe with reasoning accuracy unchanged. On reliability, one production team reported running SGLang for 500 days through eight major upgrades with no performance regressions observed. For agents, which must re-read a growing history at every step, SGLang’s HiCache reuses stored context instead of recomputing it, cutting median time-to-first-token by 60% in a multi-turn benchmark. And for reinforcement learning, the SGLang-powered Miles framework cut the weight-update pause for a trillion-parameter model across 32 nodes from 53 seconds to about 7.
+AI is moving from answering questions to getting things done, and SGLang is becoming the engine behind that shift. Across three breakout rooms and more than 90 technical talks, the results spoke for themselves. On speed, an optimized SGLang deployment served a leading open model at about 1,800 tokens per second to a single user, 1.8× faster than the stock recipe with reasoning accuracy unchanged. On reliability, one production team reported running SGLang for 500 days through eight major upgrades with no performance regressions observed. For agents, which must re-read a growing history at every step, SGLang’s HiCache reuses stored context instead of recomputing it, [cutting median time-to-first-token by 60% in a multi-turn benchmark](https://www.lmsys.org/blog/2026-11-02-hicache-distributed-serving). And for reinforcement learning, the SGLang-powered Miles framework cut the weight-update pause for the trillion-parameter Kimi-K2 model, using 32 training nodes and 32 rollout nodes, [from 53 seconds to about 7 seconds](https://www.lmsys.org/blog/2026-04-29-p2p-update).
 
 Even more exciting, AI is starting to help improve SGLang itself. GPU megakernels written by AI agents made decoding up to 2× faster, with outputs verified against the original kernels. Two engineers working with AI agents ported SGLang to another AI accelerator in under a week, reaching within 1% of production performance. When AI starts helping build the engine that runs AI, progress only speeds up. A faster, more open SGLang that runs everywhere is on its way, and this is only the beginning.
 
