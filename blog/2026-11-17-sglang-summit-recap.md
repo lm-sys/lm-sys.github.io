@@ -2,15 +2,15 @@
 title: "SGLang Summit 2026 Recap: Building Open AI Infrastructure Together"
 author: "The SGLang Team"
 date: "November 17, 2026"
-previewImg: /images/blog/sglang-summit-2026/summit-community-hero.webp
+previewImg: /images/blog/sglang-summit-2026/summit-opening-hall.webp
 type: news
 ---
 
 More than 2,000 developers, researchers, and industry leaders gathered at Fort Mason in San Francisco on November 12–13 for the first SGLang Summit. The event brought together the people building SGLang and Miles, the teams running them in production, and the hardware partners helping them reach new platforms. Across the main stage, technical sessions, hands-on workshops, and expo floor, the community shared what is working today and what needs to come next.
 
 <figure class="summit-figure summit-figure--hero" style="margin: 2rem 0;">
-  <a href="/images/blog/sglang-summit-2026/summit-community-hero.webp" target="_blank" rel="noopener noreferrer" aria-label="The SGLang community at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/summit-community-hero.webp" srcset="/images/blog/sglang-summit-2026/summit-community-hero-800.webp 800w, /images/blog/sglang-summit-2026/summit-community-hero.webp 1333w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="Attendees fill both levels of Fort Mason beneath the SGLang Summit 2026 sign." width="1333" height="1243" loading="eager" decoding="async" fetchpriority="high" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+  <a href="/images/blog/sglang-summit-2026/summit-opening-hall.webp" target="_blank" rel="noopener noreferrer" aria-label="The SGLang community at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/summit-opening-hall.webp" srcset="/images/blog/sglang-summit-2026/summit-opening-hall-800.webp 800w, /images/blog/sglang-summit-2026/summit-opening-hall.webp 1848w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="Attendees fill both levels of Fort Mason beneath the SGLang Summit 2026 sign." width="1848" height="998" loading="eager" decoding="async" fetchpriority="high" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">The SGLang community at Fort Mason.</figcaption>
 </figure>
@@ -307,7 +307,7 @@ Even more exciting, AI is starting to help improve SGLang itself. GPU megakernel
 </figure>
 <figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/breakout-session-discussion.webp" target="_blank" rel="noopener noreferrer" aria-label="Attendees compare ideas across six breakout rooms. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/breakout-session-discussion.webp" srcset="/images/blog/sglang-summit-2026/breakout-session-discussion-800.webp 800w, /images/blog/sglang-summit-2026/breakout-session-discussion.webp 1800w" sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="Attendees sit in a breakout room, several holding open laptops." width="1800" height="1426" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/breakout-session-discussion.webp" srcset="/images/blog/sglang-summit-2026/breakout-session-discussion-800.webp 800w, /images/blog/sglang-summit-2026/breakout-session-discussion.webp 1800w" sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="Attendees sit in a breakout room, several holding open laptops." width="1800" height="1426" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Attendees compare ideas across six breakout rooms.</figcaption>
 </figure>
@@ -362,106 +362,107 @@ Bringing these communities together creates room for conversations across teams 
 
 Those conversations continued across the expo floor. Sponsor booths brought teams and attendees together around demos, technical questions, and the practical challenges of building AI systems. For people who knew one another through code, issues, or online discussions, the summit was also a chance to finally meet face to face.
 
-<p class="summit-photo-note" style="color: #595959; font-size: 0.875rem;">Select any photo to view it larger.</p>
-
-<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 100px), 240px); column-gap: 1rem; margin: 2rem 0;">
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<div class="summit-gallery summit-gallery--expo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/upstairs-exhibition-area.webp" target="_blank" rel="noopener noreferrer" aria-label="Conversations continue across the expo floor. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/upstairs-exhibition-area.webp" srcset="/images/blog/sglang-summit-2026/upstairs-exhibition-area-800.webp 800w, /images/blog/sglang-summit-2026/upstairs-exhibition-area.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees gather at exhibitor booths along the upper-level balcony." width="1800" height="1379" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/upstairs-exhibition-area.webp" srcset="/images/blog/sglang-summit-2026/upstairs-exhibition-area-800.webp 800w, /images/blog/sglang-summit-2026/upstairs-exhibition-area.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees gather at exhibitor booths along the upper-level balcony." width="1800" height="1379" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Conversations continue across the expo floor.</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/google-cloud-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Google Cloud — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/google-cloud-booth.webp" srcset="/images/blog/sglang-summit-2026/google-cloud-booth-800.webp 800w, /images/blog/sglang-summit-2026/google-cloud-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Exhibitors speak with an attendee at the Google Cloud booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/google-cloud-booth.webp" srcset="/images/blog/sglang-summit-2026/google-cloud-booth-800.webp 800w, /images/blog/sglang-summit-2026/google-cloud-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Exhibitors speak with an attendee at the Google Cloud booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Google Cloud</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/pytorch-meta-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Meta and PyTorch — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/pytorch-meta-booth.webp" srcset="/images/blog/sglang-summit-2026/pytorch-meta-booth-800.webp 800w, /images/blog/sglang-summit-2026/pytorch-meta-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Five attendees stand together at the PyTorch and Meta booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/pytorch-meta-booth.webp" srcset="/images/blog/sglang-summit-2026/pytorch-meta-booth-800.webp 800w, /images/blog/sglang-summit-2026/pytorch-meta-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Five attendees stand together at the PyTorch and Meta booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Meta and PyTorch</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/intel-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Intel — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/intel-booth.webp" srcset="/images/blog/sglang-summit-2026/intel-booth-800.webp 800w, /images/blog/sglang-summit-2026/intel-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees and exhibitors talk at the Intel booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/intel-booth.webp" srcset="/images/blog/sglang-summit-2026/intel-booth-800.webp 800w, /images/blog/sglang-summit-2026/intel-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees and exhibitors talk at the Intel booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Intel</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/lancedb-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="LanceDB — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/lancedb-booth.webp" srcset="/images/blog/sglang-summit-2026/lancedb-booth-800.webp 800w, /images/blog/sglang-summit-2026/lancedb-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees discuss a demonstration at the LanceDB booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/lancedb-booth.webp" srcset="/images/blog/sglang-summit-2026/lancedb-booth-800.webp 800w, /images/blog/sglang-summit-2026/lancedb-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees discuss a demonstration at the LanceDB booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">LanceDB</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/snowflake-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Snowflake — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/snowflake-booth.webp" srcset="/images/blog/sglang-summit-2026/snowflake-booth-800.webp 800w, /images/blog/sglang-summit-2026/snowflake-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="An exhibitor explains a diagram to an attendee at the Snowflake booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/snowflake-booth.webp" srcset="/images/blog/sglang-summit-2026/snowflake-booth-800.webp 800w, /images/blog/sglang-summit-2026/snowflake-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="An exhibitor explains a diagram to an attendee at the Snowflake booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Snowflake</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/hardware-booth-demonstration.webp" target="_blank" rel="noopener noreferrer" aria-label="Demos and discussions — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/hardware-booth-demonstration.webp" srcset="/images/blog/sglang-summit-2026/hardware-booth-demonstration-800.webp 800w, /images/blog/sglang-summit-2026/hardware-booth-demonstration.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Visitors watch a demonstration at an exhibitor booth." width="1800" height="1351" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/hardware-booth-demonstration.webp" srcset="/images/blog/sglang-summit-2026/hardware-booth-demonstration-800.webp 800w, /images/blog/sglang-summit-2026/hardware-booth-demonstration.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Visitors watch a demonstration at an exhibitor booth." width="1800" height="1351" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Demos and discussions</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/exhibition-floor-conversations.webp" target="_blank" rel="noopener noreferrer" aria-label="Meeting the teams behind the tools — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/exhibition-floor-conversations.webp" srcset="/images/blog/sglang-summit-2026/exhibition-floor-conversations-800.webp 800w, /images/blog/sglang-summit-2026/exhibition-floor-conversations.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees visit booths and talk in the sunlit exhibition hall." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/exhibition-floor-conversations.webp" srcset="/images/blog/sglang-summit-2026/exhibition-floor-conversations-800.webp 800w, /images/blog/sglang-summit-2026/exhibition-floor-conversations.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees visit booths and talk in the sunlit exhibition hall." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Meeting the teams behind the tools</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/crusoe-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Crusoe — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/crusoe-booth.webp" srcset="/images/blog/sglang-summit-2026/crusoe-booth-800.webp 800w, /images/blog/sglang-summit-2026/crusoe-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Four exhibitors stand together at the Crusoe booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/crusoe-booth.webp" srcset="/images/blog/sglang-summit-2026/crusoe-booth-800.webp 800w, /images/blog/sglang-summit-2026/crusoe-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Four exhibitors stand together at the Crusoe booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Crusoe</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
+  <a href="/images/blog/sglang-summit-2026/aix-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="ai&amp; — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/aix-booth.webp" srcset="/images/blog/sglang-summit-2026/aix-booth-800.webp 800w, /images/blog/sglang-summit-2026/aix-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Four exhibitors stand together at the ai&amp; booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
+  </a>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">ai&amp;</figcaption>
+</figure>
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
+  <a href="/images/blog/sglang-summit-2026/baseten-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Baseten — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/baseten-booth.webp" srcset="/images/blog/sglang-summit-2026/baseten-booth-800.webp 800w, /images/blog/sglang-summit-2026/baseten-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two exhibitors stand behind the green Baseten booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
+  </a>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Baseten</figcaption>
+</figure>
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
+  <a href="/images/blog/sglang-summit-2026/novita-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Novita — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/novita-booth.webp" srcset="/images/blog/sglang-summit-2026/novita-booth-800.webp 800w, /images/blog/sglang-summit-2026/novita-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two exhibitors stand behind the Novita booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
+  </a>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Novita</figcaption>
+</figure>
+</div>
+
+<div class="summit-gallery summit-gallery--expo-portraits" style="display: flex; flex-wrap: wrap; align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1.333334 1 133.3333px;">
   <a href="/images/blog/sglang-summit-2026/liquid-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Liquid — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/liquid-booth.webp" alt="An exhibitor stands behind the Liquid booth with a stack of books." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Liquid</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
-  <a href="/images/blog/sglang-summit-2026/aix-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="ai&amp; — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/aix-booth.webp" srcset="/images/blog/sglang-summit-2026/aix-booth-800.webp 800w, /images/blog/sglang-summit-2026/aix-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Four exhibitors stand together at the ai&amp; booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
-  </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">ai&amp;</figcaption>
-</figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1.333334 1 133.3333px;">
   <a href="/images/blog/sglang-summit-2026/arcee-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Arcee — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/arcee-booth.webp" alt="Two exhibitors stand behind the Arcee booth." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Arcee</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
-  <a href="/images/blog/sglang-summit-2026/baseten-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Baseten — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/baseten-booth.webp" srcset="/images/blog/sglang-summit-2026/baseten-booth-800.webp 800w, /images/blog/sglang-summit-2026/baseten-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two exhibitors stand behind the green Baseten booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
-  </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Baseten</figcaption>
-</figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1.333334 1 133.3333px;">
   <a href="/images/blog/sglang-summit-2026/netpreme-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Netpreme — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/netpreme-booth.webp" alt="Two exhibitors sit behind the Netpreme booth." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Netpreme</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1.501112 1 150.1111px;">
   <a href="/images/blog/sglang-summit-2026/expo-booth-visitors.webp" target="_blank" rel="noopener noreferrer" aria-label="Exploring the expo together — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/expo-booth-visitors.webp" alt="Attendees speak with exhibitors at booths in the exhibition hall." width="1351" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Exploring the expo together</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
-  <a href="/images/blog/sglang-summit-2026/novita-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Novita — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/novita-booth.webp" srcset="/images/blog/sglang-summit-2026/novita-booth-800.webp 800w, /images/blog/sglang-summit-2026/novita-booth.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two exhibitors stand behind the Novita booth." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
-  </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Novita</figcaption>
-</figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1.501112 1 150.1111px;">
   <a href="/images/blog/sglang-summit-2026/community-networking.webp" target="_blank" rel="noopener noreferrer" aria-label="A busy afternoon on the expo floor — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/community-networking.webp" alt="Attendees mingle in a bright section of the exhibition hall." width="1351" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
@@ -473,7 +474,7 @@ Seeing so many teams represented in one place made the breadth of the SGLang eco
 
 Thank you to every exhibitor and workshop host who brought their work into the room, walked attendees through a demo, and took the time to answer questions. Those exchanges are an important part of how this ecosystem moves forward.
 
-### GPU Expo
+### GPU expo
 
 The GPU Expo brought the hardware side of the ecosystem into focus, giving attendees a closer look at the GPUs behind AI training and inference. Alongside the summit’s technical sessions, it offered another way to explore the infrastructure that supports the models and applications being built with SGLang.
 
@@ -496,32 +497,35 @@ The GPU Expo brought the hardware side of the ecosystem into focus, giving atten
 
 The summit also made room for people to relax, meet someone new, and enjoy the day together. Between sessions, attendees could grab a drink from Kyoto Matcha or Hedge Coffee, enjoy tanghulu, and continue conversations over breakfast and lunch.
 
-<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 100px), 240px); column-gap: 1rem; margin: 2rem 0;">
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<div class="summit-gallery summit-gallery--community-pair" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, max(280px, calc(50% - 8px))), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/community-snack-table.webp" target="_blank" rel="noopener noreferrer" aria-label="Tanghulu between sessions — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/community-snack-table.webp" srcset="/images/blog/sglang-summit-2026/community-snack-table-800.webp 800w, /images/blog/sglang-summit-2026/community-snack-table.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two attendees stand behind a table of tanghulu in the exhibition hall." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Tanghulu between sessions</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
-  <a href="/images/blog/sglang-summit-2026/coffee-break.webp" target="_blank" rel="noopener noreferrer" aria-label="Coffee and conversation at Hedge Coffee. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/coffee-break.webp" alt="Two takeaway coffee cups are held in front of the summit coffee bar." width="1351" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
-  </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Coffee and conversation at Hedge Coffee.</figcaption>
-</figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/exo-hardware-demo.webp" target="_blank" rel="noopener noreferrer" aria-label="Wearable DeepSeek, powered by SGLang — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/exo-hardware-demo.webp" srcset="/images/blog/sglang-summit-2026/exo-hardware-demo-800.webp 800w, /images/blog/sglang-summit-2026/exo-hardware-demo.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two attendees demonstrate a wearable DeepSeek setup powered by SGLang." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Wearable DeepSeek, powered by SGLang</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+</div>
+
+<div class="summit-gallery summit-gallery--community-row" style="display: flex; flex-wrap: wrap; align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 0.750556 1 112.5833px;">
+  <a href="/images/blog/sglang-summit-2026/coffee-break.webp" target="_blank" rel="noopener noreferrer" aria-label="Coffee and conversation at Hedge Coffee. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/coffee-break.webp" alt="Two takeaway coffee cups are held in front of the summit coffee bar." width="1351" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+  </a>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Coffee and conversation at Hedge Coffee.</figcaption>
+</figure>
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1.333333 1 200.0000px;">
   <a href="/images/blog/sglang-summit-2026/breakout-session-overview.webp" target="_blank" rel="noopener noreferrer" aria-label="Attendees gather for a session at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/breakout-session-overview.webp" srcset="/images/blog/sglang-summit-2026/breakout-session-overview-800.webp 800w, /images/blog/sglang-summit-2026/breakout-session-overview.webp 1440w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="An overhead view of attendees filling a breakout session." width="1440" height="1080" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Attendees gather for a session at Fort Mason.</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1.332346 1 199.8520px;">
   <a href="/images/blog/sglang-summit-2026/summit-exhibition-hall.webp" target="_blank" rel="noopener noreferrer" aria-label="A full house at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/summit-exhibition-hall.webp" srcset="/images/blog/sglang-summit-2026/summit-exhibition-hall-800.webp 800w, /images/blog/sglang-summit-2026/summit-exhibition-hall.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees gather around tables and exhibitor booths in the bright summit hall." width="1800" height="1351" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
@@ -550,17 +554,11 @@ The summit brought a broad ecosystem into one place. The work continues across t
 
 Thank you for being part of SGLang.
 
-<div class="summit-gallery summit-gallery--portrait-right" style="display: flex; flex-wrap: wrap; align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
-<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 2.25 1 450px;">
+<figure class="summit-figure" style="max-width: 680px; margin: 2rem auto;">
   <a href="/images/blog/sglang-summit-2026/summit-staircase-sign.webp" target="_blank" rel="noopener noreferrer" aria-label="SGLang Summit 2026 at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/summit-staircase-sign.webp" srcset="/images/blog/sglang-summit-2026/summit-staircase-sign-800.webp 800w, /images/blog/sglang-summit-2026/summit-staircase-sign.webp 1800w" sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="A large SGLang Summit 2026 sign rises above a staircase in the venue." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/summit-staircase-sign.webp" srcset="/images/blog/sglang-summit-2026/summit-staircase-sign-800.webp 800w, /images/blog/sglang-summit-2026/summit-staircase-sign.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), 680px" alt="A large SGLang Summit 2026 sign rises above a staircase in the venue." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">SGLang Summit 2026 at Fort Mason.</figcaption>
 </figure>
-<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1 1 200px;">
-  <a href="/images/blog/sglang-summit-2026/summit-hall-balcony-view.webp" target="_blank" rel="noopener noreferrer" aria-label="The community that made it possible. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/summit-hall-balcony-view.webp" alt="A view from the balcony across both levels of the crowded exhibition hall." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
-  </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">The community that made it possible.</figcaption>
-</figure>
-</div>
+
+Visit [sglang.io/summit](https://sglang.io/summit) for talk recordings and presentation slides, which will be available soon.
