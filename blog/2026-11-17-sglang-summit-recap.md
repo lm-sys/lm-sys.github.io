@@ -393,10 +393,10 @@ Those conversations continued across the expo floor. Sponsor booths brought team
   <figcaption>Snowflake</figcaption>
 </figure>
 <figure class="summit-figure">
-  <a href="/images/blog/sglang-summit-2026/hardware-booth-demonstration.webp" target="_blank" rel="noopener noreferrer" aria-label="Hardware demos and discussions — view larger (opens in a new tab)">
-    <img src="/images/blog/sglang-summit-2026/hardware-booth-demonstration.webp" srcset="/images/blog/sglang-summit-2026/hardware-booth-demonstration-800.webp 800w, /images/blog/sglang-summit-2026/hardware-booth-demonstration.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Visitors watch a hardware demonstration at an exhibitor booth." width="1800" height="1351" loading="lazy" decoding="async">
+  <a href="/images/blog/sglang-summit-2026/hardware-booth-demonstration.webp" target="_blank" rel="noopener noreferrer" aria-label="Demos and discussions — view larger (opens in a new tab)">
+    <img src="/images/blog/sglang-summit-2026/hardware-booth-demonstration.webp" srcset="/images/blog/sglang-summit-2026/hardware-booth-demonstration-800.webp 800w, /images/blog/sglang-summit-2026/hardware-booth-demonstration.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Visitors watch a demonstration at an exhibitor booth." width="1800" height="1351" loading="lazy" decoding="async">
   </a>
-  <figcaption>Hardware demos and discussions</figcaption>
+  <figcaption>Demos and discussions</figcaption>
 </figure>
 <figure class="summit-figure">
   <a href="/images/blog/sglang-summit-2026/exhibition-floor-conversations.webp" target="_blank" rel="noopener noreferrer" aria-label="Meeting the teams behind the tools — view larger (opens in a new tab)">
@@ -411,10 +411,10 @@ Those conversations continued across the expo floor. Sponsor booths brought team
   <figcaption>Crusoe</figcaption>
 </figure>
 <figure class="summit-figure">
-  <a href="/images/blog/sglang-summit-2026/liquid-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Liqid — view larger (opens in a new tab)">
-    <img src="/images/blog/sglang-summit-2026/liquid-booth.webp" alt="An exhibitor stands behind the Liqid booth with a stack of books." width="1200" height="1800" loading="lazy" decoding="async">
+  <a href="/images/blog/sglang-summit-2026/liquid-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="Liquid — view larger (opens in a new tab)">
+    <img src="/images/blog/sglang-summit-2026/liquid-booth.webp" alt="An exhibitor stands behind the Liquid booth with a stack of books." width="1200" height="1800" loading="lazy" decoding="async">
   </a>
-  <figcaption>Liqid</figcaption>
+  <figcaption>Liquid</figcaption>
 </figure>
 <figure class="summit-figure">
   <a href="/images/blog/sglang-summit-2026/aix-booth.webp" target="_blank" rel="noopener noreferrer" aria-label="ai&amp; — view larger (opens in a new tab)">
