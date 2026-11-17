@@ -139,7 +139,7 @@ Colin Brace, VP of Technology at AWS’s Annapurna Labs, presented native SGLang
 
 AMD’s SVP of AI, Vamsi Boppana, highlighted Muse Spark Open optimizations and day-zero Kimi K3.1 Pro support on AMD GPUs, alongside collaboration on MI455 and Miles. The fireside chat with Bill Jia, Google’s VP of Engineering for Core ML/AI, explored TorchTPU’s work with SGLang and Miles, workload-specific TPU design, and AI-generated kernels. Together, these sessions highlighted how open software and joint engineering give developers more flexibility in how they train and serve models.
 
-<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 120px), 240px); column-gap: 1rem; margin: 2rem 0;">
+<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 100px), 240px); column-gap: 1rem; margin: 2rem 0;">
 <figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
   <a href="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" target="_blank" rel="noopener noreferrer" aria-label="NVIDIA’s Ujval Kapasi on inference infrastructure. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" alt="A presenter on stage discusses NVIDIA Dynamo Snapshot." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
@@ -355,7 +355,7 @@ Those conversations continued across the expo floor. Sponsor booths brought team
 
 <p class="summit-photo-note" style="color: #595959; font-size: 0.875rem;">Select any photo to view it larger.</p>
 
-<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 120px), 240px); column-gap: 1rem; margin: 2rem 0;">
+<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 100px), 240px); column-gap: 1rem; margin: 2rem 0;">
 <figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
   <a href="/images/blog/sglang-summit-2026/upstairs-exhibition-area.webp" target="_blank" rel="noopener noreferrer" aria-label="Conversations continue across the expo floor. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/upstairs-exhibition-area.webp" srcset="/images/blog/sglang-summit-2026/upstairs-exhibition-area-800.webp 800w, /images/blog/sglang-summit-2026/upstairs-exhibition-area.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Attendees gather at exhibitor booths along the upper-level balcony." width="1800" height="1379" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
@@ -487,7 +487,7 @@ The GPU Expo brought the hardware side of the ecosystem into focus, giving atten
 
 The summit also made room for people to relax, meet someone new, and enjoy the day together. Between sessions, attendees could grab a drink from Kyoto Matcha or Hedge Coffee, enjoy tanghulu, and continue conversations over breakfast and lunch.
 
-<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 120px), 240px); column-gap: 1rem; margin: 2rem 0;">
+<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 100px), 240px); column-gap: 1rem; margin: 2rem 0;">
 <figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
   <a href="/images/blog/sglang-summit-2026/community-snack-table.webp" target="_blank" rel="noopener noreferrer" aria-label="Tanghulu between sessions — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/community-snack-table.webp" srcset="/images/blog/sglang-summit-2026/community-snack-table-800.webp 800w, /images/blog/sglang-summit-2026/community-snack-table.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two attendees stand behind a table of tanghulu in the exhibition hall." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
