@@ -497,7 +497,7 @@ The GPU Expo brought the hardware side of the ecosystem into focus, giving atten
 
 The summit also made room for people to relax, meet someone new, and enjoy the day together. Between sessions, attendees could grab a drink from Kyoto Matcha or Hedge Coffee, enjoy tanghulu, and continue conversations over breakfast and lunch.
 
-The community also organized 25 side events around the summit, with an estimated 3,000 registrations in total.
+Sponsors and community partners organized 25 community events around the summit, with an estimated 3,000 registrations in total.
 
 <div class="summit-gallery summit-gallery--community-pair" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, max(280px, calc(50% - 8px))), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
 <figure class="summit-figure" style="min-width: 0; margin: 0;">
