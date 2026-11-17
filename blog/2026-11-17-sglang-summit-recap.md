@@ -489,10 +489,10 @@ The summit also made room for people to relax, meet someone new, and enjoy the d
 
 <div class="summit-gallery summit-gallery--mosaic">
 <figure class="summit-figure">
-  <a href="/images/blog/sglang-summit-2026/community-snack-table.webp" target="_blank" rel="noopener noreferrer" aria-label="A sweet break between sessions. — view larger (opens in a new tab)">
-    <img src="/images/blog/sglang-summit-2026/community-snack-table.webp" srcset="/images/blog/sglang-summit-2026/community-snack-table-800.webp 800w, /images/blog/sglang-summit-2026/community-snack-table.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two attendees stand behind a table of snacks and sweets in the exhibition hall." width="1800" height="1200" loading="lazy" decoding="async">
+  <a href="/images/blog/sglang-summit-2026/community-snack-table.webp" target="_blank" rel="noopener noreferrer" aria-label="Tanghulu between sessions — view larger (opens in a new tab)">
+    <img src="/images/blog/sglang-summit-2026/community-snack-table.webp" srcset="/images/blog/sglang-summit-2026/community-snack-table-800.webp 800w, /images/blog/sglang-summit-2026/community-snack-table.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two attendees stand behind a table of tanghulu in the exhibition hall." width="1800" height="1200" loading="lazy" decoding="async">
   </a>
-  <figcaption>A sweet break between sessions.</figcaption>
+  <figcaption>Tanghulu between sessions</figcaption>
 </figure>
 <figure class="summit-figure">
   <a href="/images/blog/sglang-summit-2026/coffee-break.webp" target="_blank" rel="noopener noreferrer" aria-label="Coffee and conversation at Hedge Coffee. — view larger (opens in a new tab)">
@@ -501,10 +501,10 @@ The summit also made room for people to relax, meet someone new, and enjoy the d
   <figcaption>Coffee and conversation at Hedge Coffee.</figcaption>
 </figure>
 <figure class="summit-figure">
-  <a href="/images/blog/sglang-summit-2026/exo-hardware-demo.webp" target="_blank" rel="noopener noreferrer" aria-label="New connections across the SGLang community. — view larger (opens in a new tab)">
-    <img src="/images/blog/sglang-summit-2026/exo-hardware-demo.webp" srcset="/images/blog/sglang-summit-2026/exo-hardware-demo-800.webp 800w, /images/blog/sglang-summit-2026/exo-hardware-demo.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two attendees hold a compact hardware setup and an exo display sign." width="1800" height="1200" loading="lazy" decoding="async">
+  <a href="/images/blog/sglang-summit-2026/exo-hardware-demo.webp" target="_blank" rel="noopener noreferrer" aria-label="Wearable DeepSeek, powered by SGLang — view larger (opens in a new tab)">
+    <img src="/images/blog/sglang-summit-2026/exo-hardware-demo.webp" srcset="/images/blog/sglang-summit-2026/exo-hardware-demo-800.webp 800w, /images/blog/sglang-summit-2026/exo-hardware-demo.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two attendees demonstrate a wearable DeepSeek setup powered by SGLang." width="1800" height="1200" loading="lazy" decoding="async">
   </a>
-  <figcaption>New connections across the SGLang community.</figcaption>
+  <figcaption>Wearable DeepSeek, powered by SGLang</figcaption>
 </figure>
 <figure class="summit-figure">
   <a href="/images/blog/sglang-summit-2026/breakout-session-overview.webp" target="_blank" rel="noopener noreferrer" aria-label="Attendees gather for a session at Fort Mason. — view larger (opens in a new tab)">
