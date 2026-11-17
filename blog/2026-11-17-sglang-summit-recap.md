@@ -136,14 +136,14 @@ Hardware partners shared how they are adapting SGLang to different architectures
 
 Ujval Kapasi, NVIDIA’s VP of AI & HPC Frameworks and Libraries, highlighted work on Vera Rubin, Dynamo integration for cache-aware routing and distributed serving, and faster replica startup through Dynamo Snapshot and Model Express. He also discussed Vera CPUs for agent sandboxes and RL workloads.
 
-<div class="summit-gallery summit-gallery--nvidia-result" style="display: flex; flex-wrap: wrap; align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
-<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 2 1 280px;">
+<div class="summit-gallery summit-gallery--nvidia-result" style="display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem 1rem; margin: 2rem 0;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1 1 320px;">
   <a href="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" target="_blank" rel="noopener noreferrer" aria-label="NVIDIA’s Ujval Kapasi on Vera Rubin and inference infrastructure. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" alt="A presenter on stage discusses NVIDIA Dynamo Snapshot." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">NVIDIA’s Ujval Kapasi on Vera Rubin and inference infrastructure.</figcaption>
 </figure>
-<figure class="summit-figure summit-figure--result" style="min-width: 0; margin: 0; flex: 3 1 420px;">
+<figure class="summit-figure summit-figure--result" style="min-width: 0; margin: 0; flex: 1 1 320px;">
   <a href="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" target="_blank" rel="noopener noreferrer" aria-label="Kimi K3.1 Pro on Vera Rubin with NVIDIA Dynamo and SGLang: up to 6× total token throughput per GPU versus GB300 NVL72 on AgentX, at matched interactivity. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" alt="SGLang chart titled Kimi K3.1 Pro on Vera Rubin, with performance figures and comparison curves." width="1800" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
@@ -232,7 +232,7 @@ Across the two days, teams from Modal, Cloudflare, Crusoe, Fireworks, Baseten, D
 
 The production discussion extended from inference to training and post-training, connecting SGLang’s serving capabilities with the reinforcement learning workflows being developed around Miles. Sessions on Meta’s work with TorchTitan and Miles explored the training infrastructure behind these workflows.
 
-humans& CEO Eric Zelikman discussed the training and infrastructure needed to build AI that collaborates with people over time. Speakers from humans&, Applied Compute, and Mercor explored advances in post-training, from scaling reinforcement learning infrastructure to training agents for real-world work.
+At the same time, humans& CEO Eric Zelikman discussed the training and infrastructure needed to build AI that collaborates with people over time. Speakers from humans&, Applied Compute, and Mercor explored advances in post-training, from scaling reinforcement learning infrastructure to training agents for real-world work.
 
 <div class="summit-gallery" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, max(280px, calc(50% - 8px))), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
 <figure class="summit-figure" style="min-width: 0; margin: 0;">
@@ -315,10 +315,10 @@ Even more exciting, AI is starting to help improve SGLang itself. GPU megakernel
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Technical sessions bring the community together around the inference stack.</figcaption>
 </figure>
 <figure class="summit-figure" style="min-width: 0; margin: 0;">
-  <a href="/images/blog/sglang-summit-2026/breakout-session-discussion.webp" target="_blank" rel="noopener noreferrer" aria-label="Attendees compare ideas across six breakout rooms. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+  <a href="/images/blog/sglang-summit-2026/breakout-session-discussion.webp" target="_blank" rel="noopener noreferrer" aria-label="Attendees compare ideas across breakout rooms. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/breakout-session-discussion.webp" srcset="/images/blog/sglang-summit-2026/breakout-session-discussion-800.webp 800w, /images/blog/sglang-summit-2026/breakout-session-discussion.webp 1800w" sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="Attendees sit in a breakout room, several holding open laptops." width="1800" height="1426" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Attendees compare ideas across six breakout rooms.</figcaption>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Attendees compare ideas across breakout rooms.</figcaption>
 </figure>
 <figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/breakout-room-presenter.webp" target="_blank" rel="noopener noreferrer" aria-label="Engineers share implementation details and lessons from their work. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
