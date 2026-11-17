@@ -32,37 +32,27 @@ The summit marked several milestones: the launch of the SGLang Consortium with n
 
 NVIDIA, AMD, Intel, Google, Meta, Thinking Machines Lab, Cloudflare, Modal, and RadixArk joined as founding members of the SGLang Consortium, announced at the opening presentation.
 
+<figure class="summit-figure summit-figure--consortium" style="margin: 2rem 0;">
+  <a href="/images/blog/sglang-summit-2026/sglang-consortium.webp" target="_blank" rel="noopener noreferrer" aria-label="The SGLang Consortium brings together nine founding members. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/sglang-consortium.webp" srcset="/images/blog/sglang-summit-2026/sglang-consortium-800.webp 800w, /images/blog/sglang-summit-2026/sglang-consortium.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="SGLang Consortium graphic with the founding organizations’ logos." width="1800" height="1013" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+  </a>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">The SGLang Consortium brings together nine founding members.</figcaption>
+</figure>
+
 The consortium creates a standing forum for members to work with SGLang’s maintainers on engineering priorities, contributing experience from production deployments, testing resources, and joint development. Its focus includes frontier model support, reasoning and multimodal workloads, distributed inference, and hardware optimization.
 
 The [consortium announcement](https://www.lmsys.org/blog/2026-11-12-sglang-consortium) was accompanied by a recorded video message from Dr. Lisa Su, chair and CEO of AMD.
 
 “At AMD, we are big believers in open,” said Dr. Lisa Su. “We are excited to extend our work with the SGLang community through the SGLang Consortium. We look forward to contributing more directly to the framework and helping developers get the most from their AMD platforms.”
 
-Members will appoint technical representatives and participate in regular roadmap discussions. SGLang’s maintainers retain responsibility for technical decisions and code acceptance, and the project remains open to the wider community.
-
-<div class="summit-gallery" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, max(280px, calc(50% - 8px))), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
-<figure class="summit-figure" style="min-width: 0; margin: 0;">
-  <a href="/images/blog/sglang-summit-2026/sglang-consortium.webp" target="_blank" rel="noopener noreferrer" aria-label="The SGLang Consortium brings together nine founding members. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/sglang-consortium.webp" srcset="/images/blog/sglang-summit-2026/sglang-consortium-800.webp 800w, /images/blog/sglang-summit-2026/sglang-consortium.webp 1800w" sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="SGLang Consortium graphic with the founding organizations’ logos." width="1800" height="1013" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
-  </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">The SGLang Consortium brings together nine founding members.</figcaption>
-</figure>
-<figure class="summit-figure" style="min-width: 0; margin: 0;">
+<figure class="summit-figure summit-figure--lisa-su" style="margin: 2rem 0;">
   <a href="/images/blog/sglang-summit-2026/keynote-video-message.webp" target="_blank" rel="noopener noreferrer" aria-label="Dr. Lisa Su’s video message followed the fireside chat with Vamsi Boppana and Lianmin Zheng. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/keynote-video-message.webp" srcset="/images/blog/sglang-summit-2026/keynote-video-message-800.webp 800w, /images/blog/sglang-summit-2026/keynote-video-message.webp 1800w" sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="A video message plays above the main stage at SGLang Summit." width="1800" height="1013" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/keynote-video-message.webp" srcset="/images/blog/sglang-summit-2026/keynote-video-message-800.webp 800w, /images/blog/sglang-summit-2026/keynote-video-message.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="A video message plays above the main stage at SGLang Summit." width="1800" height="1013" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Dr. Lisa Su’s video message followed the fireside chat with Vamsi Boppana and Lianmin Zheng.</figcaption>
 </figure>
-</div>
 
-As an example of what deeper collaboration can deliver, the opening presentation also featured joint optimization work by SGLang and NVIDIA on Kimi K3.1 Pro. AgentX results using NVIDIA Dynamo and SGLang on Vera Rubin showed up to 6× the total token throughput per GPU of the GB300 baseline. The gains followed just a few weeks of close collaboration between the two teams.
-
-<figure class="summit-figure summit-figure--graphic" style="max-width: 680px; margin: 2rem auto;">
-  <a href="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" target="_blank" rel="noopener noreferrer" aria-label="Joint SGLang and NVIDIA optimization results for Kimi K3.1 Pro, presented at the opening keynote. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" alt="SGLang chart titled Kimi K3.1 Pro on Vera Rubin, with performance figures and comparison curves." width="1800" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
-  </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Joint SGLang and NVIDIA optimization results for Kimi K3.1 Pro, presented at the opening keynote.</figcaption>
-</figure>
+Members will appoint technical representatives and participate in regular roadmap discussions. SGLang’s maintainers retain responsibility for technical decisions and code acceptance, and the project remains open to the wider community.
 
 ### SGLang v1.0 sets the next milestone for production inference
 
@@ -142,50 +132,69 @@ As AI accelerates software development, security review needs to keep pace. The 
 
 ### Hardware partners advance SGLang across platforms
 
-Hardware partners shared how they are adapting SGLang to different architectures and agentic workloads. Ujval Kapasi, NVIDIA’s VP of AI & HPC Frameworks and Libraries, highlighted work on Vera Rubin, Dynamo integration for cache-aware routing and distributed serving, and faster replica startup through Dynamo Snapshot and Model Express. He also discussed Vera CPUs for agent sandboxes and RL workloads. Luis Ceze, NVIDIA’s VP of AI Systems Software and Compilers, explored how agents can accelerate kernel optimization, with compiler feedback and independent correctness checks guiding development, and FlashInfer bringing improved kernels into SGLang.
+Hardware partners shared how they are adapting SGLang to different architectures and agentic workloads.
 
-Colin Brace, VP of Technology at AWS’s Annapurna Labs, presented native SGLang on Trainium, developed with RadixArk using PyTorch and optimized Neuron kernels, including day-zero support for Kimi K3.1 Pro. Nancy Zheng, Cerebras’ VP of Engineering for Inference, showed how pairing GPU prefill with wafer-scale decode addresses the different compute and memory demands of inference, combining efficient input processing with fast token generation.
+Ujval Kapasi, NVIDIA’s VP of AI & HPC Frameworks and Libraries, highlighted work on Vera Rubin, Dynamo integration for cache-aware routing and distributed serving, and faster replica startup through Dynamo Snapshot and Model Express. He also discussed Vera CPUs for agent sandboxes and RL workloads.
 
-AMD’s SVP of AI, Vamsi Boppana, highlighted Muse Spark Open optimizations and day-zero Kimi K3.1 Pro support on AMD GPUs, alongside collaboration on MI455 and Miles. The fireside chat with Bill Jia, Google’s VP of Engineering for Core ML/AI, explored TorchTPU’s work with SGLang and Miles, workload-specific TPU design, and AI-generated kernels. Together, these sessions highlighted how open software and joint engineering give developers more flexibility in how they train and serve models.
-
-<div class="summit-gallery summit-gallery--mosaic" style="columns: 3 clamp(155px, calc(50vw - 100px), 240px); column-gap: 1rem; margin: 2rem 0;">
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
-  <a href="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" target="_blank" rel="noopener noreferrer" aria-label="NVIDIA’s Ujval Kapasi on inference infrastructure. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+<div class="summit-gallery summit-gallery--nvidia-result" style="display: flex; flex-wrap: wrap; align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
+<figure class="summit-figure" style="min-width: 0; margin: 0; flex: 2 1 280px;">
+  <a href="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" target="_blank" rel="noopener noreferrer" aria-label="NVIDIA’s Ujval Kapasi on Vera Rubin and inference infrastructure. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" alt="A presenter on stage discusses NVIDIA Dynamo Snapshot." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">NVIDIA’s Ujval Kapasi on inference infrastructure.</figcaption>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">NVIDIA’s Ujval Kapasi on Vera Rubin and inference infrastructure.</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure summit-figure--result" style="min-width: 0; margin: 0; flex: 3 1 420px;">
+  <a href="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" target="_blank" rel="noopener noreferrer" aria-label="Kimi K3.1 Pro on Vera Rubin with NVIDIA Dynamo and SGLang: up to 6× total token throughput per GPU versus GB300 NVL72 on AgentX, at matched interactivity. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/kimi-vera-rubin-performance.webp" alt="SGLang chart titled Kimi K3.1 Pro on Vera Rubin, with performance figures and comparison curves." width="1800" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+  </a>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Kimi K3.1 Pro on Vera Rubin with NVIDIA Dynamo and SGLang: up to 6× total token throughput per GPU versus GB300 NVL72 on AgentX, at matched interactivity.</figcaption>
+</figure>
+</div>
+
+Luis Ceze, NVIDIA’s VP of AI Systems Software and Compilers, explored how agents can accelerate kernel optimization, with compiler feedback and independent correctness checks guiding development, and FlashInfer bringing improved kernels into SGLang.
+
+<figure class="summit-figure summit-figure--speaker" style="margin: 2rem 0;">
   <a href="/images/blog/sglang-summit-2026/gpu-programming-presentation.webp" target="_blank" rel="noopener noreferrer" aria-label="NVIDIA’s Luis Ceze on agents, compilers, and kernel optimization. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/gpu-programming-presentation.webp" srcset="/images/blog/sglang-summit-2026/gpu-programming-presentation-800.webp 800w, /images/blog/sglang-summit-2026/gpu-programming-presentation.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="A presenter gestures in front of a slide about GPU programming and abstractions." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/gpu-programming-presentation.webp" srcset="/images/blog/sglang-summit-2026/gpu-programming-presentation-800.webp 800w, /images/blog/sglang-summit-2026/gpu-programming-presentation.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="A presenter gestures in front of a slide about GPU programming and abstractions." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">NVIDIA’s Luis Ceze on agents, compilers, and kernel optimization.</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+
+Colin Brace, VP of Technology at AWS’s Annapurna Labs, presented native SGLang on Trainium, developed with RadixArk using PyTorch and optimized Neuron kernels, including day-zero support for Kimi K3.1 Pro. Nancy Zheng, Cerebras’ VP of Engineering for Inference, showed how pairing GPU prefill with wafer-scale decode addresses the different compute and memory demands of inference, combining efficient input processing with fast token generation.
+
+<div class="summit-gallery summit-gallery--hardware-speakers" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, max(280px, calc(50% - 8px))), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/aws-infrastructure-presentation.webp" target="_blank" rel="noopener noreferrer" aria-label="AWS’s Colin Brace on native SGLang on Trainium. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/aws-infrastructure-presentation.webp" srcset="/images/blog/sglang-summit-2026/aws-infrastructure-presentation-800.webp 800w, /images/blog/sglang-summit-2026/aws-infrastructure-presentation.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="A presenter speaks in front of a slide showing an infrastructure diagram and EFA." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/aws-infrastructure-presentation.webp" srcset="/images/blog/sglang-summit-2026/aws-infrastructure-presentation-800.webp 800w, /images/blog/sglang-summit-2026/aws-infrastructure-presentation.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="A presenter speaks in front of a slide showing an infrastructure diagram and EFA." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">AWS’s Colin Brace on native SGLang on Trainium.</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/keynote-speaker.webp" target="_blank" rel="noopener noreferrer" aria-label="Cerebras’ Nancy Zheng on GPU prefill and wafer-scale decode. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/keynote-speaker.webp" srcset="/images/blog/sglang-summit-2026/keynote-speaker-800.webp 800w, /images/blog/sglang-summit-2026/keynote-speaker.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="A keynote speaker gestures while holding a framed object on stage." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/keynote-speaker.webp" srcset="/images/blog/sglang-summit-2026/keynote-speaker-800.webp 800w, /images/blog/sglang-summit-2026/keynote-speaker.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="A keynote speaker gestures while holding a framed object on stage." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Cerebras’ Nancy Zheng on GPU prefill and wafer-scale decode.</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+</div>
+
+AMD’s SVP of AI, Vamsi Boppana, highlighted Muse Spark Open optimizations and day-zero Kimi K3.1 Pro support on AMD GPUs, alongside collaboration on MI455 and Miles. The fireside chat with Bill Jia, Google’s VP of Engineering for Core ML/AI, explored TorchTPU’s work with SGLang and Miles, workload-specific TPU design, and AI-generated kernels.
+
+<div class="summit-gallery summit-gallery--hardware-speakers" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, max(280px, calc(50% - 8px))), 1fr)); align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/main-stage-fireside-chat.webp" target="_blank" rel="noopener noreferrer" aria-label="AMD’s Vamsi Boppana in conversation with Lianmin Zheng. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/main-stage-fireside-chat.webp" srcset="/images/blog/sglang-summit-2026/main-stage-fireside-chat-800.webp 800w, /images/blog/sglang-summit-2026/main-stage-fireside-chat.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="Two speakers discuss a topic while seated in armchairs on the main stage." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/main-stage-fireside-chat.webp" srcset="/images/blog/sglang-summit-2026/main-stage-fireside-chat-800.webp 800w, /images/blog/sglang-summit-2026/main-stage-fireside-chat.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="Two speakers discuss a topic while seated in armchairs on the main stage." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">AMD’s Vamsi Boppana in conversation with Lianmin Zheng.</figcaption>
 </figure>
-<figure class="summit-figure" style="break-inside: avoid; margin: 0 0 1.5rem;">
+<figure class="summit-figure" style="min-width: 0; margin: 0;">
   <a href="/images/blog/sglang-summit-2026/fireside-speaker-on-stage.webp" target="_blank" rel="noopener noreferrer" aria-label="Google’s Bill Jia on TPUs and open AI infrastructure. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/fireside-speaker-on-stage.webp" srcset="/images/blog/sglang-summit-2026/fireside-speaker-on-stage-800.webp 800w, /images/blog/sglang-summit-2026/fireside-speaker-on-stage.webp 1800w" sizes="(max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1023px) calc((80vw - 56px) / 2), 309px" alt="A speaker gestures while seated in an armchair on the main stage." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/fireside-speaker-on-stage.webp" srcset="/images/blog/sglang-summit-2026/fireside-speaker-on-stage-800.webp 800w, /images/blog/sglang-summit-2026/fireside-speaker-on-stage.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="A speaker gestures while seated in an armchair on the main stage." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">Google’s Bill Jia on TPUs and open AI infrastructure.</figcaption>
 </figure>
 </div>
+
+Together, these sessions highlighted how open software and joint engineering give developers more flexibility in how they train and serve models.
 
 ### Production lessons take center stage
 
@@ -556,11 +565,11 @@ The summit brought a broad ecosystem into one place. The work continues across t
 
 Thank you for being part of SGLang.
 
-<figure class="summit-figure" style="max-width: 680px; margin: 2rem auto;">
-  <a href="/images/blog/sglang-summit-2026/summit-staircase-sign.webp" target="_blank" rel="noopener noreferrer" aria-label="SGLang Summit 2026 at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/summit-staircase-sign.webp" srcset="/images/blog/sglang-summit-2026/summit-staircase-sign-800.webp 800w, /images/blog/sglang-summit-2026/summit-staircase-sign.webp 1800w" sizes="(max-width: 767px) calc(100vw - 40px), 680px" alt="A large SGLang Summit 2026 sign rises above a staircase in the venue." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+<figure class="summit-figure summit-figure--closing" style="margin: 2rem 0;">
+  <a href="/images/blog/sglang-summit-2026/summit-staircase-original.webp" target="_blank" rel="noopener noreferrer" aria-label="SGLang Summit 2026 at Fort Mason. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/summit-staircase-original.webp" srcset="/images/blog/sglang-summit-2026/summit-staircase-original-800.webp 800w, /images/blog/sglang-summit-2026/summit-staircase-original.webp 1920w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1249px) calc(80vw - 40px), 960px" alt="A large SGLang Summit 2026 sign rises above a staircase in the venue." width="1920" height="1280" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">SGLang Summit 2026 at Fort Mason.</figcaption>
 </figure>
 
-Visit [sglang.io/summit](https://sglang.io/summit) for talk recordings and presentation slides, which will be available soon.
+<p class="summit-closing-note" style="margin-top: 2rem; color: #595959; font-size: 0.875rem; line-height: 1.6; font-style: italic;">Visit <a href="https://sglang.io/summit">sglang.io/summit</a> for talk recordings and presentation slides, which will be available soon.</p>
