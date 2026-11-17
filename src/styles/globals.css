@@ -271,3 +271,9 @@ a:hover {
 table {
   word-wrap: break-word;
 }
+
+/* Keep recap section targets clear of the legacy site's mobile navigation. */
+.article .summit-nav ~ h2 .anchor,
+.article .summit-nav ~ h3 .anchor {
+  scroll-margin-top: 5rem;
+}
