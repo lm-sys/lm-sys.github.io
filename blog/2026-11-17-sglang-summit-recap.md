@@ -242,10 +242,10 @@ humans& CEO Eric Zelikman discussed the training and infrastructure needed to bu
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">The AI Compute Panel brings together perspectives from production deployments.</figcaption>
 </figure>
 <figure class="summit-figure" style="min-width: 0; margin: 0;">
-  <a href="/images/blog/sglang-summit-2026/main-stage-panel-audience.webp" target="_blank" rel="noopener noreferrer" aria-label="The post-training panel connects model development with production infrastructure. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/main-stage-panel-audience.webp" srcset="/images/blog/sglang-summit-2026/main-stage-panel-audience-800.webp 800w, /images/blog/sglang-summit-2026/main-stage-panel-audience.webp 1800w" sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="A wide view of the theater audience watching a panel on the main stage." width="1800" height="1351" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
+  <a href="/images/blog/sglang-summit-2026/eric-zelikman-talk.webp" target="_blank" rel="noopener noreferrer" aria-label="humans&amp; CEO Eric Zelikman on training AI that collaborates with people. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
+    <img src="/images/blog/sglang-summit-2026/eric-zelikman-talk.webp" srcset="/images/blog/sglang-summit-2026/eric-zelikman-talk-800.webp 800w, /images/blog/sglang-summit-2026/eric-zelikman-talk.webp 1800w" sizes="(max-width: 540px) calc(100vw - 40px), (max-width: 767px) calc((100vw - 56px) / 2), (max-width: 1249px) calc((80vw - 56px) / 2), 472px" alt="Eric Zelikman speaks on the main stage during his talk at SGLang Summit." width="1800" height="1200" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 3 / 2; object-fit: cover; object-position: center;">
   </a>
-  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">The post-training panel connects model development with production infrastructure.</figcaption>
+  <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">humans&amp; CEO Eric Zelikman on training AI that collaborates with people.</figcaption>
 </figure>
 </div>
 
