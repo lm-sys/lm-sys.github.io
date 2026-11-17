@@ -552,7 +552,7 @@ We are grateful to the sponsors and community partners who helped make this gath
 
 Thank you to our Platinum sponsors: Google, Intel, RadixArk, NVIDIA, Meta, and AMD; our Gold sponsors: AWS, Crusoe, DigitalOcean, Fireworks AI, Inco AI, LanceDB, Modal, Nebius, and Snowflake; and all our Silver, Star, Spark, and Community partners.
 
-<figure class="summit-figure summit-figure--graphic" style="max-width: 680px; margin: 2rem auto;">
+<figure class="summit-figure summit-figure--sponsors" style="margin: 2rem 0;">
   <a href="/images/blog/sglang-summit-2026/summit-sponsors.webp" target="_blank" rel="noopener noreferrer" aria-label="Thank you to the sponsors and community partners of SGLang Summit 2026. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
     <img src="/images/blog/sglang-summit-2026/summit-sponsors.webp" alt="SGLang Summit sponsor board displaying the sponsors’ logos." width="1620" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
   </a>
