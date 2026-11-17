@@ -136,10 +136,10 @@ Hardware partners shared how they are adapting SGLang to different architectures
 
 Ujval Kapasi, NVIDIA’s VP of AI & HPC Frameworks and Libraries, highlighted work on Vera Rubin, Dynamo integration for cache-aware routing and distributed serving, and faster replica startup through Dynamo Snapshot and Model Express. He also discussed Vera CPUs for agent sandboxes and RL workloads.
 
-<div class="summit-gallery summit-gallery--nvidia-result" style="display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem 1rem; margin: 2rem 0;">
+<div class="summit-gallery summit-gallery--nvidia-result" style="display: flex; flex-wrap: wrap; align-items: start; gap: 1.5rem 1rem; margin: 2rem 0;">
 <figure class="summit-figure" style="min-width: 0; margin: 0; flex: 1 1 320px;">
   <a href="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" target="_blank" rel="noopener noreferrer" aria-label="NVIDIA’s Ujval Kapasi on Vera Rubin and inference infrastructure. — view larger (opens in a new tab)" style="display: block; border-radius: 6px; overflow: hidden; color: inherit;">
-    <img src="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" alt="A presenter on stage discusses NVIDIA Dynamo Snapshot." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none;">
+    <img src="/images/blog/sglang-summit-2026/nvidia-dynamo-talk.webp" alt="A presenter on stage discusses NVIDIA Dynamo Snapshot." width="1200" height="1800" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; max-width: none; margin: 0; box-shadow: none; aspect-ratio: 1 / 1; object-fit: cover; object-position: center 60%;">
   </a>
   <figcaption style="margin-top: 0.6rem; color: #595959; font-size: 0.875rem; line-height: 1.5;">NVIDIA’s Ujval Kapasi on Vera Rubin and inference infrastructure.</figcaption>
 </figure>
