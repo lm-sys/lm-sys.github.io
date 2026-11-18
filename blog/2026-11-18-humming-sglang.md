@@ -1,7 +1,7 @@
 ---
 title: "Humming in SGLang: Flexible Low-Bit Kernels for Efficient MoE Serving"
 author: "Ant Group Venus and SCT Teams, and the SGLang Team"
-date: "November 4, 2026"
+date: "November 18, 2026"
 previewImg: /images/blog/humming-sglang/humming_sgl_preview.png
 type: blog
 ---
