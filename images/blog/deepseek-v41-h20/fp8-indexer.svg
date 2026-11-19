@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430" role="img" aria-labelledby="title desc">
+  <title id="title">From Torch BF16 scoring to DeepGEMM FP8 scoring</title>
+  <desc id="desc">The Torch path scores BF16 queries and keys. The DeepGEMM path casts queries to E4M3 and gathers the FP4 keys once, applying scales in FP32 and clamping to plus or minus 448 before the E4M3 cast.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="m0 0 10 5-10 5z" fill="#60738d"/></marker></defs>
+  <rect width="1100" height="430" fill="#fff"/>
+  <g font-family="system-ui, sans-serif" fill="#172b44">
+    <text x="34" y="42" font-size="28" font-weight="700">Change the prefill scoring path</text>
+    <text x="35" y="83" font-size="18" font-weight="750" fill="#5b6980">BEFORE · TORCH BF16</text>
+    <rect x="34" y="102" width="347" height="66" rx="8" fill="#f0f3f8"/>
+    <rect x="422" y="102" width="284" height="66" rx="8" fill="#f0f3f8"/>
+    <rect x="747" y="102" width="320" height="66" rx="8" fill="#f0f3f8"/>
+    <g text-anchor="middle" font-size="20">
+      <text x="207" y="142">BF16 queries + dequantized K</text>
+      <text x="564" y="142">Torch BF16 score GEMM</text>
+      <text x="907" y="142">Causal mask + top-k</text>
+    </g>
+    <g fill="none" stroke="#60738d" stroke-width="2.3" marker-end="url(#arrow)">
+      <path d="M387 135h27"/><path d="M712 135h27"/>
+    </g>
+    <path d="M34 194h1033" stroke="#d9e1eb"/>
+    <text x="35" y="227" font-size="18" font-weight="750" fill="#116383">AFTER · DEEPGEMM FP8</text>
+    <g fill="#e9f5fa">
+      <rect x="34" y="246" width="176" height="56" rx="8"/><rect x="34" y="318" width="176" height="65" rx="8"/>
+      <rect x="250" y="246" width="345" height="56" rx="8"/><rect x="250" y="318" width="345" height="65" rx="8"/>
+      <rect x="642" y="282" width="225" height="64" rx="8" fill="#d7edf8"/><rect x="911" y="282" width="156" height="64" rx="8"/>
+    </g>
+    <g text-anchor="middle" font-size="20">
+      <text x="122" y="281">Queries</text><text x="122" y="344">Packed FP4 K</text><text x="122" y="369" font-size="17">+ block scales</text>
+      <text x="422" y="281">Cast queries to E4M3</text>
+      <text x="422" y="343">Gather once · scale in FP32</text>
+      <text x="422" y="369" fill="#116383" font-weight="650">Clamp to ±448 → cast to E4M3</text>
+      <text x="754" y="308">DeepGEMM</text><text x="754" y="331" font-size="17">fp8_mqa_logits</text>
+      <text x="989" y="308">Causal mask</text><text x="989" y="332">+ top-k</text>
+    </g>
+    <g fill="none" stroke="#60738d" stroke-width="2.3" marker-end="url(#arrow)">
+      <path d="M216 274h27"/><path d="M216 350h27"/>
+      <path d="M601 274h15v26h20"/><path d="M601 350h15v-23h20"/><path d="M874 314h31"/>
+    </g>
+  </g>
+</svg>
