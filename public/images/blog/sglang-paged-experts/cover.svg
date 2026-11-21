@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+<title id="title">SGLang Paged Experts</title>
+<desc id="desc">Cover: SGLang Paged Experts, MoE models larger than your GPU. Three memory tiers: GPU memory with K slots per layer, host RAM with every expert, NVMe beyond RAM (upcoming); only misses move up.</desc>
+<rect width="1600" height="900" fill="#fff"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#52514e" stroke-width="1.8"/></marker><marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#d65221" stroke-width="1.8"/></marker><marker id="a-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#8a8984" stroke-width="1.8"/></marker></defs>
+<text x="90" y="150" font-size="34" fill="#52514e" font-weight="700" text-anchor="start">SGLang</text>
+<text x="90" y="330" font-size="112" fill="#171717" font-weight="700" text-anchor="start">Paged Experts</text>
+<rect x="94" y="362" width="110" height="8" fill="#2a78d6"/>
+<text x="90" y="440" font-size="46" fill="#171717" font-weight="700" text-anchor="start">MoE models larger than your GPU</text>
+<text x="90" y="500" font-size="28" fill="#52514e" text-anchor="start">VRAM as a cache of experts, host RAM and NVMe behind it</text>
+<text x="90" y="800" font-size="22" fill="#8a8984" text-anchor="start">Consumer GPUs · CUDA graphs · every expert computed on the GPU</text>
+<rect x="980" y="110" width="520" height="150" rx="14" fill="#edf6f0" stroke="#368354" stroke-width="2.5"/>
+<text x="1010" y="156" font-size="28" fill="#368354" font-weight="700" text-anchor="start">GPU memory</text>
+<text x="1010" y="188" font-size="18" fill="#52514e" text-anchor="start">K slots per layer, decided on the GPU</text>
+<rect x="1012" y="208" width="22" height="22" rx="4" fill="#368354" stroke="#368354" stroke-width="2"/>
+<rect x="1042" y="208" width="22" height="22" rx="4" fill="#368354" stroke="#368354" stroke-width="2"/>
+<rect x="1072" y="208" width="22" height="22" rx="4" fill="#368354" stroke="#368354" stroke-width="2"/>
+<rect x="1102" y="208" width="22" height="22" rx="4" fill="#368354" stroke="#368354" stroke-width="2"/>
+<rect x="1132" y="208" width="22" height="22" rx="4" fill="#368354" stroke="#368354" stroke-width="2"/>
+<rect x="1162" y="208" width="22" height="22" rx="4" fill="#368354" stroke="#368354" stroke-width="2"/>
+<rect x="1192" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1222" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1252" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1282" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1312" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1342" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1372" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1402" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1432" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="1462" y="208" width="22" height="22" rx="4" fill="#fff" stroke="#368354" stroke-width="2"/>
+<rect x="980" y="375" width="520" height="150" rx="14" fill="#fff3eb" stroke="#d65221" stroke-width="2.5"/>
+<text x="1010" y="421" font-size="28" fill="#d65221" font-weight="700" text-anchor="start">Host RAM</text>
+<text x="1010" y="453" font-size="18" fill="#52514e" text-anchor="start">every expert, pinned</text>
+<rect x="1012" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1042" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1072" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1102" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1132" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1162" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1192" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1222" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1252" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1282" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1312" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1342" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1372" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1402" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1432" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="1462" y="473" width="22" height="22" rx="4" fill="#d65221" stroke="#d65221" stroke-width="2"/>
+<rect x="980" y="640" width="520" height="150" rx="14" fill="#f4f4f2" stroke="#8a8984" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="1010" y="686" font-size="28" fill="#52514e" font-weight="700" text-anchor="start">NVMe</text>
+<text x="1010" y="718" font-size="18" fill="#52514e" text-anchor="start">beyond RAM (upcoming)</text>
+<rect x="1012" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1042" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1072" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1102" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1132" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1162" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1192" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1222" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1252" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1282" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1312" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1342" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1372" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1402" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1432" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<rect x="1462" y="738" width="22" height="22" rx="4" fill="#8a8984" stroke="#8a8984" stroke-width="2"/>
+<line x1="1240" y1="371" x2="1240" y2="266" stroke="#d65221" stroke-width="3" marker-end="url(#a-orange)"/>
+<text x="1256" y="325" font-size="18" fill="#d65221" font-weight="700" text-anchor="start">only the misses</text>
+<line x1="1240" y1="636" x2="1240" y2="531" stroke="#8a8984" stroke-width="3" marker-end="url(#a-gray)"/>
+<text x="1256" y="590" font-size="18" fill="#8a8984" font-weight="700" text-anchor="start">on demand</text>
+</g>
+</svg>

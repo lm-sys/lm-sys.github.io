@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+<title id="title">Paged Experts: one MoE layer, one decode step</title>
+<desc id="desc">Diagram of one MoE layer in a decode step. On the GPU, inside the CUDA graph: the router produces top-k expert ids; the decide kernel maps hits to their slots and gives each miss the least recently used slot the step does not need; it hands slot ids and weights to the model's fused-MoE kernel and a page-in plan to the gather kernel, which copies only the missing experts from pinned host RAM over PCIe into the K-slot table that the fused-MoE kernel reads. Host RAM holds all experts; an upcoming NVMe tier holds those that do not fit in RAM.</desc>
+<rect width="1500" height="900" fill="#fff"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#52514e" stroke-width="1.8"/></marker><marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#d65221" stroke-width="1.8"/></marker><marker id="a-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#8a8984" stroke-width="1.8"/></marker></defs>
+<text x="750.0" y="54" font-size="34" fill="#171717" font-weight="700" text-anchor="middle">Paged Experts: one MoE layer, one decode step</text>
+<text x="750.0" y="92" font-size="21" fill="#52514e" text-anchor="middle">VRAM is a cache of experts: the GPU keeps K per layer, pinned host RAM holds all of them</text>
+<rect x="30" y="122" width="1440" height="440" rx="16" fill="#f1f5fa" stroke="#2a78d6" stroke-width="2" stroke-dasharray="9 7"/>
+<text x="56" y="158" font-size="21" fill="#2a78d6" font-weight="700" text-anchor="start">GPU · captured in the decode CUDA graph, no host sync</text>
+<rect x="60" y="190" width="300" height="150" rx="10" fill="#fff" stroke="#52514e" stroke-width="2"/>
+<text x="210.0" y="243" font-size="25" fill="#171717" font-weight="700" text-anchor="middle">Router</text>
+<text x="210.0" y="273" font-size="19" fill="#52514e" text-anchor="middle">E-wide, unchanged</text>
+<text x="210.0" y="303" font-size="19" fill="#52514e" text-anchor="middle">→ top-k expert ids</text>
+<rect x="510" y="190" width="420" height="150" rx="10" fill="#fff" stroke="#2a78d6" stroke-width="2"/>
+<text x="720.0" y="228" font-size="25" fill="#2a78d6" font-weight="700" text-anchor="middle">decide (JIT kernel)</text>
+<text x="720.0" y="258" font-size="19" fill="#52514e" text-anchor="middle">hit → the expert's slot</text>
+<text x="720.0" y="288" font-size="19" fill="#52514e" text-anchor="middle">miss → least recently used</text>
+<text x="720.0" y="318" font-size="19" fill="#52514e" text-anchor="middle">slot this step does not need</text>
+<rect x="1110" y="190" width="330" height="150" rx="10" fill="#fff" stroke="#52514e" stroke-width="2"/>
+<text x="1275.0" y="243" font-size="25" fill="#171717" font-weight="700" text-anchor="middle">Fused-MoE kernel</text>
+<text x="1275.0" y="273" font-size="19" fill="#52514e" text-anchor="middle">the model's own kernel,</text>
+<text x="1275.0" y="303" font-size="19" fill="#52514e" text-anchor="middle">runs over the K slots</text>
+<line x1="360" y1="265" x2="506" y2="265" stroke="#52514e" stroke-width="2.5" marker-end="url(#a-ink)"/>
+<text x="433.0" y="252" font-size="18" fill="#52514e" font-weight="700" text-anchor="middle">expert ids</text>
+<line x1="930" y1="265" x2="1106" y2="265" stroke="#52514e" stroke-width="2.5" marker-end="url(#a-ink)"/>
+<text x="1018.0" y="252" font-size="18" fill="#52514e" font-weight="700" text-anchor="middle">slot ids, weights</text>
+<rect x="510" y="420" width="420" height="120" rx="10" fill="#fff" stroke="#d65221" stroke-width="2"/>
+<text x="720.0" y="458" font-size="25" fill="#d65221" font-weight="700" text-anchor="middle">gather (JIT kernel)</text>
+<text x="720.0" y="488" font-size="19" fill="#52514e" text-anchor="middle">copies only the misses;</text>
+<text x="720.0" y="518" font-size="19" fill="#52514e" text-anchor="middle">the count is read on the GPU</text>
+<rect x="1110" y="420" width="330" height="120" rx="10" fill="#edf6f0" stroke="#368354" stroke-width="2"/>
+<text x="1275.0" y="458" font-size="25" fill="#368354" font-weight="700" text-anchor="middle">K-slot table</text>
+<text x="1275.0" y="488" font-size="19" fill="#52514e" text-anchor="middle">K experts per layer</text>
+<text x="1275.0" y="518" font-size="19" fill="#52514e" text-anchor="middle">(w13, w2, scales)</text>
+<line x1="720" y1="340" x2="720" y2="416" stroke="#52514e" stroke-width="2.5" marker-end="url(#a-ink)"/>
+<text x="734" y="384" font-size="18" fill="#52514e" font-weight="700" text-anchor="start">page-in plan</text>
+<line x1="930" y1="480" x2="1106" y2="480" stroke="#d65221" stroke-width="2.5" marker-end="url(#a-orange)"/>
+<text x="1018.0" y="467" font-size="18" fill="#d65221" font-weight="700" text-anchor="middle">misses</text>
+<line x1="1275" y1="420" x2="1275" y2="344" stroke="#52514e" stroke-width="2.5" marker-end="url(#a-ink)"/>
+<text x="1289" y="388" font-size="18" fill="#52514e" font-weight="700" text-anchor="start">read</text>
+<rect x="60" y="640" width="700" height="150" rx="10" fill="#fff3eb" stroke="#d65221" stroke-width="2"/>
+<text x="410.0" y="693" font-size="25" fill="#d65221" font-weight="700" text-anchor="middle">Pinned host RAM</text>
+<text x="410.0" y="723" font-size="19" fill="#52514e" text-anchor="middle">all E experts of every MoE layer,</text>
+<text x="410.0" y="753" font-size="19" fill="#52514e" text-anchor="middle">in the kernel's layout (repacked once at load)</text>
+<rect x="880" y="640" width="560" height="150" rx="10" fill="#f4f4f2" stroke="#8a8984" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="1160.0" y="693" font-size="25" fill="#52514e" font-weight="700" text-anchor="middle">NVMe expert cache (upcoming)</text>
+<text x="1160.0" y="723" font-size="19" fill="#52514e" text-anchor="middle">experts that do not fit in RAM;</text>
+<text x="1160.0" y="753" font-size="19" fill="#52514e" text-anchor="middle">the recently used stay in host rows</text>
+<line x1="620" y1="640" x2="620" y2="544" stroke="#d65221" stroke-width="2.5" marker-end="url(#a-orange)"/>
+<text x="634" y="604" font-size="18" fill="#d65221" font-weight="700" text-anchor="start">PCIe (unified addressing)</text>
+<line x1="880" y1="715" x2="764" y2="715" stroke="#8a8984" stroke-width="2.5" marker-end="url(#a-gray)"/>
+<text x="822.0" y="702" font-size="18" fill="#8a8984" font-weight="700" text-anchor="middle">reads</text>
+<text x="750.0" y="856" font-size="20" fill="#52514e" text-anchor="middle">K and the KV cache share --mem-fraction-static: auto sizing gives the KV cache what the requests need, the slots take the rest.</text>
+</g>
+</svg>
