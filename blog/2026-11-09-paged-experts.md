@@ -72,7 +72,10 @@ And consecutive tokens keep returning to the same experts. If routing were unifo
 | Qwen3-30B FP8, 45 of 128 | 9.6 % | 64.8 % | 6.8x |
 | Qwen3-Next-80B NVFP4, 101 of 512 (top-10) | 13.0 % | 80.3 % | 6.2x |
 
-The concentration is largest where the cache is large relative to E: a small cache holds the popular head, and the tail is broad. **[MEASURE ON MAIN: a K sweep within one model, as a figure.]**
+The concentration is largest where the cache is large relative to E: a small cache holds the popular head, and the tail is broad.
+
+<img src="/images/blog/sglang-paged-experts/ksweep.svg" alt="Share of routed experts that miss the GPU against K, with pre-copy on main. Qwen3-30B GPTQ (128 experts): K 16 41.1 % before pre-copy and 16.0 % copied on demand, K 92 0.7 % and 0.4 %. Qwen3-Next-80B NVFP4 (512 experts): K 20 40.9 % and 20.4 %, K 100 13.2 % and 5.4 %. Uniform routing 1 - K/E is far above both." style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 4: Measured routing misses the GPU far less often than uniform routing would, at every K. On SGLang main, a pre-copy of each layer's predicted experts during the previous layer moves part of the remaining misses off the critical path; only the orange ones are still waited for.</p>
 
 Which experts are popular, though, moves with the workload. On three prose prompts Qwen3-Next touched 169 of its 512 experts per layer, and a frozen set of the most popular ones did as well as a cache that adapts. Twelve mixed prompts (prose, code, math, JSON, German, French) touched 450, and the frozen set lost 28 points of hit rate when fitted on the very trace it was scored on, 53 when fitted on other data: the median expert returns after 22 accesses, the 99th percentile after 4,723, when the topic swings back. So the GPU's copy of the experts has to be a cache that follows the workload, not a pinned hot set. Which replacement rule it uses matters little: in a simulation on Qwen3-Next routing at 96 resident experts, LRU-2, a decayed LFU and a router-score average all land within 5 % of plain LRU's copies, while 32 more slots cut them by 25 %.
 
@@ -89,7 +92,7 @@ Qwen3-30B GPTQ at K = 92 of 128 copies 2.66 experts (6.5 MB) per token, a 0.21 m
 The rest of a step is a floor that paging cannot change. We traced eight captured decode steps per model with CUPTI and joined each copy kernel to the experts it copied; every part is a measured kernel time, not a difference of two totals:
 
 <img src="/images/blog/sglang-paged-experts/step-split.svg" alt="Stacked bars of one decode step's kernel time: Qwen3-30B GPTQ copies 0.21, decide 0.11, routed GEMMs 1.41, rest 2.60 ms; Qwen3-30B FP8 3.52, 0.18, 2.40, 3.60 ms; Qwen3-Next-80B NVFP4 2.36, 0.27, 1.22, 6.36 ms" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
-<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 4: One decode step, split by measured kernel time. Only the orange part is added by paging.</p>
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 5: One decode step, split by measured kernel time. Only the orange part is added by paging.</p>
 
 <!-- TODO: recheck the "other" row before publishing (it is derived by subtraction); re-trace on main, where pre-copy takes copies off the critical path. -->
 
@@ -142,7 +145,7 @@ A prefill chunk, or a decode batch beyond `K // top_k` requests, routes to more 
 The RAM tier needs every expert in pinned host RAM. DeepSeek-V4-Flash is a 167 GB checkpoint whose routed experts take 137.1 GiB; on our 62 GB machine about 45 GiB can be pinned next to the rest of the server. The disk tier gives each layer three tiers: K experts in GPU slots, R in pinned **host rows**, and all of them in a file on the NVMe drive, written once in the kernel's layout on the first start. An expert that is only on disk is read into a host row with one direct (`O_DIRECT`) read and then copied into its slot like any other miss. 
 
 <img src="/images/blog/sglang-paged-experts/tiers.svg" alt="Three tiers for one MoE layer of DeepSeek-V4-Flash: 9 of 256 experts in GPU slots, 71 in pinned host rows, all 256 in a file on the NVMe drive; misses move up by an O_DIRECT read and a copy over PCIe, nothing is written back" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
-<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 5: The disk tier for DeepSeek-V4-Flash on a 16 GB GPU with 62 GB of RAM.</p>
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 6: The disk tier for DeepSeek-V4-Flash on a 16 GB GPU with 62 GB of RAM.</p>
 
 Three lessons shaped it:
 
