@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+<title id="title">Context costs resident experts</title>
+<desc id="desc">Line chart of decode tok/s against the KV cache kept, Qwen3-30B-A3B GPTQ-Int4: 10240 tokens: K 92, 233.3 tok/s; 16384 tokens: K 86, 230.6 tok/s; 40960 tokens: K 63, 208.4 tok/s; 65536 tokens: K 46, 173.1 tok/s.</desc>
+<rect width="1200" height="640" fill="#fff"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="40" y="52" font-size="32" fill="#171717" font-weight="700" text-anchor="start">Context costs resident experts</text>
+<text x="40" y="84" font-size="20" fill="#52514e" text-anchor="start">Qwen3-30B-A3B GPTQ-Int4 on an RTX 5070 Ti 16 GB · K chosen for the KV cache asked for · one request</text>
+<line x1="150" y1="530.0" x2="1110" y2="530.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="136" y="536.0" font-size="18" fill="#52514e" text-anchor="end">150</text>
+<line x1="150" y1="435.0" x2="1110" y2="435.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="136" y="441.0" font-size="18" fill="#52514e" text-anchor="end">175</text>
+<line x1="150" y1="340.0" x2="1110" y2="340.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="136" y="346.0" font-size="18" fill="#52514e" text-anchor="end">200</text>
+<line x1="150" y1="245.0" x2="1110" y2="245.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="136" y="251.0" font-size="18" fill="#52514e" text-anchor="end">225</text>
+<line x1="150" y1="150.0" x2="1110" y2="150.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="136" y="156.0" font-size="18" fill="#52514e" text-anchor="end">250</text>
+<text x="150.0" y="560" font-size="18" fill="#52514e" text-anchor="middle">0</text>
+<text x="287.1" y="560" font-size="18" fill="#52514e" text-anchor="middle">10k</text>
+<text x="424.3" y="560" font-size="18" fill="#52514e" text-anchor="middle">20k</text>
+<text x="561.4" y="560" font-size="18" fill="#52514e" text-anchor="middle">30k</text>
+<text x="698.6" y="560" font-size="18" fill="#52514e" text-anchor="middle">40k</text>
+<text x="835.7" y="560" font-size="18" fill="#52514e" text-anchor="middle">50k</text>
+<text x="972.9" y="560" font-size="18" fill="#52514e" text-anchor="middle">60k</text>
+<text x="1110.0" y="560" font-size="18" fill="#52514e" text-anchor="middle">70k</text>
+<line x1="150" y1="530" x2="1110" y2="530" stroke="#52514e" stroke-width="1"/>
+<text x="630.0" y="596" font-size="19" fill="#52514e" text-anchor="middle">KV cache kept, tokens</text>
+<text x="40" y="124" font-size="19" fill="#52514e" text-anchor="start">decode tok/s</text>
+<polyline points="290.4,213.5 374.7,223.7 711.7,308.1 1048.8,442.2" fill="none" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="290.4" cy="213.5" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<text x="302.4" y="175.5" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 92 of 128 · 233.3 tok/s</text>
+<text x="302.4" y="197.5" font-size="16" fill="#52514e" text-anchor="start">--max-total-tokens 10240</text>
+<circle cx="374.7" cy="223.7" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<text x="386.7" y="323.7" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 86 of 128 · 230.6 tok/s</text>
+<text x="386.7" y="345.7" font-size="16" fill="#52514e" text-anchor="start">--context-length 16384</text>
+<circle cx="711.7" cy="308.1" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<text x="723.7" y="270.1" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 63 of 128 · 208.4 tok/s</text>
+<text x="723.7" y="292.1" font-size="16" fill="#52514e" text-anchor="start">the model's full context (default)</text>
+<circle cx="1048.8" cy="442.2" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<text x="1036.8" y="482.2" font-size="19" fill="#171717" font-weight="700" text-anchor="end">K = 46 of 128 · 173.1 tok/s</text>
+<text x="1036.8" y="504.2" font-size="16" fill="#52514e" text-anchor="end">4 requests × 16,384</text>
+</g>
+</svg>

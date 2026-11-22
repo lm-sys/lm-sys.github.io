@@ -6,275 +6,162 @@ previewImg: /images/blog/sglang-paged-experts/cover.png
 type: blog
 ---
 
-Mixture-of-Experts (MoE) models are now a popular shape of open-weight LLMs, and most of their parameters are experts. A token only uses `top_k` of the `E` experts in each layer, but every expert has to be *somewhere* the GPU can reach quickly, and on a consumer GPU with 8–16 GB of VRAM that is the problem: Qwen3-30B-A3B in 4-bit is 17 GB, its FP8 version 31 GB, Qwen3-Next-80B-A3B in NVFP4 about 48 GB.
+Mixture-of-Experts (MoE) models are now a popular shape of open-weight LLMs, and most of their parameters are experts. A token only uses `top_k` of the `E` experts in each layer, but every expert has to be somewhere the GPU can reach quickly, and a consumer GPU has 8–16 GB of VRAM: Qwen3-30B-A3B in 4-bit is 17 GB, its FP8 version 31 GB, Qwen3-Next-80B-A3B in NVFP4 about 48 GB.
 
-**Paged Experts** lets SGLang serve these models on one consumer GPU without moving any computation to the CPU. Each MoE layer keeps **K of its E experts in a slot table on the GPU**, holds all E in pinned host memory, and copies in only the experts a step routes to that are not resident; the model's own fused-MoE kernel then runs on the GPU as usual. It is the [HiCache](https://lmsys.org/blog/2025-09-10-sglang-hicache/) idea applied to expert weights: the GPU holds the working set, host RAM holds the rest. Paged Experts is merged into SGLang main and enabled with one flag.
-
-This post shows what it does on a 16 GB consumer card and how it works, with each design choice next to the measurement that forced it, and then follows the same reasoning one tier further, to experts on an NVMe drive.
+**Paged Experts** lets SGLang keep only part of a MoE model's experts in GPU memory and the rest in host RAM, with every expert still computed on the GPU. That serves models that did not fit before, and it turns the VRAM the experts take into something you can trade: give it to the KV cache for longer context or more concurrent requests, or spend it on a larger, higher-precision checkpoint. It is merged into SGLang main and enabled with one flag, `--enable-paged-experts`.
 
 **TL;DR**
 
-- <!-- TODO: Add plug: run models in sglang that wouldnt fit before -->
-- **Results do not change**: routing is untouched and every routed expert runs on the GPU. Paged layers are bit-identical to unpaged ones for bf16, FP8 and INT8 experts, and within the Marlin kernel's own run-to-run noise for GPTQ, AWQ, MXFP4 and NVFP4.
-- **What decides speed is bytes.** Everything in a decode step except the expert copies already runs at the GPU's read floor, so speed comes down to how many expert bytes cross PCIe per token: 6.5 MB on Qwen3-30B GPTQ (5 % of its step), 173 MB on its FP8 version (37 %). Every part of the design serves that one number.
-- **Qwen3-30B-A3B GPTQ-Int4 (17 GB) on a 16 GB RTX 5070 Ti: 233 tok/s single-stream decode**, 421 output tok/s with 4 concurrent requests, GSM8K 0.95, with 92 of 128 experts per layer on the GPU. Its FP8 version (31 GB, twice the card's VRAM) decodes at **105 tok/s**. <!-- TODO: re-measure on main. -->
-- **Qwen3-Next-80B-A3B NVFP4 (about 48 GB) with its experts in 62 GB of host RAM: 101 tok/s decode**, GSM8K 0.965–0.975, with 101 of 512 experts per layer on the GPU. <!-- TODO: re-measure on main. -->
-- **Beyond RAM (upcoming PRs)**: with the NVMe drive as a third tier, **DeepSeek-V4-Flash (167 GB) runs on the same 16 GB GPU and 62 GB of RAM at 14.0 tok/s**, GSM8K 0.975, and an **8 GB laptop GPU serves Qwen3-Next-80B at 16 tok/s**.
+- **Run MoE models that do not fit your GPU.** On a 16 GB RTX 5070 Ti, Qwen3-Next-80B-A3B NVFP4 (48 GB) decodes at **101 tok/s** with its experts in host RAM; with an NVMe drive behind host RAM, DeepSeek-V4-Flash (167 GB) runs at 14.0 tok/s on the same card with 62 GB of RAM. <!-- TODO: re-measure on main (pre-copy, in main since #51279, is not in these numbers). -->
+- **It unlocks new trade-offs.** Even if a model would fit VRAM, Paged Experts can be used to limit the number of experts to gain VRAM for e.g. longer contexts or more concurrent requests.
+- **How it works.** Each MoE layer keeps K of its experts on the GPU and all of them in pinned host RAM. Before the layer runs, the GPU checks the routed experts against the resident ones and copies in the missing ones, replacing the least recently used, all inside the decode step's CUDA graph.
+- **Why it works.** A token reads only a few experts per layer, and consecutive tokens keep returning to the same ones: at 92 of 128 experts resident, 0.69 % of routed experts miss. And everything in a decode step except those copies already runs as fast as the GPU can read its weights.
 
 <!-- TODO: add an HTML table of contents here once the headings are final, as other long LMSYS posts do. -->
 
-## 1. Motivation: MoE models on consumer GPUs
+## 1. The idea: GPU memory as a cache of experts
 
-### Most of a MoE model is experts, and most experts are idle
+Take one MoE layer of Qwen3-30B-A3B: 128 experts, of which each token uses 8. On a 16 GB card all 128 do not fit next to attention and the KV cache, but 92 do. Paged Experts keeps those 92 in **slots** on the GPU (the *resident* experts) and all 128 in a **host store** in pinned RAM. The router does not know: it still routes over all 128. Before the layer runs, a small *decide* kernel checks the 8 experts the router picked against the slots: a resident expert is used where it sits, a missing one is **copied** over PCIe into the slot of the least recently used expert, and the layer's own fused-MoE kernel runs over the slots. At K = 92, 0.69 % of routed experts miss.
 
-A gaming PC or a workstation typically pairs 8–16 GB of VRAM with 32–64 GB of RAM. The MoE models people want to run locally are larger than the VRAM but smaller than the RAM: Qwen3-30B-A3B has 128 experts in each of its 48 MoE layers, and in GPTQ-Int4 its experts alone take 13.9 GiB, the whole usable VRAM of a 16 GB card before a single byte of attention weights or KV cache.
+If this sounds like virtual memory, it is meant to. An expert is a fixed-size block of weights that a token reads whole or not at all, which makes it a natural page; a miss is a page fault, and paging decides only where an expert sits when the GPU reads it, never which experts run. Two things are unlike an operating system: the GPU handles its own faults, inside the decode step's CUDA graph, and nothing is ever computed on the CPU: the page always comes to the GPU. When host RAM runs out, the same scheme goes one tier further, with an NVMe drive behind the host store (section 4.5).
 
-Each token, though, is routed to only 8 of those 128 experts per layer: it reads 0.93 GB of the 14.9 GB of experts, and consecutive tokens keep reusing many of the same ones. The full expert pool has to be *available*, but the set a token actually needs is small.
+<img src="/images/blog/sglang-paged-experts/architecture.svg" alt="One MoE layer in a decode step: router, decide kernel, copy kernel moving only the misses from pinned host RAM into the K slots, and the fused-MoE kernel over the slots, all inside the CUDA graph" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 1: One MoE layer, one decode step. Everything in the blue frame runs on the GPU inside the decode CUDA graph.</p>
 
-### What people do today
+**What it buys.** Without paging, every expert of every layer has to sit in VRAM, and the experts take most of it. With paging, how many stay resident is a choice, and the VRAM they do not use goes elsewhere: to the KV cache for longer context or more concurrent requests, or to a larger, higher-precision checkpoint. On Qwen3-30B GPTQ, a 10,240-token KV cache leaves K = 92 of 128 resident (233.3 tok/s), the model's full 40,960-token context K = 63 (208.4 tok/s), and four requests of 16,384 tokens K = 46 (173.1 tok/s). SGLang picks K from what is left once the KV cache you asked for is allocated. What paging needs in return is host RAM for one copy of every expert (13.9 GiB for Qwen3-30B GPTQ, 40.7 GiB for Qwen3-Next-80B NVFP4), or an NVMe drive for the rest.
 
-| approach | where experts live | where they are computed | cost |
-|---|---|---|---|
-| quantize harder (2–3 bit) | VRAM | GPU | model quality |
-| `--cpu-offload-gb` (SGLang) | host RAM | GPU | streams *every* offloaded weight on every step, whatever the routing |
-| `--n-cpu-moe N` / `--cpu-moe` (llama.cpp, Ollama) | host RAM, for N layers | **CPU**, for those layers | decode tracks CPU cores and RAM bandwidth; prefill of those layers runs on the CPU |
-| [SSD Expert Pack](https://lmsys.org/blog/2026-08-29-sglang-ssd-expert-pack/) (SGLang) | NVMe SSD, GPU cache | GPU | built for models larger than RAM; GGUF sources; a miss waits for an SSD read |
-| **Paged Experts** (this post) | **host RAM**, K per layer in VRAM | **GPU** | copies only the non-resident experts a step routes to |
+<img src="/images/blog/sglang-paged-experts/tradeoff.svg" alt="Decode tok/s against the KV cache kept for Qwen3-30B-A3B GPTQ-Int4 on an RTX 5070 Ti 16 GB: 10,240 tokens K 92 233.3 tok/s; 16,384 tokens K 86 230.6; 40,960 tokens K 63 208.4; 65,536 tokens K 46 173.1" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 2: The VRAM the KV cache does not take holds experts. More context means fewer resident experts and slower decode.</p>
 
-Offloading weights wholesale cannot work on this hardware. On our card a byte in VRAM reads at 843 GB/s and a byte over PCIe 5.0 at 52.8 GB/s, 16x slower, and an offloaded weight that every token reads crosses the link on every token: offloading just `f* = B_link / B_vram ≈ 6 %` of a dense model's bytes doubles its step. Only weights that a token does not read escape this, and that is exactly what MoE experts are.
+## 2. Performance results
 
-Paged Experts uses that sparsity. Like llama.cpp it keeps the experts that do not fit in host RAM, but it never computes on the CPU: it treats VRAM as a cache of experts, pages the missing ones in over PCIe inside the decode step's CUDA graph, and computes every routed expert with the layer's own GPU kernel. And because the slots come out of the same memory as the KV cache, K is a memory knob as much as a speed feature (section 3.5).
+One desktop (RTX 5070 Ti 16 GB, PCIe 5.0, 62 GB RAM, a PCIe 5.0 NVMe drive) and one laptop (RTX 4070 Laptop 8 GB, 54 GB RAM under WSL2). The laptop's GPU sits on PCIe 4.0 x8 instead of the desktop's 5.0 x16: read its row as a slower-link data point. Decode is one request at a time after warm-up, K is chosen automatically, and the RAM-tier rows keep a 10,240-token KV cache. `a / b` are two runs of the same configuration. TTFT is for ShareGPT prompts on the RAM-tier rows and for a natural ~1.5k-token prompt on the disk-tier rows, which run one request at a time; the full setup is in section 7.
 
-**Relation to SSD Expert Pack.** SGLang's [SSD Expert Pack](https://lmsys.org/blog/2026-08-29-sglang-ssd-expert-pack/) solves the neighbouring problem: models far larger than RAM (DeepSeek-V4-Flash, Kimi-K3), with the SSD as the backing tier, an `O_DIRECT` read path, and a GPU cache with frequency-and-recency replacement. Paged Experts starts from the other end: models whose experts fit in host RAM, served from SGLang's native checkpoint formats (safetensors GPTQ, AWQ, FP8, NVFP4, MXFP4, ...), with the decision of what to copy made on the GPU inside a captured graph, so a step does not wait for the host. The two meet in the disk tier ([section 4](#4-beyond-ram-the-same-laws-one-tier-further)), which puts the SSD behind a large pinned host tier instead of directly behind the GPU. A same-machine comparison of the two is still to be run.
+| model (size) | GPU | K of E on the GPU | host RAM for experts | decode tok/s, 1 request | TTFT p50 |
+|---|---|---|---|---|---|
+| Qwen3-30B-A3B GPTQ-Int4 (17 GB) | 16 GB desktop | 92 of 128 | 13.9 GiB | **233.3** | 40 ms |
+| gpt-oss-20b MXFP4 (14 GB) | 16 GB desktop | 28 of 32 | TBD | **172.5** | 37 ms |
+| Qwen3-30B-A3B FP8 (31 GB) | 16 GB desktop | 45 of 128 | 27.0 GiB | **105.0** | 182 ms |
+| Qwen3-Next-80B-A3B NVFP4 (48 GB) | 16 GB desktop | 101 of 512 | 40.7 GiB | **100.5–101.1** | 192 ms |
+| DeepSeek-V4-Flash-0731 (167 GB) | 16 GB desktop | 9 of 256 | 45 GiB + NVMe | **13.98 / 13.97** | 8.49 / 8.46 s |
+| Qwen3.8-Flash-Next-FP8 (112.7 GiB of experts) | 16 GB desktop | 11 of 512 | TBD + NVMe | **15.69 / 15.72** | 15.0 / 15.6 s |
+| Qwen3-Next-80B-A3B NVFP4 (48 GB) | 8 GB laptop | 19 of 512 | TBD + NVMe | **15.73 / 16.03** | 4.99 / 4.88 s |
 
-## 2. Results on a 16 GB consumer GPU
+<!-- TODO: re-measure the whole table on main; the disk-tier rows were measured on the tier's development branch. Not measured yet: gpt-oss-20b host store, the pinned GiB of the Qwen3.8 and laptop disk-tier runs (not in their logs), peak VRAM. -->
 
-**Machines.** Sections 2, 3 and 5 run on the desktop; section 4 also runs on the laptop.
-
-| | desktop | laptop (Dell XPS 16 9640) |
-|---|---|---|
-| GPU | RTX 5070 Ti 16 GB (SM120), 300 W | RTX 4070 Laptop GPU 8 GB (SM89), 60 W power limit |
-| GPU link | PCIe 5.0 x16 | PCIe 4.0 x8 |
-| CPU | AMD Ryzen 7 9800X3D (8 cores) | Intel Core Ultra 9 185H |
-| RAM | 2 x 32 GB DDR5-6000 (Kingston FURY, KF560C30-32), two channels (62 GB usable) | 64 GB LPDDR5x-7467 (54 GB visible to WSL2, of which CUDA can pin about half) |
-| NVMe (expert cache, section 4) | Kingston FURY Renegade G5 2 TB, PCIe 5.0 x4 | SK hynix PVC10 1 TB, through WSL2's virtual disk |
-| OS | Ubuntu 26.04 LTS, Linux 7.0, native | Windows 11 (build 26300), WSL2 2.7.8 (Linux 6.18), Ubuntu 24.04 |
-| NVIDIA driver | 595.91.07 (CUDA 13.2) | 621.14 (CUDA 13.5) |
-| SGLang | the `lmsysorg/sglang` nightly CUDA 13 image with the code under test | same |
-
-<!-- TODO: name the SGLang commit and image of the final runs in the SGLang row. -->
-
-**Setup.** SGLang with `--enable-paged-experts`, `--paged-experts-num-resident auto`, `--mem-fraction-static 0.88`, prefix caching off. Page caches are dropped before every start and 16 ShareGPT warm-up requests are discarded: a cold expert pool reads 5–11 % low, a full page cache once cut our throughput 2.6x without an error. Decode tok/s is `1000 / median TPOT` over 8 ShareGPT prompts sent one at a time (256 output tokens each); "4 requests" sends 16 ShareGPT prompts from 4 clients at once. Every comparison repeats its first configuration at the end, and a difference smaller than the gap between the two runs of the same configuration (±0.2 % on GPTQ decode) counts as no difference. GSM8K is 200 questions, thinking off.
-
-| model (checkpoint) | experts on the GPU (K of E) | host store | decode tok/s, bs=1 | 4 requests, out tok/s | TTFT p50 (ShareGPT) | GSM8K (200) |
-|---|---|---|---|---|---|---|
-| Qwen3-30B-A3B-GPTQ-Int4 (17 GB) | 92 of 128 | 13.9 GiB | **233.3** | 421 | 40 ms | 0.950 |
-| Qwen3-30B-A3B-FP8 (31 GB) | 45 of 128 | 27.0 GiB | **105.0** | TBD | 182 ms | 0.94–0.95 |
-| Qwen3-Next-80B-A3B-Instruct-NVFP4 (48 GB) | 101 of 512 | 40.7 GiB | **100.5–101.1** | 137 | 192 ms | 0.965–0.975 |
-| gpt-oss-20b (MXFP4, 14 GB) | 28 of 32 | TBD | **172.5** | TBD | 37 ms | 0.96–0.97 (unpaged 0.975) |
-
-<!-- TODO: re-measure the whole table on main; FP8 output tok/s at 4 concurrent at auto K and gpt-oss-20b's host store size are not measured yet. -->
-
-All four models run with decode captured in CUDA graphs and every expert computed on the GPU. A long prompt is a different case: on Qwen3-30B-A3B GPTQ a natural, non-repeating prompt of about 2k tokens has a TTFT p50 of 227–247 ms, and an 8k-token one 1.47 s (`--context-length 16384`, K = 86). The prompts have to be natural text: SGLang's `random` dataset tiles a short ShareGPT turn into a long prompt, repeated text routes to fewer experts, and paged TTFT read 261–265 ms instead of 327. <!-- TODO: record the token count of the natural ~2k prompts under the Qwen3 tokenizer. -->
+Accuracy holds: GSM8K (200 questions, thinking off) is 0.950 for Qwen3-30B GPTQ, 0.94–0.95 for its FP8 version, 0.965–0.975 for Qwen3-Next, 0.96–0.97 for gpt-oss-20b (0.975 unpaged), 0.975 for DeepSeek-V4-Flash and 0.97 for Qwen3.8, and 1.00 on 50 questions on the laptop. Section 1 shows what longer context costs.
 
 <img src="/images/blog/sglang-paged-experts/decode-speed.svg" alt="Decode tok/s for one request on an RTX 5070 Ti 16 GB: Qwen3-30B-A3B GPTQ-Int4 233.3, gpt-oss-20b 172.5, Qwen3-30B-A3B FP8 105.0, Qwen3-Next-80B-A3B NVFP4 100.8" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
-<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 1: Decode speed for one request on a 16 GB GPU, with K picked automatically.</p>
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 3: Decode speed for one request on a 16 GB GPU, with K picked automatically.</p>
 
-<!-- TODO (Figure 1): regenerate after re-measuring on main; add fully-resident / llama.cpp bars only where a same-day baseline exists. -->
+<!-- TODO (Figure 3): regenerate after re-measuring on main; add fully-resident bars only where a same-day baseline exists. -->
 
-## 3. How it works, and what decided each part
+## 3. Why it works
 
-<img src="/images/blog/sglang-paged-experts/architecture.svg" alt="One MoE layer in a decode step: router, decide kernel, gather kernel copying only the misses from pinned host RAM into the K-slot table, and the fused-MoE kernel over the slots, all inside the CUDA graph" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
-<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 2: One MoE layer, one decode step. Everything in the blue frame runs on the GPU inside the decode CUDA graph.</p>
+Three facts make paging experts viable, and each one decides a part of the design in section 4.
 
-### 3.1 The K-slot table and the host store
+### 3.1 A token reads a few experts, and keeps reusing them
 
-The paged method wraps the layer's own fused-MoE method. It creates the layer's expert tensors with K rows instead of E, so the GPU holds only the K slots, and allocates a pinned host store with all E experts of each per-expert tensor. Each weight loader is redirected to a one-row view of the host store, so checkpoints load through SGLang's **native** per-expert loader (sharding, gate/up order, scale layout), and the host rows have exactly the layout the GPU slots would have. On the Marlin runner, whose methods repack their experts, the repack runs over the host store K experts at a time, so the store holds every expert already repacked: a page-in is a plain copy. Adding a quantization format is one subclass that names the tensors to page and what happens after loading. Supported today: bf16/fp16, block FP8, compressed-tensors FP8, W8A8 FP8/INT8 and block INT8 on the Triton runner; GPTQ, AWQ, compressed-tensors W4A16/W8A16 and NVFP4, MXFP4 (gpt-oss) and ModelOpt NVFP4 on Marlin.
+Qwen3-30B-A3B has 128 experts in each of its 48 MoE layers; in GPTQ-Int4 they take 13.9 GiB, the whole usable VRAM of a 16 GB card. Each token, though, is routed to 8 of the 128 per layer: it reads 0.93 GiB of those 13.9 GiB. <!-- TODO: the old text said "0.93 GB of the 14.9 GB"; 14.9 GB = 13.9 GiB, check 0.93 against the same unit. -->
 
-Every step of every MoE layer then **decides** (the distinct experts the step routes to are matched against the slots; hits keep their slot, each miss takes the least recently used slot the step itself does not need), **copies** the missing experts from the host store into their slots, and **computes**: the routed expert ids are remapped to slots and the layer's fused-MoE kernel runs over them. A step that routes to more distinct experts than K (a prefill chunk, or a large decode batch) runs in **waves** of at most K experts. Each wave's kernel call returns every routed (token, expert) output already weighted by its router weight but *without* the final top-k sum; the waves write into one buffer and the same top-k sum runs once at the end. That is why the result does not depend on how the experts were split into waves, and why paged bf16/FP8 layers are bit-identical to unpaged ones.
+And consecutive tokens keep returning to the same experts. If routing were uniform, a routed expert would miss the slots with probability 1 − K/E; measured routing misses far less. We call uniform miss rate ÷ measured miss rate the *concentration factor*:
 
-For the Marlin formats bit-identity is the wrong test: Marlin's MoE kernel is not reproducible run to run on SM90 and newer, paged or not. There we check bytes instead of text: every slot against the store after every step (0 mismatches in 83,850 checks), plus unpaged noise floors, logprob margins at the first divergence, and GSM8K.
+| model, K of E | miss per routed expert | uniform 1 − K/E | concentration |
+|---|---|---|---|
+| Qwen3-30B GPTQ, 92 of 128 | 0.69 % | 28.1 % | 41x |
+| Qwen3-30B FP8, 45 of 128 | 9.6 % | 64.8 % | 6.8x |
+| Qwen3-Next-80B NVFP4, 101 of 512 (top-10) | 13.0 % | 80.3 % | 6.2x |
+
+The concentration is largest where the cache is large relative to E: a small cache holds the popular head, and the tail is broad. **[MEASURE ON MAIN: a K sweep within one model, as a figure.]**
+
+Which experts are popular, though, moves with the workload. On three prose prompts Qwen3-Next touched 169 of its 512 experts per layer, and a frozen set of the most popular ones did as well as a cache that adapts. Twelve mixed prompts (prose, code, math, JSON, German, French) touched 450, and the frozen set lost 28 points of hit rate when fitted on the very trace it was scored on, 53 when fitted on other data: the median expert returns after 22 accesses, the 99th percentile after 4,723, when the topic swings back. So the GPU's copy of the experts has to be a cache that follows the workload, not a pinned hot set. Which replacement rule it uses matters little: in a simulation on Qwen3-Next routing at 96 resident experts, LRU-2, a decayed LFU and a router-score average all land within 5 % of plain LRU's copies, while 32 more slots cut them by 25 %.
 
 ### 3.2 A decode step is a byte problem
 
-What does paging cost? Three equations frame it:
+Paging adds exactly one cost: copying the experts a token needs that are not resident. Per token that is
 
 ```text
-(E1)  bytes/token = miss_rate(K) × top_k × n_moe_layers × expert_bytes
-(E2)  t_step = t_floor + t_boundary + t_fetch,serialized
-(E3)  one stream pays E1 on every token;
-      a batch of B pays the union of its routed experts once per step: union(B) / B per token
+bytes copied per token = miss rate(K) × top_k × MoE layers × bytes per expert
 ```
 
-**E1** is the only cost paging adds, and only the miss rate depends on Paged Experts: Qwen3-30B GPTQ at K = 92 of 128 pages in 2.66 experts (6.5 MB) per token, a 0.21 ms copy in a 4.27 ms step (5 %); its FP8 version at K = 45 pages in 36.7 (173 MB), 3.52 ms of a 9.52 ms step (37 %). <!-- TODO: re-measure on main. --> 
-**E2** splits a step into what it must read (the floor), boundaries (launches, syncs, bookkeeping kernels) and copies nothing overlaps; only the last two can be engineered away.
-**E3**: a single stream amortizes copies through sparsity, a batch through a shared union, and a result from one rarely transfers to the other. This post is about the single stream.
+Qwen3-30B GPTQ at K = 92 of 128 copies 2.66 experts (6.5 MB) per token, a 0.21 ms copy in a 4.27 ms step (5 %); its FP8 version at K = 45 copies 36.7 (173 MB), 3.52 ms of a 9.52 ms step (37 %). <!-- TODO: re-measure on main. -->
 
-We measured E2 on merged code by tracing eight captured steps with CUPTI and joining each copy kernel to the experts it paged (r = 1.000; shifted by one step, r ≤ 0.41). Every row below is a measured kernel time, not a difference of two totals:
+The rest of a step is a floor that paging cannot change. We traced eight captured decode steps per model with CUPTI and joined each copy kernel to the experts it copied; every part is a measured kernel time, not a difference of two totals:
 
-| part of one bs=1 step (ms) | Qwen3-Next-80B NVFP4, K=101/512 | Qwen3-30B GPTQ-Int4, K=92/128 | Qwen3-30B FP8, K=45/128 |
-|---|---|---|---|
-| **page-in copies (host → slots)** | **2.36** | **0.21** | **3.52** |
-| decide | 0.27 | 0.11 | 0.18 |
-| routed expert GEMMs | 1.22 | 1.41 | 2.40 |
-| dense GEMVs/GEMMs, attention, norms, other | 6.36 | 2.60 | 3.60 |
-| graph span per step (→ tok/s) | ~10.2 (98) | ~4.3 (229) | ~9.7 (103) |
+<img src="/images/blog/sglang-paged-experts/step-split.svg" alt="Stacked bars of one decode step's kernel time: Qwen3-30B GPTQ copies 0.21, decide 0.11, routed GEMMs 1.41, rest 2.60 ms; Qwen3-30B FP8 3.52, 0.18, 2.40, 3.60 ms; Qwen3-Next-80B NVFP4 2.36, 0.27, 1.22, 6.36 ms" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 4: One decode step, split by measured kernel time. Only the orange part is added by paging.</p>
 
-<!-- TODO: recheck the "other" row before publishing (it is derived by subtraction). -->
+<!-- TODO: recheck the "other" row before publishing (it is derived by subtraction); re-trace on main, where pre-copy takes copies off the critical path. -->
 
-The rest is at the floor: Qwen3-Next's GDN projections read at 90 % and its `lm_head` at 97 % of the card's measured 843 GB/s, a dense bf16 model decodes at **98.6 % of its byte floor**, and Qwen3-30B GPTQ's routed Marlin GEMMs take 1.41 ms against a read floor of 1.11 ms (8 x 48 experts x 2.43 MB at 843 GB/s): a perfect kernel would save 7 % of its step. What is left is the copy row (5–37 % of a step) and the boundaries. That is also why Qwen3-30B GPTQ decode stops depending on K above K ≈ 88 (230.6 tok/s at K = 86, 233.3 at K = 92): the copies are already a rounding error. The rest of this section takes the two engineerable terms in turn: boundaries (3.3), then copies, which are hit rate (3.4), K (3.5) and the copy path itself (3.6).
+Everything but the copies already runs at the GPU's read floor. Qwen3-Next's linear-attention (GDN) projections read at 90 % and its `lm_head` at 97 % of the card's measured 843 GB/s, a dense bf16 model decodes at 98.6 % of its byte floor, and Qwen3-30B GPTQ's routed Marlin GEMMs take 1.41 ms against a read floor of 1.11 ms: a perfect kernel would save 7 % of the step. What is left to engineer is the copies (5–37 % of a step) and the overhead between kernels (launches, syncs, small bookkeeping kernels). That is also why Qwen3-30B GPTQ decode stops depending on K above K ≈ 88 (230.6 tok/s at K = 86, 233.3 at K = 92): its copies are already a rounding error.
 
-### 3.3 Boundaries: decide and copy inside the CUDA graph
+This post is about one stream at a time. A batch is a different regime: it pays the union of its requests' experts once per step, and a result from one rarely transfers to the other.
 
-A paged MoE layer is a burst of small kernels, and when each launch carries a few microseconds of GPU work, the host's launches become the critical path:
+### 3.3 The link is 16x slower than VRAM, so only unread weights can leave the GPU
 
-| decode step, bs=1 | GPU µs per launch | CUDA graph capture buys |
-|---|---|---|
-| Qwen3-30B GPTQ, paged | **[MEASURE ON MAIN]** | **[MEASURE ON MAIN: eager vs captured]** |
-| dense Qwen3.8-4B bf16 | 24.9 | 1.04x |
+On our card a byte in VRAM reads at 843 GB/s and a byte over PCIe 5.0 at 52.8 GB/s, 16x slower. A weight that every token reads crosses the link on every token, so offloading just 6 % of a dense model's bytes doubles its step time. Only weights that a token does not read escape this, and that is exactly what most MoE experts are: this is why paging experts works where `--cpu-offload-gb`, which copies every offloaded weight on every step, cannot.
 
-<!-- TODO: measure the paged row with --disable-cuda-graph against the default on main. -->
-
-Below ~5 µs per launch deleting launches pays enormously; above ~10 µs they are hidden. So with decode CUDA graphs on, a step whose routed entries fit in the K slots (`tokens × top_k ≤ K`, i.e. decode up to `K // top_k` requests) is decided and paged entirely on the GPU, and the decode graph captures it:
-
-- a JIT kernel makes the LRU decision on the device and writes the page-in plan, and (since #46457) the runner's slot ids and weights, to GPU buffers;
-- a second kernel copies the planned experts of every paged tensor from pinned host memory into their slots through its unified address, reading the count on the device, so each graph replay moves exactly the experts it decided on.
-
-Prefill steps plan their waves on the host and run as eager breaks of SGLang's breakable prefill graphs; both paths share one LRU state. Once the host was out of the loop, the next wins were fewer boundaries: #46457 cut a paged layer's captured graph from 21 nodes to 10 (+10.3 % decode on Qwen3-30B GPTQ), and #46567 cut the host syncs of a host-planned layer to one (−20 % short-prompt TTFT on Qwen3-30B GPTQ).
-
-### 3.4 Copies, part one: the hit rate needs a dynamic cache
-
-Under uniform routing a routed expert would miss with probability 1 − K/E. Measured routing misses far less; we call the ratio the *concentration factor*:
-
-| model, K/E | decode tok/s | miss per routed expert | uniform 1 − K/E | concentration |
-|---|---|---|---|---|
-| Qwen3-30B GPTQ, 92/128 | 234.2 | 0.69 % | 28.1 % | 41x |
-| Qwen3-30B FP8, 45/128 | 105.0 | 9.6 % | 64.8 % | 6.8x |
-| Qwen3-Next-80B NVFP4, 101/512 (top-10) | 101.0 | 13.0 % | 80.3 % | 6.2x |
-
-The concentration is largest where the cache is largest relative to E: a small cache holds the popular head, and the tail is broad. **[MEASURE ON MAIN: a K sweep within one model, Figure 3.]**
-
-The tempting conclusion is to pin the popular head and stop paging, and our first measurements said exactly that. On three prose prompts Qwen3-Next touched 169 of 512 experts per layer, and a frozen set of the most popular ones did as well as LRU; an earlier, similarly narrow result of ours even had static pinning beating LRU at every cache size. Then we replayed twelve mixed prompts (prose, code, math, JSON, German, French): they touched 450 experts per layer, and the frozen set lost 28 points of hit rate when fitted on the very trace it was scored on, 53 when fitted on other data. The median expert returns after 22 accesses, the 99th percentile after 4,723, when the topic swings back. The popular set moves with the workload, so the cache has to move with it: that is why decide runs an LRU on every step instead of serving a precomputed hot set.
-
-Which dynamic rule matters little. Replaying Qwen3-Next routing at K = 96 through a simulator of the decide kernel, page-ins against LRU: LRU-2 ±0 %, decayed LFU −4 %, router-score EMA (HybriMoE's MRS) −5 %, Belady (knows the future) −48 %, 32 more slots −25 %. At lower residency the rule counts more: on DeepSeek-V4.1-Flash traces (384 experts, 21–96 slots) a decayed LFU cut page-ins 10–16 %. On a 16 GB card slots beat policy, so the engineering went into K (3.5). <!-- TODO: label as a simulation in a figure caption. -->
-
-**Against CPU expert offload.** The concentration factor also decides the comparison with llama.cpp. With the same VRAM, llama.cpp computes a share `≈ 1 − K/E` of the experts on the CPU, while paging copies a share `m`; paging wins roughly when
+The other way to use this sparsity is to compute the offloaded experts on the CPU, and there the concentration factor decides. With the same VRAM, CPU offload computes a share of about `1 − K/E` of the experts on the CPU, while paging copies a share `m`; paging wins roughly when
 
 ```text
 (1 − K/E) / m   >   B_cpu / B_link
- concentration      effective CPU-expert bandwidth / host-to-GPU copy bandwidth
+ concentration      CPU expert bandwidth / host-to-GPU copy bandwidth
 ```
 
-Uniform routing makes the left side 1; measured routing makes it 5–50, so paging wins wherever the link is near RAM speed (PCIe 5.0 x16 against dual-channel DDR5). When most of the model fits (int4 on 16 GB), llama.cpp only has to put a few layers' experts on the CPU and we expect the two to be close; when a large share must live in host RAM (FP8, 31 GB, on 16 GB), paging should pull ahead:
+Uniform routing makes the left side 1; measured routing makes it 5–50, so paging wins wherever the link is near RAM speed, as PCIe 5.0 x16 is against dual-channel DDR5. Short-prompt TTFT is where CPU offload has the edge: a prefill routes to nearly every expert, so paging copies every non-resident expert once per prefill chunk, while CPU offload computes its experts where they are.
 
-<!-- TODO (blocking for this table): a same-day run on main with natural ~2k prompts, byte-matched GGUFs (IQ4_XS / Q8_0) and llama.cpp --n-cpu-moe at its best fitting value. -->
+## 4. The building blocks
 
-| Qwen3-30B-A3B, 16 GB card, decode tok/s bs=1 | Paged Experts (K) | llama.cpp, best `--n-cpu-moe` | SGLang `--cpu-offload-gb` |
-|---|---|---|---|
-| int4 (GPTQ vs `IQ4_XS`) | **[MEASURE ON MAIN]** | **[MEASURE]** | **[MEASURE]** |
-| 8-bit (FP8 vs `Q8_0`) | **[MEASURE ON MAIN]** | **[MEASURE]** | **[MEASURE]** |
+Five pieces make the idea work. The first three are one MoE layer in a decode step, as in Figure 1; the last two extend it to larger steps and to a third tier.
 
-<!-- TODO: re-measure the short-prompt TTFT in the same run. -->
+### 4.1 Two places for every expert
 
-Short-prompt TTFT is where CPU offload has the edge: a prefill routes to nearly every expert, so Paged Experts pages in every non-resident expert once per prefill chunk, while llama.cpp computes its CPU layers in place.
+The paged method wraps the layer's own fused-MoE method. On the GPU, the layer's expert tensors get K rows instead of E: these are the slots. In pinned host RAM, a host store holds all E experts. Experts load through SGLang's own per-expert loader and the format's own post-load step (Marlin's repack, for example) before they reach the host store, so the store holds every expert already in the layout the kernel reads, and a miss is a plain copy from host RAM into a slot. Adding a quantization format is one small subclass; the [docs](https://docs.sglang.io/advanced_features/paged_experts.html) list the supported ones.
 
-### 3.5 Copies, part two: give K every byte the KV cache does not need
+### 4.2 The MoE kernel never knows
 
-If slots beat policy, K should be as large as memory allows, and K and the KV cache come out of the same static budget. The KV cache cannot be paged instead: KV is private to a request and dense over positions, so every step reads all of it. Qwen3-30B at 1,024 requests × 3k tokens × 48 KB per token (FP8) is ~150 GB per step, ~2.9 s over the link, and no schedule reduces those bytes. Weight paging works because the FFN is sparse; KV paging works only where attention is sparse or bounded (Qwen3-Next's linear-attention layers). So the KV cache comes first and the experts get the rest.
+The router still picks from all E experts. Before the layer's kernel runs, each routed expert id is replaced by the id of the slot that holds it, and the layer's own fused-MoE kernel runs as if the layer had only K experts. No new MoE kernel is needed, so every format and runner keeps its own kernel, and the computation is the one the unpaged layer does: paged layers are bit-identical to unpaged ones for bf16, FP8 and INT8 experts (with `--enable-deterministic-inference`, which the unpaged layer itself needs to be reproducible). Marlin's MoE kernel is not reproducible from run to run on SM90 and newer, paged or not, so for the Marlin formats we checked bytes instead: every slot against the host store after every step in a test build (0 mismatches in 83,850 checks), plus GSM8K.
 
-Since #47476, `--paged-experts-num-resident auto` is the default: the layers are built with K = `top_k`, the KV cache is allocated for what the user asked for (one request of the model's context by default; `--context-length`, `--max-running-requests` and `--max-total-tokens` change it), then the small tables are freed, the remaining budget is measured, and every layer grows by whole rounds of one slot while a round fits. On hybrid Mamba/GDN models the Mamba state pool holds the requests the KV cache aims for. The log says what was decided and which flag would pin it:
+### 4.3 Decide and copy on the GPU, inside the graph
 
-```text
-Paged experts: K=63 of 128 experts per MoE layer resident (6.85 GiB); KV cache 40960 tokens,
-1 request(s) of 40960 at once (aim 40960: the model's context 40960 x 1 request(s)). To pin:
---paged-experts-num-resident 63
-```
+A paged layer adds two small kernels in front of the MoE kernel, and kernels that small are cheap on the GPU but expensive to launch from the CPU one by one. So in decode both run on the GPU and are captured in the decode step's CUDA graph with the rest of the layer:
 
-What the trade costs, on Qwen3-30B-A3B GPTQ-Int4:
+- **decide** matches the routed experts against the slots: a resident expert keeps its slot, and each missing one takes the least recently used slot that the step itself does not need. It writes the list of copies and the slot ids the MoE kernel reads.
+- **copy** moves the listed experts from host RAM into their slots, reading the pinned host memory directly from the GPU. It reads how many experts to copy from GPU memory, so every replay of the graph copies exactly what its own decide chose, and the CPU never waits for a decision.
 
-| KV cache kept for | K (of 128) | decode tok/s | TTFT p50 |
-|---|---|---|---|
-| the model's own context, 40,960 tokens × 1 request (nothing set) | 63 | 208.4 / 209.0 | 87 ms |
-| `--context-length 16384` × 1 request | 86 | 230.6 | 48 ms |
-| `--context-length 4096 --max-running-requests 4` (16,384 tokens) | 87 | 230.8 / 231.4 | 46 ms |
-| `--context-length 16384 --max-running-requests 4` (65,536 tokens) | 46 | 173.1 | 110 ms |
-| `--max-total-tokens 10240` | 92 | 233.3 | 40 ms |
+This covers every decode step whose routed experts fit in the slots, up to `K // top_k` concurrent requests. Once the CPU was out of the loop, the number of kernels per layer was what remained: having decide also write the MoE kernel's inputs, instead of a separate remapping step, cut a paged layer's graph from 21 nodes to 10 and gave +10.3 % decode on Qwen3-30B GPTQ.
 
-Four full requests of 16k tokens cost 41 resident experts per layer and 25 % of decode speed; one request of the model's full 40k context costs 29 experts and 11 % against the 10,240-token cache. gpt-oss-20b shows the knob from the other side: with an explicit `K = 16`, the KV cache takes everything left (189,422 tokens for 4 requests of 4,096); `auto` gives that memory to the experts instead, K = 28 of 32, and decode goes from 123.9 to 172.5 tok/s (+39 %).
+<!-- TODO: measure eager vs captured decode on main (--disable-cuda-graph against the default) for Qwen3-30B GPTQ, with GPU µs per launch; dense Qwen3.8-4B bf16 had 24.9 µs per launch and 1.04x from capture. -->
 
-### 3.6 Copies, part three: the copy path, and when prefetch pays
+### 4.4 Steps larger than K: waves
 
-Inside the decode step the expert copies run at 50–53 GB/s, the speed of the PCIe 5.0 link (the copy engine reaches 56.9 GB/s). Getting that number right took a lesson of its own: a "gather defect" we chased for a while was a profiler-inflated kernel time divided by another tool's byte count, and the kernel was running at link speed all along. A ratio of two instruments is not a measurement. The limit beyond the link is host DRAM: both directions together top out at ~62 GB/s, so writing an evicted expert back would cost as much as reading one. Paged Experts never writes back; the host store keeps every expert.
+A prefill chunk, or a decode batch beyond `K // top_k` requests, routes to more distinct experts than there are slots. Such a step runs in **waves** of at most K experts, planned on the CPU; under SGLang's prefill CUDA graphs the paged layer runs uncaptured between captured segments, and both paths share one LRU state. Each wave's kernel call returns every routed (token, expert) output already weighted by its router weight but without the final sum over the token's experts; all waves write into one buffer and that sum runs once at the end. So the result does not depend on how the experts were split into waves.
 
-With the link saturated by demand copies, the remaining lever is to hide them: copy an expert before the step asks for it. Prediction is not the problem: a layer's router applied to the previous layer's input finds 84 % of Qwen3-Next's top-10 and 88 % of Qwen3-30B's top-8, and 99.4 % above a small router margin. Yet our first prefetch lost decode speed at every look-ahead depth on Qwen3-30B FP8. Speculative fetch needs idle transport *and* misses worth hiding, and the two anti-correlate: where copies are cheap (GPTQ, 0.21 ms per step) nothing needs hiding, and where they are expensive a prefetch competes with demand. Worse, a copy kernel on its default 256 thread blocks overlapped a concurrent MoE layer only 32 % and slowed it 1.7–2x, and each wrong guess evicted an expert the next step needed.
+### 4.5 A third tier on NVMe
 
-The way out was a resource the step leaves idle. On 32 blocks the copy keeps 98 % of its bandwidth and overlaps compute 0.88–0.95, because a bs=1 GEMV leaves most SMs idle. With victims never among the predicted experts, a parallel plan kernel, at most three copies per layer and a join before the next layer, a narrow pre-copy gives **+11.6 % on Qwen3-Next** (101.75 → 113.6 tok/s, demand page-ins 66.7 → 26.7 per step, GSM8K 0.965) and +3.6 % on GPTQ (an upcoming PR). <!-- TODO: re-measure on main. -->
+The RAM tier needs every expert in pinned host RAM. DeepSeek-V4-Flash is a 167 GB checkpoint whose routed experts take 137.1 GiB; on our 62 GB machine about 45 GiB can be pinned next to the rest of the server. The disk tier gives each layer three tiers: K experts in GPU slots, R in pinned **host rows**, and all of them in a file on the NVMe drive, written once in the kernel's layout on the first start. An expert that is only on disk is read into a host row with one direct (`O_DIRECT`) read and then copied into its slot like any other miss. 
 
-Prediction works across layers but not across tokens. Within a token, consecutive layers route predictably, and the pre-copy spends that. Across tokens, consecutive tokens share only part of their experts, and the experts a token newly routes to were rarely among the previous token's runners-up **[MEASURE ON MAIN: cross-token overlap and runner-up share from a routing trace]**: widening a guess from the previous token to catch a third of the new experts costs as many slots as raising K. <!-- TODO: re-measure on main. -->
+<img src="/images/blog/sglang-paged-experts/tiers.svg" alt="Three tiers for one MoE layer of DeepSeek-V4-Flash: 9 of 256 experts in GPU slots, 71 in pinned host rows, all 256 in a file on the NVMe drive; misses move up by an O_DIRECT read and a copy over PCIe, nothing is written back" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0.75rem auto 0;" />
+<p style="text-align: center; color: #6b7280; font-size: 0.875rem; font-style: italic; margin-top: 0.25rem; margin-bottom: 1rem;">Figure 5: The disk tier for DeepSeek-V4-Flash on a 16 GB GPU with 62 GB of RAM.</p>
 
-## 4. Beyond RAM: the same laws, one tier further
+Three lessons shaped it:
 
-> This section describes upcoming PRs (the expert cache, #48642, and the disk tier), not code in SGLang main.
+- **Never write back.** The host store keeps every expert, so an evicted slot is simply overwritten. The disk tier's first version kept each expert in exactly one tier, so every copy was a swap that sent the evicted expert back to host RAM; both directions share host DRAM (~62 GB/s together), and swaps took 57.7 of a 90.6 ms GPU step. Letting host rows keep their copy (the file always has every expert) made each move one-way: **+24.9 % decode** (11.05 → 13.75 tok/s), at 18 % more disk reads.
+- **Keep the CPU out of the step, even for a disk read.** A planning kernel on the GPU marks which experts are only on disk; a host thread reads them while the layer's other copies run, and the captured graph waits at that layer until they are in their slots. On the PCIe 5.0 drive that beat replaying the step by 33 %. <!-- TODO: re-measure wait vs replay on main if quoted. -->
+- **Prefill reads the whole tier.** A prompt of a few hundred tokens already routes to nearly every expert of every layer, so one prefill reads almost the whole tier (~93 GB for one of these prompts on DeepSeek-V4), and TTFT is that read at disk speed (~11 GB/s here): 8.49 / 8.46 s for a natural ~1.5k-token prompt. Chunked prefill would re-read the tier for every chunk, so the recipe uses one chunk per prompt.
 
-Paged Experts as merged needs every expert in pinned host RAM. DeepSeek-V4-Flash is a 167 GB checkpoint whose routed experts take 137.1 GiB in the store's layout; on our 62 GB machine about 45 GiB of that can be pinned next to the rest of the server. The disk tier adds the NVMe drive behind the host store: each layer keeps all its experts in a per-layer file (the expert cache of section 5), R of them in pinned host rows and K in GPU slots. An expert that is only on disk is read into a host row with one `O_DIRECT` read and copied into its slot.
+## 5. Limits and what's next
 
-| model, machine | experts per layer: GPU / host rows / disk | decode tok/s | TTFT, natural ~1.5k-token prompt | GSM8K |
-|---|---|---|---|---|
-| DeepSeek-V4-Flash-0731 (167 GB), 16 GB GPU, 62 GB RAM | 9 / 71 / all 256 | **13.98 / 13.97** | 8.49 / 8.46 s | **0.975** (200) |
-| Qwen3.8-Flash-Next-FP8 (112.7 GiB of experts), same machine | 11 / 163 / all 512 | **15.69 / 15.72** | 15.0 / 15.6 s | **0.97** (200) |
-| Qwen3-Next-80B-A3B-Instruct-NVFP4 (40.7 GiB of experts), 8 GB RTX 4070 Laptop GPU, WSL2, 54 GB RAM | 19 / 227 / all 512 | **15.73 / 16.03** | 4.99 / 4.88 s | **1.00** (50) |
-
-The design of the tier came from three findings, each one of section 3's measurements meeting a new tier:
-
-- **Never write back (3.6), now between disk and RAM.** The first version kept each expert in exactly one tier, so every page-in was a swap: the evicted expert went back to host RAM. Both copy directions share host DRAM, and swaps cost 57.7 of a 90.6 ms GPU step. Letting host rows keep their copy (the file always has every expert) made each move one-way: **+24.9 % decode** (11.05 → 13.75 tok/s, GSM8K 0.98 / 1.00), at 18 % more disk reads.
-- **Keep the host out of the loop (3.3), even for a disk read.** A layer's plan kernel publishes which experts are only on disk; a host thread reads them while the layer's host-row copies run, and the captured graph waits at the layer until the experts are in their slots, instead of falling back to eager or replaying the step. On the PCIe 5.0 drive waiting beat replaying by 33 %. <!-- TODO: re-measure wait vs replay on the current branch if quoted. -->
-- **E1 with the drive in place of the link (3.2).** A prompt of a few hundred tokens already routes to nearly every expert of every layer, so one prefill reads almost the whole tier (~93 GB for one of these prompts on DeepSeek-V4), and TTFT is that read at disk speed (~11 GB/s here). Chunked prefill multiplies it: every chunk re-reads the tier, so the recipe uses one chunk per prompt.
-
-Our first disk tier taught the opposite of the first two: it relied on the page cache, and its read-ahead hints, under memory reclaim, evicted the very experts the step needed and cost 57 %. From that it looked as if only fewer bytes could move this tier. The current tier reads with direct I/O into pinned rows it manages itself, and its gains so far (inclusive rows, the in-graph wait, the look-ahead below) are not byte reductions. <!-- TODO: re-verify the 57 % before publishing (old QLC drive, page-cache read-ahead). -->
-
-The expert files also make later starts cheap: DeepSeek-V4's first start writes 137.1 GiB of them (`load_model` 282.5 s), later starts read them back (82–87 s).
-
-**Next on this path** (measured on development branches, not yet in PRs): reading the next layer's predicted disk misses ahead (+7.2 %), streaming each read into its slot chunk by chunk as it lands (+3.9 %), and the narrow pre-copy of section 3.6; together they reached 16.4–16.7 tok/s on DeepSeek-V4 on the same machine. <!-- TODO: re-measure on the current look-ahead branches before quoting. -->
-
-## 5. Startup and memory
-
-| model | `load_model` before #48082 | SGLang main (#48082: no staging copy) | + expert cache (#48642, open), later starts | swap during start (before → main) |
-|---|---|---|---|---|
-| Qwen3-30B-A3B-GPTQ-Int4 | 33.5 / 33.0 s | 34.1 s | 21.7 s | 0.2 → 0.2 GB |
-| Qwen3-30B-A3B-FP8 | 52.1 / 51.3 s | 53.1 s | 29.3 s | 0.2 → 0.2 GB |
-| Qwen3-Next-80B-A3B-Instruct-NVFP4 | 352.1 / 176.6 s | 128.3 / 125.5 s | 72.8 s | 25.6 / 19.1 → 0.2 GB |
-
-<!-- TODO: re-measure on main. -->
-
-Two things dominated a Paged Experts start. Every expert was first loaded into a pageable staging copy and then copied into the pinned store, so a start briefly needed host memory for every expert twice; on a 62 GB machine Qwen3-Next's 40.7 GiB of experts did not fit twice, and the start swapped (and the server kept 3.4–3.5 GB in swap, which cost TTFT). Since #48082 the loads are replayed straight from the memory-mapped checkpoint into the store, K experts at a time, with the next chunk's pages read ahead and the previous chunk's given back. The second cost is that each start repacks every expert for the Marlin kernel although the result is the same every time. The expert cache (#48642, `--paged-experts-enable-disk`) writes each layer's store to a 4 KiB-aligned file once, in the background, and later starts read it back with `O_DIRECT`, after re-loading a few groups of experts and comparing them byte for byte against the checkpoint. These files are what the disk tier of section 4 serves single experts from.
-
-**Memory.** GPU memory is whatever `--mem-fraction-static` gives SGLang: the KV cache first, the slots after (3.5). Host memory is the pinned store: one copy of every expert in the kernel's layout, sized exactly since #46456 (torch's pinned allocator rounded each tensor up to a power of two, pinning about a third more than the experts need on Qwen3-30B-A3B). <!-- TODO: measure peak VRAM per model on main. -->
-
-## 6. Where it stands
-
-Putting section 3 together, one 16 GB card has four regimes:
-
-| regime | bound by | what pays | what did not pay |
-|---|---|---|---|
-| one stream, high K (GPTQ, K ≈ 90/128) | dense floor + boundaries | capture; decide on the GPU; fewer graph nodes and syncs | eviction variants; a persistent kernel (0.995x); replacing Marlin |
-| one stream, low K (FP8 K = 45; Qwen3-Next 101/512) | serialized copies (23–37 % of a step) | more K (`auto`); LRU over static sets; narrow pre-copy (+11.6 %) | 256-block prefetch; guessing from the previous token |
-| batches beyond `K // top_k` | host-planned waves, then the link | union amortization (E3; research fork) | |
-| experts beyond RAM (section 4) | the drive, then the link | inclusive host rows; waiting inside the graph; one prefill chunk per prompt | page-cache read-ahead |
-
-**Open problems:**
-
-- **Batches beyond `K // top_k`** run as host-planned waves and fall off sharply **[MEASURE ON MAIN: FP8 at a small K with 4 requests]**. On an earlier research fork, skipping each wave's masked rows instead of computing them, plus a parallel decide, made large batches approach the link's limit: there every layer's union is nearly all experts, paid once per step (E3). Not in main. <!-- TODO: re-measure on main. -->
-- **Short-prompt TTFT**: a prefill pages every non-resident expert once per chunk; on the disk tier it reads the whole tier.
-- **Slower links**: on PCIe 4.0 x8 or a laptop's x8 link the inequality of 3.4 moves toward a tie with CPU offload at bs=1; we have a laptop serving, but no head-to-head there yet.
+- **Batches beyond `K // top_k`** run as CPU-planned waves without a graph and fall off sharply **[MEASURE ON MAIN: FP8 at a small K with 4 requests]**. On an earlier research fork, skipping each wave's masked rows plus a parallel decide made large batches approach the link's limit, where every layer's union is nearly all experts, paid once per step. Not in main. <!-- TODO: re-measure on main. -->
+- **Short-prompt TTFT**: a prefill copies every non-resident expert once per chunk; on the disk tier it reads the whole tier.
+- **Slower links**: on PCIe 4.0 or a laptop's x8 link the inequality of section 3.3 moves toward a tie with CPU offload at bs=1; we have a laptop serving, but no head-to-head there yet.
 - **The dense part**: on Qwen3-Next, 4 of 10 ms per step are bf16 GEMVs at the read floor; only fewer bytes move them.
-- **Speculative decoding** is refused with Paged Experts today; a drafter's memory comes out of K, so its break-even acceptance rises as K falls.
-- **Tensor and expert parallelism**, and lending idle KV pages to the expert slots at runtime (a prototype ran K = 40 + 52 lent slots at about the speed of K = 92 with 32k context). <!-- TODO: cut, or measure on main. -->
 
-**Next PRs:** the expert cache (#48642: later starts skip loading and repacking, −37 to −45 % `load_model`), the disk tier, and reading ahead and pre-copying predicted experts. The per-layer expert files are a candidate for the shared on-disk format proposed in the Intel XPU RFC [#46520](https://github.com/sgl-project/sglang/issues/46520).
+**Next.** On development branches, the disk tier reads the next layer's predicted disk misses ahead (+7.2 %) and streams each read into its slot as it lands (+3.9 %); other work covers decode batches beyond `K // top_k` and keeping the embedding table in host memory to give its VRAM to K. From the community, an opt-in kernel that reads missing experts straight from host memory inside the MoE GEMM ([#51471](https://github.com/sgl-project/sglang/pull/51471)) and a port to Ascend NPUs ([#51878](https://github.com/sgl-project/sglang/pull/51878)) are in review. <!-- TODO: re-measure the disk-tier levers before quoting; the old text also had 16.4-16.7 tok/s on DSv4 with pre-copy (pre-copy does not run on disk-tier layers or DSv4's router in main), and the #46520 RFC link (shared on-disk format). -->
 
-## 7. Try it
+## 6. Try it
 
-Paged Experts is in SGLang main. The smallest launch:
+The smallest launch:
 
 ```bash
 python -m sglang.launch_server \
@@ -282,7 +169,7 @@ python -m sglang.launch_server \
   --enable-paged-experts
 ```
 
-The log names the K it chose. To trade context for resident experts, set the KV cache you need; these are the configurations measured in section 2 (RTX 5070 Ti 16 GB):
+This keeps the KV cache for one request of the model's full 40,960-token context, which leaves K = 63 on a 16 GB card (208 tok/s, section 1); the log names the K it chose. On hybrid models such as Qwen3-Next, it also runs one request at a time unless `--max-running-requests` says otherwise. To trade context for resident experts, set the KV cache you need; these are the configurations of section 2:
 
 <!-- TODO: check whether the recipes need --attention-backend triton and --disable-radix-cache before publishing. -->
 
@@ -312,30 +199,50 @@ python -m sglang.launch_server --model-path openai/gpt-oss-20b \
   --context-length 4096 --max-running-requests 4 --mem-fraction-static 0.88
 ```
 
-Requirements and limits: one GPU (no tensor/expert parallelism yet); no speculative decoding; host RAM to pin every expert (under WSL2 pinned memory is capped at about half of system RAM); decode graphs capture up to `K // top_k` concurrent requests. The full list is in the [Paged Experts docs](https://docs.sglang.io/advanced_features/paged_experts.html). <!-- TODO: confirm the docs URL. -->
+Experts beyond host RAM go to the disk tier. DeepSeek-V4-Flash (137 GiB of experts) on the same 16 GB GPU with 62 GB of RAM:
 
-<!-- TODO: add the disk-tier recipe once its PRs merge:
-python -m sglang.launch_server --model-path deepseek-ai/DeepSeek-V4-Flash-0731 \
+```bash
+SGLANG_OPT_FP8_WO_A_GEMM=1 python -m sglang.launch_server \
+  --model-path deepseek-ai/DeepSeek-V4-Flash-0731 \
   --enable-paged-experts --paged-experts-enable-disk --paged-experts-host-memory-gb 45 \
-  --paged-experts-num-resident 9 --moe-runner-backend marlin --mem-fraction-static 0.92 \
-  --max-running-requests 1 --context-length 4096 --chunked-prefill-size 4096 \
-  --swa-full-tokens-ratio 0.5 --cuda-graph-max-bs-decode 1 --cuda-graph-backend-prefill disabled \
-  --disable-radix-cache --json-model-override-args '{"max_position_embeddings":4096}'
-with SGLANG_OPT_FP8_WO_A_GEMM=1. -->
+  --moe-runner-backend marlin --mem-fraction-static 0.92 --max-running-requests 1 \
+  --context-length 4096 --json-model-override-args '{"max_position_embeddings":4096}' \
+  --chunked-prefill-size 4096 --swa-full-tokens-ratio 0.5 --cuda-graph-max-bs-decode 1 \
+  --cuda-graph-backend-prefill disabled --disable-radix-cache
+```
 
+`SGLANG_OPT_FP8_WO_A_GEMM=1` keeps DeepSeek-V4's `wo_a` in FP8 on SM120; one prefill chunk per prompt reads each expert from disk once (section 4.5).
 
-## 8. How we measured
+Requirements: one GPU (no speculative decoding, no tensor or expert parallelism yet); for the disk tier an x86-64 host and safetensors checkpoints with one tensor per expert. Everything else is in the [Paged Experts docs](https://docs.sglang.io/advanced_features/paged_experts.html). <!-- TODO: confirm the docs URL. -->
 
-Each of these rules is in the text where breaking it once gave us a wrong number; here they are in one place:
+## 7. How we measured
 
-- **Repeat the first configuration last.** A difference smaller than the gap between its two runs is no difference (section 2).
-- **Drop the page cache and discard warm-up** (section 2).
-- **Natural prompts**, never tiled ones (section 2).
-- **Bytes, not text, for Marlin**, which is not reproducible run to run (section 3.1).
-- **Measured splits, not subtracted terms** (section 3.2); synthetic buffers must be incompressible: a zero-filled one "read" faster than the card's memory. <!-- TODO: re-verify. -->
-- **A ratio of two instruments is not a measurement** (section 3.6).
-- **Every check has a negative control that must fail**, and no flag is trusted without proof it ran: several "no effect" results of ours were features wired to nothing.
+**Machines.**
+
+| | desktop | laptop (Dell XPS 16 9640) |
+|---|---|---|
+| GPU | RTX 5070 Ti 16 GB (SM120), 300 W | RTX 4070 Laptop GPU 8 GB (SM89), 60 W power limit |
+| GPU link | PCIe 5.0 x16 | PCIe 4.0 x8 |
+| CPU | AMD Ryzen 7 9800X3D (8 cores) | Intel Core Ultra 9 185H |
+| RAM | 2 x 32 GB DDR5-6000, two channels (62 GB usable) | 64 GB LPDDR5x-7467 (54 GB visible to WSL2) |
+| NVMe (expert cache, disk tier) | Kingston FURY Renegade G5 2 TB, PCIe 5.0 x4 | SK hynix PVC10 1 TB, through WSL2's virtual disk |
+| OS | Ubuntu 26.04 LTS, Linux 7.0, native | Windows 11 (build 26300), WSL2 2.7.8 (Linux 6.18), Ubuntu 24.04 |
+| NVIDIA driver | 595.91.07 (CUDA 13.2) | 621.14 (CUDA 13.5) |
+| SGLang | the `lmsysorg/sglang` nightly CUDA 13 image with the code under test | same |
+
+<!-- TODO: name the SGLang commit and image of the final runs in the SGLang row. -->
+
+**Setup.** SGLang with `--enable-paged-experts`, `--paged-experts-num-resident auto`, `--mem-fraction-static 0.88`, prefix caching off. Decode tok/s is `1000 / median TPOT` over 8 ShareGPT prompts sent one at a time (256 output tokens each). GSM8K is 200 questions, thinking off.
+
+Long prompts: on Qwen3-30B-A3B GPTQ a natural, non-repeating prompt of about 2k tokens has a TTFT p50 of 227–247 ms, and an 8k-token one 1.47 s (`--context-length 16384`, K = 86). <!-- TODO: record the token count of the natural ~2k prompts under the Qwen3 tokenizer. -->
+
+Four rules, each here because breaking it once gave us a wrong number:
+
+- **Repeat the first configuration last.** A difference smaller than the gap between its two runs (±0.2 % on GPTQ decode) is no difference.
+- **Drop the page cache and discard warm-up** (16 ShareGPT requests). A cold expert pool reads 5–11 % low, and a full page cache once cut our throughput 2.6x without an error.
+- **Natural prompts, never tiled ones.** SGLang's `random` dataset tiles a short ShareGPT turn into a long prompt; repeated text routes to fewer experts, and paged 2k TTFT read 261–265 ms instead of 327.
+- **A ratio of two instruments is not a measurement.** A "copy defect" we chased for a while was a profiler-inflated kernel time divided by another tool's byte count; the kernel was running at link speed all along.
 
 ## Acknowledgments
 
-TODO
+TODO <!-- include community contributors to Paged Experts: Woody-Hu (#48605), aojsd (#51471), jzlxiaohei (#51498), the Ascend port (#51878). -->
