@@ -37,11 +37,6 @@ export default function Blog({ posts }) {
                   />
                 </div>
                 <div className="p-5 basis-3/5">
-                  {frontmatter.externalUrl && (
-                    <p className="text-sm font-semibold mb-2">
-                      Published on {frontmatter.externalSite || new URL(frontmatter.externalUrl).hostname}
-                    </p>
-                  )}
                   <p className="text-3xl">{frontmatter.title}</p>
                   <p className="text-base pt-2 pb-2">
                     by: {frontmatter.author}, {frontmatter.date}
