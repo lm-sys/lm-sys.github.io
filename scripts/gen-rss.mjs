@@ -1,6 +1,7 @@
 import { readdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import matter from "gray-matter";
 import RSS from "rss";
 
 const rootUrl = "https://lmsys.org";
@@ -27,31 +28,16 @@ const loadBlogPosts = async () => {
 };
 
 /**
- * Given a blog metadata field, strips label & cleans
- */
-const cleanBlogMetadataField = (input) =>
-  input
-    .split(":")
-    .slice(1)
-    .join(":")
-    .trim()
-    .replaceAll(`"`, "")
-    .replaceAll(`\\`, "");
-
-/**
- * Given a blog post head, parses out title, author, date & preview
+ * Reads blog metadata by key so optional fields can appear in any order.
  */
 const parseBlogPostHeader = (content) => {
-  const [title, authors, date, url] = content
-    .split("\n")
-    .slice(1, 5)
-    .map(cleanBlogMetadataField);
+  const { data } = matter(content);
 
   return {
-    title,
-    authors,
-    date: new Date(date),
-    url,
+    title: data.title,
+    authors: data.author,
+    date: new Date(data.date),
+    externalUrl: data.externalUrl,
   };
 };
 
@@ -65,12 +51,12 @@ const genRssFeed = async () => {
 
   const posts = await loadBlogPosts();
   Object.keys(posts).forEach((postFilename) => {
-    const { title, authors, date } = parseBlogPostHeader(posts[postFilename]);
+    const { title, authors, date, externalUrl } = parseBlogPostHeader(posts[postFilename]);
 
     rss.item({
       title,
       // rm ending '.md'
-      url: `${rootUrl}/blog/${postFilename.slice(0, postFilename.length - 3)}/`,
+      url: externalUrl || `${rootUrl}/blog/${postFilename.slice(0, postFilename.length - 3)}/`,
       author: authors,
       date,
     });

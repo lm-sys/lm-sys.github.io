@@ -3,7 +3,6 @@ import fs from "fs";
 import Link from "next/link";
 import md from "markdown-it";
 import Tags from "../../components/Tags";
-import dateFormat from "dateformat";
 import ExportedImage from "next-image-export-optimizer";
 
 export default function Blog({ posts }) {
@@ -15,8 +14,8 @@ export default function Blog({ posts }) {
         <div className="text-2xl pb-4">Latest updates and releases by LMSYS Org are announced through our blogpost series.</div>
         <hr className="mb-5  md:hidden" />
 
-        {posts.map(({ slug, frontmatter, content, date }) => {
-          let cont = md()
+        {posts.map(({ slug, frontmatter, content }) => {
+          let cont = frontmatter.description || md()
             .render(content)
             .replace(/<[^>]+>/g, "");
 
@@ -25,18 +24,24 @@ export default function Blog({ posts }) {
           }
 
           return (
-            <Link href={"/blog/" + slug} key={slug}>
-              <div className="border mb-5 hover:bg-paper hover:text-sky transition-colors cursor-pointer bg-sky text-paper border-paper flex flex-col lg:flex-row items-stretch shadow-lg shadow-neutral-800/20">
-                <div className="basis-2/5 team-wrap">
+            <Link href={frontmatter.externalUrl || "/blog/" + slug} key={slug} passHref>
+              <a id={slug} className="no-underline border mb-5 hover:bg-paper hover:text-sky transition-colors cursor-pointer bg-sky text-paper border-paper flex flex-col lg:flex-row items-stretch shadow-lg shadow-neutral-800/20 scroll-mt-24 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4">
+                <div className={`basis-2/5 team-wrap ${frontmatter.externalUrl ? "bg-white" : ""}`}>
                   <ExportedImage
                     src={frontmatter.previewImg}
                     alt={frontmatter.title}
                     layout="responsive"
+                    objectFit={frontmatter.externalUrl ? "contain" : "cover"}
                     width={1600}
                     height={900}
                   />
                 </div>
                 <div className="p-5 basis-3/5">
+                  {frontmatter.externalUrl && (
+                    <p className="text-sm font-semibold mb-2">
+                      Published on {frontmatter.externalSite || new URL(frontmatter.externalUrl).hostname}
+                    </p>
+                  )}
                   <p className="text-3xl">{frontmatter.title}</p>
                   <p className="text-base pt-2 pb-2">
                     by: {frontmatter.author}, {frontmatter.date}
@@ -44,7 +49,7 @@ export default function Blog({ posts }) {
                   <hr />
                   <p className="text-base pt-2 pb-1">{cont}</p>
                 </div>
-              </div>
+              </a>
             </Link>
           );
         })}

@@ -26,6 +26,10 @@ npm run export
 ## Adding Blog Posts
 Add a markdown file to `/blog` for it to be added in the blog feed. Make sure your frontmatter contains the entries `title`, `author`, `date`, and `previewImg`.
 
+For an article hosted on another site, add `externalUrl` with its full HTTPS URL. The blog card and RSS entry will link directly to that article. Set `externalSite` for a label such as "Published on Miles" and optionally `description` for the card summary. Keep the original publication date and use a local `previewImg` as with other posts.
+
+The Markdown body should contain a short summary and a link to the full article. It remains available at the LMSYS post URL as a fallback, with a canonical link to the external article. See `blog/2026-11-23-miles-true-on-policy.md` for an example.
+
 ## Editing Content
 Some content is not sourced through Javascript, such as the about page, impressum, FAQ, and team list. For those, you can find their respective markdown and json files in `/content`
 
