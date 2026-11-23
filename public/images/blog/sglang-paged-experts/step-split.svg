@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="554" viewBox="0 0 1200 554" role="img" aria-labelledby="title desc">
 <title id="title">Where a decode step goes</title>
-<desc id="desc">Stacked horizontal bars of one decode step's kernel time in ms, split into expert copies, decide, routed expert GEMMs and the rest: Qwen3-30B-A3B GPTQ-Int4: expert copies 0.21, decide 0.11, routed expert GEMMs 1.41, dense layers, attention, other 2.60; Qwen3-30B-A3B FP8: expert copies 3.52, decide 0.18, routed expert GEMMs 2.40, dense layers, attention, other 3.60; Qwen3-Next-80B-A3B NVFP4: expert copies 2.36, decide 0.27, routed expert GEMMs 1.22, dense layers, attention, other 6.36.</desc>
+<desc id="desc">Stacked horizontal bars of one decode step's kernel time in ms, split into expert copies, decide, routed expert GEMMs and the rest: Qwen3-30B-A3B GPTQ-Int4: expert copies 0.20, decide 0.11, routed expert GEMMs 1.42, dense layers, attention, other 2.65; Qwen3-30B-A3B FP8: expert copies 3.52, decide 0.12, routed expert GEMMs 2.61, dense layers, attention, other 3.57; Qwen3-Next-80B-A3B NVFP4: expert copies 1.96, decide 0.09, routed expert GEMMs 1.30, dense layers, attention, other 6.36.</desc>
 <rect width="1200" height="554" fill="#fff"/>
 <g font-family="Arial, Helvetica, sans-serif">
 <text x="40" y="52" font-size="32" fill="#171717" font-weight="700" text-anchor="start">Where a decode step goes</text>
-<text x="40" y="84" font-size="20" fill="#52514e" text-anchor="start">One request, decode captured in a CUDA graph · traced kernel time per step, ms · RTX 5070 Ti 16 GB</text>
+<text x="40" y="84" font-size="20" fill="#52514e" text-anchor="start">One request, decode captured in a CUDA graph, pre-copy off · traced kernel time per step, ms · RTX 5070 Ti 16 GB</text>
 <rect x="40" y="116" width="18" height="18" rx="3" fill="#d65221"/>
 <text x="66" y="131" font-size="18" fill="#52514e" text-anchor="start">expert copies</text>
 <rect x="224.8" y="116" width="18" height="18" rx="3" fill="#2a78d6"/>
@@ -26,30 +26,30 @@
 <line x1="1085.7" y1="192" x2="1085.7" y2="468" stroke="#e6e5e1" stroke-width="1"/>
 <text x="1085.7" y="494" font-size="18" fill="#52514e" text-anchor="middle">10</text>
 <text x="760.0" y="528" font-size="19" fill="#52514e" text-anchor="middle">ms per decode step</text>
-<rect x="400.0" y="210" width="12.4" height="40" fill="#d65221"/>
-<rect x="414.4" y="210" width="5.5" height="40" fill="#2a78d6"/>
-<rect x="421.9" y="210" width="94.7" height="40" fill="#368354"/>
-<path d="M518.6 210 H690.9 Q694.9 210 694.9 214 V246 Q694.9 250 690.9 250 H518.6 Z" fill="#c9c8c3"/>
+<rect x="400.0" y="210" width="11.4" height="40" fill="#d65221"/>
+<rect x="413.4" y="210" width="5.5" height="40" fill="#2a78d6"/>
+<rect x="420.9" y="210" width="95.2" height="40" fill="#368354"/>
+<path d="M518.1 210 H694.1 Q698.1 210 698.1 214 V246 Q698.1 250 694.1 250 H518.1 Z" fill="#c9c8c3"/>
 <text x="384" y="227" font-size="20" fill="#171717" font-weight="700" text-anchor="end">Qwen3-30B-A3B GPTQ-Int4</text>
-<text x="384" y="250" font-size="17" fill="#52514e" text-anchor="end">92 of 128 experts on the GPU</text>
-<text x="706.9" y="237" font-size="19" fill="#171717" font-weight="700" text-anchor="start">4.3 ms</text>
-<text x="400" y="272" font-size="17" fill="#d65221" font-weight="700" text-anchor="start">expert copies 0.21 ms</text>
-<rect x="400.0" y="306" width="239.4" height="40" fill="#d65221"/>
-<rect x="641.4" y="306" width="10.3" height="40" fill="#2a78d6"/>
-<rect x="653.7" y="306" width="162.6" height="40" fill="#368354"/>
-<path d="M818.3 306 H1059.1 Q1063.1 306 1063.1 310 V342 Q1063.1 346 1059.1 346 H818.3 Z" fill="#c9c8c3"/>
+<text x="384" y="250" font-size="17" fill="#52514e" text-anchor="end">91 of 128 experts on the GPU</text>
+<text x="710.1" y="237" font-size="19" fill="#171717" font-weight="700" text-anchor="start">4.4 ms</text>
+<text x="400" y="272" font-size="17" fill="#d65221" font-weight="700" text-anchor="start">expert copies 0.20 ms</text>
+<rect x="400.0" y="306" width="239.7" height="40" fill="#d65221"/>
+<rect x="641.7" y="306" width="6.5" height="40" fill="#2a78d6"/>
+<rect x="650.2" y="306" width="176.7" height="40" fill="#368354"/>
+<path d="M828.9 306 H1067.6 Q1071.6 306 1071.6 310 V342 Q1071.6 346 1067.6 346 H828.9 Z" fill="#c9c8c3"/>
 <text x="384" y="323" font-size="20" fill="#171717" font-weight="700" text-anchor="end">Qwen3-30B-A3B FP8</text>
-<text x="384" y="346" font-size="17" fill="#52514e" text-anchor="end">45 of 128 experts on the GPU</text>
-<text x="1075.1" y="333" font-size="19" fill="#171717" font-weight="700" text-anchor="start">9.7 ms</text>
+<text x="384" y="346" font-size="17" fill="#52514e" text-anchor="end">44 of 128 experts on the GPU</text>
+<text x="1083.6" y="333" font-size="19" fill="#171717" font-weight="700" text-anchor="start">9.8 ms</text>
 <text x="400" y="368" font-size="17" fill="#d65221" font-weight="700" text-anchor="start">expert copies 3.52 ms</text>
-<rect x="400.0" y="402" width="159.8" height="40" fill="#d65221"/>
-<rect x="561.8" y="402" width="16.5" height="40" fill="#2a78d6"/>
-<rect x="580.3" y="402" width="81.7" height="40" fill="#368354"/>
-<path d="M664.0 402 H1094.1 Q1098.1 402 1098.1 406 V438 Q1098.1 442 1094.1 442 H664.0 Z" fill="#c9c8c3"/>
+<rect x="400.0" y="402" width="132.7" height="40" fill="#d65221"/>
+<rect x="534.7" y="402" width="3.9" height="40" fill="#2a78d6"/>
+<rect x="540.6" y="402" width="87.4" height="40" fill="#368354"/>
+<path d="M630.0 402 H1059.9 Q1063.9 402 1063.9 406 V438 Q1063.9 442 1059.9 442 H630.0 Z" fill="#c9c8c3"/>
 <text x="384" y="419" font-size="20" fill="#171717" font-weight="700" text-anchor="end">Qwen3-Next-80B-A3B NVFP4</text>
-<text x="384" y="442" font-size="17" fill="#52514e" text-anchor="end">101 of 512 experts on the GPU</text>
-<text x="1110.1" y="429" font-size="19" fill="#171717" font-weight="700" text-anchor="start">10.2 ms</text>
-<text x="400" y="464" font-size="17" fill="#d65221" font-weight="700" text-anchor="start">expert copies 2.36 ms</text>
+<text x="384" y="442" font-size="17" fill="#52514e" text-anchor="end">99 of 512 experts on the GPU</text>
+<text x="1075.9" y="429" font-size="19" fill="#171717" font-weight="700" text-anchor="start">9.7 ms</text>
+<text x="400" y="464" font-size="17" fill="#d65221" font-weight="700" text-anchor="start">expert copies 1.96 ms</text>
 <line x1="400" y1="192" x2="400" y2="468" stroke="#52514e" stroke-width="1"/>
 </g>
 </svg>

@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1300" height="700" viewBox="0 0 1300 700" role="img" aria-labelledby="title desc">
 <title id="title">Three tiers: GPU slots, host rows, NVMe</title>
-<desc id="desc">Three stacked tiers for one MoE layer of DeepSeek-V4-Flash: 9 of 256 experts in GPU slots, 71 in pinned host rows, all 256 in a file on the NVMe drive. Misses move up: an O_DIRECT read from the file into a host row, a copy over PCIe from a host row into a slot. Nothing is written back.</desc>
+<desc id="desc">Three stacked tiers for one MoE layer of DeepSeek-V4-Flash: 8 of 256 experts in GPU slots, 71 in pinned host rows, all 256 in a file on the NVMe drive. Misses move up: an O_DIRECT read from the file into a host row, a copy over PCIe from a host row into a slot. Nothing is written back.</desc>
 <rect width="1300" height="700" fill="#fff"/>
 <g font-family="Arial, Helvetica, sans-serif">
 <defs><marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#52514e" stroke-width="1.8"/></marker><marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#d65221" stroke-width="1.8"/></marker><marker id="a-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#8a8984" stroke-width="1.8"/></marker></defs>
 <text x="650.0" y="54" font-size="30" fill="#171717" font-weight="700" text-anchor="middle">Three tiers: DeepSeek-V4-Flash on a 16 GB GPU with 62 GB of RAM</text>
 <text x="650.0" y="90" font-size="20" fill="#52514e" text-anchor="middle">Experts per MoE layer in each tier; a miss moves up one way, nothing is written back</text>
 <rect x="300" y="130" width="900" height="130" rx="14" fill="#edf6f0" stroke="#368354" stroke-width="2.5"/>
-<text x="330" y="174" font-size="26" fill="#368354" font-weight="700" text-anchor="start">GPU slots: 9 of 256</text>
+<text x="330" y="174" font-size="26" fill="#368354" font-weight="700" text-anchor="start">GPU slots: 8 of 256</text>
 <text x="330" y="204" font-size="18" fill="#52514e" text-anchor="start">decide picks the slots; the decode graph captures the layer</text>
 <rect x="330.0" y="222" width="10" height="20" rx="2" fill="#368354" stroke="#368354" stroke-width="1.2"/>
 <rect x="343.4" y="222" width="10" height="20" rx="2" fill="#368354" stroke="#368354" stroke-width="1.2"/>
-<rect x="356.8" y="222" width="10" height="20" rx="2" fill="#368354" stroke="#368354" stroke-width="1.2"/>
+<rect x="356.8" y="222" width="10" height="20" rx="2" fill="#fff" stroke="#368354" stroke-width="1.2"/>
 <rect x="370.2" y="222" width="10" height="20" rx="2" fill="#fff" stroke="#368354" stroke-width="1.2"/>
 <rect x="383.6" y="222" width="10" height="20" rx="2" fill="#fff" stroke="#368354" stroke-width="1.2"/>
 <rect x="397.0" y="222" width="10" height="20" rx="2" fill="#fff" stroke="#368354" stroke-width="1.2"/>

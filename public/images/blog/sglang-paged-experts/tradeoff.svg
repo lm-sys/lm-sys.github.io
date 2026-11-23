@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
 <title id="title">Context costs resident experts</title>
-<desc id="desc">Line chart of decode tok/s against the KV cache kept, Qwen3-30B-A3B GPTQ-Int4: 10240 tokens: K 92, 233.3 tok/s; 16384 tokens: K 86, 230.6 tok/s; 40960 tokens: K 63, 208.4 tok/s; 65536 tokens: K 46, 173.1 tok/s.</desc>
+<desc id="desc">Line chart of decode tok/s against the KV cache kept, Qwen3-30B-A3B GPTQ-Int4: 10240 tokens: K 91, 241.5 tok/s; 16384 tokens: K 84, 238.3 tok/s; 40960 tokens: K 62, 218.3 tok/s; 65536 tokens: K 44, 183.1 tok/s.</desc>
 <rect width="1200" height="640" fill="#fff"/>
 <g font-family="Arial, Helvetica, sans-serif">
 <text x="40" y="52" font-size="32" fill="#171717" font-weight="700" text-anchor="start">Context costs resident experts</text>
@@ -26,18 +26,18 @@
 <line x1="150" y1="530" x2="1110" y2="530" stroke="#52514e" stroke-width="1"/>
 <text x="630.0" y="596" font-size="19" fill="#52514e" text-anchor="middle">KV cache kept, tokens</text>
 <text x="40" y="124" font-size="19" fill="#52514e" text-anchor="start">decode tok/s</text>
-<polyline points="290.4,213.5 374.7,223.7 711.7,308.1 1048.8,442.2" fill="none" stroke="#2a78d6" stroke-width="2"/>
-<circle cx="290.4" cy="213.5" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
-<text x="302.4" y="175.5" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 92 of 128 · 233.3 tok/s</text>
-<text x="302.4" y="197.5" font-size="16" fill="#52514e" text-anchor="start">--max-total-tokens 10240</text>
-<circle cx="374.7" cy="223.7" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
-<text x="386.7" y="323.7" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 86 of 128 · 230.6 tok/s</text>
-<text x="386.7" y="345.7" font-size="16" fill="#52514e" text-anchor="start">--context-length 16384</text>
-<circle cx="711.7" cy="308.1" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
-<text x="723.7" y="270.1" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 63 of 128 · 208.4 tok/s</text>
-<text x="723.7" y="292.1" font-size="16" fill="#52514e" text-anchor="start">the model's full context (default)</text>
-<circle cx="1048.8" cy="442.2" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
-<text x="1036.8" y="482.2" font-size="19" fill="#171717" font-weight="700" text-anchor="end">K = 46 of 128 · 173.1 tok/s</text>
-<text x="1036.8" y="504.2" font-size="16" fill="#52514e" text-anchor="end">4 requests × 16,384</text>
+<polyline points="290.4,182.3 374.7,194.5 711.7,270.5 1048.8,404.2" fill="none" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="290.4" cy="182.3" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<text x="302.4" y="144.3" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 91 of 128 · 241.5 tok/s</text>
+<text x="302.4" y="166.3" font-size="16" fill="#52514e" text-anchor="start">--max-total-tokens 10240</text>
+<circle cx="374.7" cy="194.5" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<text x="386.7" y="294.5" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 84 of 128 · 238.3 tok/s</text>
+<text x="386.7" y="316.5" font-size="16" fill="#52514e" text-anchor="start">--context-length 16384</text>
+<circle cx="711.7" cy="270.5" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<text x="723.7" y="232.5" font-size="19" fill="#171717" font-weight="700" text-anchor="start">K = 62 of 128 · 218.3 tok/s</text>
+<text x="723.7" y="254.5" font-size="16" fill="#52514e" text-anchor="start">the model's full context (default)</text>
+<circle cx="1048.8" cy="404.2" r="7" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<text x="1036.8" y="444.2" font-size="19" fill="#171717" font-weight="700" text-anchor="end">K = 44 of 128 · 183.1 tok/s</text>
+<text x="1036.8" y="466.2" font-size="16" fill="#52514e" text-anchor="end">4 requests × 16,384</text>
 </g>
 </svg>
