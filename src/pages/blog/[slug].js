@@ -20,6 +20,9 @@ export default function Post({ frontmatter, content, slug }) {
   return (
     <div className="w-full flex justify-center py-5 pt-16 md:pt-5">
       <Head>
+        {frontmatter.externalUrl && (
+          <link rel="canonical" href={frontmatter.externalUrl} />
+        )}
         {/* Add highlight.js CSS for styling code blocks */}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-light.min.css" />
       </Head>
