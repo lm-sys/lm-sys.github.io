@@ -97,13 +97,15 @@ Together, we are addressing complex deployment bottlenecks at the most effective
 
 A cornerstone of this partnership is our joint commitment to an "upstream-first" philosophy. By integrating these collaborative innovations directly into the core SGLang repository, we ensure that Intel platform support evolves organically alongside the framework's rapidly advancing features. This continuous joint effort benefits the broader open-source community by strengthening device abstractions, broadening platform validation, and paving the way for a truly hardware-agnostic AI serving ecosystem.
 
-> “Efficient inference asks for systematic solutions: kernels, memory management, and serving execution have to be tuned together for the hardware. Our collaboration with Intel brings that work into upstream SGLang, with optimizations tailored to Xeon CPUs and Intel GPUs. Maintaining and validating those execution paths as models and inference techniques evolve is equally important. Working with Intel and the SGLang community, we’re building a stronger foundation for developers to choose the hardware that fits their workloads.”
->
-> — **Banghua Zhu**, CTO, RadixArk
+<blockquote style="margin: 2.6em 0; padding-left: 1.5em; border-left: 2px solid var(--orange); font-size: 1.125em; line-height: 1.6; font-style: normal;">
+  <p>“Efficient inference asks for systematic solutions: kernels, memory management, and serving execution have to be tuned together for the hardware. Our collaboration with Intel brings that work into upstream SGLang, with optimizations tailored to Xeon CPUs and Intel GPUs. Maintaining and validating those execution paths as models and inference techniques evolve is equally important. Working with Intel and the SGLang community, we’re building a stronger foundation for developers to choose the hardware that fits their workloads.”</p>
+  <p style="margin-top: 0.75em;">— <strong>Banghua Zhu</strong>, CTO, RadixArk</p>
+</blockquote>
 
-> “Our work with RadixArk and the SGLang community is about putting the developer experience first. By co-engineering directly in upstream SGLang, we are providing highly optimized, out-of-the-box inference across Intel CPUs and GPUs. We want developers to deploy state-of-the-art open models through the same SGLang experience, with the flexibility to move workloads across hardware backends without heavy refactoring or artificial constraints.”
->
-> — **Bill Pearson**, Vice President, Data Center Software, Intel
+<blockquote style="margin: 2.6em 0; padding-left: 1.5em; border-left: 2px solid var(--orange); font-size: 1.125em; line-height: 1.6; font-style: normal;">
+  <p>“Our work with RadixArk and the SGLang community is about putting the developer experience first. By co-engineering directly in upstream SGLang, we are providing highly optimized, out-of-the-box inference across Intel CPUs and GPUs. We want developers to deploy state-of-the-art open models through the same SGLang experience, with the flexibility to move workloads across hardware backends without heavy refactoring or artificial constraints.”</p>
+  <p style="margin-top: 0.75em;">— <strong>Bill Pearson</strong>, Vice President, Data Center Software, Intel</p>
+</blockquote>
 
 ## What's Next
 
