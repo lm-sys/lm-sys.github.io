@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HiCache × PP=3 · TP=8：树一致性 & 防死锁 动画</title>
+<style>
+  :root{
+    --bg:#0e1117; --panel:#161b22; --panel2:#1c2330; --line:#30363d;
+    --text:#e6edf3; --muted:#8b949e;
+    --blue:#58a6ff; --green:#3fb950; --red:#f85149; --amber:#d29922;
+    --purple:#bc8cff; --cyan:#56d4dd;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:radial-gradient(1200px 600px at 50% -10%, #18202c, var(--bg));
+    color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.5;
+  }
+  #langBtn{ position:fixed; top:14px; right:16px; z-index:50; background:var(--panel2); border:1px solid var(--blue);
+    color:var(--blue); padding:7px 14px; border-radius:999px; cursor:pointer; font-size:13px; font-weight:600; }
+  #langBtn:hover{ background:var(--blue); color:#04101f; }
+  header{ text-align:center; padding:20px 16px 4px; }
+  header h1{ margin:0 0 4px; font-size:21px; }
+  header p{ margin:0; color:var(--muted); font-size:13px; }
+  .tabs{ display:flex; gap:8px; justify-content:center; margin:16px auto 8px; flex-wrap:wrap; }
+  .tab{ background:var(--panel); border:1px solid var(--line); color:var(--text);
+    padding:9px 16px; border-radius:999px; cursor:pointer; font-size:14px; transition:all .15s; }
+  .tab.active{ background:var(--blue); color:#04101f; border-color:var(--blue); font-weight:600; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 16px 60px; }
+  .scene{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; position:relative; }
+  .hidden{ display:none; }
+  .controls{ display:flex; gap:10px; justify-content:center; align-items:center; margin:14px 0 4px; flex-wrap:wrap; }
+  button.ctl{ background:var(--panel2); border:1px solid var(--line); color:var(--text);
+    padding:8px 16px; border-radius:8px; cursor:pointer; font-size:14px; }
+  button.ctl:hover{ border-color:var(--blue); }
+  button.ctl.primary{ background:var(--green); color:#04140a; border-color:var(--green); font-weight:600; }
+  button.ctl.alt{ background:var(--red); color:#1a0606; border-color:var(--red); font-weight:600; }
+  .caption{ text-align:center; min-height:44px; margin:10px auto 0; max-width:900px; font-size:15px; }
+  .caption .k{ color:var(--cyan); font-weight:600; }
+  code{ background:#0d1117; padding:1px 6px; border-radius:4px; border:1px solid var(--line); color:var(--cyan); font-size:12px; }
+  .legend{ display:flex; gap:18px; justify-content:center; font-size:12px; color:var(--muted); flex-wrap:wrap; margin-bottom:10px; }
+  .chip{ display:inline-flex; align-items:center; gap:6px; }
+  .sw{ width:14px; height:14px; border-radius:4px; display:inline-block; }
+
+  /* ---------- mesh ---------- */
+  .mesh-head{ display:flex; align-items:center; gap:8px; margin-left:96px; margin-bottom:4px; }
+  .tp-hdr{ flex:1; display:flex; gap:6px; }
+  .tp-hdr .th{ flex:1; text-align:center; font-size:11px; color:var(--muted); }
+  .pp-row{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .pp-label{ width:88px; font-size:12px; color:var(--muted); text-align:right; line-height:1.2; }
+  .pp-label b{ color:var(--text); }
+  .row-cells{ flex:1; display:flex; gap:6px; border:2px solid transparent; border-radius:10px; padding:3px; transition:border-color .3s, box-shadow .3s; }
+  .row-cells.ring-a{ border-color:var(--purple); box-shadow:0 0 12px rgba(188,140,255,.25); }
+  .row-cells.ring-b{ border-color:var(--cyan); box-shadow:0 0 12px rgba(86,212,221,.25); }
+  .row-cells.ring-bad{ border-color:var(--red); box-shadow:0 0 12px rgba(248,81,73,.3); }
+  .cell{
+    flex:1; height:54px; border-radius:8px; background:#0d1117; border:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+    transition:background .3s, border-color .3s, transform .15s, box-shadow .15s; position:relative;
+  }
+  .cell .v{ font-size:18px; font-weight:800; color:var(--muted); transition:color .3s; }
+  .cell .v small{ font-size:9px; font-weight:500; }
+  .cell .rk{ font-size:9px; color:#5b6470; }
+  .cell.varied .v{ color:var(--amber); }
+  .cell.tpmin{ background:linear-gradient(180deg,#143055,#102844); border-color:var(--blue); }
+  .cell.tpmin .v{ color:#cfe6ff; }
+  .cell.gmin{ background:linear-gradient(180deg,#0f3a1d,#0e2c18); border-color:var(--green); }
+  .cell.gmin .v{ color:#c4f7d4; }
+  .cell.sweep{ transform:translateY(-3px); box-shadow:0 0 14px rgba(88,166,255,.55); border-color:var(--blue); }
+  .cell.bad{ background:linear-gradient(180deg,#3a1414,#2a1010); border-color:var(--red); }
+  .cell.bad .v{ color:#ffd4d0; }
+  .cell.dim{ opacity:.35; }
+  /* thread dots */
+  .tdots{ display:flex; gap:5px; margin-top:1px; }
+  .td{ width:9px; height:9px; border-radius:50%; border:1px solid var(--line); background:#0d1117; transition:all .25s; }
+  .td.a{ border-color:var(--purple); }
+  .td.b{ border-color:var(--cyan); }
+  .td.a.on{ background:var(--purple); box-shadow:0 0 8px var(--purple); }
+  .td.b.on{ background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
+  .td.done{ background:var(--green); border-color:var(--green); box-shadow:0 0 6px var(--green); }
+  .td.dead{ background:var(--red); border-color:var(--red); box-shadow:0 0 6px var(--red); }
+
+  /* pp-group footer (columns) */
+  .pp-foot{ display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .pp-foot .lab{ width:88px; font-size:11px; color:var(--muted); text-align:right; }
+  .pp-foot .cols{ flex:1; display:flex; gap:6px; padding:0 3px; }
+  .pp-foot .col{ flex:1; height:20px; border-radius:6px; border:1px dashed var(--line); font-size:9px;
+    color:#5b6470; display:flex; align-items:center; justify-content:center; transition:all .3s; }
+  .pp-foot .col.ring-a{ border-color:var(--purple); color:#e3d3ff; }
+  .pp-foot .col.ring-b{ border-color:var(--cyan); color:#cdf6fa; }
+  .pp-foot .col.ring-bad{ border-color:var(--red); color:#ffd4d0; }
+
+  /* shared tree (tab1) */
+  .tree-box{ margin-top:14px; display:flex; flex-direction:column; align-items:center; }
+  .tree-title{ font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .tree{ display:flex; flex-direction:column; align-items:center; gap:4px; min-height:30px; }
+  .tnode{ width:220px; height:20px; border-radius:5px; background:#0d1117; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted);
+    opacity:0; transform:translateY(-6px); transition:opacity .25s, transform .25s; }
+  .tnode.show{ opacity:1; transform:none; background:linear-gradient(90deg,#0f3a1d,#196b32); border-color:var(--green); color:#c4f7d4; }
+
+  /* groups panel (tab2) */
+  .groups{ display:flex; gap:16px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+  .grp{ border:1px dashed var(--line); border-radius:10px; padding:8px 14px; font-size:12px; color:var(--muted);
+    min-width:230px; text-align:center; transition:all .3s; }
+  .grp b{ color:var(--text); }
+  .grp.g1.hot{ border-color:var(--purple); color:#e3d3ff; box-shadow:0 0 14px rgba(188,140,255,.25); }
+  .grp.g2.hot{ border-color:var(--cyan); color:#cdf6fa; box-shadow:0 0 14px rgba(86,212,221,.25); }
+  .banner{ text-align:center; font-weight:800; font-size:18px; min-height:24px; margin-top:8px; }
+  .banner.ok{ color:var(--green); } .banner.bad{ color:var(--red); }
+  .note{ font-size:12px; color:var(--muted); text-align:center; margin-top:4px; }
+
+  /* ---------- tab3: async skew x MIN ---------- */
+  .t3-section{ background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:14px; }
+  .t3-title{ font-size:13px; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .t3-title .tag{ font-size:10px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .t3-title .tag.gpu{ border-color:var(--blue); color:#cfe6ff; }
+  .t3-title .tag.cpu{ border-color:var(--amber); color:#ffe2ab; }
+  /* top pipeline */
+  .pipe{ position:relative; }
+  .lane{ position:relative; height:34px; margin:6px 0; border-radius:8px; background:#0d1117;
+    border:1px solid var(--line); overflow:hidden; }
+  .lane .lname{ position:absolute; left:8px; top:50%; transform:translateY(-50%); font-size:11px; color:var(--muted); z-index:3; }
+  .mb{ position:absolute; top:6px; height:22px; width:52px; border-radius:6px; z-index:2;
+    display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;
+    opacity:0; color:#c4f7d4; border:1px solid var(--green);
+    background:linear-gradient(180deg,#0f3a1d,#15311f); transition:opacity .18s; }
+  .lane-hint{ position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:10px; color:#46505e; z-index:1; }
+  .flow-note{ font-size:11px; color:var(--green); text-align:right; margin-top:2px; }
+
+  /* bottom sync area */
+  .sync-area{ position:relative; height:170px; border-radius:8px; background:#0d1117; border:1px solid var(--line); overflow:hidden; }
+  .barrier{ position:absolute; top:6px; bottom:6px; width:0; border-left:2px dashed var(--amber); z-index:2; }
+  .barrier .blabel{ position:absolute; top:-2px; left:8px; font-size:11px; color:var(--amber); white-space:nowrap; }
+  .barrier.fire{ border-left-color:var(--green); box-shadow:-2px 0 18px rgba(63,185,80,.5); }
+  .slane{ position:absolute; left:0; right:0; height:1px; border-top:1px dashed #1f2733; }
+  .slabel{ position:absolute; left:8px; font-size:11px; color:var(--muted); z-index:3; transform:translateY(-50%); }
+  .pkt{ position:absolute; height:30px; width:108px; border-radius:8px; z-index:3; transform:translateY(-50%);
+    display:flex; align-items:center; justify-content:center; gap:6px; font-size:11px; font-weight:700;
+    border:1px solid var(--line); background:#11161f; transition:background .25s, border-color .25s, box-shadow .25s; }
+  .pkt .hv{ font-size:14px; }
+  .pkt.travel{ border-color:var(--blue); color:#cfe6ff; }
+  .pkt.wait{ border-color:var(--amber); color:#ffe2ab; background:#1d1808; animation:pulse 1s infinite; }
+  .pkt.unified{ border-color:var(--green); color:#c4f7d4; background:linear-gradient(180deg,#0f3a1d,#0e2c18); box-shadow:0 0 12px rgba(63,185,80,.35); }
+  .clock{ position:absolute; right:10px; top:8px; font-size:11px; color:var(--muted); z-index:4; }
+  /* causal arrows + batch formers */
+  .t3-conduit{ position:relative; height:38px; margin:-2px 0 8px; display:flex; align-items:center; justify-content:center; }
+  .t3-conduit .clabel{ font-size:12px; color:var(--muted); transition:color .3s; z-index:2; background:var(--panel); padding:0 8px; }
+  .t3-conduit.hot .clabel{ color:var(--green); }
+  .t3-conduit::before{ content:""; position:absolute; left:50%; top:4px; bottom:4px; width:2px; transform:translateX(-50%);
+    background:repeating-linear-gradient(to top, #2b3340 0 6px, transparent 6px 12px); }
+  .t3-conduit.hot::before{ background:repeating-linear-gradient(to top, var(--green) 0 6px, transparent 6px 12px); opacity:.5; }
+  .t3-conduit .spark{ position:absolute; left:50%; bottom:3px; width:11px; height:11px; border-radius:50%;
+    background:var(--green); opacity:0; box-shadow:0 0 12px var(--green); transform:translateX(-50%); z-index:3; }
+  .t3-conduit.hot .spark{ animation:rise .85s linear infinite; }
+  .t3-conduit.hot .spark.s2{ animation-delay:.42s; }
+  @keyframes rise{ 0%{opacity:0; transform:translate(-50%,0);} 15%{opacity:1;} 100%{opacity:0; transform:translate(-50%,-34px);} }
+  .pipe.fed .lane{ border-color:var(--green); box-shadow:0 0 10px rgba(63,185,80,.25); }
+  .formers{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .former{ flex:1; min-width:240px; max-width:320px; background:#0d1117; border:1px solid var(--line);
+    border-radius:10px; padding:10px 12px; transition:border-color .3s, box-shadow .3s; }
+  .former h5{ margin:0 0 6px; font-size:13px; }
+  .former .hitbox{ font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .former .hitbox b{ color:var(--amber); font-size:14px; }
+  .former.ready{ border-color:var(--green); box-shadow:0 0 12px rgba(63,185,80,.2); }
+  .former.ready .hitbox b{ color:var(--green); }
+  .mbrow{ display:flex; gap:6px; }
+  .mbchip{ flex:1; height:24px; border-radius:6px; background:#11161f; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted); opacity:.3; transition:all .25s; }
+  .mbchip.on{ opacity:1; background:linear-gradient(180deg,#143055,#102844); border-color:var(--blue); color:#cfe6ff; }
+  .mbchip.fixed{ opacity:1; background:linear-gradient(180deg,#0f3a1d,#0e2c18); border-color:var(--green); color:#c4f7d4; }
+  .former .chk{ font-size:12px; color:var(--green); margin-top:6px; min-height:16px; }
+
+  /* ---------- tab4: thread relationships ---------- */
+  .t4wrap{ display:flex; gap:18px; flex-wrap:wrap; }
+  .t4flow{ flex:2; min-width:340px; display:flex; flex-direction:column; align-items:stretch; gap:0; }
+  .t4why{ flex:1; min-width:280px; display:flex; flex-direction:column; gap:10px; }
+  .tbox{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:#0d1117; position:relative; }
+  .tbox .tname{ font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .tbox .tdesc{ font-size:11.5px; color:var(--muted); margin-top:3px; }
+  .tbox .pin{ font-size:10px; padding:1px 7px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .tbox.thread-hit{ border-left:4px solid var(--purple); }
+  .tbox.thread-io{ border-left:4px solid var(--blue); }
+  .tbox.thread-sync{ border-left:4px solid var(--cyan); }
+  .tbox.sched{ border-left:4px solid var(--muted); background:#11161f; }
+  .tarrow{ text-align:center; color:var(--muted); font-size:11px; padding:5px 0; position:relative; }
+  .tarrow b{ color:var(--text); }
+  .minnode{ align-self:center; margin:6px 0; border:1.5px solid var(--amber); border-radius:999px;
+    padding:7px 16px; font-size:12px; color:#ffe2ab; background:#1d1808; font-weight:600; }
+  .minnode.g2{ border-color:var(--green); color:#c4f7d4; background:#0f2a18; }
+  .minnode small{ display:block; font-size:10px; color:var(--muted); font-weight:400; }
+  .whycard{ border:1px solid var(--line); border-radius:10px; padding:11px 13px; background:var(--panel2); }
+  .whycard h4{ margin:0 0 6px; font-size:13px; }
+  .whycard p{ margin:0; font-size:12px; color:var(--muted); }
+  .whycard.a{ border-left:4px solid var(--purple); }
+  .whycard.b{ border-left:4px solid var(--cyan); }
+  .whycard.c{ border-left:4px solid var(--green); }
+  .whycard code{ font-size:11px; }
+
+  /* ---------- tab4 animation states ---------- */
+  #scene4 .tbox,#scene4 .tarrow,#scene4 .minnode,#scene4 .whycard{ transition:all .3s; }
+  #scene4 .dimmed{ opacity:.3; }
+  .tbox.lit{ box-shadow:0 0 18px rgba(88,166,255,.45); transform:translateX(5px); }
+  .tbox.thread-hit.lit{ box-shadow:0 0 18px rgba(188,140,255,.55); }
+  .tbox.thread-io.lit{ box-shadow:0 0 18px rgba(88,166,255,.55); }
+  .tbox.thread-sync.lit{ box-shadow:0 0 18px rgba(86,212,221,.55); }
+  .tbox.sched.lit{ box-shadow:0 0 18px rgba(63,185,80,.4); }
+  .tarrow.lit{ color:var(--green); font-weight:700; }
+  .tarrow.lit b{ color:var(--green); }
+  .tarrow.lit::after{ content:" ●"; color:var(--green); animation:t4blink .7s infinite; }
+  @keyframes t4blink{ 0%,100%{opacity:.2;} 50%{opacity:1;} }
+  .minnode.lit{ box-shadow:0 0 22px rgba(210,153,34,.65); transform:scale(1.06); }
+  .minnode.g2.lit{ box-shadow:0 0 22px rgba(63,185,80,.65); }
+  .whycard.lit{ box-shadow:0 0 18px rgba(63,185,80,.35); transform:translateY(-3px); border-left-width:6px; }
+
+  /* ---------- tab5: two-request full lifecycle story ---------- */
+  #scene5 .story-top{ display:flex; gap:14px; align-items:stretch; margin-bottom:14px; }
+  .gpu-badge{ width:120px; border:1px solid var(--line); border-radius:12px; background:#0d1117;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    font-size:12px; color:var(--muted); transition:all .3s; }
+  .gpu-badge .ic{ font-size:22px; }
+  .gpu-badge.busy{ border-color:var(--blue); color:#cfe6ff; box-shadow:0 0 18px rgba(88,166,255,.45);
+    background:linear-gradient(180deg,#143055,#102844); animation:gpupulse 1s infinite; }
+  @keyframes gpupulse{ 0%,100%{box-shadow:0 0 12px rgba(88,166,255,.3);} 50%{box-shadow:0 0 22px rgba(88,166,255,.6);} }
+  .l3box{ flex:1; border:1px solid var(--line); border-radius:12px; background:#0d1117; padding:8px 12px; transition:all .3s; }
+  .l3box.hot{ border-color:var(--green); box-shadow:0 0 14px rgba(63,185,80,.25); }
+  .l3title{ font-size:12px; color:var(--muted); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+  .l3title .badge{ font-size:10px; padding:1px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); min-width:46px; text-align:center; }
+  .l3title .badge.miss{ border-color:var(--red); color:#ffd4d0; }
+  .l3title .badge.hit{ border-color:var(--green); color:#c4f7d4; }
+  .pagerow{ display:flex; gap:6px; flex-wrap:wrap; min-height:28px; }
+  .pg{ width:38px; height:26px; border-radius:6px; border:1px solid var(--line); background:#11161f;
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:#5b6470;
+    transition:all .3s; opacity:0; transform:scale(.6); }
+  .pg.show{ opacity:1; transform:none; }
+  .pg.l3{ border-color:var(--green); color:#c4f7d4; background:linear-gradient(180deg,#0f3a1d,#0e2c18); }
+
+  #scene5 .ranks{ display:flex; flex-direction:column; gap:10px; }
+  .ranklane{ border:1px solid var(--line); border-radius:12px; padding:8px 12px; background:var(--panel2); transition:all .3s; }
+  .ranklane.active{ border-color:var(--blue); box-shadow:0 0 12px rgba(88,166,255,.22); }
+  .rankhdr{ display:flex; align-items:center; gap:10px; margin-bottom:6px; font-size:12px; }
+  .rankhdr .rname{ font-weight:700; color:var(--text); }
+  .rankhdr .tps{ display:flex; gap:4px; }
+  .rankhdr .tp{ width:8px; height:8px; border-radius:50%; background:#11161f; border:1px solid var(--line); transition:all .25s; }
+  .rankhdr .tp.on{ background:var(--blue); border-color:var(--blue); box-shadow:0 0 6px var(--blue); }
+  .rankhdr .rstat{ margin-left:auto; font-size:11px; padding:1px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .rankhdr .rstat.miss{ border-color:var(--red); color:#ffd4d0; }
+  .rankhdr .rstat.hit{ border-color:var(--green); color:#c4f7d4; }
+  .rankhdr .rstat.warn{ border-color:var(--amber); color:#ffe2ab; }
+  .htree{ display:flex; align-items:center; gap:8px; min-height:28px; }
+  .htree .root{ font-size:10px; color:var(--muted); padding:2px 7px; border:1px dashed var(--line); border-radius:6px; }
+  .htnode{ width:40px; height:26px; border-radius:6px; border:1px solid var(--line); background:#11161f;
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:#5b6470; position:relative;
+    transition:all .35s; opacity:0; transform:translateY(-6px) scale(.7); }
+  .htnode::before{ content:""; position:absolute; left:-8px; top:50%; width:8px; height:1px; background:var(--line); }
+  .htnode:first-of-type::before{ display:none; }
+  .htnode.show{ opacity:1; transform:none; }
+  .htnode.committed{ border-color:var(--green); color:#c4f7d4; background:linear-gradient(180deg,#0f3a1d,#0e2c18); }
+  .htnode.inserting{ border-color:var(--blue); color:#cfe6ff; background:linear-gradient(180deg,#143055,#102844); }
+  .htnode.matched{ border-color:var(--cyan); color:#cdf6fa; box-shadow:0 0 8px rgba(86,212,221,.4); }
+  .htnode.warn{ border-color:var(--amber); color:#ffe2ab; background:#1d1808; }
+  .htnode.evict{ border-color:var(--red); color:#ffd4d0; background:linear-gradient(180deg,#3a1414,#2a1010); }
+  .story-sync{ display:flex; gap:14px; justify-content:center; margin:14px 0 6px; flex-wrap:wrap; }
+  .syncbadge{ font-size:12px; padding:6px 14px; border-radius:999px; border:1.5px solid var(--line); color:var(--muted); transition:all .3s; }
+  .syncbadge.g1.fire{ border-color:var(--amber); color:#ffe2ab; background:#1d1808; box-shadow:0 0 16px rgba(210,153,34,.45); transform:scale(1.04); }
+  .syncbadge.g2.fire{ border-color:var(--green); color:#c4f7d4; background:#0f2a18; box-shadow:0 0 16px rgba(63,185,80,.45); transform:scale(1.04); }
+  .consist-flag{ text-align:center; font-weight:700; font-size:14px; min-height:20px; margin-top:4px; }
+  .consist-flag.ok{ color:var(--green); } .consist-flag.bad{ color:var(--red); }
+
+  /* ---------- tab6: PrefetchAck alignment & anti-hang ---------- */
+  #scene6 .ackmesh{ display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+  .ackrow{ display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:10px; padding:6px 10px; background:var(--panel2); transition:all .3s; }
+  .ackrow.blocked{ border-color:var(--red); box-shadow:0 0 12px rgba(248,81,73,.3); }
+  .acklabel{ width:190px; font-size:12px; color:var(--muted); }
+  .acklabel b{ color:var(--text); }
+  .ackslots{ flex:1; display:flex; gap:8px; }
+  .ackchip{ flex:1; height:34px; border-radius:8px; border:1px solid var(--line); background:#0d1117;
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:#5b6470; gap:5px;
+    transition:all .3s; position:relative; }
+  .ackchip .err{ font-size:9px; color:var(--red); }
+  .ackchip.pending{ opacity:.4; }
+  .ackchip.emit{ border-color:var(--blue); color:#cfe6ff; background:linear-gradient(180deg,#143055,#102844); box-shadow:0 0 10px rgba(88,166,255,.4); }
+  .ackchip.passed{ border-color:var(--green); color:#c4f7d4; background:linear-gradient(180deg,#0f3a1d,#0e2c18); }
+  .ackchip.wait{ border-color:var(--amber); color:#ffe2ab; background:#1d1808; animation:pulse 1s infinite; }
+  .ackchip.missing{ border-color:var(--red); border-style:dashed; color:#ffd4d0; background:#2a1010; }
+  .barriers{ border:1px dashed var(--line); border-radius:10px; padding:8px 10px; margin-top:4px; }
+  .barlabel{ font-size:12px; color:var(--muted); margin-bottom:6px; text-align:center; }
+  .barrow{ display:flex; gap:8px; align-items:stretch; }
+  .barrow .barspacer{ width:190px; }
+  .barcols{ flex:1; display:flex; gap:8px; }
+  .bar{ flex:1; border:1.5px solid var(--line); border-radius:8px; padding:6px 4px; text-align:center;
+    font-size:11px; color:var(--muted); transition:all .3s; }
+  .bar .bcount{ display:block; font-size:13px; font-weight:800; margin-top:2px; color:#5b6470; }
+  .bar.waiting{ border-color:var(--amber); color:#ffe2ab; background:#1d1808; animation:pulse 1s infinite; }
+  .bar.waiting .bcount{ color:#ffe2ab; }
+  .bar.fired{ border-color:var(--green); color:#c4f7d4; background:#0f2a18; }
+  .bar.fired .bcount{ color:#c4f7d4; }
+  .bar.dead{ border-color:var(--red); color:#ffd4d0; background:#2a1010; box-shadow:0 0 12px rgba(248,81,73,.4); }
+  .bar.dead .bcount{ color:#ffd4d0; }
+</style>
+</head>
+<body>
+<button id="langBtn" onclick="toggleLang()">EN</button>
+<header>
+  <h1>HiCache × Pipeline Parallel：树一致性 & 防死锁</h1>
+  <p>拓扑 <b>PP=3 × TP=8 = 24 ranks</b> · 行=TP 组、列=PP 组 · MIN all-reduce 保证 radix tree 一致 · 2 套 gloo 组避免后台 collective 死锁</p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="story">① 两请求全流程（L3 命中/未命中 · host tree 一致）</button>
+  <button class="tab" data-tab="consistency">② 树一致性（自动播放）</button>
+  <button class="tab" data-tab="deadlock">③ 为什么 2 个组不死锁</button>
+  <button class="tab" data-tab="skew">④ 异步时间差 × MIN 统一步调</button>
+  <button class="tab" data-tab="threads">⑤ 线程关系 & 树一致性</button>
+  <button class="tab" data-tab="ackalign">⑥ PrefetchAck 对齐 & 防 hang</button>
+</div>
+
+<div class="wrap">
+  <!-- ============ TAB 5 (story, shown first) ============ -->
+  <div class="scene" id="scene5">
+    <div class="legend">
+      <span class="chip"><span class="sw" style="background:var(--blue)"></span>GPU 计算 / 插入中</span>
+      <span class="chip"><span class="sw" style="background:var(--cyan)"></span>match 命中前缀</span>
+      <span class="chip"><span class="sw" style="background:var(--amber)"></span>各 rank 不一致（待 MIN 统一）</span>
+      <span class="chip"><span class="sw" style="background:var(--green)"></span>已提交 / 一致</span>
+      <span class="chip"><span class="sw" style="background:var(--red)"></span>未命中 / 淘汰删除</span>
+    </div>
+    <div class="story-top">
+      <div class="gpu-badge" id="gpuBadge"><span class="ic">▣</span><span>GPU 计算</span></div>
+      <div class="l3box" id="l3box">
+        <div class="l3title"><span class="l3lab"><b>L3 持久化存储</b>（storage backend，3 个 rank 共享视图）</span><span class="badge" id="l3badge"></span></div>
+        <div class="pagerow" id="l3pages"></div>
+      </div>
+    </div>
+    <div class="ranks" id="ranks"></div>
+    <div class="story-sync">
+      <div class="syncbadge g1" id="s5sync1">◆ MIN 组1 · prefetch_hits_sync_groups · storage_hit_count</div>
+      <div class="syncbadge g2" id="s5sync2">◆ MIN 组2 · prefetch_completion_sync_groups · completed_tokens</div>
+    </div>
+    <div class="consist-flag" id="s5flag"></div>
+    <div class="caption" id="cap5">自动播放中…</div>
+  </div>
+  <div class="controls" id="ctl5">
+    <button class="ctl primary" id="play5">⏸ 暂停</button>
+    <button class="ctl" id="replay5">⟲ 重播</button>
+  </div>
+
+  <!-- ============ TAB 1 ============ -->
+  <div class="scene hidden" id="scene1">
+    <div class="legend">
+      <span class="chip"><span class="sw" style="background:var(--amber)"></span>命中数被截断（不一致）</span>
+      <span class="chip"><span class="sw" style="background:var(--blue)"></span>TP 组内 MIN 后</span>
+      <span class="chip"><span class="sw" style="background:var(--green)"></span>PP 组内 MIN 后（全局一致）</span>
+    </div>
+    <div id="mesh1"></div>
+    <div class="tree-box">
+      <div class="tree-title" id="treeTitle">所有 24 个 rank 共享同一棵 radix tree</div>
+      <div class="tree" id="sharedTree"></div>
+    </div>
+    <div class="caption" id="cap1">自动播放中…</div>
+  </div>
+  <div class="controls">
+    <button class="ctl primary" id="play1">⏸ 暂停</button>
+    <button class="ctl" id="replay1">⟲ 重播</button>
+  </div>
+
+  <!-- ============ TAB 2 ============ -->
+  <div class="scene hidden" id="scene2">
+    <div class="legend">
+      <span class="chip"><span class="sw" style="background:var(--purple)"></span><b>prefetch_thread</b>（独立后台线程）· reduce(storage_hit_count)</span>
+      <span class="chip"><span class="sw" style="background:var(--cyan)"></span><b>prefetch_sync_thread</b>（独立后台线程）· reduce(completed_tokens)</span>
+    </div>
+    <div class="note" style="margin-bottom:8px;">每个 cell = 1 个 rank，内含 2 个独立后台线程（小圆点 ●A ●B）。每一行是一个 <b>TP communicator</b>，每一列是一个 <b>PP communicator</b>。</div>
+    <div id="mesh2"></div>
+    <div class="groups">
+      <div class="grp g1" id="g1"><b>prefetch_hits_sync_groups</b><br>命中页数归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(storage_hit_count)</span></div>
+      <div class="grp g2" id="g2"><b>prefetch_completion_sync_groups</b><br>完成 token 归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(completed_tokens)</span></div>
+    </div>
+    <div class="banner" id="banner2"></div>
+    <div class="caption" id="cap2">选择场景：用 <b>1 套组</b> 会死锁，用 <b>2 套组</b> 则安全。</div>
+  </div>
+  <div class="controls" id="ctl2">
+    <button class="ctl alt" id="play1grp">▶ 1 套组（死锁）</button>
+    <button class="ctl primary" id="play2grp">▶ 2 套组（安全）</button>
+    <button class="ctl" id="reset2">重置</button>
+  </div>
+
+  <!-- ============ TAB 3 ============ -->
+  <div class="scene hidden" id="scene3">
+    <!-- layer 3: pipeline timing (top) -->
+    <div class="t3-section">
+      <div class="t3-title">③ 主 PP 流水线执行<strong>时序</strong> <span class="tag gpu">NCCL · GPU</span>
+        <span style="color:var(--muted);font-size:11px;">时序连续、错峰流动，<strong style="color:var(--green)">不被后台 prefetch 同步打断</strong></span>
+      </div>
+      <div class="pipe" id="pipe">
+        <div class="lane s0"><span class="lname">PP stage 0</span><span class="lane-hint" id="hint0"></span></div>
+        <div class="lane s1"><span class="lname">PP stage 1</span><span class="lane-hint" id="hint1"></span></div>
+        <div class="lane s2"><span class="lname">PP stage 2</span><span class="lane-hint" id="hint2"></span></div>
+      </div>
+      <div class="flow-note">↑ 流水线跑的正是②组好的 <strong>mb0→mb3</strong>，沿 stage0→1→2 错峰对角推进</div>
+    </div>
+
+    <div class="t3-conduit" id="arrow1">
+      <span class="clabel">▲ 组好的 <b>batch &amp; micro-batch 顺序</b> 喂给流水线（内容）</span>
+      <span class="spark"></span><span class="spark s2"></span>
+    </div>
+
+    <!-- layer 2: batch former (middle) -->
+    <div class="t3-section">
+      <div class="t3-title">② 三个 PP rank 用<strong>同一个 storage hit</strong> 组 batch（内容必须逐 rank 一致）</div>
+      <div class="formers" id="formers"></div>
+    </div>
+
+    <div class="t3-conduit" id="arrow2">
+      <span class="clabel">▲ <code>all_reduce(MIN)</code> 输出统一值 <b>6</b> → 决定 batch size</span>
+      <span class="spark"></span><span class="spark s2"></span>
+    </div>
+
+    <!-- layer 1: async prefetch + MIN (bottom = causal source) -->
+    <div class="t3-section">
+      <div class="t3-title">① 异步 prefetch 查询 → <code>all_reduce(MIN)</code> <span class="tag cpu">gloo · CPU 后台线程</span></div>
+      <div class="sync-area" id="syncArea">
+        <div class="clock" id="t3clock">t = 0.0s</div>
+        <div class="barrier" id="barrier" style="left:62%"><span class="blabel">all_reduce(MIN)</span></div>
+        <div class="slabel" id="sl0">rank pp0</div><div class="pkt travel" id="pkt0"><span>pp0 storage hit</span><span class="hv">8</span></div>
+        <div class="slabel" id="sl1">rank pp1</div><div class="pkt travel" id="pkt1"><span>pp1 storage hit</span><span class="hv">6</span></div>
+        <div class="slabel" id="sl2">rank pp2</div><div class="pkt travel" id="pkt2"><span>pp2 storage hit</span><span class="hv">7</span></div>
+      </div>
+    </div>
+    <div class="caption" id="cap3">自动播放中…</div>
+  </div>
+  <div class="controls" id="ctl3">
+    <button class="ctl primary" id="play3">⏸ 暂停</button>
+    <button class="ctl" id="replay3">⟲ 重播</button>
+  </div>
+
+  <!-- ============ TAB 4 ============ -->
+  <div class="scene hidden" id="scene4">
+    <div class="t4wrap">
+      <!-- left: thread data-flow -->
+      <div class="t4flow">
+        <div class="tbox sched" id="t4b0">
+          <div class="tname">调度器 Scheduler <span class="pin">主线程</span></div>
+          <div class="tdesc">发起 prefetch 请求（writeback / load）</div>
+        </div>
+        <div class="tarrow" id="t4a0">▼ <b>prefetch_queue</b>（PrefetchOperation）</div>
+
+        <div class="tbox thread-hit" id="t4b1">
+          <div class="tname">① prefetch_thread <span class="pin">storage-hit 线程</span></div>
+          <div class="tdesc"><code>_storage_hit_query()</code> 查询 L3 命中页数；命中足够→放 prefetch_buffer，不足→prefetch_revoke_queue</div>
+        </div>
+        <div class="minnode" id="t4m1">◆ all_reduce(MIN) storage_hit_count
+          <small>@ prefetch_hits_sync_groups（组1，gloo/CPU，含 TP 环 + PP 环）</small></div>
+        <div class="tarrow" id="t4a1">▼ <b>prefetch_buffer</b></div>
+
+        <div class="tbox thread-io" id="t4b2">
+          <div class="tname">② prefetch_io_aux_thread <span class="pin">IO 加载线程</span></div>
+          <div class="tdesc"><code>_page_transfer()</code> 逐 batch 把页从 L3 读入 host；累加 <b>completed_tokens</b>；<b>每个 storage batch 产生 1 个 PrefetchAck</b>（出错也照常产生）</div>
+        </div>
+        <div class="tarrow" id="t4a2">▼ <b>prefetch_sync_queue</b>（PrefetchAck）</div>
+
+        <div class="tbox thread-sync" id="t4b3">
+          <div class="tname">③ prefetch_sync_thread <span class="pin">completion-token 线程</span></div>
+          <div class="tdesc">对每个 ack 的 <b>completed_tokens</b> 做归约</div>
+        </div>
+        <div class="minnode g2" id="t4m2">◆ all_reduce(MIN) completed_tokens
+          <small>@ prefetch_completion_sync_groups（组2，gloo/CPU，含 TP 环 + PP 环）</small></div>
+        <div class="tarrow" id="t4a3">▼ <b>ack_prefetch_queue</b></div>
+
+        <div class="tbox sched" id="t4b4">
+          <div class="tname">调度器写入 host radix tree</div>
+          <div class="tdesc">只插入 <b>completed_tokens</b> 长度的前缀 → <code>_insert_helper_host()</code></div>
+        </div>
+      </div>
+
+      <!-- right: why consistent -->
+      <div class="t4why">
+        <div class="whycard a" id="t4wa">
+          <h4>为什么 MIN(storage_hit) 一致？</h4>
+          <p>各 rank 命中可能不同（host 内存截断、L3 视图差异）。MIN 取<b>最长公共可命中前缀</b> → 所有 rank <b>抓取范围一致</b>，不会各抓不同长度。</p>
+        </div>
+        <div class="whycard b" id="t4wb">
+          <h4>为什么 MIN(completed_tokens) 一致？</h4>
+          <p>即便抓取范围一致，实际逐页加载仍可能<b>部分失败</b>（<code>page_get</code> 返回 n≠batch）。MIN 只提交<b>所有 rank 都成功落盘的最长公共前缀</b> → 写入 host tree 的长度逐 rank 相同。</p>
+        </div>
+        <div class="whycard c" id="t4wc">
+          <h4>为什么不会 hang？</h4>
+          <p>每个 storage batch <b>都产生且仅产生一个 PrefetchAck</b>（即使出错也照常产生）→ 每个 rank 参与的 reduce <b>次数严格相等</b>，collective 一一对齐。两个 MIN 一起保证：<b>插入 host tree 的前缀逐 rank 完全相同 → 树一致</b>。</p>
+        </div>
+      </div>
+    </div>
+    <div class="caption" id="cap4">两个 MIN 同步点（组1 命中数、组2 完成数）+ 每 batch 恒定 1 个 ack，共同保证 PP 各 rank 的 host radix tree 严格一致。</div>
+  </div>
+  <div class="controls" id="ctl4">
+    <button class="ctl primary" id="play4">⏸ 暂停</button>
+    <button class="ctl" id="replay4">⟲ 重播</button>
+  </div>
+
+  <!-- ============ TAB 6 : PrefetchAck alignment & anti-hang ============ -->
+  <div class="scene hidden" id="scene6">
+    <div class="note" style="margin-bottom:10px;">每个 <b>storage batch</b> 在 <code>_page_transfer</code> 里恒产 <b>1 个 PrefetchAck</b>；<code>prefetch_sync_thread</code> 对<strong>每个 ack</strong> 在组2 做一次 <code>all_reduce(MIN)</code>。所以 <b>ack 数 = batch 数 = 组2 collective 次数</b>，必须逐 rank 相等。</div>
+    <div class="legend">
+      <span class="chip"><span class="sw" style="background:var(--blue)"></span>ack 已产出（参与本轮 reduce）</span>
+      <span class="chip"><span class="sw" style="background:var(--green)"></span>barrier 凑齐 3/3 → 通过</span>
+      <span class="chip"><span class="sw" style="background:var(--amber)"></span>已到达，等待缺席方</span>
+      <span class="chip"><span class="sw" style="background:var(--red)"></span>缺失 ack → 永远等不到</span>
+    </div>
+    <div class="ackmesh" id="ackmesh"></div>
+    <div class="barriers">
+      <div class="barlabel">◆ <code>all_reduce(MIN)</code> @ 组2（prefetch_completion_sync_groups）· 每个 ack 一次 barrier</div>
+      <div class="barrow"><div class="barspacer"></div><div class="barcols" id="barcols"></div></div>
+    </div>
+    <div class="banner" id="banner6"></div>
+    <div class="caption" id="cap6">选择场景：<b>每 batch 恒 1 ack</b> → 次数对齐、安全；<b>出错就 break</b> → ack 缺一个 → 组2 reduce 错位 → hang。</div>
+  </div>
+  <div class="controls" id="ctl6">
+    <button class="ctl primary" id="play6good">▶ 正确（每 batch 恒 1 ack）</button>
+    <button class="ctl alt" id="play6bad">▶ 错误（出错 break → ack 缺失）</button>
+    <button class="ctl" id="reset6">重置</button>
+  </div>
+</div>
+
+<script>
+const PP=3, TP=8;
+// initial hit counts per (pp,tp). some truncated by host-mem pressure.
+const HITS=[
+  [8,8,8,8,8,8,8,8],
+  [8,8,6,8,8,8,8,7],   // stage1: rank(1,2)=6, rank(1,7)=7 truncated
+  [8,8,8,8,8,8,8,8],
+];
+const ROWMIN = HITS.map(r=>Math.min(...r));      // [8,6,8]
+const GMIN = Math.min(...ROWMIN);                // 6
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ---------- build a mesh ---------- */
+function buildMesh(containerId, withThreads){
+  const c=document.getElementById(containerId);
+  let html='<div class="mesh-head"><div class="tp-hdr">';
+  for(let t=0;t<TP;t++) html+=`<div class="th">TP ${t}</div>`;
+  html+='</div></div>';
+  for(let p=0;p<PP;p++){
+    html+=`<div class="pp-row"><div class="pp-label"><b>PP stage ${p}</b><br>(TP 组)</div><div class="row-cells" id="${containerId}-row${p}">`;
+    for(let t=0;t<TP;t++){
+      html+=`<div class="cell" id="${containerId}-c${p}-${t}">
+        <div class="v">—</div>
+        <div class="rk">r${p*TP+t}</div>
+        ${withThreads?`<div class="tdots"><span class="td a" id="${containerId}-A-${p}-${t}"></span><span class="td b" id="${containerId}-B-${p}-${t}"></span></div>`:''}
+      </div>`;
+    }
+    html+='</div></div>';
+  }
+  // pp-group footer (columns)
+  html+='<div class="pp-foot"><div class="lab">PP 组(列)<br>每列跨 3 个 stage →</div><div class="cols">';
+  for(let t=0;t<TP;t++) html+=`<div class="col" id="${containerId}-col${t}">r${t}·r${t+TP}·r${t+2*TP}</div>`;
+  html+='</div></div>';
+  c.innerHTML=html;
+}
+const cell=(m,p,t)=>document.getElementById(`${m}-c${p}-${t}`);
+const val =(m,p,t)=>cell(m,p,t).querySelector('.v');
+
+buildMesh('mesh1',false);
+buildMesh('mesh2',true);
+
+/* ============================================================
+   TAB 1 : auto-play loop
+   query -> diverge -> TP all_reduce(MIN) -> PP all_reduce(MIN) -> consistent tree
+   ============================================================ */
+let t1Token=0, t1Paused=false;
+const cap1=document.getElementById('cap1');
+const sharedTree=document.getElementById('sharedTree');
+
+function resetMesh1(){
+  for(let p=0;p<PP;p++) for(let t=0;t<TP;t++){
+    const cl=cell('mesh1',p,t); cl.className='cell';
+    val('mesh1',p,t).innerHTML='—';
+  }
+  sharedTree.innerHTML='';
+}
+async function gate(my){ while(t1Paused){ await sleep(120); if(my!==t1Token) throw 0; } }
+async function step(ms,my){ await sleep(ms); await gate(my); if(my!==t1Token) throw 0; }
+
+async function runTab1(){
+  const my=++t1Token;
+  try{
+    while(true){
+      resetMesh1();
+      cap1.innerHTML='拓扑 <b>PP=3 × TP=8 = 24 个 rank</b>：每个 PP stage 下挂 8 个 TP rank。';
+      await step(1600,my);
+
+      // 1) independent query
+      for(let p=0;p<PP;p++) for(let t=0;t<TP;t++){
+        const v=HITS[p][t]; const cl=cell('mesh1',p,t);
+        val('mesh1',p,t).innerHTML=v+' <small>pg</small>';
+        if(v!==8) cl.classList.add('varied');
+        await sleep(35);
+      }
+      cap1.innerHTML='① 各 rank <span class="k">独立</span>向 L3 查询前缀命中。<b style="color:var(--amber)">注意 r10、r15 因 host 内存压力被截断</b>（6 / 7 页）。';
+      await step(2200,my);
+
+      // 2) diverge warning
+      cap1.innerHTML='② 若各 rank 按自己的命中数建 radix tree → 树高不一致 → 后续 PP 集合通信 <b style="color:var(--red)">shape mismatch → crash</b>。';
+      for(let p=0;p<PP;p++) for(let t=0;t<TP;t++) if(HITS[p][t]!==8){ cell('mesh1',p,t).classList.add('bad'); }
+      await step(2200,my);
+      for(let p=0;p<PP;p++) for(let t=0;t<TP;t++) cell('mesh1',p,t).classList.remove('bad','varied');
+
+      // 3) TP all_reduce(MIN) — sweep each row (all rows in parallel)
+      cap1.innerHTML='③ 第一步：在 <span class="k">TP 组（每一行 8 个 rank）</span>内 <code>all_reduce(MIN)</code>。';
+      for(let t=0;t<TP;t++){
+        for(let p=0;p<PP;p++) cell('mesh1',p,t).classList.add('sweep');
+        await step(110,my);
+        for(let p=0;p<PP;p++) cell('mesh1',p,t).classList.remove('sweep');
+      }
+      for(let p=0;p<PP;p++) for(let t=0;t<TP;t++){
+        const cl=cell('mesh1',p,t); cl.classList.add('tpmin');
+        val('mesh1',p,t).innerHTML=ROWMIN[p]+' <small>pg</small>';
+      }
+      cap1.innerHTML='③ TP 组归约后：<b>每一行变得一致</b>（PP0=8, PP1=6, PP2=8 = 各行最小值）。';
+      await step(1900,my);
+
+      // 4) PP all_reduce(MIN) — sweep each column (top->bottom)
+      cap1.innerHTML='④ 第二步：在 <span class="k">PP 组（每一列 3 个 rank）</span>内 <code>all_reduce(MIN)</code> → 收敛到全局最小值。';
+      for(let p=0;p<PP;p++){
+        for(let t=0;t<TP;t++) cell('mesh1',p,t).classList.add('sweep');
+        await step(180,my);
+        for(let t=0;t<TP;t++) cell('mesh1',p,t).classList.remove('sweep');
+      }
+      for(let p=0;p<PP;p++) for(let t=0;t<TP;t++){
+        const cl=cell('mesh1',p,t); cl.classList.remove('tpmin'); cl.classList.add('gmin');
+        val('mesh1',p,t).innerHTML=GMIN+' <small>pg</small>';
+      }
+      cap1.innerHTML='④ PP 组归约后：<b style="color:var(--green)">全部 24 个 rank 命中数 = 6</b>（最长公共前缀）。';
+      await step(1700,my);
+
+      // 5) shared consistent tree
+      cap1.innerHTML='⑤ 所有 rank 都只 prefetch / 建树到 6 → <span style="color:var(--green)">24 个 rank 的 radix tree 完全一致 ✓</span>';
+      sharedTree.innerHTML='';
+      for(let i=0;i<GMIN;i++){
+        const n=document.createElement('div'); n.className='tnode'; n.textContent='page '+i; sharedTree.appendChild(n);
+        await step(120,my); n.classList.add('show');
+      }
+      await step(2600,my);
+    }
+  }catch(e){ /* cancelled */ }
+}
+
+document.getElementById('play1').onclick=function(){
+  t1Paused=!t1Paused;
+  this.textContent=t1Paused?'▶ 播放':'⏸ 暂停';
+};
+document.getElementById('replay1').onclick=()=>{ t1Paused=false; document.getElementById('play1').textContent='⏸ 暂停'; runTab1(); };
+
+/* ============================================================
+   TAB 2 : why 2 group-sets avoid deadlock (PP×TP mesh)
+   ============================================================ */
+let t2Token=0;
+const cap2=document.getElementById('cap2');
+const banner2=document.getElementById('banner2');
+const g1=document.getElementById('g1'), g2=document.getElementById('g2');
+const row2=p=>document.getElementById('mesh2-row'+p);
+const col2=t=>document.getElementById('mesh2-col'+t);
+const dotEl=(op,p,t)=>document.getElementById(`mesh2-${op}-${p}-${t}`);
+
+function resetMesh2(){
+  ++t2Token;
+  for(let p=0;p<PP;p++){
+    row2(p).className='row-cells';
+    for(let t=0;t<TP;t++){
+      const cl=cell('mesh2',p,t); cl.className='cell';
+      val('mesh2',p,t).innerHTML=GMIN+' <small>pg</small>';
+      dotEl('A',p,t).className='td a'; dotEl('B',p,t).className='td b';
+    }
+  }
+  for(let t=0;t<TP;t++) col2(t).className='col';
+  g1.classList.remove('hot'); g2.classList.remove('hot'); g2.style.opacity=1;
+  banner2.className='banner'; banner2.textContent='';
+}
+async function s2(ms,my){ await sleep(ms); if(my!==t2Token) throw 0; }
+
+/* ---- 1 shared group set -> deadlock ---- */
+async function play1Group(){
+  resetMesh2(); const my=t2Token;
+  try{
+    g2.style.opacity=.25; g1.classList.add('hot');
+    cap2.innerHTML='只有 <b>1 套组</b>：prefetch_thread(A) 与 prefetch_sync_thread(B) 共用同一个 communicator 集。';
+    await s2(800,my);
+
+    // each rank's two threads race: some submit A first (purple), some B first (cyan)
+    cap2.innerHTML='两个后台线程<b>独立调度、顺序不定</b>：同一个 TP 环里，有的 rank 先发 A，有的先发 B。';
+    for(let p=0;p<PP;p++){
+      for(let t=0;t<TP;t++){
+        const aFirst=((p+t)%2===0);      // deterministic but mixed within each row
+        const first=aFirst?'A':'B';
+        dotEl(first,p,t).classList.add('on');
+      }
+    }
+    await s2(1200,my);
+
+    // rings cannot align -> red
+    cap2.innerHTML='同一个 communicator 上各 rank 提交的 collective <b style="color:var(--red)">不是同一个</b>（A 与 B 错位）→ rendezvous 永远配不上。';
+    for(let p=0;p<PP;p++){
+      row2(p).classList.add('ring-bad');
+      for(let t=0;t<TP;t++){
+        cell('mesh2',p,t).classList.add('bad');
+        const aFirst=((p+t)%2===0);
+        dotEl(aFirst?'A':'B',p,t).className=`td ${aFirst?'a':'b'} dead`;
+      }
+    }
+    for(let t=0;t<TP;t++) col2(t).classList.add('ring-bad');
+    await s2(700,my);
+    banner2.className='banner bad'; banner2.textContent='💥 DEADLOCK — 整个 24-rank job 卡死';
+    cap2.innerHTML='只要任一 communicator 上 A/B 交错，该环就死锁 → 全局 PP/TP 通信连环卡住。';
+  }catch(e){}
+}
+
+/* ---- 2 group sets -> safe ---- */
+async function play2Groups(){
+  resetMesh2(); const my=t2Token;
+  try{
+    g1.classList.add('hot'); g2.classList.add('hot');
+    cap2.innerHTML='用 <b>2 套独立组</b>：<b style="color:var(--purple)">A 永远走 prefetch_hits_sync_groups</b>，<b style="color:var(--cyan)">B 永远走 prefetch_completion_sync_groups</b>。';
+    await s2(800,my);
+
+    // wave A: every rank's prefetch_thread submits A to group-set-1; TP rings + PP rings light purple
+    cap2.innerHTML='第一波：所有 rank 的 <b>prefetch_thread</b> 只在 <code>prefetch_hits_sync_groups</code> 上提交 A → 序列一致。';
+    for(let p=0;p<PP;p++){
+      row2(p).classList.add('ring-a');
+      for(let t=0;t<TP;t++) dotEl('A',p,t).classList.add('on');
+    }
+    for(let t=0;t<TP;t++) col2(t).classList.add('ring-a');
+    await s2(1100,my);
+    for(let p=0;p<PP;p++){
+      row2(p).className='row-cells';
+      for(let t=0;t<TP;t++) dotEl('A',p,t).className='td a done';
+    }
+    for(let t=0;t<TP;t++) col2(t).className='col';
+    cap2.innerHTML='✓ TP 环 + PP 环上 A 全部到齐 → 第一波归约完成。';
+    await s2(900,my);
+
+    // wave B: prefetch_sync_thread submits B to group-set-2; rings light cyan
+    cap2.innerHTML='第二波：所有 rank 的 <b>prefetch_sync_thread</b> 只在 <code>prefetch_completion_sync_groups</code> 上提交 B → 序列一致。';
+    for(let p=0;p<PP;p++){
+      row2(p).classList.add('ring-b');
+      for(let t=0;t<TP;t++) dotEl('B',p,t).classList.add('on');
+    }
+    for(let t=0;t<TP;t++) col2(t).classList.add('ring-b');
+    await s2(1100,my);
+    for(let p=0;p<PP;p++){
+      row2(p).className='row-cells';
+      for(let t=0;t<TP;t++){ dotEl('B',p,t).className='td b done'; cell('mesh2',p,t).classList.add('gmin'); }
+    }
+    for(let t=0;t<TP;t++) col2(t).className='col';
+    banner2.className='banner ok'; banner2.textContent='✅ 安全 — 24 个 rank 全部对齐完成';
+    cap2.innerHTML='每个 communicator 上的 collective 序列在所有 rank <b style="color:var(--green)">完全一致</b>（A→组1、B→组2 不交叉）→ 不会死锁。';
+  }catch(e){}
+}
+
+document.getElementById('play1grp').onclick=play1Group;
+document.getElementById('play2grp').onclick=play2Groups;
+document.getElementById('reset2').onclick=()=>{ resetMesh2(); cap2.innerHTML='选择场景：用 <b>1 套组</b> 会死锁，用 <b>2 套组</b> 则安全。'; };
+
+/* ============================================================
+   TAB 3 : async PP skew  x  all_reduce(MIN) unifies pace
+   Top: continuous, skewed micro-batch pipeline (CSS infinite) — never pauses.
+   Bottom: time-driven (rAF). Each rank's prefetch op arrives at the MIN barrier
+   at a DIFFERENT wall-clock time (async skew). Early arrivals park & wait on the
+   gloo CPU group (background thread). When the slowest arrives, one MIN flash
+   unifies all three to 6 and they depart together — while the top pipeline keeps
+   flowing untouched.
+   ============================================================ */
+const NMB=4;                          // micro-batches per batch (illustrative)
+const MB_LABELS=Array.from({length:NMB},(_,k)=>'mb'+k);
+// build top pipeline micro-batches: one controllable block per (stage, mb)
+(function buildPipe(){
+  for(let s=0;s<3;s++){
+    const lane=document.querySelector('#pipe .s'+s);
+    for(let k=0;k<NMB;k++){
+      const mb=document.createElement('div');
+      mb.className='mb'; mb.id=`pmb-${s}-${k}`; mb.textContent=MB_LABELS[k];
+      lane.appendChild(mb);
+    }
+  }
+})();
+// build batch formers (one per PP rank): hit input + ordered mb chips
+(function buildFormers(){
+  const host=document.getElementById('formers');
+  for(let p=0;p<3;p++){
+    const f=document.createElement('div'); f.className='former'; f.id='former'+p;
+    let chips='';
+    for(let k=0;k<NMB;k++) chips+=`<div class="mbchip" id="fchip-${p}-${k}">${MB_LABELS[k]}</div>`;
+    f.innerHTML=`<h5>调度器 · PP rank ${p}</h5>
+      <div class="hitbox"><span class="ht1">已缓存前缀 storage hit = </span><b id="fhit${p}">？</b><span class="ht2"> 页 → 决定 batch 组成</span></div>
+      <div class="mbrow">${chips}</div>
+      <div class="chk" id="fchk${p}"></div>`;
+    host.appendChild(f);
+  }
+})();
+const arrow1=document.getElementById('arrow1');
+const arrow2=document.getElementById('arrow2');
+
+const PKT=[
+  { el:document.getElementById('pkt0'), lab:document.getElementById('sl0'), y:34,  hit:8, arrive:2.6 },
+  { el:document.getElementById('pkt1'), lab:document.getElementById('sl1'), y:85,  hit:6, arrive:1.9 }, // arrives first
+  { el:document.getElementById('pkt2'), lab:document.getElementById('sl2'), y:136, hit:7, arrive:3.9 }, // slowest -> everyone waits
+];
+const GMIN3=Math.min(...PKT.map(p=>p.hit)); // 6
+const T3={ START:0.4, SYNC:3.9, FLASH_END:4.5, DEPART_END:5.4,
+           DROP:4.5, MB_START:5.0, MB_STEP:0.35, READY:6.4, CYCLE:14.0,
+           PIPE_START:6.4, MB_LAG:1.0, STAGE_LAG:0.9, MB_TRAVEL:3.2,
+           X0:11, XB:62, X1:97 }; // seconds / percentages
+const cap3=document.getElementById('cap3');
+const barrier=document.getElementById('barrier');
+const t3clock=document.getElementById('t3clock');
+let t3raf=null, t3on=false, t3paused=false, t3start=0, t3lastT=0;
+
+function placePkt(p){ p.lab.style.top=p.y+'px'; p.el.style.top=p.y+'px'; }
+PKT.forEach(placePkt);
+function lerp(a,b,u){ return a+(b-a)*Math.max(0,Math.min(1,u)); }
+// returns progress 0..1 if t (or its wrapped form) is inside [st,en), else -1
+function pipeActive(st,en,t){
+  if(t>=st && t<en) return (t-st)/(en-st);
+  const tw=t+T3.CYCLE;
+  if(tw>=st && tw<en) return (tw-st)/(en-st);   // previous batch still draining across loop
+  return -1;
+}
+
+function resetFormers(){
+  arrow1.classList.remove('hot'); arrow2.classList.remove('hot');
+  for(let p=0;p<3;p++){
+    document.getElementById('fhit'+p).textContent='？';
+    document.getElementById('former'+p).classList.remove('ready');
+    document.getElementById('fchk'+p).textContent='';
+    for(let k=0;k<NMB;k++) document.getElementById(`fchip-${p}-${k}`).className='mbchip';
+  }
+}
+
+function t3frame(now){
+  if(!t3on){ return; }
+  if(!t3paused){
+    let t=((now - t3start)/1000) % T3.CYCLE;
+    t3lastT=t;
+    t3clock.textContent='t = '+t.toFixed(1)+'s';
+    barrier.classList.toggle('fire', (t>=T3.SYNC && t<T3.FLASH_END));
+
+    // --- layer 1: async packets toward MIN barrier ---
+    PKT.forEach(p=>{
+      let xPct, cls;
+      if(t < T3.START){ xPct=T3.X0; cls='travel'; }
+      else if(t < p.arrive){ xPct=lerp(T3.X0, T3.XB, (t-T3.START)/(p.arrive-T3.START)); cls='travel'; }
+      else if(t < T3.FLASH_END){ xPct=T3.XB; cls='wait'; }
+      else if(t < T3.DEPART_END){ xPct=lerp(T3.XB, T3.X1, (t-T3.FLASH_END)/(T3.DEPART_END-T3.FLASH_END)); cls='unified'; }
+      else { xPct=T3.X1; cls='unified'; }
+      p.el.style.left='calc('+xPct+'% - 54px)';
+      p.el.className='pkt '+cls;
+      p.el.querySelector('.hv').textContent = (t>=T3.SYNC? GMIN3 : p.hit);
+    });
+
+    // --- layer 2: batch formers driven by unified value ---
+    if(t < T3.FLASH_END){
+      resetFormers();
+    } else {
+      arrow2.classList.add('hot');                 // MIN -> value out
+      for(let p=0;p<3;p++) document.getElementById('fhit'+p).textContent=GMIN3;
+      // light mb chips in identical order across all three formers
+      let lit=0;
+      for(let k=0;k<NMB;k++){
+        if(t >= T3.MB_START + k*T3.MB_STEP){
+          for(let p=0;p<3;p++) document.getElementById(`fchip-${p}-${k}`).classList.add('on');
+          lit++;
+        }
+      }
+      if(t >= T3.READY){
+        arrow1.classList.add('hot');               // batch -> pipeline content
+        for(let p=0;p<3;p++){
+          document.getElementById('former'+p).classList.add('ready');
+          document.getElementById('fchk'+p).textContent='✓ batch & mb 顺序一致';
+          for(let k=0;k<NMB;k++) document.getElementById(`fchip-${p}-${k}`).className='mbchip fixed';
+        }
+      } else {
+        arrow1.classList.remove('hot');
+      }
+    }
+
+    // --- layer 3: the formed mb0..mb3 flow through stage0->1->2 (diagonal pipeline) ---
+    for(let s=0;s<3;s++){
+      for(let k=0;k<NMB;k++){
+        const b=document.getElementById(`pmb-${s}-${k}`);
+        const st=T3.PIPE_START + k*T3.MB_LAG + s*T3.STAGE_LAG;
+        const u=pipeActive(st, st+T3.MB_TRAVEL, t);   // handles cycle wrap (previous batch still draining)
+        if(u>=0){ b.style.left=(19+u*73)+'%'; b.style.opacity=1; }
+        else b.style.opacity=0;
+      }
+      document.getElementById('hint'+s).textContent = (t>1.4 && t<T3.PIPE_START) ? '（等待②组好的 batch…）' : '';
+    }
+
+    // --- captions ---
+    if(t < T3.START) cap3.innerHTML='① 三个 PP rank 的 prefetch 查询<strong>异步发起</strong>（到达时刻不同）。';
+    else if(t < PKT[2].arrive) cap3.innerHTML='① 先到的 rank 在 <span class="k">gloo CPU 后台线程</span>上<b style="color:var(--amber)">等待对齐</b>（不占 GPU）。';
+    else if(t < T3.FLASH_END) cap3.innerHTML='① <b style="color:var(--amber)">pp2 最慢</b>到达 → <code>all_reduce(MIN)</code> 把 8/6/7 <strong style="color:var(--green)">统一成 6</strong>。';
+    else if(t < T3.READY) cap3.innerHTML='② 统一后的 <b>storage hit = 6</b> 下发给各 rank 调度器 → 决定<strong>已缓存前缀长度 / batch size / micro-batch 顺序</strong>（mb0→mb3）。';
+    else cap3.innerHTML='③ 三个 rank 因拿到<strong style="color:var(--green)">同一个 6</strong> 而组出<strong style="color:var(--green)">完全一致的 batch 与 mb 顺序</strong>，喂给 PP 流水线；执行时序连续不被打断。<br><span style="color:var(--red)">⚠ 若 storage hit 不统一 → batch/mb 顺序逐 rank 发散 → PP 调度错位、卡死。</span>';
+  }
+  t3raf=requestAnimationFrame(t3frame);
+}
+function startTab3(restart){
+  t3on=true;
+  if(restart || !t3start){ t3start=performance.now(); t3paused=false; document.getElementById('play3').textContent='⏸ 暂停'; }
+  document.getElementById('pipe').classList.remove('paused');
+  if(!t3raf) t3raf=requestAnimationFrame(t3frame);
+}
+function stopTab3(){ t3on=false; if(t3raf){ cancelAnimationFrame(t3raf); t3raf=null; } }
+
+document.getElementById('play3').onclick=function(){
+  t3paused=!t3paused;
+  if(t3paused){ t3start=performance.now() - t3lastT*1000; } // freeze
+  else { t3start=performance.now() - t3lastT*1000; }        // resume from frozen t
+  this.textContent=t3paused?'▶ 播放':'⏸ 暂停';
+  document.getElementById('pipe').classList.toggle('paused', t3paused);
+};
+document.getElementById('replay3').onclick=()=>startTab3(true);
+
+/* ============================================================
+   TAB 4 : animated walk-through of the prefetch thread pipeline.
+   Highlights each stage in sequence; the chain "lights up" as the
+   data (PrefetchOperation → Ack → completed_tokens) flows down, and
+   the matching right-side why-card glows at each MIN sync point.
+   ============================================================ */
+let t4Token=0, t4Paused=false;
+const cap4El=document.getElementById('cap4');
+// [ids-to-light, caption]
+const T4SEQ=[
+  [['t4b0'], '调度器主线程把 prefetch 请求（writeback / load）放入队列，触发后台流水线。'],
+  [['t4a0'], '<b>PrefetchOperation</b> 入队 <code>prefetch_queue</code>，交给后台线程处理。'],
+  [['t4b1'], '① <b>prefetch_thread</b> 调 <code>_storage_hit_query()</code> 查询 L3 命中页数（各 rank 可能不同）。'],
+  [['t4m1','t4wa'], '◆ <b style="color:var(--amber)">第一个 MIN</b>：在 <code>prefetch_hits_sync_groups</code>（组1）对 storage_hit_count 取最小 → <b>抓取范围逐 rank 一致</b>。'],
+  [['t4a1'], '命中足够的请求落入 <code>prefetch_buffer</code>，进入实际 IO 加载。'],
+  [['t4b2'], '② <b>prefetch_io_aux_thread</b> 用 <code>_page_transfer()</code> 逐 batch 把页 L3→host；<b>每个 batch 恒产生 1 个 PrefetchAck</b>（出错也产生）。'],
+  [['t4a2'], '每个 batch 的 <b>PrefetchAck</b> 入队 <code>prefetch_sync_queue</code>。'],
+  [['t4b3'], '③ <b>prefetch_sync_thread</b> 对每个 ack 的 <b>completed_tokens</b> 做归约。'],
+  [['t4m2','t4wb'], '◆ <b style="color:var(--green)">第二个 MIN</b>：在 <code>prefetch_completion_sync_groups</code>（组2）对 completed_tokens 取最小 → <b>真正落盘前缀逐 rank 一致</b>。'],
+  [['t4a3'], '统一后的结果入队 <code>ack_prefetch_queue</code> 回到调度器。'],
+  [['t4b4','t4wc'], '调度器只插入 <b>completed_tokens</b> 长度的前缀 → <code>_insert_helper_host()</code>。每 batch 恒 1 个 ack，<b>reduce 次数严格相等 → 不会 hang</b>。'],
+];
+function t4clear(){
+  document.querySelectorAll('#scene4 .lit').forEach(e=>e.classList.remove('lit'));
+  document.querySelectorAll('#scene4 .dimmed').forEach(e=>e.classList.remove('dimmed'));
+}
+async function t4gate(my){ while(t4Paused){ await sleep(120); if(my!==t4Token) throw 0; } }
+async function t4step(ms,my){ await sleep(ms); await t4gate(my); if(my!==t4Token) throw 0; }
+async function runTab4(){
+  const my=++t4Token;
+  try{
+    while(true){
+      t4clear();
+      cap4El.innerHTML='沿数据流向下逐步点亮：两个 MIN 同步点 + 每 batch 恒定 1 个 ack。';
+      await t4step(1200,my);
+      for(const [ids,cap] of T4SEQ){
+        await t4gate(my);
+        ids.forEach(id=>document.getElementById(id).classList.add('lit'));
+        cap4El.innerHTML=cap;
+        await t4step(1900,my);
+      }
+      cap4El.innerHTML='✅ 闭环：两个 MIN（组1 命中数 + 组2 完成数）+ 每 batch 1 个 ack → <b style="color:var(--green)">PP 各 rank 的 host radix tree 严格一致</b>。';
+      await t4step(2600,my);
+    }
+  }catch(e){ /* cancelled */ }
+}
+function stopTab4(){ ++t4Token; }
+
+document.getElementById('play4').onclick=function(){
+  t4Paused=!t4Paused;
+  this.textContent=t4Paused?'▶ 播放':'⏸ 暂停';
+};
+document.getElementById('replay4').onclick=()=>{ t4Paused=false; document.getElementById('play4').textContent='⏸ 暂停'; runTab4(); };
+
+/* ============================================================
+   TAB 5 : two-request full lifecycle (PP=3 × TP=4).
+   Req A misses (GPU compute → L2 insert → L3 backup), then L2 is
+   evicted (delete, identical across ranks); Req B hits L3 and goes
+   through the two MIN syncs so every PP rank inserts the SAME prefix
+   into its host radix tree → trees stay consistent, no deadlock.
+   ============================================================ */
+const NPG=4;                       // pages tracked in the story
+const RANK_NAMES=['PP rank 0','PP rank 1','PP rank 2'];
+(function buildStory(){
+  let h='';
+  for(let p=0;p<3;p++){
+    let tps=''; for(let t=0;t<4;t++) tps+=`<span class="tp" id="s5tp-${p}-${t}"></span>`;
+    let nodes='<span class="root">host root</span>';
+    for(let i=0;i<NPG;i++) nodes+=`<div class="htnode" id="s5n-${p}-${i}">p${i}</div>`;
+    h+=`<div class="ranklane" id="s5lane${p}">
+      <div class="rankhdr"><span class="rname">${RANK_NAMES[p]}</span><span class="tps">${tps}</span>
+        <span class="rstat" id="s5stat${p}">idle</span></div>
+      <div class="htree">${nodes}</div></div>`;
+  }
+  document.getElementById('ranks').innerHTML=h;
+  let l3=''; for(let i=0;i<NPG;i++) l3+=`<div class="pg" id="s5l3-${i}">p${i}</div>`;
+  document.getElementById('l3pages').innerHTML=l3;
+})();
+
+let t5Token=0, t5Paused=false;
+const cap5=document.getElementById('cap5');
+const s5n=(p,i)=>document.getElementById(`s5n-${p}-${i}`);
+const setNode=(p,i,cls)=>{ s5n(p,i).className='htnode show '+cls; };
+const hideNode=(p,i)=>{ s5n(p,i).className='htnode'; };
+function rstat(p,txt,cls){ const e=document.getElementById('s5stat'+p); e.className='rstat '+(cls||''); e.textContent=txt; }
+function s5flag(txt,cls){ const e=document.getElementById('s5flag'); e.className='consist-flag '+(cls||''); e.innerHTML=txt; }
+function s5reset(){
+  for(let p=0;p<3;p++){
+    document.getElementById('s5lane'+p).className='ranklane';
+    rstat(p,'idle','');
+    for(let t=0;t<4;t++) document.getElementById(`s5tp-${p}-${t}`).className='tp';
+    for(let i=0;i<NPG;i++) hideNode(p,i);
+  }
+  for(let i=0;i<NPG;i++) document.getElementById('s5l3-'+i).className='pg';
+  document.getElementById('gpuBadge').className='gpu-badge';
+  document.getElementById('l3box').className='l3box';
+  document.getElementById('l3badge').className='badge'; document.getElementById('l3badge').textContent='';
+  document.getElementById('s5sync1').className='syncbadge g1';
+  document.getElementById('s5sync2').className='syncbadge g2';
+  s5flag('','');
+}
+async function t5gate(my){ while(t5Paused){ await sleep(120); if(my!==t5Token) throw 0; } }
+async function t5step(ms,my){ await sleep(ms); await t5gate(my); if(my!==t5Token) throw 0; }
+const allRanks=fn=>{ for(let p=0;p<3;p++) fn(p); };
+
+async function runTab5(){
+  const my=++t5Token;
+  try{
+    while(true){
+      s5reset();
+      cap5.innerHTML='场景 <b>PP=3 × TP=4</b>：每个 PP rank 维护一棵 <b>L2 host radix tree</b>，共享底层 <b>L3 持久化存储</b>。跟踪两个请求，看 host tree 如何保持一致。';
+      await t5step(2000,my);
+
+      /* ===== ACT 1 : Request A — miss → GPU → L2 insert → L3 backup ===== */
+      cap5.innerHTML='① <b>请求 A</b> 到达（需要 4 个 page 的前缀），3 个 PP rank 同时处理。';
+      allRanks(p=>{ document.getElementById('s5lane'+p).classList.add('active'); for(let t=0;t<4;t++) document.getElementById(`s5tp-${p}-${t}`).className='tp on'; rstat(p,'req A',''); });
+      await t5step(1700,my);
+
+      cap5.innerHTML='① 查 L2 host tree → <b style="color:var(--red)">miss</b>；查 L3 → <b style="color:var(--red)">miss</b>（存储为空）。';
+      allRanks(p=>rstat(p,'L2/L3 miss','miss'));
+      document.getElementById('l3badge').className='badge miss'; document.getElementById('l3badge').textContent='miss';
+      await t5step(1900,my);
+
+      cap5.innerHTML='① 回退到 <b>GPU 前向计算</b>，生成这 4 个 page 的 KV。';
+      document.getElementById('gpuBadge').classList.add('busy');
+      allRanks(p=>rstat(p,'compute','warn'));
+      await t5step(1800,my);
+      document.getElementById('gpuBadge').classList.remove('busy');
+
+      cap5.innerHTML='① 计算结果写入 <b>L2 host radix tree</b> → 3 个 rank <code>insert</code> <strong style="color:var(--green)">相同</strong>的前缀 p0–p3。';
+      for(let i=0;i<NPG;i++){ allRanks(p=>setNode(p,i,'inserting')); await t5step(240,my); }
+      allRanks(p=>{ for(let i=0;i<NPG;i++) setNode(p,i,'committed'); rstat(p,'L2: 4','hit'); });
+      s5flag('✓ 3 棵 host tree 同步插入 4 个 page（一致）','ok');
+      await t5step(1600,my);
+
+      cap5.innerHTML='① backup 线程把 L2 → <b>L3</b> 持久化（<code>write_backup</code> / <code>page_set</code>）。';
+      document.getElementById('l3box').classList.add('hot');
+      document.getElementById('l3badge').className='badge hit'; document.getElementById('l3badge').textContent='stored';
+      for(let i=0;i<NPG;i++){ document.getElementById('s5l3-'+i).className='pg show l3'; await t5step(220,my); }
+      s5flag('','');
+      await t5step(1500,my);
+
+      /* ===== ACT 1.5 : L2 eviction (delete consistency) ===== */
+      cap5.innerHTML='② host 内存压力 → L2 触发<strong style="color:var(--red)">淘汰</strong>（<code>evict_host</code>）。3 棵 host tree <b>完全一致</b> → 淘汰命中<strong>同一批节点</strong>；L3 仍保留。';
+      for(let i=NPG-1;i>=0;i--){ allRanks(p=>setNode(p,i,'evict')); await t5step(330,my); allRanks(p=>hideNode(p,i)); }
+      allRanks(p=>rstat(p,'L2 empty',''));
+      s5flag('✓ 3 棵 host tree 同步删除（delete 一致）','ok');
+      await t5step(2000,my);
+      s5flag('','');
+
+      /* ===== ACT 2 : Request B — L3 hit → 2 MIN syncs → consistent insert ===== */
+      cap5.innerHTML='③ <b>请求 B</b> 到达（复用 A 的前缀）。L2 host tree 已空 → <b style="color:var(--red)">L2 miss</b>，转向 L3。';
+      allRanks(p=>{ document.getElementById('s5lane'+p).classList.add('active'); rstat(p,'req B','warn'); });
+      await t5step(1700,my);
+
+      cap5.innerHTML='③ <b>prefetch_thread</b> 各 rank 向 L3 查命中页数 → 结果可能<strong style="color:var(--amber)">不同</strong>（host 视图/内存差异）：4 / 3 / 4。';
+      const hitq=[4,3,4];
+      allRanks(p=>{ rstat(p,'L3 hit '+hitq[p], hitq[p]===4?'hit':'warn'); for(let i=0;i<hitq[p];i++) setNode(p,i,'warn'); });
+      s5flag('⚠ 查询长度不一致（4/3/4）→ 若各自建树，host tree 会发散','bad');
+      await t5step(2600,my);
+
+      cap5.innerHTML='◆ <b>第一个 MIN</b> @ <code>prefetch_hits_sync_groups</code>（组1，gloo/CPU，含 TP环+PP环）：<code>all_reduce(MIN)</code> 统一查询长度 = <b>3</b>。';
+      document.getElementById('s5sync1').classList.add('fire');
+      await t5step(1500,my);
+      allRanks(p=>{ for(let i=0;i<NPG;i++) hideNode(p,i); for(let i=0;i<3;i++) setNode(p,i,'matched'); rstat(p,'match 3','hit'); });
+      s5flag('✓ 抓取范围统一 = 3 → match_prefix 逐 rank 一致','ok');
+      await t5step(2200,my);
+
+      cap5.innerHTML='③ <b>prefetch_io_aux_thread</b> 逐 batch 把 page 从 L3 拉回 L2（<code>_page_transfer</code>），每 batch 产 1 个 PrefetchAck。';
+      document.getElementById('s5sync1').classList.remove('fire');
+      for(let i=0;i<3;i++){ allRanks(p=>setNode(p,i,'inserting')); await t5step(300,my); }
+      await t5step(700,my);
+
+      cap5.innerHTML='③ 逐页加载<strong style="color:var(--amber)">部分失败</strong>：rank2 第 3 页 <code>page_get</code> 未成功 → completed_tokens = 3 / 3 / 2。';
+      const done=[3,3,2];
+      allRanks(p=>{ for(let i=0;i<3;i++){ if(i<done[p]) setNode(p,i,'committed'); else setNode(p,i,'warn'); } rstat(p,'done '+done[p], done[p]===3?'hit':'warn'); });
+      s5flag('⚠ 实际落盘不一致（3/3/2）→ 若各自插入，host tree 会发散','bad');
+      await t5step(2600,my);
+
+      cap5.innerHTML='◆ <b>第二个 MIN</b> @ <code>prefetch_completion_sync_groups</code>（组2，<b>独立 communicator</b>）：<code>all_reduce(MIN)</code> 统一 completed_tokens = <b>2</b>。';
+      document.getElementById('s5sync2').classList.add('fire');
+      await t5step(1500,my);
+
+      cap5.innerHTML='③ 各 rank 只把统一的 <b>2 个 page</b> 插入 L2 host tree（<code>_insert_helper_host</code>）→ 3 棵 host tree <strong style="color:var(--green)">再次完全一致</strong>。';
+      allRanks(p=>{ for(let i=0;i<NPG;i++) hideNode(p,i); for(let i=0;i<2;i++) setNode(p,i,'committed'); rstat(p,'L2: 2','hit'); });
+      s5flag('✓ 插入长度统一 = 2 → 3 棵 host tree 完全一致','ok');
+      await t5step(2400,my);
+
+      cap5.innerHTML='✅ 两套<strong>独立 gloo 组</strong>（组1 命中数、组2 完成数）+ 每 batch 恒 1 个 ack → 各 rank 对 host tree 的<strong>插入/删除完全一致</strong> → <b style="color:var(--green)">host radix tree 始终一致，后台 collective 不会死锁</b>。';
+      document.getElementById('s5sync1').classList.add('fire');
+      await t5step(3400,my);
+      document.getElementById('s5sync1').classList.remove('fire');
+      document.getElementById('s5sync2').classList.remove('fire');
+      await t5step(700,my);
+    }
+  }catch(e){ /* cancelled */ }
+}
+function stopTab5(){ ++t5Token; }
+
+document.getElementById('play5').onclick=function(){
+  t5Paused=!t5Paused;
+  this.textContent=t5Paused?'▶ 播放':'⏸ 暂停';
+};
+document.getElementById('replay5').onclick=()=>{ t5Paused=false; document.getElementById('play5').textContent='⏸ 暂停'; runTab5(); };
+
+/* ============================================================
+   TAB 6 : PrefetchAck count alignment & anti-hang.
+   Each storage batch in _page_transfer emits exactly one PrefetchAck,
+   and prefetch_sync_thread does one all_reduce(MIN) on set-2 per ack.
+   So #acks == #batches == #set-2 collectives, and it must be equal on
+   every rank. We compare: (good) each batch always emits 1 ack even on
+   error → counts aligned → safe; (bad) break-on-error drops an ack →
+   one rank does fewer reduces → the others block forever → hang.
+   ============================================================ */
+const T6NB=3;                 // number of storage batches / acks
+(function buildAck(){
+  let m='';
+  for(let p=0;p<3;p++){
+    let slots='';
+    for(let k=0;k<T6NB;k++) slots+=`<div class="ackchip pending" id="ack-${p}-${k}">ack${k}</div>`;
+    m+=`<div class="ackrow" id="ackrow${p}"><div class="acklabel"><b>PP rank ${p}</b> · _page_transfer</div><div class="ackslots">${slots}</div></div>`;
+  }
+  document.getElementById('ackmesh').innerHTML=m;
+  let b='';
+  for(let k=0;k<T6NB;k++) b+=`<div class="bar" id="bar${k}">barrier ${k}<span class="bcount" id="bcnt${k}">0/3</span></div>`;
+  document.getElementById('barcols').innerHTML=b;
+})();
+
+let t6Token=0;
+const cap6=document.getElementById('cap6');
+const banner6=document.getElementById('banner6');
+const ackEl=(p,k)=>document.getElementById(`ack-${p}-${k}`);
+const barEl=k=>document.getElementById('bar'+k);
+const bcnt=k=>document.getElementById('bcnt'+k);
+function t6reset(){
+  ++t6Token;
+  for(let p=0;p<3;p++){
+    document.getElementById('ackrow'+p).className='ackrow';
+    for(let k=0;k<T6NB;k++){ ackEl(p,k).className='ackchip pending'; ackEl(p,k).innerHTML=`ack${k}`; }
+  }
+  for(let k=0;k<T6NB;k++){ barEl(k).className='bar'; bcnt(k).textContent='0/3'; }
+  banner6.className='banner'; banner6.textContent='';
+}
+async function s6(ms,my){ await sleep(ms); if(my!==t6Token) throw 0; }
+
+// nacks: how many acks each rank produces (rank index -> count)
+async function playAck(nacks, label){
+  t6reset(); const my=t6Token;
+  try{
+    cap6.innerHTML=label;
+    await s6(700,my);
+    for(let k=0;k<T6NB;k++){
+      barEl(k).classList.add('waiting');
+      let arrived=0;
+      // ranks emit ack k one by one (async arrival)
+      for(let p=0;p<3;p++){
+        await s6(520,my);
+        if(k<nacks[p]){
+          ackEl(p,k).className='ackchip emit';
+          arrived++; bcnt(k).textContent=arrived+'/3';
+        }
+      }
+      await s6(400,my);
+      if(arrived===3){
+        barEl(k).className='bar fired'; bcnt(k).textContent='3/3 ✓';
+        for(let p=0;p<3;p++) ackEl(p,k).className='ackchip passed';
+        cap6.innerHTML=(window.TR||((z,e)=>z))(
+          `barrier ${k}：3 个 rank 的 ack 都到齐 → <code>all_reduce(MIN)</code> 返回 → 本轮通过。`,
+          `barrier ${k}: all 3 ranks' acks arrived → <code>all_reduce(MIN)</code> returns → this round passes.`);
+        await s6(700,my);
+      }else{
+        // a rank is missing this ack -> collective can never complete
+        barEl(k).className='bar dead'; bcnt(k).textContent=arrived+'/3 ✗';
+        for(let p=0;p<3;p++){
+          if(k<nacks[p]){ ackEl(p,k).className='ackchip wait'; document.getElementById('ackrow'+p).classList.add('blocked'); }
+          else { ackEl(p,k).className='ackchip missing'; ackEl(p,k).innerHTML=`ack${k}<span class="err">${(window.TR||((z,e)=>z))('缺失','missing')}</span>`; }
+        }
+        cap6.innerHTML=(window.TR||((z,e)=>z))(
+          `barrier ${k}：只有 <b>${arrived}/3</b> 个 rank 进了 <code>all_reduce</code>（有 rank 早早 break、少产一个 ack）→ 已到达的 rank <b style="color:var(--amber)">永远阻塞</b>在这次 collective 上。`,
+          `barrier ${k}: only <b>${arrived}/3</b> ranks entered <code>all_reduce</code> (a rank broke early and emitted one fewer ack) → the ranks that arrived are <b style="color:var(--amber)">blocked forever</b> on this collective.`);
+        banner6.className='banner bad'; banner6.textContent='💥 HANG：组2 reduce 次数不一致（3/3/2）→ collective 永不返回';
+        return;
+      }
+    }
+    banner6.className='banner ok'; banner6.textContent='✅ 安全：每 rank 都做了 '+T6NB+' 次 reduce，次数严格相等，全部对齐完成';
+    cap6.innerHTML='每个 batch 恒产 1 个 ack（出错也产）→ <b>ack 数逐 rank 相等</b> → 组2 的 collective 一一对应 → 不会 hang。';
+  }catch(e){ /* cancelled */ }
+}
+function stopTab6(){ ++t6Token; }
+document.getElementById('play6good').onclick=()=>playAck([3,3,3],
+  '<b style="color:var(--green)">正确</b>：即便某 batch 出错，<code>_page_transfer</code> 也<strong>继续循环、照常产 ack</strong> → 三个 rank 都产 3 个 ack。');
+document.getElementById('play6bad').onclick=()=>playAck([3,3,2],
+  '<b style="color:var(--red)">错误（反面教材）</b>：rank2 在 batch2 出错就 <code>break</code> → 只产 2 个 ack，比别人少一个。');
+document.getElementById('reset6').onclick=()=>{ t6reset(); cap6.innerHTML='选择场景：<b>每 batch 恒 1 ack</b> → 次数对齐、安全；<b>出错就 break</b> → ack 缺一个 → 组2 reduce 错位 → hang。'; };
+
+/* ---------- tab switching ---------- */
+const ctl1=document.querySelectorAll('.controls')[1]; // [0] is now ctl5 (story)
+const ctl2=document.getElementById('ctl2');
+const ctl3=document.getElementById('ctl3');
+const ctl4=document.getElementById('ctl4');
+const ctl5=document.getElementById('ctl5');
+const ctl6=document.getElementById('ctl6');
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    tab.classList.add('active');
+    const w=tab.dataset.tab;
+    document.getElementById('scene5').classList.toggle('hidden', w!=='story');
+    document.getElementById('scene1').classList.toggle('hidden', w!=='consistency');
+    document.getElementById('scene2').classList.toggle('hidden', w!=='deadlock');
+    document.getElementById('scene3').classList.toggle('hidden', w!=='skew');
+    document.getElementById('scene4').classList.toggle('hidden', w!=='threads');
+    document.getElementById('scene6').classList.toggle('hidden', w!=='ackalign');
+    ctl5.style.display = w==='story'?'flex':'none';
+    ctl1.style.display = w==='consistency'?'flex':'none';
+    ctl2.style.display = w==='deadlock'?'flex':'none';
+    ctl3.style.display = w==='skew'?'flex':'none';
+    ctl4.style.display = w==='threads'?'flex':'none';
+    ctl6.style.display = w==='ackalign'?'flex':'none';
+    if(w==='story'){ ++t1Token; stopTab3(); stopTab4(); stopTab6(); t5Paused=false; document.getElementById('play5').textContent='⏸ 暂停'; runTab5(); }
+    else if(w==='consistency'){ t1Paused=false; document.getElementById('play1').textContent='⏸ 暂停'; runTab1(); stopTab3(); stopTab4(); stopTab5(); stopTab6(); }
+    else if(w==='skew'){ ++t1Token; startTab3(true); stopTab4(); stopTab5(); stopTab6(); }
+    else if(w==='threads'){ ++t1Token; stopTab3(); stopTab5(); stopTab6(); t4Paused=false; document.getElementById('play4').textContent='⏸ 暂停'; runTab4(); }
+    else if(w==='ackalign'){ ++t1Token; stopTab3(); stopTab4(); stopTab5(); t6reset(); }
+    else{ ++t1Token; stopTab3(); stopTab4(); stopTab5(); stopTab6(); }
+  };
+});
+ctl1.style.display='none';
+ctl2.style.display='none';
+ctl3.style.display='none';
+ctl4.style.display='none';
+ctl6.style.display='none';
+resetMesh2();
+runTab5();
+</script>
+
+<script>
+/* ============================================================
+   i18n: translate by text-content (robust to innerHTML normalization).
+   PAIRS = [zhHTML, enHTML]; keys derived from stripped textContent.
+   A MutationObserver re-translates dynamic captions on the fly.
+   ============================================================ */
+(function(){
+  const PAIRS = [
+    // header
+    ['HiCache × Pipeline Parallel：树一致性 & 防死锁','HiCache × Pipeline Parallel: Tree Consistency & Deadlock Avoidance'],
+    ['拓扑 <b>PP=3 × TP=8 = 24 ranks</b> · 行=TP 组、列=PP 组 · MIN all-reduce 保证 radix tree 一致 · 2 套 gloo 组避免后台 collective 死锁',
+     'Topology <b>PP=3 × TP=8 = 24 ranks</b> · rows = TP groups, cols = PP groups · MIN all-reduce keeps radix trees identical · 2 gloo group-sets avoid background-collective deadlock'],
+    // tabs
+    ['① 两请求全流程（L3 命中/未命中 · host tree 一致）','① Two-Request Lifecycle (L3 miss/hit · host-tree consistency)'],
+    ['② 树一致性（自动播放）','② Tree Consistency (auto-play)'],
+    ['③ 为什么 2 个组不死锁','③ Why 2 Groups Avoid Deadlock'],
+    ['④ 异步时间差 × MIN 统一步调','④ Async Skew × MIN Lockstep'],
+    ['⑤ 线程关系 & 树一致性','⑤ Thread Relationships & Consistency'],
+    ['⑥ PrefetchAck 对齐 & 防 hang','⑥ PrefetchAck Alignment & Anti-Hang'],
+    // tab6 note / legend / barrier label / scenario captions / banners
+    ['每个 <b>storage batch</b> 在 <code>_page_transfer</code> 里恒产 <b>1 个 PrefetchAck</b>；<code>prefetch_sync_thread</code> 对<strong>每个 ack</strong> 在组2 做一次 <code>all_reduce(MIN)</code>。所以 <b>ack 数 = batch 数 = 组2 collective 次数</b>，必须逐 rank 相等。',
+     'Each <b>storage batch</b> in <code>_page_transfer</code> always emits <b>exactly 1 PrefetchAck</b>; <code>prefetch_sync_thread</code> does one <code>all_reduce(MIN)</code> on set 2 <strong>per ack</strong>. So <b>#acks = #batches = #set-2 collectives</b>, and it must be equal on every rank.'],
+    ['<span class="sw" style="background:var(--blue)"></span>ack 已产出（参与本轮 reduce）','<span class="sw" style="background:var(--blue)"></span>ack emitted (joins this reduce)'],
+    ['<span class="sw" style="background:var(--green)"></span>barrier 凑齐 3/3 → 通过','<span class="sw" style="background:var(--green)"></span>barrier reaches 3/3 → pass'],
+    ['<span class="sw" style="background:var(--amber)"></span>已到达，等待缺席方','<span class="sw" style="background:var(--amber)"></span>arrived, waiting for the absent rank'],
+    ['<span class="sw" style="background:var(--red)"></span>缺失 ack → 永远等不到','<span class="sw" style="background:var(--red)"></span>missing ack → never arrives'],
+    ['◆ <code>all_reduce(MIN)</code> @ 组2（prefetch_completion_sync_groups）· 每个 ack 一次 barrier',
+     '◆ <code>all_reduce(MIN)</code> @ set 2 (prefetch_completion_sync_groups) · one barrier per ack'],
+    ['选择场景：<b>每 batch 恒 1 ack</b> → 次数对齐、安全；<b>出错就 break</b> → ack 缺一个 → 组2 reduce 错位 → hang。',
+     'Pick a scenario: <b>one ack per batch</b> → counts aligned, safe; <b>break on error</b> → one ack missing → set-2 reduces misalign → hang.'],
+    ['<b style="color:var(--green)">正确</b>：即便某 batch 出错，<code>_page_transfer</code> 也<strong>继续循环、照常产 ack</strong> → 三个 rank 都产 3 个 ack。',
+     '<b style="color:var(--green)">Correct</b>: even if a batch errors, <code>_page_transfer</code> <strong>keeps looping and still emits the ack</strong> → all three ranks emit 3 acks.'],
+    ['<b style="color:var(--red)">错误（反面教材）</b>：rank2 在 batch2 出错就 <code>break</code> → 只产 2 个 ack，比别人少一个。',
+     '<b style="color:var(--red)">Wrong (anti-pattern)</b>: rank2 hits an error at batch2 and <code>break</code>s → emits only 2 acks, one fewer than the others.'],
+    ['▶ 正确（每 batch 恒 1 ack）','▶ Correct (one ack per batch)'],
+    ['▶ 错误（出错 break → ack 缺失）','▶ Wrong (break on error → missing ack)'],
+    ['每个 batch 恒产 1 个 ack（出错也产）→ <b>ack 数逐 rank 相等</b> → 组2 的 collective 一一对应 → 不会 hang。',
+     'Each batch always emits one ack (even on error) → <b>ack counts equal across ranks</b> → set-2 collectives match one-to-one → no hang.'],
+    ['✅ 安全：每 rank 都做了 3 次 reduce，次数严格相等，全部对齐完成','✅ Safe: every rank did 3 reduces, counts strictly equal, all aligned and complete'],
+    ['💥 HANG：组2 reduce 次数不一致（3/3/2）→ collective 永不返回','💥 HANG: set-2 reduce counts differ (3/3/2) → the collective never returns'],
+    // tab5 legend chips
+    ['<span class="sw" style="background:var(--blue)"></span>GPU 计算 / 插入中','<span class="sw" style="background:var(--blue)"></span>GPU compute / inserting'],
+    ['<span class="sw" style="background:var(--cyan)"></span>match 命中前缀','<span class="sw" style="background:var(--cyan)"></span>matched prefix'],
+    ['<span class="sw" style="background:var(--amber)"></span>各 rank 不一致（待 MIN 统一）','<span class="sw" style="background:var(--amber)"></span>diverged per rank (await MIN)'],
+    ['<span class="sw" style="background:var(--green)"></span>已提交 / 一致','<span class="sw" style="background:var(--green)"></span>committed / consistent'],
+    ['<span class="sw" style="background:var(--red)"></span>未命中 / 淘汰删除','<span class="sw" style="background:var(--red)"></span>miss / evicted'],
+    // tab5 static labels
+    ['<b>L3 持久化存储</b>（storage backend，3 个 rank 共享视图）',
+     '<b>L3 persistent storage</b> (storage backend, shared view across 3 ranks)'],
+    ['GPU 计算','GPU compute'],
+    ['◆ MIN 组1 · prefetch_hits_sync_groups · storage_hit_count','◆ MIN set 1 · prefetch_hits_sync_groups · storage_hit_count'],
+    ['◆ MIN 组2 · prefetch_completion_sync_groups · completed_tokens','◆ MIN set 2 · prefetch_completion_sync_groups · completed_tokens'],
+    // tab5 consistency flags
+    ['✓ 3 棵 host tree 同步插入 4 个 page（一致）','✓ all 3 host trees insert 4 pages in sync (consistent)'],
+    ['✓ 3 棵 host tree 同步删除（delete 一致）','✓ all 3 host trees delete in sync (consistent)'],
+    ['⚠ 查询长度不一致（4/3/4）→ 若各自建树，host tree 会发散','⚠ query lengths differ (4/3/4) → building trees independently diverges them'],
+    ['✓ 抓取范围统一 = 3 → match_prefix 逐 rank 一致','✓ fetch range unified = 3 → match_prefix identical per rank'],
+    ['⚠ 实际落盘不一致（3/3/2）→ 若各自插入，host tree 会发散','⚠ actual loads differ (3/3/2) → inserting independently diverges trees'],
+    ['✓ 插入长度统一 = 2 → 3 棵 host tree 完全一致','✓ insert length unified = 2 → all 3 host trees identical'],
+    // tab5 step captions
+    ['场景 <b>PP=3 × TP=4</b>：每个 PP rank 维护一棵 <b>L2 host radix tree</b>，共享底层 <b>L3 持久化存储</b>。跟踪两个请求，看 host tree 如何保持一致。',
+     'Scenario <b>PP=3 × TP=4</b>: each PP rank keeps an <b>L2 host radix tree</b> over a shared <b>L3 persistent storage</b>. We follow two requests and see how the trees stay consistent.'],
+    ['① <b>请求 A</b> 到达（需要 4 个 page 的前缀），3 个 PP rank 同时处理。',
+     '① <b>Request A</b> arrives (needs a 4-page prefix); all 3 PP ranks process it together.'],
+    ['① 查 L2 host tree → <b style="color:var(--red)">miss</b>；查 L3 → <b style="color:var(--red)">miss</b>（存储为空）。',
+     '① Query L2 host tree → <b style="color:var(--red)">miss</b>; query L3 → <b style="color:var(--red)">miss</b> (storage empty).'],
+    ['① 回退到 <b>GPU 前向计算</b>，生成这 4 个 page 的 KV。',
+     '① Fall back to <b>GPU forward compute</b> to produce the KV for these 4 pages.'],
+    ['① 计算结果写入 <b>L2 host radix tree</b> → 3 个 rank <code>insert</code> <strong style="color:var(--green)">相同</strong>的前缀 p0–p3。',
+     '① Results are written into the <b>L2 host radix tree</b> → all 3 ranks <code>insert</code> the <strong style="color:var(--green)">same</strong> prefix p0–p3.'],
+    ['① backup 线程把 L2 → <b>L3</b> 持久化（<code>write_backup</code> / <code>page_set</code>）。',
+     '① The backup thread persists L2 → <b>L3</b> (<code>write_backup</code> / <code>page_set</code>).'],
+    ['② host 内存压力 → L2 触发<strong style="color:var(--red)">淘汰</strong>（<code>evict_host</code>）。3 棵 host tree <b>完全一致</b> → 淘汰命中<strong>同一批节点</strong>；L3 仍保留。',
+     '② Host-memory pressure → L2 <strong style="color:var(--red)">eviction</strong> (<code>evict_host</code>). The 3 host trees are <b>identical</b> → eviction hits the <strong>same nodes</strong>; L3 keeps them.'],
+    ['③ <b>请求 B</b> 到达（复用 A 的前缀）。L2 host tree 已空 → <b style="color:var(--red)">L2 miss</b>，转向 L3。',
+     '③ <b>Request B</b> arrives (reuses A\u2019s prefix). The L2 host tree is empty → <b style="color:var(--red)">L2 miss</b>, fall through to L3.'],
+    ['③ <b>prefetch_thread</b> 各 rank 向 L3 查命中页数 → 结果可能<strong style="color:var(--amber)">不同</strong>（host 视图/内存差异）：4 / 3 / 4。',
+     '③ <b>prefetch_thread</b> on each rank queries L3 hit pages → results may <strong style="color:var(--amber)">differ</strong> (host view / memory): 4 / 3 / 4.'],
+    ['◆ <b>第一个 MIN</b> @ <code>prefetch_hits_sync_groups</code>（组1，gloo/CPU，含 TP环+PP环）：<code>all_reduce(MIN)</code> 统一查询长度 = <b>3</b>。',
+     '◆ <b>First MIN</b> @ <code>prefetch_hits_sync_groups</code> (set 1, gloo/CPU, TP+PP rings): <code>all_reduce(MIN)</code> unifies the query length = <b>3</b>.'],
+    ['③ <b>prefetch_io_aux_thread</b> 逐 batch 把 page 从 L3 拉回 L2（<code>_page_transfer</code>），每 batch 产 1 个 PrefetchAck。',
+     '③ <b>prefetch_io_aux_thread</b> pulls pages L3→L2 batch by batch (<code>_page_transfer</code>), one PrefetchAck per batch.'],
+    ['③ 逐页加载<strong style="color:var(--amber)">部分失败</strong>：rank2 第 3 页 <code>page_get</code> 未成功 → completed_tokens = 3 / 3 / 2。',
+     '③ Per-page load <strong style="color:var(--amber)">partially fails</strong>: rank2\u2019s 3rd page <code>page_get</code> fails → completed_tokens = 3 / 3 / 2.'],
+    ['◆ <b>第二个 MIN</b> @ <code>prefetch_completion_sync_groups</code>（组2，<b>独立 communicator</b>）：<code>all_reduce(MIN)</code> 统一 completed_tokens = <b>2</b>。',
+     '◆ <b>Second MIN</b> @ <code>prefetch_completion_sync_groups</code> (set 2, <b>independent communicator</b>): <code>all_reduce(MIN)</code> unifies completed_tokens = <b>2</b>.'],
+    ['③ 各 rank 只把统一的 <b>2 个 page</b> 插入 L2 host tree（<code>_insert_helper_host</code>）→ 3 棵 host tree <strong style="color:var(--green)">再次完全一致</strong>。',
+     '③ Each rank inserts only the unified <b>2 pages</b> into its L2 host tree (<code>_insert_helper_host</code>) → all 3 host trees are <strong style="color:var(--green)">identical again</strong>.'],
+    ['✅ 两套<strong>独立 gloo 组</strong>（组1 命中数、组2 完成数）+ 每 batch 恒 1 个 ack → 各 rank 对 host tree 的<strong>插入/删除完全一致</strong> → <b style="color:var(--green)">host radix tree 始终一致，后台 collective 不会死锁</b>。',
+     '✅ Two <strong>independent gloo group-sets</strong> (set 1 hit count, set 2 completed tokens) + exactly one ack per batch → every rank\u2019s <strong>inserts/deletes are identical</strong> → <b style="color:var(--green)">host radix trees stay consistent and background collectives never deadlock</b>.'],
+    // buttons
+    ['⏸ 暂停','⏸ Pause'],['▶ 播放','▶ Play'],['⟲ 重播','⟲ Replay'],['重置','Reset'],
+    ['▶ 1 套组（死锁）','▶ 1 group set (deadlock)'],['▶ 2 套组（安全）','▶ 2 group sets (safe)'],
+    // tab1 legend + tree title + init caption
+    ['<span class="sw" style="background:var(--amber)"></span>命中数被截断（不一致）','<span class="sw" style="background:var(--amber)"></span>hit count truncated (inconsistent)'],
+    ['<span class="sw" style="background:var(--blue)"></span>TP 组内 MIN 后','<span class="sw" style="background:var(--blue)"></span>after MIN within TP group'],
+    ['<span class="sw" style="background:var(--green)"></span>PP 组内 MIN 后（全局一致）','<span class="sw" style="background:var(--green)"></span>after MIN within PP group (global)'],
+    ['所有 24 个 rank 共享同一棵 radix tree','all 24 ranks share one radix tree'],
+    ['自动播放中…','auto-playing…'],
+    // tab1 captions
+    ['拓扑 <b>PP=3 × TP=8 = 24 个 rank</b>：每个 PP stage 下挂 8 个 TP rank。',
+     'Topology <b>PP=3 × TP=8 = 24 ranks</b>: each PP stage holds 8 TP ranks.'],
+    ['① 各 rank <span class="k">独立</span>向 L3 查询前缀命中。<b style="color:var(--amber)">注意 r10、r15 因 host 内存压力被截断</b>（6 / 7 页）。',
+     '① Each rank <span class="k">independently</span> queries L3 for prefix hits. <b style="color:var(--amber)">Note r10 & r15 are truncated by host-memory pressure</b> (6 / 7 pages).'],
+    ['② 若各 rank 按自己的命中数建 radix tree → 树高不一致 → 后续 PP 集合通信 <b style="color:var(--red)">shape mismatch → crash</b>。',
+     '② If each rank builds its radix tree from its own hit count → tree heights differ → next PP collective <b style="color:var(--red)">shape mismatch → crash</b>.'],
+    ['③ 第一步：在 <span class="k">TP 组（每一行 8 个 rank）</span>内 <code>all_reduce(MIN)</code>。',
+     '③ Step 1: <code>all_reduce(MIN)</code> within each <span class="k">TP group (a row of 8 ranks)</span>.'],
+    ['③ TP 组归约后：<b>每一行变得一致</b>（PP0=8, PP1=6, PP2=8 = 各行最小值）。',
+     '③ After TP reduce: <b>each row is uniform</b> (PP0=8, PP1=6, PP2=8 = per-row min).'],
+    ['④ 第二步：在 <span class="k">PP 组（每一列 3 个 rank）</span>内 <code>all_reduce(MIN)</code> → 收敛到全局最小值。',
+     '④ Step 2: <code>all_reduce(MIN)</code> within each <span class="k">PP group (a column of 3 ranks)</span> → converge to the global minimum.'],
+    ['④ PP 组归约后：<b style="color:var(--green)">全部 24 个 rank 命中数 = 6</b>（最长公共前缀）。',
+     '④ After PP reduce: <b style="color:var(--green)">all 24 ranks hit = 6</b> (longest common prefix).'],
+    ['⑤ 所有 rank 都只 prefetch / 建树到 6 → <span style="color:var(--green)">24 个 rank 的 radix tree 完全一致 ✓</span>',
+     '⑤ Every rank prefetches / builds the tree only up to 6 → <span style="color:var(--green)">all 24 radix trees are identical ✓</span>'],
+    // tab2 legend + note + groups + init + captions + banners
+    ['<span class="sw" style="background:var(--purple)"></span><b>prefetch_thread</b>（独立后台线程）· reduce(storage_hit_count)','<span class="sw" style="background:var(--purple)"></span><b>prefetch_thread</b> (independent background thread) · reduce(storage_hit_count)'],
+    ['<span class="sw" style="background:var(--cyan)"></span><b>prefetch_sync_thread</b>（独立后台线程）· reduce(completed_tokens)','<span class="sw" style="background:var(--cyan)"></span><b>prefetch_sync_thread</b> (independent background thread) · reduce(completed_tokens)'],
+    ['每个 cell = 1 个 rank，内含 2 个独立后台线程（小圆点 ●A ●B）。每一行是一个 <b>TP communicator</b>，每一列是一个 <b>PP communicator</b>。',
+     'Each cell = 1 rank, holding 2 independent background threads (dots ●A ●B). Each row is a <b>TP communicator</b>, each column a <b>PP communicator</b>.'],
+    ['<b>prefetch_hits_sync_groups</b><br>命中页数归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(storage_hit_count)</span>',
+     '<b>prefetch_hits_sync_groups</b><br>hit-count reduce set (TP rings + PP rings)<br><span style="font-size:11px">reduce(storage_hit_count)</span>'],
+    ['<b>prefetch_completion_sync_groups</b><br>完成 token 归约组（含 TP 环 + PP 环）<br><span style="font-size:11px">reduce(completed_tokens)</span>',
+     '<b>prefetch_completion_sync_groups</b><br>completed-token reduce set (TP rings + PP rings)<br><span style="font-size:11px">reduce(completed_tokens)</span>'],
+    ['选择场景：用 <b>1 套组</b> 会死锁，用 <b>2 套组</b> 则安全。','Pick a scenario: <b>1 group set</b> deadlocks, <b>2 group sets</b> are safe.'],
+    ['只有 <b>1 套组</b>：prefetch_thread(A) 与 prefetch_sync_thread(B) 共用同一个 communicator 集。',
+     'Only <b>1 group set</b>: prefetch_thread(A) and prefetch_sync_thread(B) share the same communicator set.'],
+    ['两个后台线程<b>独立调度、顺序不定</b>：同一个 TP 环里，有的 rank 先发 A，有的先发 B。',
+     'The two background threads are <b>scheduled independently, order unpredictable</b>: within one TP ring some ranks post A first, others post B first.'],
+    ['同一个 communicator 上各 rank 提交的 collective <b style="color:var(--red)">不是同一个</b>（A 与 B 错位）→ rendezvous 永远配不上。',
+     'On the same communicator the collectives submitted by different ranks are <b style="color:var(--red)">not the same</b> (A vs B misaligned) → rendezvous never matches.'],
+    ['只要任一 communicator 上 A/B 交错，该环就死锁 → 全局 PP/TP 通信连环卡住。',
+     'If A/B interleave on any communicator, that ring deadlocks → all PP/TP communication hangs in a chain.'],
+    ['💥 DEADLOCK — 整个 24-rank job 卡死','💥 DEADLOCK — the whole 24-rank job hangs'],
+    ['用 <b>2 套独立组</b>：<b style="color:var(--purple)">A 永远走 prefetch_hits_sync_groups</b>，<b style="color:var(--cyan)">B 永远走 prefetch_completion_sync_groups</b>。',
+     'With <b>2 independent group sets</b>: <b style="color:var(--purple)">A always uses prefetch_hits_sync_groups</b>, <b style="color:var(--cyan)">B always uses prefetch_completion_sync_groups</b>.'],
+    ['第一波：所有 rank 的 <b>prefetch_thread</b> 只在 <code>prefetch_hits_sync_groups</code> 上提交 A → 序列一致。',
+     'Wave 1: every rank\u2019s <b>prefetch_thread</b> posts A only on <code>prefetch_hits_sync_groups</code> → consistent order.'],
+    ['✓ TP 环 + PP 环上 A 全部到齐 → 第一波归约完成。','✓ A arrives on every TP ring + PP ring → wave 1 reduce done.'],
+    ['第二波：所有 rank 的 <b>prefetch_sync_thread</b> 只在 <code>prefetch_completion_sync_groups</code> 上提交 B → 序列一致。',
+     'Wave 2: every rank\u2019s <b>prefetch_sync_thread</b> posts B only on <code>prefetch_completion_sync_groups</code> → consistent order.'],
+    ['每个 communicator 上的 collective 序列在所有 rank <b style="color:var(--green)">完全一致</b>（A→组1、B→组2 不交叉）→ 不会死锁。',
+     'The collective sequence on each communicator is <b style="color:var(--green)">identical across ranks</b> (A→set1, B→set2, never crossing) → no deadlock.'],
+    ['✅ 安全 — 24 个 rank 全部对齐完成','✅ Safe — all 24 ranks aligned and complete'],
+    // tab3 titles / conduits / flow-note / lane hint / captions / formers
+    ['③ 主 PP 流水线执行<strong>时序</strong> <span class="tag gpu">NCCL · GPU</span> <span style="color:var(--muted);font-size:11px;">时序连续、错峰流动，<strong style="color:var(--green)">不被后台 prefetch 同步打断</strong></span>',
+     '③ Main PP pipeline execution <strong>timing</strong> <span class="tag gpu">NCCL · GPU</span> <span style="color:var(--muted);font-size:11px;">continuous, staggered flow, <strong style="color:var(--green)">never interrupted by background prefetch sync</strong></span>'],
+    ['↑ 流水线跑的正是②组好的 <strong>mb0→mb3</strong>，沿 stage0→1→2 错峰对角推进',
+     '↑ The pipeline runs exactly the <strong>mb0→mb3</strong> composed in ②, advancing diagonally stage0→1→2'],
+    ['▲ 组好的 <b>batch &amp; micro-batch 顺序</b> 喂给流水线（内容）','▲ The composed <b>batch &amp; micro-batch order</b> feeds the pipeline (content)'],
+    ['② 三个 PP rank 用<strong>同一个 storage hit</strong> 组 batch（内容必须逐 rank 一致）',
+     '② The three PP ranks compose the batch from <strong>the same storage hit</strong> (content must match per rank)'],
+    ['▲ <code>all_reduce(MIN)</code> 输出统一值 <b>6</b> → 决定 batch size','▲ <code>all_reduce(MIN)</code> outputs the unified value <b>6</b> → determines batch size'],
+    ['① 异步 prefetch 查询 → <code>all_reduce(MIN)</code> <span class="tag cpu">gloo · CPU 后台线程</span>',
+     '① Async prefetch query → <code>all_reduce(MIN)</code> <span class="tag cpu">gloo · CPU background thread</span>'],
+    ['（等待②组好的 batch…）','(waiting for batch from ②…)'],
+    ['① 三个 PP rank 的 prefetch 查询<strong>异步发起</strong>（到达时刻不同）。','① The three PP ranks issue prefetch queries <strong>asynchronously</strong> (different arrival times).'],
+    ['① 先到的 rank 在 <span class="k">gloo CPU 后台线程</span>上<b style="color:var(--amber)">等待对齐</b>（不占 GPU）。',
+     '① Earlier ranks <b style="color:var(--amber)">wait to align</b> on the <span class="k">gloo CPU background thread</span> (no GPU use).'],
+    ['① <b style="color:var(--amber)">pp2 最慢</b>到达 → <code>all_reduce(MIN)</code> 把 8/6/7 <strong style="color:var(--green)">统一成 6</strong>。',
+     '① <b style="color:var(--amber)">pp2 is slowest</b> to arrive → <code>all_reduce(MIN)</code> unifies 8/6/7 <strong style="color:var(--green)">into 6</strong>.'],
+    ['② 统一后的 <b>storage hit = 6</b> 下发给各 rank 调度器 → 决定<strong>已缓存前缀长度 / batch size / micro-batch 顺序</strong>（mb0→mb3）。',
+     '② The unified <b>storage hit = 6</b> goes to each rank\u2019s scheduler → determines <strong>cached prefix length / batch size / micro-batch order</strong> (mb0→mb3).'],
+    ['③ 三个 rank 因拿到<strong style="color:var(--green)">同一个 6</strong> 而组出<strong style="color:var(--green)">完全一致的 batch 与 mb 顺序</strong>，喂给 PP 流水线；执行时序连续不被打断。<br><span style="color:var(--red)">⚠ 若 storage hit 不统一 → batch/mb 顺序逐 rank 发散 → PP 调度错位、卡死。</span>',
+     '③ Because all three ranks get <strong style="color:var(--green)">the same 6</strong>, they compose <strong style="color:var(--green)">identical batches and mb order</strong> fed to the PP pipeline; timing stays continuous.<br><span style="color:var(--red)">⚠ If storage hit weren\u2019t unified → batch/mb order diverges per rank → PP scheduling mismatch & hang.</span>'],
+    // formers
+    ['调度器 · PP rank 0','Scheduler · PP rank 0'],['调度器 · PP rank 1','Scheduler · PP rank 1'],['调度器 · PP rank 2','Scheduler · PP rank 2'],
+    ['已缓存前缀 storage hit = ','cached prefix storage hit = '],
+    [' 页 → 决定 batch 组成',' pages → determines batch'],
+    ['✓ batch & mb 顺序一致','✓ identical batch & mb order'],
+    // mesh labels
+    ['<b>PP stage 0</b><br>(TP 组)','<b>PP stage 0</b><br>(TP group)'],
+    ['<b>PP stage 1</b><br>(TP 组)','<b>PP stage 1</b><br>(TP group)'],
+    ['<b>PP stage 2</b><br>(TP 组)','<b>PP stage 2</b><br>(TP group)'],
+    ['PP 组(列)<br>每列跨 3 个 stage →','PP groups (cols)<br>each spans 3 stages →'],
+    // tab4 flow boxes
+    ['调度器 Scheduler <span class="pin">主线程</span>','Scheduler <span class="pin">main thread</span>'],
+    ['发起 prefetch 请求（writeback / load）','Issues prefetch requests (writeback / load)'],
+    ['▼ <b>prefetch_queue</b>（PrefetchOperation）','▼ <b>prefetch_queue</b> (PrefetchOperation)'],
+    ['① prefetch_thread <span class="pin">storage-hit 线程</span>','① prefetch_thread <span class="pin">storage-hit thread</span>'],
+    ['<code>_storage_hit_query()</code> 查询 L3 命中页数；命中足够→放 prefetch_buffer，不足→prefetch_revoke_queue',
+     '<code>_storage_hit_query()</code> queries L3 hit pages; enough hits → prefetch_buffer, too few → prefetch_revoke_queue'],
+    ['◆ all_reduce(MIN) storage_hit_count <small>@ prefetch_hits_sync_groups（组1，gloo/CPU，含 TP 环 + PP 环）</small>',
+     '◆ all_reduce(MIN) storage_hit_count <small>@ prefetch_hits_sync_groups (set 1, gloo/CPU, TP rings + PP rings)</small>'],
+    ['▼ <b>prefetch_buffer</b>','▼ <b>prefetch_buffer</b>'],
+    ['② prefetch_io_aux_thread <span class="pin">IO 加载线程</span>','② prefetch_io_aux_thread <span class="pin">IO load thread</span>'],
+    ['<code>_page_transfer()</code> 逐 batch 把页从 L3 读入 host；累加 <b>completed_tokens</b>；<b>每个 storage batch 产生 1 个 PrefetchAck</b>（出错也照常产生）',
+     '<code>_page_transfer()</code> loads pages L3→host batch by batch; accumulates <b>completed_tokens</b>; <b>each storage batch emits exactly 1 PrefetchAck</b> (even on error)'],
+    ['▼ <b>prefetch_sync_queue</b>（PrefetchAck）','▼ <b>prefetch_sync_queue</b> (PrefetchAck)'],
+    ['③ prefetch_sync_thread <span class="pin">completion-token 线程</span>','③ prefetch_sync_thread <span class="pin">completion-token thread</span>'],
+    ['对每个 ack 的 <b>completed_tokens</b> 做归约','Reduces <b>completed_tokens</b> of every ack'],
+    ['◆ all_reduce(MIN) completed_tokens <small>@ prefetch_completion_sync_groups（组2，gloo/CPU，含 TP 环 + PP 环）</small>',
+     '◆ all_reduce(MIN) completed_tokens <small>@ prefetch_completion_sync_groups (set 2, gloo/CPU, TP rings + PP rings)</small>'],
+    ['▼ <b>ack_prefetch_queue</b>','▼ <b>ack_prefetch_queue</b>'],
+    ['调度器写入 host radix tree','Scheduler inserts into host radix tree'],
+    ['只插入 <b>completed_tokens</b> 长度的前缀 → <code>_insert_helper_host()</code>','Inserts only the <b>completed_tokens</b>-long prefix → <code>_insert_helper_host()</code>'],
+    ['为什么 MIN(storage_hit) 一致？','Why does MIN(storage_hit) ensure consistency?'],
+    ['各 rank 命中可能不同（host 内存截断、L3 视图差异）。MIN 取<b>最长公共可命中前缀</b> → 所有 rank <b>抓取范围一致</b>，不会各抓不同长度。',
+     'Hits may differ per rank (host-mem truncation, L3 view differences). MIN takes the <b>longest common hittable prefix</b> → every rank <b>fetches the same range</b>, never different lengths.'],
+    ['为什么 MIN(completed_tokens) 一致？','Why does MIN(completed_tokens) ensure consistency?'],
+    ['即便抓取范围一致，实际逐页加载仍可能<b>部分失败</b>（<code>page_get</code> 返回 n≠batch）。MIN 只提交<b>所有 rank 都成功落盘的最长公共前缀</b> → 写入 host tree 的长度逐 rank 相同。',
+     'Even with the same fetch range, per-page loads can <b>partially fail</b> (<code>page_get</code> returns n≠batch). MIN commits only the <b>longest common prefix every rank loaded successfully</b> → identical insert length per rank.'],
+    ['为什么不会 hang？','Why no hang?'],
+    ['每个 storage batch <b>都产生且仅产生一个 PrefetchAck</b>（即使出错也照常产生）→ 每个 rank 参与的 reduce <b>次数严格相等</b>，collective 一一对齐。两个 MIN 一起保证：<b>插入 host tree 的前缀逐 rank 完全相同 → 树一致</b>。',
+     'Each storage batch <b>emits exactly one PrefetchAck</b> (even on error) → every rank joins the <b>same number of reduces</b>, collectives align one-to-one. The two MINs together guarantee: <b>the prefix inserted into the host tree is identical per rank → trees are consistent</b>.'],
+    ['两个 MIN 同步点（组1 命中数、组2 完成数）+ 每 batch 恒定 1 个 ack，共同保证 PP 各 rank 的 host radix tree 严格一致。',
+     'Two MIN sync points (set 1 = hit count, set 2 = completed tokens) + exactly one ack per batch together keep every PP rank\u2019s host radix tree strictly identical.'],
+    // tab4 animated step captions
+    ['沿数据流向下逐步点亮：两个 MIN 同步点 + 每 batch 恒定 1 个 ack。',
+     'Light up step by step along the data flow: two MIN sync points + exactly one ack per batch.'],
+    ['调度器主线程把 prefetch 请求（writeback / load）放入队列，触发后台流水线。',
+     'The scheduler main thread enqueues a prefetch request (writeback / load), kicking off the background pipeline.'],
+    ['<b>PrefetchOperation</b> 入队 <code>prefetch_queue</code>，交给后台线程处理。',
+     'A <b>PrefetchOperation</b> enters <code>prefetch_queue</code>, handed to the background threads.'],
+    ['① <b>prefetch_thread</b> 调 <code>_storage_hit_query()</code> 查询 L3 命中页数（各 rank 可能不同）。',
+     '① <b>prefetch_thread</b> calls <code>_storage_hit_query()</code> to query L3 hit pages (may differ per rank).'],
+    ['◆ <b style="color:var(--amber)">第一个 MIN</b>：在 <code>prefetch_hits_sync_groups</code>（组1）对 storage_hit_count 取最小 → <b>抓取范围逐 rank 一致</b>。',
+     '◆ <b style="color:var(--amber)">First MIN</b>: take the min of storage_hit_count on <code>prefetch_hits_sync_groups</code> (set 1) → <b>the fetch range is identical per rank</b>.'],
+    ['命中足够的请求落入 <code>prefetch_buffer</code>，进入实际 IO 加载。',
+     'Requests with enough hits drop into <code>prefetch_buffer</code> for the actual IO load.'],
+    ['② <b>prefetch_io_aux_thread</b> 用 <code>_page_transfer()</code> 逐 batch 把页 L3→host；<b>每个 batch 恒产生 1 个 PrefetchAck</b>（出错也产生）。',
+     '② <b>prefetch_io_aux_thread</b> uses <code>_page_transfer()</code> to move pages L3→host batch by batch; <b>each batch always emits exactly one PrefetchAck</b> (even on error).'],
+    ['每个 batch 的 <b>PrefetchAck</b> 入队 <code>prefetch_sync_queue</code>。',
+     'Each batch\u2019s <b>PrefetchAck</b> enters <code>prefetch_sync_queue</code>.'],
+    ['③ <b>prefetch_sync_thread</b> 对每个 ack 的 <b>completed_tokens</b> 做归约。',
+     '③ <b>prefetch_sync_thread</b> reduces the <b>completed_tokens</b> of every ack.'],
+    ['◆ <b style="color:var(--green)">第二个 MIN</b>：在 <code>prefetch_completion_sync_groups</code>（组2）对 completed_tokens 取最小 → <b>真正落盘前缀逐 rank 一致</b>。',
+     '◆ <b style="color:var(--green)">Second MIN</b>: take the min of completed_tokens on <code>prefetch_completion_sync_groups</code> (set 2) → <b>the actually-loaded prefix is identical per rank</b>.'],
+    ['统一后的结果入队 <code>ack_prefetch_queue</code> 回到调度器。',
+     'The unified result enters <code>ack_prefetch_queue</code> back to the scheduler.'],
+    ['调度器只插入 <b>completed_tokens</b> 长度的前缀 → <code>_insert_helper_host()</code>。每 batch 恒 1 个 ack，<b>reduce 次数严格相等 → 不会 hang</b>。',
+     'The scheduler inserts only the <b>completed_tokens</b>-long prefix → <code>_insert_helper_host()</code>. One ack per batch means <b>equal reduce counts → no hang</b>.'],
+    ['✅ 闭环：两个 MIN（组1 命中数 + 组2 完成数）+ 每 batch 1 个 ack → <b style="color:var(--green)">PP 各 rank 的 host radix tree 严格一致</b>。',
+     '✅ Closed loop: two MINs (set 1 hit count + set 2 completed tokens) + one ack per batch → <b style="color:var(--green)">every PP rank\u2019s host radix tree is strictly identical</b>.'],
+  ];
+
+  const SEL = ['header h1','header p','.tab','.tree-title','.caption','.banner','.legend .chip',
+    '#scene2 .note','.grp','.t3-title','.clabel','.flow-note','.lane-hint','.ctl',
+    '.pp-label','.pp-foot .lab','.former h5','.former .hitbox .ht1','.former .hitbox .ht2','.former .chk',
+    '.tbox .tname','.tbox .tdesc','.tarrow','.minnode','.whycard h4','.whycard p',
+    '.gpu-badge span','.l3lab','.syncbadge','.consist-flag','#scene6 .note','.barlabel'].join(',');
+
+  const tmp=document.createElement('div');
+  const strip=h=>{ tmp.innerHTML=h; return tmp.textContent.replace(/\s+/g,' ').trim(); };
+  const EN={}, ZH={};
+  PAIRS.forEach(([zh,en])=>{ EN[strip(zh)]=en; ZH[strip(en)]=zh; });
+
+  let LANG='zh';
+  // runtime helper for dynamic strings that contain interpolated values
+  // (cannot be matched by the static dictionary). Reads the live LANG.
+  window.TR=(zh,en)=> LANG==='en' ? en : zh;
+  let mo=null;
+  let suppress=false;   // re-entrancy guard: ignore mutations we cause ourselves
+  function translateEl(el){
+    const k=strip(el.innerHTML);
+    const next = LANG==='en' ? EN[k] : ZH[k];
+    // only write when there is a real change, otherwise we churn the DOM
+    if(next!==undefined && next!==el.innerHTML) el.innerHTML=next;
+  }
+  function translateAll(){
+    suppress=true;
+    document.querySelectorAll(SEL).forEach(translateEl);
+    if(mo) mo.takeRecords();   // drop the records our own writes just generated
+    suppress=false;
+  }
+
+  window.toggleLang=function(){
+    LANG = LANG==='zh' ? 'en' : 'zh';
+    document.getElementById('langBtn').textContent = LANG==='zh' ? 'EN' : '中文';
+    document.documentElement.lang = LANG==='zh' ? 'zh-CN' : 'en';
+    translateAll();
+  };
+
+  // keep dynamic captions translated as JS rewrites them
+  mo=new MutationObserver(muts=>{
+    if(suppress) return;       // skip the mutations our own translations produced
+    suppress=true;
+    muts.forEach(m=>{
+      const tgt = m.target.nodeType===1 ? m.target : m.target.parentElement;
+      if(!tgt) return;
+      const c = tgt.closest && tgt.closest(SEL);
+      if(c) translateEl(c);
+    });
+    mo.takeRecords();
+    suppress=false;
+  });
+  mo.observe(document.body,{subtree:true,childList:true,characterData:true});
+})();
+</script>
+</body>
+</html>
+<style>#langBtn,header,.tabs{display:none!important;}body{background:#0e1117;}.wrap{padding-top:10px;}</style>
+<script>
+(function(){
+  // English-only, single-tab embed: reuse all original JS
+  try{ if(window.toggleLang) toggleLang(); }catch(e){}   // zh -> en
+  var TAB="skew";
+  var btn=document.querySelector('.tab[data-tab="'+TAB+'"]');
+  if(btn){ btn.click(); }
+})();
+</script>

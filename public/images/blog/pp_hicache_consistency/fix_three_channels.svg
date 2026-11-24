@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 380" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="860" height="380" fill="#ffffff"/>
+
+  <!-- header -->
+  <text x="430" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#111827">Three communication channels — one per divergence source</text>
+  <text x="430" y="48" text-anchor="middle" font-size="12" fill="#6b7280">background reductions run on gloo / CPU, isolated from the scheduler's NCCL / GPU stream</text>
+
+  <!-- column headers -->
+  <text x="150" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af">CHANNEL (owner thread · backend)</text>
+  <text x="455" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af">OPERATION</text>
+  <text x="745" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af">UNIFIES / GOVERNS</text>
+
+  <!-- ===== Row 1: PG1 ===== -->
+  <g>
+    <rect x="20" y="92" width="260" height="78" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+    <text x="34" y="116" font-size="13" font-weight="700" fill="#5b21b6">PG1 · prefetch_hits_sync_groups</text>
+    <text x="34" y="135" font-size="11.5" fill="#4b5563">owner: prefetch_thread</text>
+    <text x="34" y="152" font-size="11" fill="#7c3aed">gloo · CPU · TP ring + PP ring</text>
+
+    <line x1="284" y1="131" x2="324" y2="131" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="328" y="100" width="256" height="62" rx="9" fill="#fafafa" stroke="#d1d5db"/>
+    <text x="456" y="126" text-anchor="middle" font-size="12.5" font-weight="600" fill="#111827">all_reduce(MIN)</text>
+    <text x="456" y="146" text-anchor="middle" font-size="12" fill="#374151">storage_hit_count</text>
+
+    <line x1="588" y1="131" x2="628" y2="131" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="632" y="100" width="208" height="62" rx="9" fill="#f5f3ff" stroke="#7c3aed"/>
+    <text x="736" y="124" text-anchor="middle" font-size="12" font-weight="600" fill="#5b21b6">prefetch range</text>
+    <text x="736" y="143" text-anchor="middle" font-size="10.5" fill="#6b7280">hash_value length · batch/ack count</text>
+  </g>
+
+  <!-- ===== Row 2: PG2 ===== -->
+  <g>
+    <rect x="20" y="186" width="260" height="78" rx="10" fill="#ecfeff" stroke="#0891b2" stroke-width="1.5"/>
+    <text x="34" y="210" font-size="13" font-weight="700" fill="#0e7490">PG2 · prefetch_completion_sync_groups</text>
+    <text x="34" y="229" font-size="11.5" fill="#4b5563">owner: prefetch_sync_thread</text>
+    <text x="34" y="246" font-size="11" fill="#0891b2">gloo · CPU · TP ring + PP ring</text>
+
+    <line x1="284" y1="225" x2="324" y2="225" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="328" y="194" width="256" height="62" rx="9" fill="#fafafa" stroke="#d1d5db"/>
+    <text x="456" y="220" text-anchor="middle" font-size="12.5" font-weight="600" fill="#111827">all_reduce(MIN)</text>
+    <text x="456" y="240" text-anchor="middle" font-size="12" fill="#374151">completed_tokens</text>
+
+    <line x1="588" y1="225" x2="628" y2="225" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="632" y="194" width="208" height="62" rx="9" fill="#ecfeff" stroke="#0891b2"/>
+    <text x="736" y="218" text-anchor="middle" font-size="12" font-weight="600" fill="#0e7490">landed length</text>
+    <text x="736" y="237" text-anchor="middle" font-size="10.5" fill="#6b7280">prefix actually inserted into tree</text>
+  </g>
+
+  <!-- ===== Row 3: pp_sync ===== -->
+  <g>
+    <rect x="20" y="280" width="260" height="78" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+    <text x="34" y="304" font-size="13" font-weight="700" fill="#b45309">Channel 3 · pp_sync</text>
+    <text x="34" y="323" font-size="11.5" fill="#4b5563">owner: main thread (PP ring)</text>
+    <text x="34" y="340" font-size="11" fill="#d97706">PP0 decision → downstream broadcast</text>
+
+    <line x1="284" y1="319" x2="324" y2="319" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="328" y="288" width="256" height="62" rx="9" fill="#fafafa" stroke="#d1d5db"/>
+    <text x="456" y="314" text-anchor="middle" font-size="12.5" font-weight="600" fill="#111827">leader decide + relay</text>
+    <text x="456" y="334" text-anchor="middle" font-size="12" fill="#374151">drain count · stop timing</text>
+
+    <line x1="588" y1="319" x2="628" y2="319" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="632" y="288" width="208" height="62" rx="9" fill="#fffbeb" stroke="#d97706"/>
+    <text x="736" y="312" text-anchor="middle" font-size="12" font-weight="600" fill="#b45309">consume count / order</text>
+    <text x="736" y="331" text-anchor="middle" font-size="10.5" fill="#6b7280">how many to process, when to stop</text>
+  </g>
+</svg>
