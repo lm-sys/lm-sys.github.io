@@ -3,7 +3,7 @@ title: "SGLang on Intel Xeon CPUs and Intel GPUs: Execution Paths and Low-Precis
 author: "RadixArk & Intel"
 date: "November 27, 2026"
 previewImg: /images/blog/2026-11-25-sglang-intel/architecture.png
-type: blog
+type: news
 excerpt: "Architecture-specific execution paths for Intel Xeon CPUs and Intel GPUs in SGLang, including AMX, attention and MoE kernels, graph execution, and packed MXFP4 expert weights."
 ---
 
