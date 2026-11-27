@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700" role="img" aria-labelledby="title desc">
+<title id="title">Routed experts that miss the GPU, against K</title>
+<desc id="desc">Two line charts, share of routed experts that miss the GPU against K, with pre-copy on main: Qwen3-30B-A3B GPTQ-Int4: K 16 40.9 % before pre-copy, 16.0 % on demand, K 32 20.0 % before pre-copy, 6.8 % on demand, K 48 8.7 % before pre-copy, 3.2 % on demand, K 64 4.0 % before pre-copy, 1.7 % on demand, K 80 1.5 % before pre-copy, 0.7 % on demand, K 92 0.7 % before pre-copy, 0.4 % on demand; Qwen3-Next-80B-A3B NVFP4: K 20 41.0 % before pre-copy, 20.4 % on demand, K 40 29.0 % before pre-copy, 13.2 % on demand, K 60 21.4 % before pre-copy, 9.3 % on demand, K 80 16.6 % before pre-copy, 7.0 % on demand, K 100 13.2 % before pre-copy, 5.4 % on demand; uniform routing 1 - K/E dashed.</desc>
+<rect width="1400" height="700" fill="#fff"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="40" y="52" font-size="32" fill="#171717" font-weight="700" text-anchor="start">Routed experts that miss the GPU, against K</text>
+<text x="40" y="84" font-size="20" fill="#52514e" text-anchor="start">One request, ShareGPT decode, SGLang main with pre-copy · RTX 5070 Ti 16 GB · miss = share of routed experts per token</text>
+<line x1="40" y1="124" x2="70" y2="124" stroke="#2a78d6" stroke-width="2.5"/>
+<text x="80" y="130" font-size="18" fill="#52514e" text-anchor="start">not resident before pre-copy</text>
+<line x1="383.2" y1="124" x2="413.2" y2="124" stroke="#d65221" stroke-width="2.5"/>
+<text x="423.2" y="130" font-size="18" fill="#52514e" text-anchor="start">still copied on demand</text>
+<line x1="670.0" y1="124" x2="700.0" y2="124" stroke="#8a8984" stroke-width="2.5" stroke-dasharray="6 5"/>
+<text x="710.0" y="130" font-size="18" fill="#52514e" text-anchor="start">uniform routing, 1 − K/E</text>
+<text x="140" y="168" font-size="20" fill="#171717" font-weight="700" text-anchor="start">Qwen3-30B-A3B GPTQ-Int4 (128 experts)</text>
+<line x1="140" y1="570.0" x2="700" y2="570.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="128" y="576.0" font-size="17" fill="#52514e" text-anchor="end">0 %</text>
+<line x1="140" y1="475.0" x2="700" y2="475.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="128" y="481.0" font-size="17" fill="#52514e" text-anchor="end">25 %</text>
+<line x1="140" y1="380.0" x2="700" y2="380.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="128" y="386.0" font-size="17" fill="#52514e" text-anchor="end">50 %</text>
+<line x1="140" y1="285.0" x2="700" y2="285.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="128" y="291.0" font-size="17" fill="#52514e" text-anchor="end">75 %</text>
+<line x1="140" y1="190.0" x2="700" y2="190.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="128" y="196.0" font-size="17" fill="#52514e" text-anchor="end">100 %</text>
+<text x="140.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">0</text>
+<text x="280.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">32</text>
+<text x="420.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">64</text>
+<text x="560.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">96</text>
+<text x="700.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">128</text>
+<line x1="140" y1="570" x2="700" y2="570" stroke="#52514e" stroke-width="1"/>
+<text x="420.0" y="630" font-size="18" fill="#52514e" text-anchor="middle">K, experts per layer on the GPU</text>
+<line x1="140.0" y1="190.0" x2="700.0" y2="570.0" stroke="#8a8984" stroke-width="2" stroke-dasharray="6 5"/>
+<polyline points="210.0,414.7 280.0,493.9 350.0,536.9 420.0,554.9 490.0,564.2 542.5,567.2" fill="none" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="210.0" cy="414.7" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="280.0" cy="493.9" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="350.0" cy="536.9" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="420.0" cy="554.9" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="490.0" cy="564.2" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="542.5" cy="567.2" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<polyline points="210.0,509.3 280.0,544.2 350.0,557.7 420.0,563.7 490.0,567.2 542.5,568.6" fill="none" stroke="#d65221" stroke-width="2"/>
+<circle cx="210.0" cy="509.3" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="280.0" cy="544.2" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="350.0" cy="557.7" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="420.0" cy="563.7" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="490.0" cy="567.2" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="542.5" cy="568.6" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="558.5" cy="524.0" r="4" fill="#2a78d6"/>
+<text x="568.5" y="530.0" font-size="17" fill="#171717" font-weight="700" text-anchor="start">0.7 %</text>
+<circle cx="558.5" cy="550.0" r="4" fill="#d65221"/>
+<text x="568.5" y="556.0" font-size="17" fill="#171717" font-weight="700" text-anchor="start">0.4 %</text>
+<text x="552.5" y="453.1" font-size="17" fill="#52514e" text-anchor="start">28 %</text>
+<text x="820" y="168" font-size="20" fill="#171717" font-weight="700" text-anchor="start">Qwen3-Next-80B-A3B NVFP4 (512 experts)</text>
+<line x1="820" y1="570.0" x2="1380" y2="570.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="808" y="576.0" font-size="17" fill="#52514e" text-anchor="end">0 %</text>
+<line x1="820" y1="475.0" x2="1380" y2="475.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="808" y="481.0" font-size="17" fill="#52514e" text-anchor="end">25 %</text>
+<line x1="820" y1="380.0" x2="1380" y2="380.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="808" y="386.0" font-size="17" fill="#52514e" text-anchor="end">50 %</text>
+<line x1="820" y1="285.0" x2="1380" y2="285.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="808" y="291.0" font-size="17" fill="#52514e" text-anchor="end">75 %</text>
+<line x1="820" y1="190.0" x2="1380" y2="190.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="808" y="196.0" font-size="17" fill="#52514e" text-anchor="end">100 %</text>
+<text x="820.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">0</text>
+<text x="960.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">32</text>
+<text x="1100.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">64</text>
+<text x="1240.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">96</text>
+<text x="1380.0" y="598" font-size="17" fill="#52514e" text-anchor="middle">128</text>
+<line x1="820" y1="570" x2="1380" y2="570" stroke="#52514e" stroke-width="1"/>
+<text x="1100.0" y="630" font-size="18" fill="#52514e" text-anchor="middle">K, experts per layer on the GPU</text>
+<line x1="820.0" y1="190.0" x2="1380.0" y2="285.0" stroke="#8a8984" stroke-width="2" stroke-dasharray="6 5"/>
+<polyline points="907.5,414.3 995.0,459.9 1082.5,488.6 1170.0,507.0 1257.5,519.9" fill="none" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="907.5" cy="414.3" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="995.0" cy="459.9" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="1082.5" cy="488.6" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="1170.0" cy="507.0" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<circle cx="1257.5" cy="519.9" r="5" fill="#2a78d6" stroke="#fff" stroke-width="2"/>
+<polyline points="907.5,492.5 995.0,519.8 1082.5,534.5 1170.0,543.6 1257.5,549.3" fill="none" stroke="#d65221" stroke-width="2"/>
+<circle cx="907.5" cy="492.5" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="995.0" cy="519.8" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="1082.5" cy="534.5" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="1170.0" cy="543.6" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="1257.5" cy="549.3" r="5" fill="#d65221" stroke="#fff" stroke-width="2"/>
+<circle cx="1273.5" cy="503.9" r="4" fill="#2a78d6"/>
+<text x="1283.5" y="509.9" font-size="17" fill="#171717" font-weight="700" text-anchor="start">13.2 %</text>
+<circle cx="1273.5" cy="550.0" r="4" fill="#d65221"/>
+<text x="1283.5" y="556.0" font-size="17" fill="#171717" font-weight="700" text-anchor="start">5.4 %</text>
+<text x="1267.5" y="254.2" font-size="17" fill="#52514e" text-anchor="start">80 %</text>
+</g>
+</svg>
