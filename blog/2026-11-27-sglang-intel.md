@@ -1,13 +1,13 @@
 ---
-title: "SGLang on Intel Xeon CPUs and GPUs as First-Class platforms: Execution Paths and Low-Precision Inference"
+title: "SGLang on Intel Xeon CPUs and Intel GPUs: Execution Paths and Low-Precision Inference"
 author: "RadixArk & Intel"
-date: "November 25, 2026"
+date: "November 27, 2026"
 previewImg: /images/blog/2026-11-25-sglang-intel/architecture.png
 type: blog
 excerpt: "Architecture-specific execution paths for Intel Xeon CPUs and Intel GPUs in SGLang, including AMX, attention and MoE kernels, graph execution, and packed MXFP4 expert weights."
 ---
 
-Efficient LLM inference on Intel Xeon CPUs and Intel GPUs depends on optimizations tailored to each architecture. This post examines [RadixArk and Intel’s collaborative work](https://www.intc.com/news-events/press-releases/detail/1787/intel-radixark-collaborate-to-advance-open-ai-inference-on) on Intel Advanced Matrix Extensions (Intel AMX) enabled computation, thread placement, and compiled execution on Xeon, alongside attention and MoE kernels and graph execution on Intel GPUs. In particular, we take a closer look at the Xe2 MXFP4 path, which keeps expert weights compressed in device memory and converts weight tiles inside the compute kernel. We also describe the supported configurations and limitations of these paths.
+Efficient LLM inference on Intel Xeon CPUs and Intel GPUs depends on optimizations tailored to each architecture. This post examines [RadixArk and Intel’s collaborative work](https://www.intc.com/news-events/press-releases/detail/1787/intel-radixark-collaborate-to-advance-open-ai-inference-on) on Intel Advanced Matrix Extensions (Intel AMX)-enabled computation, thread placement, and compiled execution on Intel Xeon, alongside attention and MoE kernels and graph execution on Intel GPUs. In particular, we take a closer look at the Xe2 MXFP4 path, which keeps expert weights compressed in device memory and converts weight tiles inside the compute kernel. We also describe the supported configurations and limitations of these paths.
 
 ## A Shared Serving Interface, Specialized Execution Paths
 
@@ -17,15 +17,15 @@ SGLang provides a common serving interface, while each backend specializes the e
 
 *Figure 1. Shared serving interface, hardware-specific execution. Support is validated per backend and configuration; the diagram does not imply feature parity or automatic CPU-GPU workload placement.*
 
-Intel's upstream work in SGLang started with CPU enablement and has progressively expanded across both CPU and Intel GPU (XPU) backends, covering optimized kernels, attention and MoE, quantization, graph execution, distributed inference, model enablement,  alongside continuous integration to validate changes on Intel hardware. Together, these efforts address both the performance-critical execution paths and the integration work needed to maintain backend support as SGLang evolves.
+Intel's upstream work in SGLang started with CPU enablement and has progressively expanded across both Intel CPU and Intel GPU (XPU) backends, covering optimized kernels, attention and MoE, quantization, graph execution, distributed inference, model enablement, alongside continuous integration to validate changes on Intel hardware. Together, these efforts address both the performance-critical execution paths and the integration work needed to maintain backend support as SGLang evolves.
 
-On Xeon, this means combining Intel AMX enabled compute with thread placement and NUMA locality. On Intel GPUs, device dispatch and buffer organization support SYCL kernels, including grouped MoE GEMM. Both paths must preserve tensor and model semantics at the framework boundary, with correctness checked through operator tests and model-level validation. The following sections examine these CPU and GPU execution paths in more detail.
+On Intel Xeon, this means combining Intel AMX-enabled compute with thread placement and NUMA locality. On Intel GPUs, device dispatch and buffer organization support SYCL kernels, including grouped MoE GEMM. Both paths must preserve tensor and model semantics at the framework boundary, with correctness checked through operator tests and model-level validation. The following sections examine these CPU and GPU execution paths in more detail.
 
 ## Intel Xeon: CPU-Native Inference
 
 SGLang's Xeon path combines matrix-compute acceleration with CPU-specific execution controls. The optimizations address both the arithmetic inside operators and the topology and runtime overhead around them:
 
-- **Intel AMX enabled matrix compute.** On supported Xeon processors, Intel AMX accelerates matrix operations in the CPU backend. This matters for dense projections and expert computation, although the benefit depends on matrix shape and batch size.
+- **Intel AMX-enabled matrix compute.** On supported Xeon processors, Intel AMX accelerates matrix operations in the CPU backend. This matters for dense projections and expert computation, although the benefit depends on matrix shape and batch size.
 
 - **W8A8 INT8 inference.** The CPU path supports compatible checkpoints with 8-bit weights and activations, selected through `--quantization w8a8_int8`. This reduces operand storage relative to BF16; quantization scales and model compatibility remain part of the execution contract.
 
@@ -77,15 +77,15 @@ Heterogeneous inference can mean assigning different stages of a request to diff
 
 - **Decode.** Generates tokens autoregressively, repeatedly accessing weights and the growing KV cache. Memory bandwidth and latency often become important constraints.
 
-One candidate deployment to evaluate is a suitably sized vision encoder on Xeon, with prefill and decode in separate Intel GPU worker pools. Separating the roles allows capacity to be provisioned independently as the mix of visual inputs, prompt lengths, and output lengths changes.
+One candidate deployment to evaluate is a suitably sized vision encoder on Intel Xeon, with prefill and decode in separate Intel GPU worker pools. Separating the roles allows capacity to be provisioned independently as the mix of visual inputs, prompt lengths, and output lengths changes.
 
-![Illustrative EPD deployment with a candidate Xeon encoder and separate Intel GPU prefill and decode pools; this is not a validated Intel EPD configuration.](/images/blog/2026-11-25-sglang-intel/epd-heterogeneous.jpg)
+![Illustrative EPD deployment with a candidate Intel Xeon encoder and separate Intel GPU prefill and decode pools; this is not a validated Intel EPD configuration.](/images/blog/2026-11-25-sglang-intel/epd-heterogeneous.jpg)
 
 *Figure 3. Illustrative heterogeneous EPD placement, not a validated Intel configuration. Arrows show logical dataflow; routing, control-plane details, and associated request-state transfers are omitted.*
 
 The trade-off is additional embedding and KV-cache transfer, plus coordination between worker pools. This mapping requires validation of encoder support on CPU, GPU execution paths, tensor and KV-cache formats, and cross-backend transport. It is an architectural example, not a claim that arbitrary CPU-GPU combinations already work or improve performance.
 
-For Xeon deployments, start with the CPU server guide and check processor capabilities, core topology, memory capacity, and the intended precision. For Intel GPUs, use the XPU guide to select a documented device and model configuration. The sgl-kernel-xpu repository contains the lower-level kernels, tests, and benchmarks; building that library alone is not a complete SGLang serving installation.
+For Intel Xeon deployments, start with the CPU server guide and check processor capabilities, core topology, memory capacity, and the intended precision. For Intel GPUs, use the XPU guide to select a documented device and model configuration. The sgl-kernel-xpu repository contains the lower-level kernels, tests, and benchmarks; building that library alone is not a complete SGLang serving installation.
 
 ## Co-Engineering the Future of Open AI Infrastructure
 
@@ -98,12 +98,12 @@ Together, we are addressing complex deployment bottlenecks at the most effective
 A cornerstone of this partnership is our joint commitment to an "upstream-first" philosophy. By integrating these collaborative innovations directly into the core SGLang repository, we ensure that Intel platform support evolves organically alongside the framework's rapidly advancing features. This continuous joint effort benefits the broader open-source community by strengthening device abstractions, broadening platform validation, and paving the way for a truly hardware-agnostic AI serving ecosystem.
 
 <blockquote style="margin: 2.6em 0; padding-left: 1.5em; border-left: 2px solid var(--orange); font-size: 1.125em; line-height: 1.6; font-style: normal;">
-  <p>“Efficient inference asks for systematic solutions: kernels, memory management, and serving execution have to be tuned together for the hardware. Our collaboration with Intel brings that work into upstream SGLang, with optimizations tailored to Xeon CPUs and Intel GPUs. Maintaining and validating those execution paths as models and inference techniques evolve is equally important. Working with Intel and the SGLang community, we’re building a stronger foundation for developers to choose the hardware that fits their workloads.”</p>
+  <p>“Efficient inference asks for systematic solutions: kernels, memory management, and serving execution have to be tuned together for the hardware. Our collaboration with Intel brings that work into upstream SGLang, with optimizations tailored to Intel Xeon CPUs and Intel GPUs. Maintaining and validating those execution paths as models and inference techniques evolve is equally important. Working with Intel and the SGLang community, we’re building a stronger foundation for developers to choose the hardware that fits their workloads.”</p>
   <p style="margin-top: 0.75em;">— <strong>Banghua Zhu</strong>, CTO, RadixArk</p>
 </blockquote>
 
 <blockquote style="margin: 2.6em 0; padding-left: 1.5em; border-left: 2px solid var(--orange); font-size: 1.125em; line-height: 1.6; font-style: normal;">
-  <p>“Our work with RadixArk and the SGLang community is about putting the developer experience first. By co-engineering directly in upstream SGLang, we are providing highly optimized, out-of-the-box inference across Intel CPUs and GPUs. We want developers to deploy state-of-the-art open models through the same SGLang experience, with the flexibility to move workloads across hardware backends without heavy refactoring or artificial constraints.”</p>
+  <p>“Our work with RadixArk is about putting the developer experience first. By co-engineering directly in upstream SGLang, we are providing highly optimized, out-of-the-box inference across Intel CPUs and GPUs. We want developers to deploy state-of-the-art open models through the same SGLang experience, with the flexibility to move workloads across hardware backends without heavy refactoring or artificial constraints.”</p>
   <p style="margin-top: 0.75em;">— <strong>Bill Pearson</strong>, Vice President, Data Center Software, Intel</p>
 </blockquote>
 
@@ -123,7 +123,7 @@ There is more work ahead to reach that vision across the full breadth of models 
 
 SGLang provides platform-specific guides for deploying on Intel Xeon CPUs and Intel GPUs. Follow the guides below for environment setup, installation, and launching the serving engine:
 
-- [Intel Xeon CPUs](https://docs.sglang.io/docs/hardware-platforms/cpu_server): Configure the CPU environment and serving process, with guidance on Intel AMX enabled execution, thread affinity, NUMA placement, and supported quantization paths.
+- [Intel Xeon CPUs](https://docs.sglang.io/docs/hardware-platforms/cpu_server): Configure the CPU environment and serving process, with guidance on Intel AMX-enabled execution, thread affinity, NUMA placement, and supported quantization paths.
 
 - [Intel GPUs (XPU)](https://docs.sglang.io/docs/hardware-platforms/xpu): Set up GPU drivers and PyTorch XPU dependencies, install SGLang, and select the attention and quantization settings for your deployment.
 
