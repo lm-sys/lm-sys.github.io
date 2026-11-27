@@ -1,5 +1,5 @@
 ---
-title: "SGLang on Intel Xeon CPUs and Intel GPUs: Execution Paths and Low-Precision Inference"
+title: "SGLang on Intel Xeon CPUs and GPUs as First-Class platforms: Execution Paths and Low-Precision Inference"
 author: "RadixArk & Intel"
 date: "November 27, 2026"
 previewImg: /images/blog/2026-11-25-sglang-intel/architecture.png
